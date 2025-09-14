@@ -12,9 +12,9 @@ if [[ -f "$ENV_FILE" ]]; then
   source "$ENV_FILE"
 fi
 
-# Helper: clone if folder missing or not a git repo.
+## Helper: clone if folder missing or not a git repo.
 clone_repo() {
-  local slug="$1"; shift
+  local src="$1"; shift
   local target="$1"; shift
 
   if [[ -d "$target/.git" ]]; then
@@ -22,26 +22,70 @@ clone_repo() {
     return 0
   fi
 
-  if [[ -z "${slug}" ]]; then
-    echo "[bootstrap] No repo slug provided for $target; skipping."
+  if [[ -z "${src}" ]]; then
+    echo "[bootstrap] No repo slug/url provided for $target; skipping."
     return 0
   fi
 
-  echo "[bootstrap] Cloning $slug into $target ..."
+  # Normalize input
+  local is_url=false
+  if [[ "$src" =~ ^(git@|https?://) ]]; then
+    is_url=true
+  fi
 
-  # Prefer gh if available and authenticated
-  if command -v gh >/dev/null 2>&1; then
-    if gh auth status >/dev/null 2>&1; then
-      gh repo clone "$slug" "$target" -- --quiet && return 0
+  echo "[bootstrap] Cloning $src into $target ..."
+
+  # If a full URL is provided, prefer plain git clone; gh's credential helper will supply creds.
+  if $is_url; then
+    if git clone --quiet "$src" "$target" 2>clone.err; then
+      rm -f clone.err
+      return 0
+    else
+      echo "[bootstrap] ERROR: git clone failed for $src → $target" >&2
+      sed 's/^/[git] /' clone.err >&2 || true
+      rm -f clone.err
+      return 1
     fi
   fi
 
-  # Fallback to git clone over HTTPS (requires GITHUB_TOKEN permissions)
-  if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-    git -c http.extraheader="AUTHORIZATION: bearer $GITHUB_TOKEN" clone "https://github.com/${slug}.git" "$target" --quiet && return 0
+  # Otherwise, treat as OWNER/REPO slug
+  if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    # Check access explicitly for clearer errors
+    if env -u GITHUB_TOKEN -u GH_TOKEN gh repo view "$src" >/dev/null 2>view.err; then
+      if env -u GITHUB_TOKEN -u GH_TOKEN gh repo clone "$src" "$target" -- --quiet 2>clone.err; then
+        rm -f view.err clone.err
+        return 0
+      else
+        echo "[bootstrap] ERROR: gh repo clone failed for $src → $target" >&2
+        sed 's/^/[gh] /' clone.err >&2 || true
+        rm -f view.err clone.err
+        return 1
+      fi
+    else
+      echo "[bootstrap] ERROR: Cannot access repository '$src' (not found or no permission)." >&2
+      sed 's/^/[gh] /' view.err >&2 || true
+      rm -f view.err
+      echo "[bootstrap] Hint: ensure slug is correct (OWNER/REPO) and your PAT has repo scope/SSO enabled." >&2
+      return 1
+    fi
   fi
 
-  echo "[bootstrap] ERROR: Could not clone $slug. Ensure gh is authenticated or GITHUB_TOKEN has access." >&2
+  # Final fallback to HTTPS with header if an explicit PAT provided
+  local PAT="${GITHUB_PAT:-${GH_PAT:-}}"
+  if [[ -n "$PAT" ]]; then
+    if git -c http.extraheader="AUTHORIZATION: bearer $PAT" clone "https://github.com/${src}.git" "$target" --quiet 2>clone.err; then
+      rm -f clone.err
+      return 0
+    else
+      echo "[bootstrap] ERROR: git clone with PAT failed for $src → $target" >&2
+      sed 's/^/[git] /' clone.err >&2 || true
+      rm -f clone.err
+      return 1
+    fi
+  fi
+
+  echo "[bootstrap] ERROR: Could not clone $src. Authenticate gh or provide a PAT in GITHUB_PAT." >&2
+  return 1
 }
 
 # Configure git safe directories to avoid dubious ownership warnings
@@ -58,4 +102,3 @@ clone_repo "${STOREFRONT_REPO:-}" "storefront"
 clone_repo "${VENDORPANEL_REPO:-}" "vendorpanel"
 
 echo "[bootstrap] Done."
-

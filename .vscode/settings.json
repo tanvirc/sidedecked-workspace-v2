@@ -1,0 +1,7 @@
+{
+    "chatgpt.openOnStartup": true,
+    "git.autoRepositoryDetection": "subFolders",
+    "git.repositoryScanMaxDepth": 4,
+    "git.alwaysShowRepositories": true,
+    "git.openRepositoryInParentFolders": "always"
+}
