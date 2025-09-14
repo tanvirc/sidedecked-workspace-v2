@@ -1,0 +1,24 @@
+{
+  "name": "Sidedecked Workspace",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "features": {},
+
+  "forwardPorts": [5432],
+  "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "prisma.prisma",
+        "ms-ossdata.vscode-postgresql"
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "folders": [
+    { "path": "backend" },
+    { "path": "customer-backend" },
+    { "path": "storefront" },
+    { "path": "vendorpanel" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true
+    }
+  }
+}
+
