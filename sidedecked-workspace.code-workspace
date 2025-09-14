@@ -1,9 +1,20 @@
 {
   "folders": [
-    { "path": "backend" },
-    { "path": "customer-backend" },
-    { "path": "storefront" },
-    { "path": "vendorpanel" }
+    {
+      "path": "backend"
+    },
+    {
+      "path": "customer-backend"
+    },
+    {
+      "path": "storefront"
+    },
+    {
+      "path": "vendorpanel"
+    },
+    {
+      "path": "."
+    }
   ],
   "settings": {
     "files.exclude": {

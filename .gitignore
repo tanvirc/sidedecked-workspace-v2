@@ -17,3 +17,5 @@ node_modules/
 .vscode/*.log
 .history/
 
+.devcontainer/logs/
+logs/

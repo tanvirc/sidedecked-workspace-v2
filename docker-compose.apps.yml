@@ -1,48 +1,42 @@
 version: '3.8'
 
-services:
-  workspace:
-    image: mcr.microsoft.com/devcontainers/universal:2
-    volumes:
-      - ..:/workspaces:cached
-    command: /bin/sh -c "while sleep 1000; do :; done"
-    depends_on:
-      - db
-      - redis
-    environment:
-      # Pass through Codespaces token for gh/git if needed
-      - GITHUB_TOKEN
-    ports:
-      - "5432:5432"
+networks:
+  devcontainer_default:
+    external: true
 
+services:
+  # Infrastructure only: Postgres + Redis
   db:
     image: postgres:16-alpine
-    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: app
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      # Create additional databases on first start
+      - ./infra/postgres-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
+    ports:
+      - "5432:5432"
+    networks:
+      - devcontainer_default
 
   redis:
     image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 10
+    ports:
+      - "6379:6379"
+    networks:
+      - devcontainer_default
 
 volumes:
   postgres-data:

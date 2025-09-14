@@ -1,4 +1,4 @@
-# CLAUDE.md - SideDecked TCG Marketplace Implementation Orchestrator
+# AGENTS.md - SideDecked TCG Marketplace Implementation Orchestrator
 
 ## Project Overview
 

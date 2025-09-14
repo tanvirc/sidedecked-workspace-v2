@@ -6,8 +6,9 @@
 
   "features": {},
 
-  "forwardPorts": [5432],
+  "forwardPorts": [5432, 6379],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
+  "postStartCommand": "bash .devcontainer/scripts/start-all.sh",
 
   "customizations": {
     "vscode": {
@@ -17,7 +18,9 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "prisma.prisma",
-        "ms-ossdata.vscode-postgresql"
+        "ms-ossdata.vscode-postgresql",
+        "openai.chatgpt",
+        "anthropic.claude-code"
       ]
     }
   }

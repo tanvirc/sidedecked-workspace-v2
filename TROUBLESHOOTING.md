@@ -418,6 +418,36 @@ echo $JWT_SECRET
 # Clear browser cookies and re-authenticate
 ```
 
+---
+
+## Additional Known Issues
+
+### Customer Backend: Database connection refused (ECONNREFUSED)
+
+**Issue**: `connect ECONNREFUSED 127.0.0.1:5432` during startup, or repeated database connection failures in `customer-backend.log`.
+
+**Solution**:
+1. Verify PostgreSQL is running and `DATABASE_URL` is correct.
+2. Run pending migrations if tables are missing.
+3. For development without a database, enable degraded mode:
+```bash
+# customer-backend/.env
+ALLOW_DEGRADED_START=true
+```
+The server starts with limited functionality and reports a degraded `/health` until the database is available.
+
+### Vendor Panel: Dev server tries to open a browser (xdg-open ENOENT)
+
+**Issue**: Error `spawn xdg-open ENOENT` in `vendorpanel.log` on headless/CI environments.
+
+**Solution**:
+- Auto-open is disabled by default in CI and Codespaces.
+- To force-enable locally, set:
+```bash
+# vendorpanel/.env (or environment)
+VITE_OPEN_BROWSER=true
+```
+
 ### Permission Denied Errors
 
 **Issue**: Users can't access certain features
