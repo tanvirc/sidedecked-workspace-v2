@@ -2,6 +2,10 @@
   "name": "Sidedecked Workspace",
   "dockerComposeFile": "docker-compose.yml",
   "service": "workspace",
+  // Ensure infra services start with the devcontainer
+  "runServices": ["db", "redis"],
+  // Stop all compose services when the devcontainer stops
+  "shutdownAction": "stopCompose",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   "features": {},
