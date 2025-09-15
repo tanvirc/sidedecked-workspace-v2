@@ -1,23 +1,12 @@
 {
   "folders": [
-    { "name": "workspace-root", "path": "." },
-    { "name": "backend", "path": "backend" },
-    { "name": "customer-backend", "path": "customer-backend" },
-    { "name": "storefront", "path": "storefront" },
-    { "name": "vendorpanel", "path": "vendorpanel" },
-    { "name": ".devcontainer", "path": ".devcontainer" },
-    { "name": "docs", "path": "docs" },
-    { "name": "scripts", "path": "scripts" },
-    { "name": "infra", "path": "infra" },
-    { "name": ".github", "path": ".github" }
+    { "path": "." }
   ],
   "settings": {
-    "explorer.excludeGitIgnore": false,
     "files.exclude": {
       "**/.git": true,
       "**/.DS_Store": true,
-      "**/node_modules": true,
-      "**/.*": false
+      "**/node_modules": true
     }
   }
 }
