@@ -14,7 +14,7 @@
   // to avoid host port collisions (e.g., db:5432 and redis:6379).
   "forwardPorts": [],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
-  "postStartCommand": "bash .devcontainer/scripts/install-ai-clis.sh && bash .devcontainer/scripts/start-all.sh",
+  "postStartCommand": "bash .github/setup-auth.sh && bash .devcontainer/scripts/configure-git-auth.sh && bash .devcontainer/scripts/install-ai-clis.sh && bash .devcontainer/scripts/start-all.sh",
 
   "customizations": {
     "vscode": {

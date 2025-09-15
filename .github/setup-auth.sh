@@ -70,7 +70,7 @@ check_repo() {
   if [[ -z "$slug" ]]; then
     return 0
   fi
-  if gh repo view "$slug" >/dev/null 2>&1; then
+  if env -u GITHUB_TOKEN -u GH_TOKEN gh repo view "$slug" >/dev/null 2>&1; then
     echo "  ✓ $slug"
   else
     echo "  ✗ $slug (no access or not found)"
