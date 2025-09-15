@@ -89,7 +89,7 @@ cards, decks, user_profiles, communities, pricing_data
 ### Step 1: Load Core Context
 ```bash
 # Execute these commands in order:
-cat CLAUDE.md                              # This document
+cat AGENTS.md                                    # Orchestrator for agents
 cat docs/standards/code-standards.md       # Code requirements
 cat docs/standards/testing-standards.md    # TDD requirements
 find . -name "*.ts" -type f | head -20    # Understand code structure

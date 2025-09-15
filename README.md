@@ -279,7 +279,7 @@ curl http://localhost:7000/health
 
 ## 📚 Documentation
 
-- **Project Overview**: See main `CLAUDE.md` in each repository
+- **Project Overview**: See main `AGENTS.md` in each repository
 - **API Documentation**: Available at `/docs` endpoint of each service
 - **Architecture**: Detailed in `docs/architecture/`
 - **Phase Guides**: Phase-specific documentation in `docs/specifications/` directory
