@@ -71,7 +71,7 @@ FORBIDDEN_PATTERNS=(
 for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
   if grep -r "$pattern" --include="*.ts" --include="*.tsx" src/; then
     echo "❌ Forbidden MercurJS pattern found: $pattern"
-    echo "See CLAUDE.md for correct patterns"
+    echo "See AGENTS.md for correct patterns"
     exit 1
   fi
 done

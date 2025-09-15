@@ -10,7 +10,7 @@
   // to avoid host port collisions (e.g., db:5432 and redis:6379).
   "forwardPorts": [],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
-  "postStartCommand": "bash .devcontainer/scripts/start-all.sh",
+  "postStartCommand": "bash .devcontainer/scripts/install-ai-clis.sh && bash .devcontainer/scripts/start-all.sh",
 
   "customizations": {
     "vscode": {
@@ -22,7 +22,22 @@
         "prisma.prisma",
         "ms-ossdata.vscode-postgresql",
         "openai.chatgpt",
-        "anthropic.claude-code"
+        "anthropic.claude-code",
+        "mikestead.dotenv",
+        "ms-playwright.playwright",
+        "orta.vscode-jest",
+        "humao.rest-client",
+        "redocly.openapi-vs-code",
+        "stripe.vscode-stripe",
+        "redhat.vscode-yaml",
+        "mechatroner.rainbow-csv",
+        "cweijan.vscode-redis-client",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "bierner.markdown-mermaid",
+        "hediet.vscode-drawio",
+        "vivaxy.vscode-conventional-commits",
+        "ms-vscode-remote.remote-containers"
       ]
     }
   }

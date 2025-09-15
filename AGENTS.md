@@ -114,7 +114,7 @@ sidedecked/                    # Main project folder (NOT a git repo)
 
 ```bash
 # Execute these commands IN ORDER:
-cat CLAUDE.md | head -200           # Load main orchestrator
+cat AGENTS.md | head -200           # Load main orchestrator
 ls -la docs/standards/              # Review all standards
 ls -la docs/specifications/         # Identify relevant specifications
 find . -name "*.ts" -type f | head -20  # Understand code structure
@@ -139,7 +139,7 @@ find . -name "*.ts" -type f | head -20  # Understand code structure
 
 **Must answer YES to ALL before proceeding:**
 
-- [ ] I have read CLAUDE.md core sections
+- [ ] I have read AGENTS.md core sections
 - [ ] I have read task-specific architecture documents (Step 2)
 - [ ] I have read the relevant specification documentation
 - [ ] I have reviewed applicable standards documents
@@ -207,7 +207,7 @@ Before coding, state:
 
 1. **Specification**: This belongs to specification \_\_\_
 2. **Pattern**: I will follow the pattern from \_\_\_
-3. **Frameworks**: I will use \_\_\_ (per CLAUDE.md decision matrix)
+3. **Frameworks**: I will use \_\_\_ (per AGENTS.md decision matrix)
 4. **Tests**: I will write tests for \_\_\_
 5. **Documentation**: I will update \_\_\_
 
