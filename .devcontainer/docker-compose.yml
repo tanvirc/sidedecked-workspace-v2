@@ -1,8 +1,6 @@
-version: '3.8'
-
 networks:
   devcontainer_default:
-    external: true
+    # Let Compose create/manage this network for the project
 
 services:
   workspace:
