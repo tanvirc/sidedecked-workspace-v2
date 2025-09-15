@@ -17,6 +17,7 @@
   "forwardPorts": [],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
   "postStartCommand": "bash .devcontainer/scripts/post-start.sh",
+  "postAttachCommand": "bash .devcontainer/scripts/post-start.sh",
 
   "customizations": {
     "vscode": {

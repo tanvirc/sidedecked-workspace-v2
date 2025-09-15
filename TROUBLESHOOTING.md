@@ -18,6 +18,25 @@ This guide covers common issues and solutions for the SideDecked TCG marketplace
 
 ## Development Environment Issues
 
+### Devcontainer: Infra services not starting (Postgres/Redis)
+
+**Symptoms**: `db` and/or `redis` not reachable after Codespace rebuild; startup scripts did not run.
+
+**Checks**:
+- Verify service reachability from the workspace container:
+  - `bash -lc '(exec 3<>/dev/tcp/db/5432) && echo DB_OK || echo DB_DOWN'`
+  - `bash -lc '(exec 3<>/dev/tcp/redis/6379) && echo REDIS_OK || echo REDIS_DOWN'`
+- Tail the startup log: `sed -n '1,120p' logs/post-start.out`
+
+**Fix**:
+- Re-run the post-start flow: `bash .devcontainer/scripts/post-start.sh`
+- On attach, the post-start hook auto-runs and launches services in the background.
+- If Postgres initialization previously failed due to data incompatibility, remove the named volume from the Codespaces “Ports/Volumes” panel and rebuild the container.
+
+**Notes**:
+- The devcontainer composes `db` and `redis` and exposes them inside the workspace network (`db:5432`, `redis:6379`). Ports are published to the host VM but not required for in-workspace usage.
+- Startup flow writes logs and PIDs under `logs/` and skips starting duplicates on subsequent runs.
+
 ### Node.js Version Compatibility
 
 **Issue**: Build or runtime errors related to Node.js version

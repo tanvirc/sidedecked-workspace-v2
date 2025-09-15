@@ -73,37 +73,44 @@ echo "[2/6] Ensuring customer-db exists..."
   fi
 ) || true
 
-echo "[3/6] Installing and building backend (MercurJS monorepo) ..."
+echo "[3/7] Installing and building backend (MercurJS monorepo) ..."
 (
   cd "$ROOT_DIR/backend"
   npm ci
   npm run build
 )
 
-echo "[4/6] Migrating, seeding, and starting backend (Medusa) on :9000 ..."
+echo "[4/7] Migrating, seeding, and starting backend (Medusa) on :9000 ..."
 # Override DB/Redis hosts for host-network usage or devcontainer
 (
   cd "$ROOT_DIR/backend/apps/backend"
   # Ensure non-SSL DB for local Postgres
   _DB_URL="${DATABASE_URL:-$DB_URL_DEFAULT}"
+  # Ensure SSL is disabled for local Postgres. Medusa detects `ssl_mode=disable`.
   if [[ "$_DB_URL" == *\?* ]]; then
-    export DATABASE_URL="${_DB_URL}&sslmode=disable"
+    export DATABASE_URL="${_DB_URL}&ssl_mode=disable"
   else
-    export DATABASE_URL="${_DB_URL}?sslmode=disable"
+    export DATABASE_URL="${_DB_URL}?ssl_mode=disable"
   fi
   export REDIS_URL="${REDIS_URL:-$REDIS_URL_DEFAULT}"
   export PGSSLMODE=disable
   # Ensure DB schema and sample data
   npm run db:migrate
   npm run seed
-  # Start dev server
-  nohup npm run dev >"$LOG_DIR/backend.log" 2>&1 & echo $! >"$LOG_DIR/backend.pid"
+  # Start dev server if not already running
+  if [[ -f "$LOG_DIR/backend.pid" ]] && kill -0 "$(cat "$LOG_DIR/backend.pid" 2>/dev/null)" >/dev/null 2>&1; then
+    echo "[backend] Already running (pid=$(cat "$LOG_DIR/backend.pid")); skipping start."
+  else
+    nohup npm run dev >"$LOG_DIR/backend.log" 2>&1 & echo $! >"$LOG_DIR/backend.pid"
+  fi
 )
 
-echo "[5/6] Installing, migrating, and starting customer-backend on :7000 ..."
+echo "[5/7] Installing, migrating, and starting customer-backend on :7000 ..."
 (
   cd "$ROOT_DIR/customer-backend"
   npm ci
+  # Ensure target database exists before migrations
+  node scripts/create-db.js "postgres://postgres:postgres@${DB_HOST}:5432/postgres" "customer-db" || true
   # Point to dev infra in compose network
   export DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@${DB_HOST}:5432/customer-db}
   export REDIS_URL=${REDIS_URL:-redis://${REDIS_HOST}:6379}
@@ -117,21 +124,33 @@ echo "[5/6] Installing, migrating, and starting customer-backend on :7000 ..."
   npm run migration:deploy || {
     echo "[customer-backend] Migration failed; check configuration and DB connectivity." >&2
   }
-  nohup npm run dev >"$LOG_DIR/customer-backend.log" 2>&1 & echo $! >"$LOG_DIR/customer-backend.pid"
+  if [[ -f "$LOG_DIR/customer-backend.pid" ]] && kill -0 "$(cat "$LOG_DIR/customer-backend.pid" 2>/dev/null)" >/dev/null 2>&1; then
+    echo "[customer-backend] Already running (pid=$(cat "$LOG_DIR/customer-backend.pid")); skipping start."
+  else
+    nohup npm run dev >"$LOG_DIR/customer-backend.log" 2>&1 & echo $! >"$LOG_DIR/customer-backend.pid"
+  fi
 )
 
-echo "[6/6] Installing and starting vendorpanel (Vite) on :5173 ..."
+echo "[6/7] Installing and starting vendorpanel (Vite) on :5173 ..."
 (
   cd "$ROOT_DIR/vendorpanel"
   npm ci
-  nohup npm run dev >"$LOG_DIR/vendorpanel.log" 2>&1 & echo $! >"$LOG_DIR/vendorpanel.pid"
+  if [[ -f "$LOG_DIR/vendorpanel.pid" ]] && kill -0 "$(cat "$LOG_DIR/vendorpanel.pid" 2>/dev/null)" >/dev/null 2>&1; then
+    echo "[vendorpanel] Already running (pid=$(cat "$LOG_DIR/vendorpanel.pid")); skipping start."
+  else
+    nohup npm run dev >"$LOG_DIR/vendorpanel.log" 2>&1 & echo $! >"$LOG_DIR/vendorpanel.pid"
+  fi
 )
 
-echo "[5/5] Installing and starting storefront (Next.js) on :3000 ..."
+echo "[7/7] Installing and starting storefront (Next.js) on :3000 ..."
 (
   cd "$ROOT_DIR/storefront"
   npm ci
-  nohup npm run dev >"$LOG_DIR/storefront.log" 2>&1 & echo $! >"$LOG_DIR/storefront.pid"
+  if [[ -f "$LOG_DIR/storefront.pid" ]] && kill -0 "$(cat "$LOG_DIR/storefront.pid" 2>/dev/null)" >/dev/null 2>&1; then
+    echo "[storefront] Already running (pid=$(cat "$LOG_DIR/storefront.pid")); skipping start."
+  else
+    nohup npm run dev >"$LOG_DIR/storefront.log" 2>&1 & echo $! >"$LOG_DIR/storefront.pid"
+  fi
 )
 
 echo
