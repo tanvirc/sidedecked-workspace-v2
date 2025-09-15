@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  devcontainer_default:
+    external: true
+
 services:
   workspace:
     image: mcr.microsoft.com/devcontainers/universal:2
@@ -12,6 +16,8 @@ services:
     environment:
       # Pass through Codespaces token for gh/git if needed
       - GITHUB_TOKEN
+    networks:
+      - devcontainer_default
 
   db:
     image: postgres:16-alpine
@@ -30,6 +36,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - devcontainer_default
 
   redis:
     image: redis:7-alpine
@@ -41,6 +49,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    networks:
+      - devcontainer_default
 
 volumes:
   postgres-data:

@@ -8,13 +8,15 @@
   "shutdownAction": "stopCompose",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-  "features": {},
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
 
   // Do not forward ports that are already published by sibling services
   // to avoid host port collisions (e.g., db:5432 and redis:6379).
   "forwardPorts": [],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
-  "postStartCommand": "bash .github/setup-auth.sh && bash .devcontainer/scripts/configure-git-auth.sh && bash .devcontainer/scripts/install-ai-clis.sh && bash .devcontainer/scripts/start-all.sh",
+  "postStartCommand": "bash .devcontainer/scripts/post-start.sh",
 
   "customizations": {
     "vscode": {

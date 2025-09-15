@@ -20,9 +20,20 @@ if [[ "$IS_DEVCONTAINER" -ne 1 ]]; then
   exit 0
 fi
 
-# Connection targets (devcontainer compose services)
-DB_URL_DEFAULT="postgres://postgres:postgres@db:5432/app"
-REDIS_URL_DEFAULT="redis://redis:6379"
+# Connection targets (resolve hostnames for both container and host environments)
+# Prefer docker compose service DNS (db/redis); fall back to localhost if not resolvable.
+DB_HOST="db"
+REDIS_HOST="redis"
+if ! getent hosts db >/dev/null 2>&1; then
+  # If db hostname is not resolvable, try localhost where ports are published
+  DB_HOST="localhost"
+fi
+if ! getent hosts redis >/dev/null 2>&1; then
+  REDIS_HOST="localhost"
+fi
+
+DB_URL_DEFAULT="postgres://postgres:postgres@${DB_HOST}:5432/app"
+REDIS_URL_DEFAULT="redis://${REDIS_HOST}:6379"
 
 echo "[1/6] Waiting for compose services (db:5432, redis:6379)..."
 wait_for_tcp() {
@@ -40,15 +51,27 @@ wait_for_tcp() {
   done
   exec 3>&- 3<&-
 }
-wait_for_tcp db 5432 120
-wait_for_tcp redis 6379 120
+wait_for_tcp "$DB_HOST" 5432 120
+wait_for_tcp "$REDIS_HOST" 6379 120
 
 echo "[2/6] Ensuring customer-db exists..."
 (
-  # Create database "customer-db" if missing
-  echo "SELECT 'ok' FROM pg_database WHERE datname='customer-db';" | PGPASSWORD=postgres psql -h db -U postgres -d postgres -Atq | grep -q ok || \
-  PGPASSWORD=postgres psql -h db -U postgres -d postgres -c 'CREATE DATABASE "customer-db"' || true
-)
+  set -e
+  CHECK_SQL="SELECT 'ok' FROM pg_database WHERE datname='customer-db';"
+  CREATE_SQL='CREATE DATABASE "customer-db"'
+  if command -v psql >/dev/null 2>&1; then
+    echo "$CHECK_SQL" | PGPASSWORD=postgres psql -h "$DB_HOST" -U postgres -d postgres -Atq | grep -q ok || \
+    PGPASSWORD=postgres psql -h "$DB_HOST" -U postgres -d postgres -c "$CREATE_SQL"
+  else
+    DB_CONT=$(docker compose -f "$ROOT_DIR/.devcontainer/docker-compose.yml" ps -q db 2>/dev/null || true)
+    if [[ -n "$DB_CONT" ]]; then
+      docker exec -e PGPASSWORD=postgres "$DB_CONT" psql -h localhost -U postgres -d postgres -Atqc "$CHECK_SQL" | grep -q ok || \
+      docker exec -e PGPASSWORD=postgres "$DB_CONT" psql -h localhost -U postgres -d postgres -c "$CREATE_SQL"
+    else
+      echo "[db] WARN: Could not locate db container to run psql; skipping explicit create."
+    fi
+  fi
+) || true
 
 echo "[3/6] Installing and building backend (MercurJS monorepo) ..."
 (
@@ -61,7 +84,13 @@ echo "[4/6] Migrating, seeding, and starting backend (Medusa) on :9000 ..."
 # Override DB/Redis hosts for host-network usage or devcontainer
 (
   cd "$ROOT_DIR/backend/apps/backend"
-  export DATABASE_URL="${DATABASE_URL:-$DB_URL_DEFAULT}"
+  # Ensure non-SSL DB for local Postgres
+  _DB_URL="${DATABASE_URL:-$DB_URL_DEFAULT}"
+  if [[ "$_DB_URL" == *\?* ]]; then
+    export DATABASE_URL="${_DB_URL}&sslmode=disable"
+  else
+    export DATABASE_URL="${_DB_URL}?sslmode=disable"
+  fi
   export REDIS_URL="${REDIS_URL:-$REDIS_URL_DEFAULT}"
   export PGSSLMODE=disable
   # Ensure DB schema and sample data
@@ -76,9 +105,14 @@ echo "[5/6] Installing, migrating, and starting customer-backend on :7000 ..."
   cd "$ROOT_DIR/customer-backend"
   npm ci
   # Point to dev infra in compose network
-  export DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db:5432/customer-db}
-  export REDIS_URL=${REDIS_URL:-redis://redis:6379}
+  export DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@${DB_HOST}:5432/customer-db}
+  export REDIS_URL=${REDIS_URL:-redis://${REDIS_HOST}:6379}
   export API_HOST=${API_HOST:-0.0.0.0}
+  # Required secrets for local dev
+  export JWT_SECRET=${JWT_SECRET:-dev-jwt-secret}
+  export COOKIE_SECRET=${COOKIE_SECRET:-dev-cookie-secret}
+  # Allow optional services (Algolia/MinIO) to be absent without blocking startup
+  export ALLOW_DEGRADED_START=${ALLOW_DEGRADED_START:-true}
   # Build and run migrations before starting
   npm run migration:deploy || {
     echo "[customer-backend] Migration failed; check configuration and DB connectivity." >&2
