@@ -6,7 +6,9 @@
 
   "features": {},
 
-  "forwardPorts": [5432, 6379],
+  // Do not forward ports that are already published by sibling services
+  // to avoid host port collisions (e.g., db:5432 and redis:6379).
+  "forwardPorts": [],
   "postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
   "postStartCommand": "bash .devcontainer/scripts/start-all.sh",
 
