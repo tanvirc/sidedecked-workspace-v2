@@ -31,46 +31,34 @@ Public VS Code workspace that loads four private repos: `backend`, `customer-bac
      - `VENDORPANEL_REPO=owner/vendorpanel-repo`
 4. Rebuild the container if you add/update `repos.env` (Command Palette → Rebuild Container).
 
+#### Codex CLI in Codespaces
+
+Codex CLI is optional but recommended for agentic workflows.
+
+- Install: `npm install -g @openai/codex` (or one‑off: `npx --yes --package @openai/codex codex`)
+- Start: `codex`
+
+Login in Codespaces requires a small tweak due to loopback callbacks:
+
+1) Forward the Codex callback port in Codespaces
+- When Codex prompts to sign in, it listens on `http://localhost:1455` inside the Codespace.
+- In the Ports panel, add/confirm a forward for port `1455`. Copy the forwarded URL (e.g. `https://1455-<your-codespace>.<region>.githubpreview.dev`).
+
+2) Complete the OAuth callback
+- After you approve in the browser, it may redirect to `http://localhost:1455/auth/callback?...` and show “connection refused”.
+- Copy that entire failing URL, replace only the origin with your Codespaces forwarded URL, and open it, e.g.:
+  - `https://1455-<your-codespace>.<region>.githubpreview.dev/auth/callback?code=...&state=...`
+- The Codex process in the Codespace will receive the callback and finish login.
+
+Notes
+- Port visibility: Private usually works when you’re logged into GitHub; switch to Public if needed.
+- Keep Codex running and listening on 1455 while you open the modified callback URL.
+- Alternative: If Codex supports device/headless login, use that mode to avoid localhost redirects (see `codex --help`).
+
 ### Notes
 - This repo intentionally ignores the four app folders so commits remain tied to their respective repos.
 - Postgres credentials (dev only): user `postgres`, password `postgres`, db `app`, host `db` inside the container or `localhost:5432` from VS Code.
 - If your private repos require additional permissions, ensure `gh auth status` passes inside the Codespace or grant the Codespace token access.
-
-## 🚀 Quick Start
-
-### Option 1: GitHub Codespace (Recommended)
-
-1. Click "Code" → "Codespaces" → "Create codespace on main"
-2. Wait for the environment to initialize (automatic setup runs)
-3. **Setup Authentication**: `./.github/setup-auth.sh` (run once)
-4. Open the workspace: `File` → `Open Workspace from File` → `sidedecked.code-workspace`
-5. Start development: `Ctrl+Shift+P` → `Tasks: Run Task` → `🚀 Start All Services`
-
-### Option 2: Local Development
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/yourusername/sidedecked-workspace.git
-   cd sidedecked-workspace
-   ```
-
-2. Run setup script:
-
-   ```bash
-   bash scripts/setup.sh
-   ```
-
-3. Start Docker services:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Start all development servers:
-   ```bash
-   bash scripts/start-all.sh
-   ```
 
 ## 📁 Repository Structure
 
