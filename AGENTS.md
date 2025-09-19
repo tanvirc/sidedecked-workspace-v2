@@ -6,6 +6,55 @@ This document defines how Codex CLI agents work in the SideDecked workspace. It 
 
 ---
 
+## Codex BMAD Quick Start
+
+- **Install/refresh agents**: Run `npx bmad-method install -f -i codex -d .` (local) or `npx bmad-method install -f -i codex-web -d .` (if you need committed assets for Codex Web). Re-run whenever `.bmad-core` changes.
+- **Verify bundles**: `npx bmad-method list:agents` confirms the agent set; use `npx bmad-method validate` before shipping major updates.
+- **Launch Codex**: Start Codex CLI from the repo root and address agents explicitly (e.g., “As dev, implement Story 01.1 tasks”). The BMAD commands (`*help`, `*agent`, `*task`) stay available after activation.
+
+### Codex Agent Directory
+
+| Agent ID | Title | High-Value Use Cases | Source Path |
+| --- | --- | --- | --- |
+| `analyst` | Business Analyst | Market research, discovery framing, competitive analysis | `.bmad-core/agents/analyst.md` |
+| `architect` | Architect | System design, architecture documentation, integration planning | `.bmad-core/agents/architect.md` |
+| `bmad-master` | BMad Master Task Executor | Cross-domain expertise, one-off automation, KB guidance | `.bmad-core/agents/bmad-master.md` |
+| `bmad-orchestrator` | BMad Master Orchestrator | Workflow coordination, agent selection, multi-agent guidance | `.bmad-core/agents/bmad-orchestrator.md` |
+| `dev` | Full Stack Developer | Implementation, debugging, refactoring, standards enforcement | `.bmad-core/agents/dev.md` |
+| `pm` | Product Manager | PRDs, product strategy, roadmap prioritization | `.bmad-core/agents/pm.md` |
+| `po` | Product Owner | Backlog curation, story refinement, acceptance criteria | `.bmad-core/agents/po.md` |
+| `qa` | Test Architect & Quality Advisor | Quality gates, risk assessment, test architecture reviews | `.bmad-core/agents/qa.md` |
+| `sm` | Scrum Master | Story drafting, epic orchestration, agile rituals | `.bmad-core/agents/sm.md` |
+| `ux-expert` | UX Expert | UX research, wireframes, front-end experience optimization | `.bmad-core/agents/ux-expert.md` |
+
+### Agents Index (Codex CLI Loader)
+
+```yaml
+agents:
+  - id: analyst
+    path: .bmad-core/agents/analyst.md
+  - id: architect
+    path: .bmad-core/agents/architect.md
+  - id: bmad-master
+    path: .bmad-core/agents/bmad-master.md
+  - id: bmad-orchestrator
+    path: .bmad-core/agents/bmad-orchestrator.md
+  - id: dev
+    path: .bmad-core/agents/dev.md
+  - id: pm
+    path: .bmad-core/agents/pm.md
+  - id: po
+    path: .bmad-core/agents/po.md
+  - id: qa
+    path: .bmad-core/agents/qa.md
+  - id: sm
+    path: .bmad-core/agents/sm.md
+  - id: ux-expert
+    path: .bmad-core/agents/ux-expert.md
+```
+
+---
+
 ## Codex Operating Rules (MANDATORY)
 
 - Preamble: Before any tool call, send a 1–2 sentence note describing what you will do next. Group related actions.

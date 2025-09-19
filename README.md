@@ -37,6 +37,7 @@ Codex CLI is optional but recommended for agentic workflows.
 
 - Install: `npm install -g @openai/codex` (or one‑off: `npx --yes --package @openai/codex codex`)
 - Start: `codex`
+- Refresh BMAD agents for Codex: `npx bmad-method install -f -i codex -d .` (use `codex-web` when you need committed assets)
 
 Login in Codespaces requires a small tweak due to loopback callbacks:
 

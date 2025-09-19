@@ -51,6 +51,24 @@ This project follows standard open source contribution guidelines. By participat
    ./scripts/validate.sh
    ```
 
+### BMAD + Codex Setup
+
+1. **Install BMAD assets** (local Codex CLI):
+   ```bash
+   npx bmad-method install -f -i codex -d .
+   ```
+   Re-run after `.bmad-core` updates to refresh `AGENTS.md` metadata.
+2. **Enable Codex Web (optional)** — generates committed assets for cloud sessions:
+   ```bash
+   npx bmad-method install -f -i codex-web -d .
+   ```
+3. **Inspect the bundle**:
+   ```bash
+   npx bmad-method list:agents
+   npx bmad-method validate
+   ```
+4. **Launch Codex CLI** from the repo root and address agents directly (e.g., “As dev, implement Story 01.1 tasks”) so BMAD command routing stays active.
+
 ### Repository Structure
 
 SideDecked uses a **split-brain architecture** with four separate repositories:
