@@ -227,21 +227,6 @@ npm run lint && npm run typecheck && npm run build && npm test
 3. **Update documentation** (MANDATORY)
 4. **Mark as complete** in TodoWrite and module-status.json
 
-### Specification Status Tracking
-```json
-{
-  "specifications": {
-    "01-authentication-user-management-system": "completed",
-    "02-commerce-marketplace-system": "completed",
-    "03-tcg-catalog-card-database-system": "completed",
-    "04-vendor-management-system": "in_progress",
-    "05-deck-building-system": "completed"
-  },
-  "current_specification": "04-vendor-management-system",
-  "last_updated": "2025-09-15T00:00:00Z"
-}
-```
-
 ---
 
 ## MANDATORY: Documentation Requirements

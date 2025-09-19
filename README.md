@@ -72,7 +72,7 @@ SideDecked now operates as a BMAD greenfield program. Planning and execution art
 - `.bmad-core/` – installed BMAD Method framework (v4.43.1)
 - `docs/bmad-core-review.md` – playbook for selecting agents and pruning optional packs
 
-Use the BMAD CLI or Codex agents to generate new stories (`bmad tasks run story`), execute checklists, and coordinate QA gates. Legacy specifications under `docs/specifications/` are retained for historical reference but are no longer authoritative.
+Use the BMAD CLI or Codex agents to generate new stories (`bmad tasks run story`), execute checklists, and coordinate QA gates.
 Run `node scripts/validate-bmad.js` before committing to ensure each epic has matching story shards and QA gates.
 
 ## 📁 Repository Structure

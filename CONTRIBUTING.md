@@ -68,8 +68,7 @@ SideDecked uses a **split-brain architecture** with four separate repositories:
 2. **Shard**: Use `.bmad-core` agents (via Codex CLI or `npx bmad-method`) to generate story files inside `docs/stories/`.
 3. **Execute**: Complete tasks listed in the story document, updating status, dev notes, and test evidence as you work.
 4. **QA Gate**: Coordinate with QA agents to populate the corresponding entry under `docs/qa/` before marking "Done".
-5. **Archive**: Legacy specs in `docs/specifications/` are read-only and should not be edited.
-6. **Validate**: Run `node scripts/validate-bmad.js` to ensure epics, stories, and QA gates stay in sync.
+5. **Validate**: Run `node scripts/validate-bmad.js` to ensure epics, stories, and QA gates stay in sync.
 
 ### Branch Strategy
 
