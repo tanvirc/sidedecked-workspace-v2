@@ -176,7 +176,7 @@ feat(auth): implement JWT refresh rotation
 
 ## Module Selection & Acceptance Criteria
 
-- Source of truth: `module-status.json`
+- Source of truth: `docs/epics/` (BMAD-managed)
 - Continue current: If `current_specification` exists and is not `completed`, continue working on it.
 - Otherwise pick next: lowest-numbered spec with `in_progress`, else lowest-numbered `not_started`.
 - Acceptance criteria gate: Do not move to the next story, epic, or spec until all acceptance criteria for the current unit are implemented.

@@ -217,15 +217,15 @@ npm run lint && npm run typecheck && npm run build && npm test
 ### MANDATORY: Progress Management
 
 **Before Starting Any Feature:**
-1. **Mark as In Progress** in TodoWrite
-2. **Update module-status.json** with current specification
+1. **Mark the relevant BMAD story file Status** as `InProgress`
+2. **Mark as In Progress** in TodoWrite
 3. **Load all required architecture documents**
 
 **After Completing Any Feature:**
 1. **Verify all acceptance criteria met**
 2. **Ensure 80% test coverage**
 3. **Update documentation** (MANDATORY)
-4. **Mark as complete** in TodoWrite and module-status.json
+4. **Mark story Status as `Done` in docs/stories and update TodoWrite**
 
 ---
 
@@ -346,7 +346,7 @@ npm run migration:create NAME  # Create migration
 4. **ALWAYS update documentation BEFORE marking complete**
 5. **NEVER reference AI/automation in code, docs, or commits**
 6. **ALWAYS use existing frameworks/libraries instead of custom code**
-7. **ALWAYS mark specification progress in TodoWrite and module-status.json**
+7. **ALWAYS update BMAD story status and TodoWrite before closing work**
 
 **Remember: Every line of code must be production-ready, tested, and functional. No exceptions.**
 

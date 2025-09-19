@@ -151,7 +151,7 @@ find . -name "*.ts" -type f | head -20  # Understand code structure
 - [ ] I understand the security and performance requirements
 - [ ] I have identified which frameworks/libraries to use
 - [ ] I understand the testing requirements
-- [ ] I have marked the specification as "in_progress" in module-status.json
+- [ ] I have updated the relevant BMAD story status to "InProgress"
 - [ ] I have updated TodoWrite with specification progress tracking
 
 ### Step 3.5: Architecture Validation (MANDATORY)
@@ -369,13 +369,7 @@ portfolios, portfolio_holdings, portfolio_transactions
 
 #### Before Starting Any Specification:
 
-1. **Mark as In Progress**:
-
-   ```bash
-   # Update module-status.json to mark current specification as "in_progress"
-   # Update "current_specification" field with specification ID
-   # Update "last_updated" timestamp
-   ```
+1. **Update BMAD Artifacts**: Set the relevant story file in `docs/stories/` to `Status: InProgress` and capture planned tasks.
 
 2. **Use TodoWrite Tool**:
    ```typescript
@@ -394,11 +388,8 @@ portfolios, portfolio_holdings, portfolio_transactions
 
 1. **Mark as Complete**:
 
-   ```bash
-   # Update module-status.json to mark specification as "completed"
-   # Set "current_specification" to next specification or null
-   # Update "last_updated" timestamp
-   ```
+   - Set the story Status to `Done` and capture completion notes in `docs/stories/`.
+   - Ensure the epic QA gate in `docs/qa/` reflects the latest validation results.
 
 2. **Update TodoWrite**:
    ```typescript
@@ -412,46 +403,6 @@ portfolios, portfolio_holdings, portfolio_transactions
      ],
    });
    ```
-
-### Specification Status File Format
-
-The `module-status.json` file tracks all specification progress:
-
-```json
-{
-  "specifications": {
-    "01-authentication-user-management-system": "completed",
-    "02-commerce-marketplace-system": "completed",
-    "03-tcg-catalog-card-database-system": "completed",
-    "04-vendor-management-system": "in_progress",
-    "05-deck-building-system": "completed",
-    "06-community-social-system": "not_started",
-    "07-pricing-intelligence-system": "not_started",
-    "08-search-discovery-system": "not_started",
-    "09-inventory-management-system": "not_started",
-    "10-payment-processing-system": "not_started"
-  },
-  "current_specification": "04-vendor-management-system",
-  "last_updated": "2025-09-12T00:00:00Z",
-  "completed_count": 4,
-  "total_count": 10,
-  "notes": {
-    "01-authentication-user-management-system": "OAuth2 social login and JWT integration complete",
-    "02-commerce-marketplace-system": "Customer marketplace features and MercurJS integration complete",
-    "03-tcg-catalog-card-database-system": "Universal TCG catalog with ETL pipeline operational",
-    "05-deck-building-system": "Universal deck builder with validation and social features complete"
-  }
-}
-```
-
-**Status Values:**
-
-- `"not_started"` - Specification not yet begun
-- `"in_progress"` - Specification currently being implemented
-- `"completed"` - Specification fully implemented and tested
-
----
-
 ## MANDATORY: Acceptance Criteria Tracking Protocol
 
 ### When Implementing Any User Story
@@ -608,20 +559,11 @@ git diff --name-only | grep -E "docs/architecture/" && echo "Architecture docs u
 - [ ] Cross-browser compatibility verified
 - [ ] All validation workflows pass
 
-#### Step 4: Specification Status Update
+#### Step 4: BMAD Status Update
 
-1. **Update module-status.json**:
-
-   ```json
-   {
-     "specifications": {
-       "XX-system-name": "completed"  // Mark as completed
-     },
-     "current_specification": "YY-next-system",  // Next specification or null
-     "last_updated": "YYYY-MM-DDTHH:mm:ssZ",  // Update timestamp
-     "completed_count": X  // Increment count
-   }
-   ```
+1. **Update BMAD Artifacts**:
+   - Set the relevant story file in `docs/stories/` to `Status: Done` and capture completion notes.
+   - Ensure the associated epic gate in `docs/qa/` reflects the latest decision and evidence.
 
 2. **Final TodoWrite Update**:
    ```typescript
@@ -645,12 +587,12 @@ git commit -m "feat(system-XX): complete [System Name] implementation
 - Implement all specified functionality
 - Add comprehensive test coverage
 - Update documentation
-- Mark specification as completed in module-status.json
+- Update BMAD story and QA artifacts
 
 Closes XX-system-name specification implementation."
 ```
 
-**⚠️ A specification is NOT complete until ALL steps are verified and module-status.json is updated.**
+**⚠️ A specification is NOT complete until BMAD stories and QA gates are updated.**
 
 ---
 
@@ -979,8 +921,8 @@ session: {...}  // Not supported
    - No AI tool mentions anywhere
 6. **ALWAYS plan before implementing**
 7. **ALWAYS fix lint/type/test errors before commit**
-8. **ALWAYS mark specification as "in_progress" before starting and "completed" when finished**
-   - Update module-status.json with current status
+8. **ALWAYS update BMAD story status before starting and after finishing work**
+   - Set story Status to `InProgress` when starting and `Done` upon completion
    - Use TodoWrite tool to track specification progress
    - Follow Post-Implementation Protocol for completion
    - **MANDATORY: Verify documentation was updated during completion**

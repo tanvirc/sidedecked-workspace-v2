@@ -306,7 +306,7 @@ feat(vendor): complete vendor management system implementation
 - Create vendor automation engine
 - Add 89% test coverage for all vendor features
 - Update architecture documentation
-- Mark specification as completed in module-status.json
+- Update BMAD story and QA artifacts for vendor management epic
 
 Closes 04-vendor-management-system specification
 Refs #234, #345, #456
