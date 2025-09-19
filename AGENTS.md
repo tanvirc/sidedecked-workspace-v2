@@ -168,7 +168,7 @@ feat(auth): implement JWT refresh rotation
 ## Quick Reference
 
 - Architecture: `docs/architecture/`
-- Specifications: `docs/specifications/`
+- Epics: `docs/epics/`
 - Standards: `docs/standards/`
 - Templates: `docs/templates/`
 

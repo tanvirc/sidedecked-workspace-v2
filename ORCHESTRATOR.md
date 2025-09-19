@@ -4,7 +4,7 @@
 
 **SideDecked is a comprehensive community-driven trading card marketplace supporting Magic: The Gathering, Pokémon, Yu-Gi-Oh!, and One Piece cards, built on top of the MercurJS commerce platform.**
 
-This document orchestrates the implementation of this modular TCG marketplace system utilizing a split-brain architecture with four separate repositories and ten specialized system specifications.
+This document orchestrates the implementation of this modular TCG marketplace system utilizing a split-brain architecture with four separate repositories and ten BMAD-managed epics.
 
 ### Architecture Philosophy
 
@@ -116,7 +116,7 @@ sidedecked/                    # Main project folder (NOT a git repo)
 # Execute these commands IN ORDER:
 cat AGENTS.md | head -200           # Load main orchestrator
 ls -la docs/standards/              # Review all standards
-ls -la docs/specifications/         # Identify relevant specifications
+  ls -la docs/epics/                  # Identify relevant epics
 find . -name "*.ts" -type f | head -20  # Understand code structure
 ```
 
@@ -126,7 +126,7 @@ find . -name "*.ts" -type f | head -20  # Understand code structure
 
 | Task Type            | **MANDATORY Architecture Docs**                                                                                                                                                                 | **Additional Requirements**                 |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| **New Feature**      | 1. `cat docs/architecture/03-domain-models.md` (identify domain)<br>2. `cat docs/architecture/04-architectural-patterns.md` (patterns)<br>3. Relevant specification from `docs/specifications/` | Testing standards, existing implementations |
+| **New Feature**      | 1. `cat docs/architecture/03-domain-models.md` (identify domain)<br>2. `cat docs/architecture/04-architectural-patterns.md` (patterns)<br>3. Relevant epic from `docs/epics/` | Testing standards, existing implementations |
 | **Bug Fix**          | 1. `cat docs/architecture/04-architectural-patterns.md`<br>2. `cat docs/standards/code-standards.md`                                                                                            | Existing tests, error patterns              |
 | **API Change**       | 1. `cat docs/architecture/06-integration-architecture.md`<br>2. `cat docs/architecture/04-architectural-patterns.md`                                                                            | API conventions, versioning                 |
 | **Database Change**  | 1. `cat docs/architecture/05-data-architecture.md`<br>2. `cat docs/architecture/03-domain-models.md`                                                                                            | Migration patterns, schema design           |
@@ -575,7 +575,7 @@ Based on phase type, update ALL applicable documentation:
 
 - [ ] `README.md` - Add new features/APIs to main README
 - [ ] `CHANGELOG.md` - Document all changes with version info
-- [ ] `docs/specifications/XX-[system-name].md` - Add implementation notes and lessons learned
+- [ ] `docs/epics/epic-XX-*.md` - Update epic notes and lessons learned
 
 **Architecture Documentation (if applicable):**
 
@@ -796,7 +796,7 @@ TodoWrite({
 
 #### 1. Authentication & User Management System ✅ **COMPLETED**
 
-**File**: `docs/specifications/01-authentication-user-management-system.md`
+**File**: `docs/epics/epic-01-authentication.md`
 
 - OAuth2 social login (Google, GitHub)
 - PKCE security implementation
@@ -806,7 +806,7 @@ TodoWrite({
 
 #### 2. Commerce & Marketplace System ✅ **COMPLETED**
 
-**File**: `docs/specifications/02-commerce-marketplace-system.md`
+**File**: `docs/epics/epic-02-commerce-marketplace.md`
 
 - MercurJS integration and product listings
 - Multi-vendor checkout and order processing
@@ -816,7 +816,7 @@ TodoWrite({
 
 #### 3. TCG Catalog & Card Database System ✅ **COMPLETED**
 
-**File**: `docs/specifications/03-tcg-catalog-card-database-system.md`
+**File**: `docs/epics/epic-03-tcg-catalog.md`
 
 - Universal card database supporting MTG, Pokémon, Yu-Gi-Oh!, One Piece
 - ETL pipeline for card data from multiple sources
@@ -826,7 +826,7 @@ TodoWrite({
 
 #### 4. Vendor Management System **IN PROGRESS**
 
-**File**: `docs/specifications/04-vendor-management-system.md`
+**File**: `docs/epics/epic-04-vendor-management.md`
 
 - Enhanced CSV import transformation
 - TCG analytics and reporting dashboard
@@ -836,7 +836,7 @@ TodoWrite({
 
 #### 5. Deck Building System ✅ **COMPLETED**
 
-**File**: `docs/specifications/05-deck-building-system.md`
+**File**: `docs/epics/epic-05-deck-building.md`
 
 - Universal deck architecture for all TCG games
 - Format-specific validation engines
@@ -849,7 +849,7 @@ TodoWrite({
 
 #### 6. Community & Social System
 
-**File**: `docs/specifications/06-community-social-system.md`
+**File**: `docs/epics/epic-06-community.md`
 
 - User profiles with reputation system
 - Social networking and following system
@@ -860,7 +860,7 @@ TodoWrite({
 
 #### 7. Pricing Intelligence System
 
-**File**: `docs/specifications/07-pricing-intelligence-system.md`
+**File**: `docs/epics/epic-07-pricing-intelligence.md`
 
 - Real-time price scraping from multiple sources
 - ML-based price prediction models
@@ -871,7 +871,7 @@ TodoWrite({
 
 #### 8. Search & Discovery System
 
-**File**: `docs/specifications/08-search-discovery-system.md`
+**File**: `docs/epics/epic-08-search-discovery.md`
 
 - Advanced search with filters and facets
 - Algolia integration for real-time search
@@ -882,7 +882,7 @@ TodoWrite({
 
 #### 9. Inventory Management System
 
-**File**: `docs/specifications/09-inventory-management-system.md`
+**File**: `docs/epics/epic-09-inventory-management.md`
 
 - Real-time inventory synchronization
 - Multi-channel inventory tracking
@@ -893,7 +893,7 @@ TodoWrite({
 
 #### 10. Payment Processing System
 
-**File**: `docs/specifications/10-payment-processing-system.md`
+**File**: `docs/epics/epic-10-payment-processing.md`
 
 - Stripe Connect multi-seller payments
 - Split payments and commission handling

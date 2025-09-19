@@ -60,6 +60,21 @@ Notes
 - Postgres credentials (dev only): user `postgres`, password `postgres`, db `app`, host `db` inside the container or `localhost:5432` from VS Code.
 - If your private repos require additional permissions, ensure `gh auth status` passes inside the Codespace or grant the Codespace token access.
 
+## 🧠 BMAD Method Adoption
+
+SideDecked now operates as a BMAD greenfield program. Planning and execution artifacts live alongside the codebase:
+
+- `docs/prd.md` – single source of product requirements
+- `docs/architecture.md` – architecture baseline aligned with split-brain principles
+- `docs/epics/` – ten BMAD epics covering authentication, commerce, catalog, vendor tooling, storefront, and more
+- `docs/stories/` – story shards authored by the Scrum Master agent (draft placeholder committed)
+- `docs/qa/` – quality gates authored per epic (placeholder committed)
+- `.bmad-core/` – installed BMAD Method framework (v4.43.1)
+- `docs/bmad-core-review.md` – playbook for selecting agents and pruning optional packs
+
+Use the BMAD CLI or Codex agents to generate new stories (`bmad tasks run story`), execute checklists, and coordinate QA gates. Legacy specifications under `docs/specifications/` are retained for historical reference but are no longer authoritative.
+Run `node scripts/validate-bmad.js` before committing to ensure each epic has matching story shards and QA gates.
+
 ## 📁 Repository Structure
 
 This workspace manages four separate git repositories:
@@ -282,7 +297,7 @@ curl http://localhost:7000/health
 - **Project Overview**: See main `AGENTS.md` in each repository
 - **API Documentation**: Available at `/docs` endpoint of each service
 - **Architecture**: Detailed in `docs/architecture/`
-- **Phase Guides**: Phase-specific documentation in `docs/specifications/` directory
+- **Phase Guides**: BMAD epics in `docs/epics/` with supporting stories and QA gates
 
 ## 🤝 Contributing
 

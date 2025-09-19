@@ -19,3 +19,7 @@ node_modules/
 
 .devcontainer/logs/
 logs/
+
+# BMAD (local only)
+.bmad-core/
+.bmad-*/

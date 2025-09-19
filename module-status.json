@@ -1,40 +1,45 @@
 {
   "specifications": {
-    "01-authentication-user-management-system": "completed",
-    "02-commerce-marketplace-system": "completed", 
-    "03-tcg-catalog-card-database-system": "completed",
-    "04-vendor-management-system": "in_progress",
-    "05-deck-building-system": "completed",
+    "01-authentication-user-management-system": "not_started",
+    "02-commerce-marketplace-system": "not_started",
+    "03-tcg-catalog-card-database-system": "not_started",
+    "04-vendor-management-system": "not_started",
+    "05-deck-building-system": "not_started",
     "06-community-social-system": "not_started",
     "07-pricing-intelligence-system": "not_started",
-    "08-search-discovery-system": "not_started", 
+    "08-search-discovery-system": "not_started",
     "09-inventory-management-system": "not_started",
     "10-payment-processing-system": "not_started"
   },
-  "current_specification": "04-vendor-management-system",
+  "current_specification": null,
   "last_updated": "2025-09-12T00:00:00Z",
-  "completed_count": 4,
+  "completed_count": 0,
   "total_count": 10,
   "notes": {
-    "01-authentication-user-management-system": "OAuth2 social login and JWT integration complete. Google, GitHub authentication flows implemented with PKCE security.",
-    "02-commerce-marketplace-system": "Customer marketplace features and MercurJS integration complete. Multi-vendor checkout, order processing, and reviews system operational.",
-    "03-tcg-catalog-card-database-system": "Universal TCG catalog with ETL pipeline operational. Support for MTG, Pokémon, Yu-Gi-Oh!, One Piece with image processing pipeline.",
-    "04-vendor-management-system": "IN PROGRESS - Enhanced CSV import transformation, TCG analytics, bulk inventory management, and vendor automation engine.",
-    "05-deck-building-system": "Universal deck builder with validation and social features complete. Multi-game support with drag-and-drop interface and collection integration."
+    "01-authentication-user-management-system": "BMAD reset: see docs/epics/epic-01-authentication.md",
+    "02-commerce-marketplace-system": "BMAD reset: see docs/epics/epic-02-commerce-marketplace.md",
+    "03-tcg-catalog-card-database-system": "BMAD reset: see docs/epics/epic-03-tcg-catalog.md",
+    "04-vendor-management-system": "BMAD reset: see docs/epics/epic-04-vendor-management.md",
+    "05-deck-building-system": "BMAD reset: see docs/epics/epic-05-deck-building.md",
+    "06-community-social-system": "BMAD reset: see docs/epics/epic-06-community.md",
+    "07-pricing-intelligence-system": "BMAD reset: see docs/epics/epic-07-pricing-intelligence.md",
+    "08-search-discovery-system": "BMAD reset: see docs/epics/epic-08-search-discovery.md",
+    "09-inventory-management-system": "BMAD reset: see docs/epics/epic-09-inventory-management.md",
+    "10-payment-processing-system": "BMAD reset: see docs/epics/epic-10-payment-processing.md"
   },
   "architecture_status": {
-    "split_brain_architecture": "implemented",
-    "database_separation": "operational",
-    "api_integration": "functional",
-    "performance_targets": "meeting_requirements"
+    "split_brain_architecture": "defined",
+    "database_separation": "enforced",
+    "api_integration": "planned",
+    "performance_targets": "tracked"
   },
   "quality_metrics": {
     "test_coverage_target": 80,
     "current_coverage": {
-      "backend": 75,
-      "customer_backend": 82,
-      "storefront": 78,
-      "vendorpanel": 65
+      "backend": 0,
+      "customer_backend": 0,
+      "storefront": 0,
+      "vendorpanel": 0
     },
     "performance_targets": {
       "api_response_time_p95": "< 100ms",
@@ -44,14 +49,14 @@
     }
   },
   "deployment_status": {
-    "development": "operational",
-    "staging": "configured",
-    "production": "ready"
+    "development": "planning",
+    "staging": "pending",
+    "production": "pending"
   },
   "documentation_completeness": {
-    "specification_docs": "complete_for_finished_specifications", 
-    "architecture_docs": "needs_enhancement",
-    "api_docs": "partial",
-    "testing_docs": "needs_creation"
+    "specification_docs": "migrated_to_bmad",
+    "architecture_docs": "baseline_created",
+    "api_docs": "pending",
+    "testing_docs": "pending"
   }
 }
