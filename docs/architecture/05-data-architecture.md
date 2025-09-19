@@ -1521,7 +1521,7 @@ services:
   backend:
     image: sidedecked/backend
     database: mercur-db
-    port: 9000
+    port: 9001
     environment:
       - DATABASE_URL=postgresql://mercur-db
       - CUSTOMER_BACKEND_URL=http://customer-backend:7000
@@ -1533,21 +1533,21 @@ services:
     port: 7000
     environment:
       - DATABASE_URL=postgresql://sidedecked-db
-      - COMMERCE_BACKEND_URL=http://backend:9000
+      - COMMERCE_BACKEND_URL=http://backend:9001
     
   # Frontend applications
   storefront:
     image: sidedecked/storefront
     port: 3000
     environment:
-      - NEXT_PUBLIC_COMMERCE_API_URL=http://backend:9000
+      - NEXT_PUBLIC_COMMERCE_API_URL=http://backend:9001
       - NEXT_PUBLIC_CUSTOMER_API_URL=http://customer-backend:7000
       
   vendorpanel:
     image: sidedecked/vendorpanel  
     port: 5173
     environment:
-      - VITE_COMMERCE_API_URL=http://backend:9000
+      - VITE_COMMERCE_API_URL=http://backend:9001
 
   # Supporting services
   redis:
@@ -1556,7 +1556,7 @@ services:
     
   minio:
     image: minio/minio
-    port: 9000
+    port: 8000
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin123

@@ -7,7 +7,7 @@ This document provides an overview of all SideDecked system specifications and h
 SideDecked follows a **split-brain architecture** with 10 core systems across 4 separate repositories:
 
 ### Repository Structure
-- **Backend** (Port 9000): Commerce operations with MercurJS/Medusa
+- **Backend** (Port 9001): Commerce operations with MercurJS/Medusa
 - **Customer-Backend** (Port 7000): TCG catalog, decks, community, pricing
 - **Storefront** (Port 3000): Customer marketplace interface
 - **Vendor Panel** (Port 5173): Vendor management tools

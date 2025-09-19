@@ -111,7 +111,7 @@ ALGOLIA_API_KEY=your_algolia_api_key
 ALGOLIA_INDEX_PREFIX=sidedecked
 
 # Storage
-MINIO_ENDPOINT=localhost:9000
+MINIO_ENDPOINT=localhost:8001
 MINIO_ACCESS_KEY=your_minio_access_key
 MINIO_SECRET_KEY=your_minio_secret_key
 MINIO_BUCKET=sidedecked-images

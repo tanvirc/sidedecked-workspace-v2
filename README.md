@@ -80,14 +80,14 @@ sidedecked-workspace/
 
 | Service                  | Port      | Description                 |
 | ------------------------ | --------- | --------------------------- |
-| 🏗️ Backend (MercurJS)    | 9000      | Commerce engine & admin API |
+| 🏗️ Backend (MercurJS)    | 9001      | Commerce engine & admin API |
 | 🔧 Customer Backend      | 7000      | TCG services & customer API |
 | 🛒 Storefront            | 3000      | Next.js customer interface  |
 | 🏪 Vendor Panel          | 5173      | React admin dashboard       |
 | 🐘 PostgreSQL (Backend)  | 5432      | Commerce database           |
 | 🐘 PostgreSQL (Customer) | 5433      | TCG & customer database     |
 | 🔴 Redis                 | 6379      | Cache & job queues          |
-| 📦 MinIO                 | 9000/9001 | S3-compatible storage       |
+| 📦 MinIO                 | 8000/8001 | S3-compatible storage       |
 | 📧 MailHog               | 8025      | Email testing UI            |
 
 ## 📋 Available Scripts
@@ -247,7 +247,7 @@ npm run services:up && npm run start
 ```bash
 # Kill processes on specific ports
 lsof -ti:3000 | xargs kill
-lsof -ti:9000 | xargs kill
+lsof -ti:9001 | xargs kill
 
 # Or use the cleanup script
 bash scripts/stop-all.sh
@@ -273,7 +273,7 @@ cp .env.template .env
 # Update with your actual values
 
 # Check service connectivity
-curl http://localhost:9000/health
+curl http://localhost:9001/health
 curl http://localhost:7000/health
 ```
 
@@ -297,8 +297,8 @@ curl http://localhost:7000/health
 
 - **Storefront**: http://localhost:3000
 - **Vendor Panel**: http://localhost:5173
-- **Backend Admin**: http://localhost:9000/admin
-- **MinIO Console**: http://localhost:9001
+- **Backend Admin**: http://localhost:9001/admin
+- **MinIO Console**: http://localhost:8001
 - **MailHog**: http://localhost:8025
 
 ## 📄 License

@@ -100,7 +100,7 @@ graph TB
 
 | Component | Technology | Purpose | Port | Repository |
 |-----------|------------|---------|------|------------|
-| **Backend** | MercurJS v2, Node.js, PostgreSQL | Commerce operations, payments, vendors | 9000 | backend |
+| **Backend** | MercurJS v2, Node.js, PostgreSQL | Commerce operations, payments, vendors | 9001 | backend |
 | **Customer Backend** | Node.js, Express, TypeORM, PostgreSQL | TCG catalog, decks, community | 7000 | customer-backend |
 | **Storefront** | Next.js 14, React, TypeScript | Customer UI experience | 3000 | storefront |
 | **Vendor Panel** | React, TypeScript, Admin Dashboard | Vendor management interface | 5173 | vendorpanel |
@@ -317,14 +317,14 @@ sequenceDiagram
 ### Development Environment
 ```
 Local Development:
-├── Backend: localhost:9000 (MercurJS)
+├── Backend: localhost:9001 (MercurJS)
 ├── Customer Backend: localhost:7000 (Express)
 ├── Storefront: localhost:3000 (Next.js)
 ├── Vendor Panel: localhost:5173 (Vite)
 ├── PostgreSQL: localhost:5432 (Backend)
 ├── PostgreSQL: localhost:5433 (Customer)
 ├── Redis: localhost:6379 (Cache)
-└── MinIO: localhost:9000/9001 (Storage)
+└── MinIO: localhost:8000/8001 (Storage)
 ```
 
 ### Production Environment (Railway)

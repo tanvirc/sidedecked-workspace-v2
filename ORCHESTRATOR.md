@@ -1018,7 +1018,7 @@ cd customer-backend && npm run migration:run
 # Add to customer-backend/.env: COMMERCE_PUBLISHABLE_KEY=pk_xxx
 
 # 5. Start development services
-cd backend && npm run dev           # :9000
+cd backend && npm run dev           # :9001
 cd customer-backend && npm run dev  # :7000
 cd vendorpanel && npm run dev       # :5173
 cd storefront && npm run dev        # :3000

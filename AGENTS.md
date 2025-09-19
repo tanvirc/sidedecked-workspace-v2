@@ -1,9 +1,5 @@
 # AGENTS.md - SideDecked Implementation Guide for Codex CLI
 
-Version: 1.0
-Last Updated: 2025-09-15
-Status: Production
-
 ## Purpose
 
 This document defines how Codex CLI agents work in the SideDecked workspace. It combines project architecture, implementation rules, and Codex‑specific operating practices so that every change is deliberate, verifiable, and production‑ready.
@@ -14,7 +10,6 @@ This document defines how Codex CLI agents work in the SideDecked workspace. It 
 
 - Preamble: Before any tool call, send a 1–2 sentence note describing what you will do next. Group related actions.
 - Plans: Use `update_plan` for multi‑step or ambiguous work. Keep steps concise (5–7 words). Exactly one step `in_progress` at a time. Skip plans for trivial single‑step work.
-- Editing files: Always use `apply_patch`. Do not suggest manual copy/paste. Keep changes minimal and scoped.
 - Shell usage: Prefer `rg` for search and `rg --files` for discovery. Read files in max 250‑line chunks. Avoid commands that emit >10KB or >256 lines at once.
 - File references: Use clickable paths (e.g., `src/app.ts:42`). Do not include ranges. Avoid non‑file URIs.
 - Response style: Be concise and action‑oriented. Use short headers where helpful and single‑line bullets. Wrap code, paths, and commands in backticks.
@@ -240,5 +235,3 @@ Notes:
 - Summarize results and propose next verifications
 
 ---
-
-This document replaces the former `ORCHESTRATOR.md` for Codex‑based workflows. Use it as the single source of truth for agent behavior in this workspace.

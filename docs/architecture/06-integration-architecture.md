@@ -39,7 +39,7 @@ graph TB
     end
     
     subgraph "API Gateway Layer"
-        BE[Backend API<br/>Port: 9000<br/>Commerce Domain]
+        BE[Backend API<br/>Port: 9001<br/>Commerce Domain]
         CB[Customer Backend API<br/>Port: 7000<br/>Customer Domain]
     end
     

@@ -55,7 +55,7 @@ This project follows standard open source contribution guidelines. By participat
 
 SideDecked uses a **split-brain architecture** with four separate repositories:
 
-- `backend/` - MercurJS Commerce Backend (port 9000)
+- `backend/` - MercurJS Commerce Backend (port 9001)
 - `customer-backend/` - Customer Data & APIs (port 7000)
 - `storefront/` - Next.js Frontend (port 3000)
 - `vendorpanel/` - React Admin Panel (port 5173)

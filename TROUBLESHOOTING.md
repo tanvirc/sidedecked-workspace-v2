@@ -59,7 +59,7 @@ nvm use 20
 **Solution**:
 ```bash
 # Check what's using the port
-lsof -i :9000  # Backend
+lsof -i :9001  # Backend
 lsof -i :7000  # Customer backend  
 lsof -i :3000  # Storefront
 lsof -i :5173  # Vendor panel
@@ -102,7 +102,7 @@ npm ls
 npm run dev --workspace=apps/backend
 
 # API endpoints work even if admin UI fails
-# Check API health at http://localhost:9000/health
+# Check API health at http://localhost:9001/health
 ```
 
 ### Database Migration Failures
@@ -188,7 +188,7 @@ curl http://localhost:7000/api/inventory/health
 echo $COMMERCE_PUBLISHABLE_KEY
 
 # Verify backend accessibility  
-curl http://localhost:9000/health
+curl http://localhost:9001/health
 ```
 
 ### Authentication Service Issues
@@ -336,7 +336,7 @@ echo $NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
 **Solution**:
 ```bash
 # Check backend connectivity
-curl http://localhost:9000/health
+curl http://localhost:9001/health
 
 # Verify vendor credentials
 # Check user role in database
@@ -669,7 +669,7 @@ NEXT_PUBLIC_PERFORMANCE_MONITORING_ENABLED=true
 
 ```bash
 # Backend health
-curl http://localhost:9000/health
+curl http://localhost:9001/health
 
 # Customer backend health  
 curl http://localhost:7000/api/health

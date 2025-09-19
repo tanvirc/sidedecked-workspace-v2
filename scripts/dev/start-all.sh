@@ -80,7 +80,7 @@ echo "[3/7] Installing and building backend (MercurJS monorepo) ..."
   npm run build
 )
 
-echo "[4/7] Migrating, seeding, and starting backend (Medusa) on :9000 ..."
+echo "[4/7] Migrating, seeding, and starting backend (Medusa) on :9001 ..."
 # Override DB/Redis hosts for host-network usage or devcontainer
 (
   cd "$ROOT_DIR/backend/apps/backend"
@@ -161,7 +161,7 @@ echo "  tail -f $LOG_DIR/vendorpanel.log"
 echo "  tail -f $LOG_DIR/storefront.log"
 echo
 echo "Endpoints:"
-echo "  MercurJS Backend (Medusa):   http://localhost:9000"
+echo "  MercurJS Backend (Medusa):   http://localhost:9001"
 echo "  Customer Backend (Express):  http://localhost:7000"
 echo "  Vendor Panel (Vite):         http://localhost:5173"
 echo "  Storefront (Next.js):        http://localhost:3000"
