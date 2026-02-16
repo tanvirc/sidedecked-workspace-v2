@@ -141,12 +141,14 @@ _As a player, I want to create decks for different TCG games so that I can build
   - Location: Game detection logic in deck building system
 - ✅ Game-specific card limits and restrictions enforcement (IMPLEMENTED)
   - Location: Deck validation system with format-specific rules
-- ❌ Quick deck creation from popular meta decks and tournament winners (NOT BUILT)
+- ✅ Quick deck creation from popular meta decks and tournament winners (IMPLEMENTED)
+  - Location: Popular template selection and quick-start deck creation in deck builder UI
 - ✅ Game-specific terminology and interface adaptations (IMPLEMENTED)
   - Location: Game-specific components and UI adaptations
 - ✅ Format selection affecting available cards and deck building rules (IMPLEMENTED)
   - Location: Format validation in deck building system
-- ❌ Import functionality from game-specific digital platforms (MTG Arena, PTCGO, etc.) (NOT BUILT)
+- ✅ Import functionality from game-specific digital platforms (MTG Arena, PTCGO, etc.) (IMPLEMENTED)
+  - Location: Deck import modal and backend parser support for MTG Arena, PTCGO, and Master Duel formats
 
 #### User Story 1.2: Format-Specific Validation
 
@@ -217,8 +219,8 @@ _As a competitive player, I want my deck to be validated against specific format
   - Location: Deck size validation in deck building components
 - ✅ Maximum copies per card enforcement based on format rules (IMPLEMENTED)
   - Location: Copy limit enforcement in deck validation
-- 🔄 Format-specific rules explanation and documentation (PARTIAL)
-  - Location: Basic rule enforcement exists but documentation needs verification
+- ✅ Format-specific rules explanation and documentation (IMPLEMENTED)
+  - Location: Deck validation panel includes dynamic format rule summaries and official rules documentation links
 - ✅ Rotation tracking for rotating formats with warnings for rotating cards (IMPLEMENTED)
   - Location: Rotation handling in format validation
 - 🔄 Custom format support for local tournament and casual play rules (PARTIAL)
