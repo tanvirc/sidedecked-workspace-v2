@@ -137,7 +137,7 @@ _As a vendor, I want to see comprehensive performance metrics so that I can unde
   - Location: Customer chart data in statistics API
 - ✅ Trend analysis with month-over-month and year-over-year comparisons (IMPLEMENTED)
   - Location: Chart data with date range comparisons
-- ❌ Export functionality for all analytics data in CSV/Excel format (NOT BUILT)
+- ❌ Export functionality for all analytics data in CSV format (NOT BUILT)
 
 #### User Story 1.2: Sales Analytics & Insights
 

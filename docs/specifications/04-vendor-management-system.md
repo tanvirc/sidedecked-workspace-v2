@@ -310,7 +310,8 @@ _As a vendor, I want to upload my entire inventory via CSV so that I can quickly
   - Location: Validation and error reporting in import system
 - ✅ Partial import success allowing correction of errors without re-uploading entire file (IMPLEMENTED)
   - Location: Selective import processing
-- ❌ Import history with ability to rollback recent imports (NOT BUILT)
+- ✅ Import history with ability to rollback recent imports (IMPLEMENTED)
+  - Location: `backend/src/api/vendor/product-imports/*` and `vendorpanel/src/routes/products/product-import/*`
 - ✅ Preview mode showing how data will appear before final import (IMPLEMENTED)
   - Location: Import preview functionality
 
