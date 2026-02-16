@@ -1,10 +1,92 @@
+﻿---
+workflowType: bmad-specification
+workflowVersion: 6.0.0-Beta.8
+specId: 08-search-discovery-system
+status: not_started
+currentSpecification: false
+primaryOwner: customer-backend
+targetRepos:
+  - customer-backend
+  - backend
+  - storefront
+  - vendorpanel
+stepsCompleted:
+  - sidedecked-router.route
+  - analyst.create-product-brief
+  - pm.create-prd
+  - architect.create-architecture
+  - pm.validate-prd
+  - architect.check-implementation-readiness
+  - sm.create-epics-and-stories
+inputDocuments:
+  - docs/architecture/01-system-overview.md
+  - docs/architecture/02-architectural-principles.md
+  - docs/standards/code-standards.md
+  - docs/standards/testing-standards.md
+  - module-status.json
+outputArtifacts:
+  productBrief: _bmad-output/planning-artifacts/08-search-discovery-system/product-brief.md
+  prd: _bmad-output/planning-artifacts/08-search-discovery-system/prd.md
+  architecture: _bmad-output/planning-artifacts/08-search-discovery-system/architecture.md
+  readinessReport: _bmad-output/planning-artifacts/08-search-discovery-system/implementation-readiness.md
+  stories: _bmad-output/planning-artifacts/08-search-discovery-system/epics-and-stories.md
+---
 # Search & Discovery System
 
-## Executive Summary
+## BMAD Workflow Trace
+
+1. @sidedecked-router: Route bounded context and enforce split-domain boundaries.
+2. @analyst: Build product brief with user/problem/value framing.
+3. @pm: Produce and validate PRD with measurable acceptance criteria.
+4. @architect: Define architecture decisions and integration boundaries.
+5. @pm + @architect: Run PO readiness gate (validate-prd, check-implementation-readiness).
+6. @sm: Decompose into epics/stories for implementation.
+7. @dev + @qa: Execute and verify delivery against acceptance criteria.
+
+## Step 1: Routing Decision (@sidedecked-router)
+
+- Bounded context: Federated search and discovery across catalog, community, and marketplace
+- Primary owner repo: customer-backend
+- Participating repos: customer-backend, backend, storefront, vendorpanel
+- API boundary constraints:
+  - Search index orchestration lives behind search APIs, not direct UI index access
+  - Commerce and community sources are federated through API adapters
+  - Personalization and recommendations are delivered by API contracts
+- Data boundary constraints:
+  - Index build pipelines pull from each bounded context using authorized APIs
+  - No direct sidedecked-db to mercur-db reads for federated indexing
+  - Search documents carry denormalized views and source-of-truth pointers only
+
+## Step 2: Product Brief Summary (@analyst)
 
 The Search & Discovery System provides intelligent, lightning-fast search capabilities across all TCG cards, decks, users, and marketplace listings. It combines advanced full-text search with machine learning-powered recommendations, visual search capabilities, and personalized discovery features. The system uses Algolia for primary search functionality while incorporating AI-driven personalization, semantic search, and visual recognition to help users find exactly what they're looking for across the entire SideDecked platform.
 
-## User Stories & Acceptance Criteria
+## Step 3: PRD Baseline (@pm)
+
+- This specification is the source-of-truth PRD for the bounded context above.
+- Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
+- Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
+- Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
+
+## Step 4: Architecture Constraints (@architect)
+
+- Preserve split-domain ownership and prohibit direct database coupling between mercur-db and sidedecked-db.
+- Cross-domain behavior must be implemented via HTTP APIs and/or events with explicit contracts.
+- Implementation must follow existing patterns for service/controller/repository boundaries in the owning repo.
+
+## Step 5: PO Gate - PRD Validation (@pm)
+
+- Requirement traceability to user stories and acceptance criteria is present.
+- Scope and status are synchronized with module-status.json.
+- Acceptance criteria statuses remain in the approved parseable set.
+
+## Step 6: PO Gate - Implementation Readiness (@architect)
+
+- Affected APIs and bounded contexts are explicit in Step 1 and supporting sections.
+- Architecture constraints and quality gates are documented before implementation.
+- Validation commands are defined in Step 8.
+
+## Step 7: Epics and Stories (@sm)
 
 ### Epic 1: Universal Search Infrastructure
 
@@ -478,7 +560,52 @@ _As a user, I want to discover high-quality community content so that I can lear
 - **Visual Elements**: Quality indicators and badges, expert verification checkmarks, engagement metrics (upvotes, comments, shares), collaboration project progress bars
 - **Mobile Considerations**: Optimized content feed for mobile reading, touch-friendly voting and bookmarking, simplified educational resource access, mobile-optimized project collaboration
 
-## Technical Requirements
+## Step 8: Delivery and QA Plan (@dev + @qa)
+
+- Required validation entrypoints:
+  - node scripts/check-acceptance-criteria.js --id 08-search-discovery-system
+  - node scripts/check-acceptance-criteria.js --id 08-search-discovery-system --next-story
+  - node scripts/next-spec.js
+- Repo-level checks must include lint/typecheck/build/tests where applicable before marking the spec complete.
+- Story/spec status transitions are controlled through scripts/mark-spec.js after criteria pass.
+
+### Testing Requirements
+
+### Search Quality Testing
+
+- **Relevance Testing**: Regular evaluation of search result relevance using human evaluators
+- **A/B Testing**: Continuous A/B testing of search algorithms and ranking models
+- **Performance Testing**: Load testing to ensure response time targets under realistic traffic
+- **Accuracy Testing**: Automated testing of search accuracy using predefined query sets
+- **Personalization Testing**: Testing of recommendation systems with diverse user personas
+
+### Integration Testing
+
+- **Cross-Platform Testing**: Testing search functionality across web, mobile, and API clients
+- **Data Sync Testing**: Testing real-time synchronization between databases and search indices
+- **External API Testing**: Testing integration with Algolia, Google Vision, and other external services
+- **Failover Testing**: Testing automatic failover and recovery procedures
+- **Performance Impact Testing**: Testing impact of search load on other system components
+
+### User Experience Testing
+
+- **Usability Testing**: User testing of search interfaces and discovery features
+- **Accessibility Testing**: Testing search functionality with screen readers and accessibility tools
+- **Mobile Testing**: Comprehensive testing of mobile search experience and performance
+- **Voice Search Testing**: Testing voice input accuracy and natural language understanding
+- **International Testing**: Testing search functionality across different languages and regions
+
+### Security Testing
+
+- **Penetration Testing**: Regular security testing of search APIs and infrastructure
+- **Privacy Testing**: Testing privacy controls and data handling procedures
+- **Rate Limiting Testing**: Testing rate limiting effectiveness under various attack scenarios
+- **Content Security Testing**: Testing content filtering and moderation systems
+- **Data Breach Testing**: Testing search system behavior during simulated data breach scenarios
+
+## Supporting Requirements
+
+### Technical Requirements
 
 ### Search Infrastructure
 
@@ -873,7 +1000,7 @@ class SearchCacheManager {
 }
 ```
 
-## Business Rules
+### Business Rules
 
 ### Search Quality & Relevance
 
@@ -907,7 +1034,7 @@ class SearchCacheManager {
 4. **Quality Degradation**: Graceful degradation under extreme load with reduced features before failure
 5. **Error Handling**: Failed searches provide helpful error messages and alternative suggestions
 
-## Integration Requirements
+### Integration Requirements
 
 ### External Service Integration
 
@@ -933,33 +1060,7 @@ class SearchCacheManager {
 - **ML Pipeline**: Real-time feature extraction and model inference for personalization
 - **Quality Monitoring**: Continuous monitoring of search quality with automatic alerts
 
-## Performance Requirements
-
-### Search Response Times
-
-- **Autocomplete**: Sub-50ms response for search suggestions and completions
-- **Simple Search**: Under 200ms for basic keyword searches across all content types
-- **Advanced Search**: Under 500ms for complex filtered searches with multiple criteria
-- **Visual Search**: Under 2 seconds for image-based card identification and matching
-- **Recommendations**: Under 300ms for personalized content recommendations
-
-### Scalability & Throughput
-
-- **Query Volume**: Support 10,000+ search queries per second during peak usage
-- **Concurrent Users**: Handle 50,000+ simultaneous active searchers
-- **Index Size**: Efficiently search across 10M+ cards, 1M+ decks, and 500K+ users
-- **Real-Time Updates**: Process 10K+ content updates per minute with search index refresh
-- **Geographic Distribution**: Sub-200ms response times globally with CDN and regional indices
-
-### Availability & Reliability
-
-- **Service Uptime**: 99.9% availability during business hours, 99.5% overall
-- **Failover Time**: Automatic failover to backup systems within 30 seconds
-- **Data Consistency**: Search indices consistent with source data within 5 minutes
-- **Error Rate**: Less than 0.1% of search queries result in errors or timeouts
-- **Recovery Time**: Full service recovery within 15 minutes of any major incident
-
-## Security Requirements
+### Security Requirements
 
 ### Search Security
 
@@ -985,41 +1086,33 @@ class SearchCacheManager {
 - **Copyright Protection**: Integration with DMCA takedown processes for copyrighted content
 - **Community Moderation**: User reporting system integrated with search result filtering
 
-## Testing Requirements
+### Performance Requirements
 
-### Search Quality Testing
+### Search Response Times
 
-- **Relevance Testing**: Regular evaluation of search result relevance using human evaluators
-- **A/B Testing**: Continuous A/B testing of search algorithms and ranking models
-- **Performance Testing**: Load testing to ensure response time targets under realistic traffic
-- **Accuracy Testing**: Automated testing of search accuracy using predefined query sets
-- **Personalization Testing**: Testing of recommendation systems with diverse user personas
+- **Autocomplete**: Sub-50ms response for search suggestions and completions
+- **Simple Search**: Under 200ms for basic keyword searches across all content types
+- **Advanced Search**: Under 500ms for complex filtered searches with multiple criteria
+- **Visual Search**: Under 2 seconds for image-based card identification and matching
+- **Recommendations**: Under 300ms for personalized content recommendations
 
-### Integration Testing
+### Scalability & Throughput
 
-- **Cross-Platform Testing**: Testing search functionality across web, mobile, and API clients
-- **Data Sync Testing**: Testing real-time synchronization between databases and search indices
-- **External API Testing**: Testing integration with Algolia, Google Vision, and other external services
-- **Failover Testing**: Testing automatic failover and recovery procedures
-- **Performance Impact Testing**: Testing impact of search load on other system components
+- **Query Volume**: Support 10,000+ search queries per second during peak usage
+- **Concurrent Users**: Handle 50,000+ simultaneous active searchers
+- **Index Size**: Efficiently search across 10M+ cards, 1M+ decks, and 500K+ users
+- **Real-Time Updates**: Process 10K+ content updates per minute with search index refresh
+- **Geographic Distribution**: Sub-200ms response times globally with CDN and regional indices
 
-### User Experience Testing
+### Availability & Reliability
 
-- **Usability Testing**: User testing of search interfaces and discovery features
-- **Accessibility Testing**: Testing search functionality with screen readers and accessibility tools
-- **Mobile Testing**: Comprehensive testing of mobile search experience and performance
-- **Voice Search Testing**: Testing voice input accuracy and natural language understanding
-- **International Testing**: Testing search functionality across different languages and regions
+- **Service Uptime**: 99.9% availability during business hours, 99.5% overall
+- **Failover Time**: Automatic failover to backup systems within 30 seconds
+- **Data Consistency**: Search indices consistent with source data within 5 minutes
+- **Error Rate**: Less than 0.1% of search queries result in errors or timeouts
+- **Recovery Time**: Full service recovery within 15 minutes of any major incident
 
-### Security Testing
-
-- **Penetration Testing**: Regular security testing of search APIs and infrastructure
-- **Privacy Testing**: Testing privacy controls and data handling procedures
-- **Rate Limiting Testing**: Testing rate limiting effectiveness under various attack scenarios
-- **Content Security Testing**: Testing content filtering and moderation systems
-- **Data Breach Testing**: Testing search system behavior during simulated data breach scenarios
-
-## UI/UX Requirements
+### UI/UX Requirements
 
 ### Universal Search Interface Design
 
@@ -1444,3 +1537,4 @@ class SearchCacheManager {
 - **Visual Search Accuracy**: Image recognition precision and recall testing
 - **Discovery Effectiveness**: User engagement and content discovery success rates
 - **Privacy Compliance**: Data handling and user control verification
+

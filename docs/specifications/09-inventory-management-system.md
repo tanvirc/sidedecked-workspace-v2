@@ -1,10 +1,92 @@
+﻿---
+workflowType: bmad-specification
+workflowVersion: 6.0.0-Beta.8
+specId: 09-inventory-management-system
+status: not_started
+currentSpecification: false
+primaryOwner: backend
+targetRepos:
+  - backend
+  - vendorpanel
+  - storefront
+  - customer-backend
+stepsCompleted:
+  - sidedecked-router.route
+  - analyst.create-product-brief
+  - pm.create-prd
+  - architect.create-architecture
+  - pm.validate-prd
+  - architect.check-implementation-readiness
+  - sm.create-epics-and-stories
+inputDocuments:
+  - docs/architecture/01-system-overview.md
+  - docs/architecture/02-architectural-principles.md
+  - docs/standards/code-standards.md
+  - docs/standards/testing-standards.md
+  - module-status.json
+outputArtifacts:
+  productBrief: _bmad-output/planning-artifacts/09-inventory-management-system/product-brief.md
+  prd: _bmad-output/planning-artifacts/09-inventory-management-system/prd.md
+  architecture: _bmad-output/planning-artifacts/09-inventory-management-system/architecture.md
+  readinessReport: _bmad-output/planning-artifacts/09-inventory-management-system/implementation-readiness.md
+  stories: _bmad-output/planning-artifacts/09-inventory-management-system/epics-and-stories.md
+---
 # Inventory Management System
 
-## Executive Summary
+## BMAD Workflow Trace
+
+1. @sidedecked-router: Route bounded context and enforce split-domain boundaries.
+2. @analyst: Build product brief with user/problem/value framing.
+3. @pm: Produce and validate PRD with measurable acceptance criteria.
+4. @architect: Define architecture decisions and integration boundaries.
+5. @pm + @architect: Run PO readiness gate (validate-prd, check-implementation-readiness).
+6. @sm: Decompose into epics/stories for implementation.
+7. @dev + @qa: Execute and verify delivery against acceptance criteria.
+
+## Step 1: Routing Decision (@sidedecked-router)
+
+- Bounded context: Inventory tracking, procurement, and fulfillment stock controls
+- Primary owner repo: backend
+- Participating repos: backend, vendorpanel, storefront, customer-backend
+- API boundary constraints:
+  - Stock, reservations, and procurement remain in backend APIs
+  - Vendorpanel operations consume backend inventory endpoints
+  - Catalog enrichment for inventory views comes from customer-backend APIs
+- Data boundary constraints:
+  - Inventory quantities and reservation locks remain in mercur-db
+  - Catalog attributes remain in sidedecked-db and are referenced via API contracts
+  - Cross-domain synchronization is event-driven
+
+## Step 2: Product Brief Summary (@analyst)
 
 The Inventory Management System provides comprehensive multi-channel inventory tracking, automated reordering, and intelligent stock optimization for TCG vendors and sellers. It integrates seamlessly with the marketplace, supports multiple sales channels, and uses AI-driven demand forecasting to optimize inventory levels. The system handles complex inventory scenarios including condition grading, foil variations, set reprints, and cross-channel synchronization while providing real-time stock updates and automated business intelligence.
 
-## User Stories & Acceptance Criteria
+## Step 3: PRD Baseline (@pm)
+
+- This specification is the source-of-truth PRD for the bounded context above.
+- Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
+- Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
+- Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
+
+## Step 4: Architecture Constraints (@architect)
+
+- Preserve split-domain ownership and prohibit direct database coupling between mercur-db and sidedecked-db.
+- Cross-domain behavior must be implemented via HTTP APIs and/or events with explicit contracts.
+- Implementation must follow existing patterns for service/controller/repository boundaries in the owning repo.
+
+## Step 5: PO Gate - PRD Validation (@pm)
+
+- Requirement traceability to user stories and acceptance criteria is present.
+- Scope and status are synchronized with module-status.json.
+- Acceptance criteria statuses remain in the approved parseable set.
+
+## Step 6: PO Gate - Implementation Readiness (@architect)
+
+- Affected APIs and bounded contexts are explicit in Step 1 and supporting sections.
+- Architecture constraints and quality gates are documented before implementation.
+- Validation commands are defined in Step 8.
+
+## Step 7: Epics and Stories (@sm)
 
 ### Epic 1: Multi-Channel Inventory Tracking
 
@@ -488,7 +570,60 @@ _As a tech-savvy vendor, I want comprehensive API access so that I can integrate
 - **Visual Elements**: Code syntax highlighting, API response formatting, webhook event logs, usage analytics charts, integration status indicators
 - **Mobile Considerations**: Mobile-optimized documentation, essential API monitoring, simplified webhook management, mobile SDK support
 
-## Technical Requirements
+## Step 8: Delivery and QA Plan (@dev + @qa)
+
+- Required validation entrypoints:
+  - node scripts/check-acceptance-criteria.js --id 09-inventory-management-system
+  - node scripts/check-acceptance-criteria.js --id 09-inventory-management-system --next-story
+  - node scripts/next-spec.js
+- Repo-level checks must include lint/typecheck/build/tests where applicable before marking the spec complete.
+- Story/spec status transitions are controlled through scripts/mark-spec.js after criteria pass.
+
+### Testing Requirements
+
+### Functional Testing
+
+- **Inventory Operations**: Comprehensive testing of all inventory CRUD operations
+- **Multi-Channel Sync**: Testing inventory synchronization across all supported channels
+- **Procurement Workflow**: End-to-end testing of purchase order and receiving processes
+- **Analytics Accuracy**: Validation of all calculated metrics and forecasting models
+- **Integration Testing**: Testing all external integrations under various scenarios
+
+### Performance Testing
+
+- **Load Testing**: Testing under realistic concurrent user and transaction loads
+- **Stress Testing**: Testing system behavior under extreme inventory volumes
+- **Sync Performance**: Testing inventory synchronization speed and reliability
+- **Database Performance**: Testing complex queries with large datasets
+- **API Performance**: Testing all API endpoints under high concurrent load
+
+### Security Testing
+
+- **Access Control Testing**: Comprehensive testing of all permission and access controls
+- **Data Privacy Testing**: Testing vendor data isolation and privacy protection
+- **Authentication Testing**: Testing all authentication methods and security controls
+- **Integration Security**: Testing security of all external integrations
+- **Penetration Testing**: Regular security testing by third-party security firms
+
+### Business Logic Testing
+
+- **Automation Rule Testing**: Testing all automation rules under various scenarios
+- **Cost Calculation Testing**: Validation of all cost basis and profit calculations
+- **Forecasting Accuracy**: Backtesting demand forecasting models for accuracy
+- **Reorder Logic Testing**: Testing reorder point calculations and triggers
+- **Multi-Location Testing**: Testing complex multi-location inventory scenarios
+
+### Integration Testing
+
+- **Third-Party Platform Testing**: Testing all marketplace and platform integrations
+- **ERP Integration Testing**: Testing accounting and business system integrations
+- **API Client Testing**: Testing integration from vendor perspective using APIs
+- **Mobile App Testing**: Testing mobile interfaces for inventory management
+- **Disaster Recovery Testing**: Testing backup and recovery procedures regularly
+
+## Supporting Requirements
+
+### Technical Requirements
 
 ### Database Schema
 
@@ -827,7 +962,7 @@ POST   /api/bulk/update                   # Bulk inventory update
 GET    /api/bulk/jobs                     # Get bulk job status
 ```
 
-## Business Rules
+### Business Rules
 
 ### Inventory Accuracy & Integrity
 
@@ -861,7 +996,7 @@ GET    /api/bulk/jobs                     # Get bulk job status
 4. **Performance Monitoring**: All automation rules monitored with performance thresholds
 5. **Manual Override**: All automated decisions can be manually overridden with justification
 
-## Integration Requirements
+### Integration Requirements
 
 ### External Marketplace Integration
 
@@ -895,41 +1030,7 @@ GET    /api/bulk/jobs                     # Get bulk job status
 - **Economic Data**: Economic indicators for luxury spending and market analysis
 - **Weather APIs**: Weather data for shipping and event demand correlation
 
-## Performance Requirements
-
-### Real-Time Inventory Updates
-
-- **Sync Speed**: Inventory changes propagated to all channels within 5 minutes
-- **API Response Time**: All inventory API calls respond within 500ms under normal load
-- **Bulk Operations**: Process 100,000+ inventory updates within 10 minutes
-- **Concurrent Access**: Support 1,000+ concurrent users without performance degradation
-- **Database Performance**: Complex inventory queries complete within 2 seconds
-
-### Analytics & Forecasting Performance
-
-- **Report Generation**: Standard inventory reports generated within 30 seconds
-- **Demand Forecasting**: Daily forecast generation for 100K+ SKUs within 2 hours
-- **Real-Time Analytics**: Dashboard updates within 10 seconds of data changes
-- **Historical Analysis**: Multi-year historical analysis completed within 5 minutes
-- **Predictive Models**: Model inference for reordering decisions within 1 second
-
-### Scalability Requirements
-
-- **Inventory Volume**: Support 10M+ unique inventory items per vendor
-- **Transaction Volume**: Process 100K+ inventory movements per day
-- **Multi-Vendor Support**: Support 10K+ vendors with individual inventory systems
-- **Geographic Distribution**: Sub-second response times globally with regional deployment
-- **Peak Load Handling**: Handle 10x normal load during major releases and events
-
-### Availability & Reliability
-
-- **System Uptime**: 99.9% availability for critical inventory functions
-- **Data Backup**: Continuous backup with point-in-time recovery capabilities
-- **Disaster Recovery**: Full system recovery within 4 hours of major incident
-- **Failover Time**: Automatic failover to backup systems within 60 seconds
-- **Data Consistency**: Inventory data consistency maintained across all systems
-
-## Security Requirements
+### Security Requirements
 
 ### Data Protection
 
@@ -963,49 +1064,41 @@ GET    /api/bulk/jobs                     # Get bulk job status
 - **Industry Standards**: Compliance with collectibles industry standards and best practices
 - **Audit Support**: Complete audit support for financial and operational audits
 
-## Testing Requirements
+### Performance Requirements
 
-### Functional Testing
+### Real-Time Inventory Updates
 
-- **Inventory Operations**: Comprehensive testing of all inventory CRUD operations
-- **Multi-Channel Sync**: Testing inventory synchronization across all supported channels
-- **Procurement Workflow**: End-to-end testing of purchase order and receiving processes
-- **Analytics Accuracy**: Validation of all calculated metrics and forecasting models
-- **Integration Testing**: Testing all external integrations under various scenarios
+- **Sync Speed**: Inventory changes propagated to all channels within 5 minutes
+- **API Response Time**: All inventory API calls respond within 500ms under normal load
+- **Bulk Operations**: Process 100,000+ inventory updates within 10 minutes
+- **Concurrent Access**: Support 1,000+ concurrent users without performance degradation
+- **Database Performance**: Complex inventory queries complete within 2 seconds
 
-### Performance Testing
+### Analytics & Forecasting Performance
 
-- **Load Testing**: Testing under realistic concurrent user and transaction loads
-- **Stress Testing**: Testing system behavior under extreme inventory volumes
-- **Sync Performance**: Testing inventory synchronization speed and reliability
-- **Database Performance**: Testing complex queries with large datasets
-- **API Performance**: Testing all API endpoints under high concurrent load
+- **Report Generation**: Standard inventory reports generated within 30 seconds
+- **Demand Forecasting**: Daily forecast generation for 100K+ SKUs within 2 hours
+- **Real-Time Analytics**: Dashboard updates within 10 seconds of data changes
+- **Historical Analysis**: Multi-year historical analysis completed within 5 minutes
+- **Predictive Models**: Model inference for reordering decisions within 1 second
 
-### Security Testing
+### Scalability Requirements
 
-- **Access Control Testing**: Comprehensive testing of all permission and access controls
-- **Data Privacy Testing**: Testing vendor data isolation and privacy protection
-- **Authentication Testing**: Testing all authentication methods and security controls
-- **Integration Security**: Testing security of all external integrations
-- **Penetration Testing**: Regular security testing by third-party security firms
+- **Inventory Volume**: Support 10M+ unique inventory items per vendor
+- **Transaction Volume**: Process 100K+ inventory movements per day
+- **Multi-Vendor Support**: Support 10K+ vendors with individual inventory systems
+- **Geographic Distribution**: Sub-second response times globally with regional deployment
+- **Peak Load Handling**: Handle 10x normal load during major releases and events
 
-### Business Logic Testing
+### Availability & Reliability
 
-- **Automation Rule Testing**: Testing all automation rules under various scenarios
-- **Cost Calculation Testing**: Validation of all cost basis and profit calculations
-- **Forecasting Accuracy**: Backtesting demand forecasting models for accuracy
-- **Reorder Logic Testing**: Testing reorder point calculations and triggers
-- **Multi-Location Testing**: Testing complex multi-location inventory scenarios
+- **System Uptime**: 99.9% availability for critical inventory functions
+- **Data Backup**: Continuous backup with point-in-time recovery capabilities
+- **Disaster Recovery**: Full system recovery within 4 hours of major incident
+- **Failover Time**: Automatic failover to backup systems within 60 seconds
+- **Data Consistency**: Inventory data consistency maintained across all systems
 
-### Integration Testing
-
-- **Third-Party Platform Testing**: Testing all marketplace and platform integrations
-- **ERP Integration Testing**: Testing accounting and business system integrations
-- **API Client Testing**: Testing integration from vendor perspective using APIs
-- **Mobile App Testing**: Testing mobile interfaces for inventory management
-- **Disaster Recovery Testing**: Testing backup and recovery procedures regularly
-
-## UI/UX Requirements
+### UI/UX Requirements
 
 ### Inventory Dashboard Interface Design
 
@@ -1454,3 +1547,4 @@ GET    /api/bulk/jobs                     # Get bulk job status
 - **Forecasting Interface**: Demand forecasting and analytics accuracy validation
 - **Integration Management**: Third-party integration configuration and monitoring
 - **Performance Testing**: Large dataset handling and real-time operation validation
+

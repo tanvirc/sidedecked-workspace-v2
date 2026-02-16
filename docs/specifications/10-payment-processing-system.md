@@ -1,10 +1,91 @@
+﻿---
+workflowType: bmad-specification
+workflowVersion: 6.0.0-Beta.8
+specId: 10-payment-processing-system
+status: not_started
+currentSpecification: false
+primaryOwner: backend
+targetRepos:
+  - backend
+  - storefront
+  - vendorpanel
+stepsCompleted:
+  - sidedecked-router.route
+  - analyst.create-product-brief
+  - pm.create-prd
+  - architect.create-architecture
+  - pm.validate-prd
+  - architect.check-implementation-readiness
+  - sm.create-epics-and-stories
+inputDocuments:
+  - docs/architecture/01-system-overview.md
+  - docs/architecture/02-architectural-principles.md
+  - docs/standards/code-standards.md
+  - docs/standards/testing-standards.md
+  - module-status.json
+outputArtifacts:
+  productBrief: _bmad-output/planning-artifacts/10-payment-processing-system/product-brief.md
+  prd: _bmad-output/planning-artifacts/10-payment-processing-system/prd.md
+  architecture: _bmad-output/planning-artifacts/10-payment-processing-system/architecture.md
+  readinessReport: _bmad-output/planning-artifacts/10-payment-processing-system/implementation-readiness.md
+  stories: _bmad-output/planning-artifacts/10-payment-processing-system/epics-and-stories.md
+---
 # Payment Processing System
 
-## Executive Summary
+## BMAD Workflow Trace
+
+1. @sidedecked-router: Route bounded context and enforce split-domain boundaries.
+2. @analyst: Build product brief with user/problem/value framing.
+3. @pm: Produce and validate PRD with measurable acceptance criteria.
+4. @architect: Define architecture decisions and integration boundaries.
+5. @pm + @architect: Run PO readiness gate (validate-prd, check-implementation-readiness).
+6. @sm: Decompose into epics/stories for implementation.
+7. @dev + @qa: Execute and verify delivery against acceptance criteria.
+
+## Step 1: Routing Decision (@sidedecked-router)
+
+- Bounded context: Payment processing, payouts, reconciliation, and compliance
+- Primary owner repo: backend
+- Participating repos: backend, storefront, vendorpanel
+- API boundary constraints:
+  - Payment intent, capture, refund, and payout orchestration remain in backend
+  - Storefront and vendorpanel invoke payment workflows through backend APIs only
+  - Compliance and fraud services integrate through dedicated provider adapters
+- Data boundary constraints:
+  - Financial ledgers and transaction state remain in mercur-db
+  - Customer analytics mirrors require event replication rather than shared writes
+  - No direct payment data writes from UI repositories
+
+## Step 2: Product Brief Summary (@analyst)
 
 The Payment Processing System provides comprehensive payment solutions for the SideDecked marketplace using Stripe Connect for multi-party transactions, escrow services for high-value trades, and international payment support. It handles complex scenarios including split payments, marketplace commissions, seller payouts, refunds, and disputes while maintaining PCI compliance and supporting multiple currencies. The system integrates seamlessly with tax reporting, fraud prevention, and financial reconciliation processes.
 
-## User Stories & Acceptance Criteria
+## Step 3: PRD Baseline (@pm)
+
+- This specification is the source-of-truth PRD for the bounded context above.
+- Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
+- Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
+- Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
+
+## Step 4: Architecture Constraints (@architect)
+
+- Preserve split-domain ownership and prohibit direct database coupling between mercur-db and sidedecked-db.
+- Cross-domain behavior must be implemented via HTTP APIs and/or events with explicit contracts.
+- Implementation must follow existing patterns for service/controller/repository boundaries in the owning repo.
+
+## Step 5: PO Gate - PRD Validation (@pm)
+
+- Requirement traceability to user stories and acceptance criteria is present.
+- Scope and status are synchronized with module-status.json.
+- Acceptance criteria statuses remain in the approved parseable set.
+
+## Step 6: PO Gate - Implementation Readiness (@architect)
+
+- Affected APIs and bounded contexts are explicit in Step 1 and supporting sections.
+- Architecture constraints and quality gates are documented before implementation.
+- Validation commands are defined in Step 8.
+
+## Step 7: Epics and Stories (@sm)
 
 ### Epic 1: Multi-Party Payment Processing
 
@@ -538,7 +619,60 @@ _As a finance team, I want automated reconciliation so that I can ensure payment
 - **Visual Elements**: Matching status indicators, exception priority flags, reconciliation progress bars, variance analysis charts, audit trail timelines
 - **Mobile Considerations**: Essential reconciliation monitoring, critical exception alerts, simplified investigation workflows, mobile-friendly closing procedures
 
-## Technical Requirements
+## Step 8: Delivery and QA Plan (@dev + @qa)
+
+- Required validation entrypoints:
+  - node scripts/check-acceptance-criteria.js --id 10-payment-processing-system
+  - node scripts/check-acceptance-criteria.js --id 10-payment-processing-system --next-story
+  - node scripts/next-spec.js
+- Repo-level checks must include lint/typecheck/build/tests where applicable before marking the spec complete.
+- Story/spec status transitions are controlled through scripts/mark-spec.js after criteria pass.
+
+### Testing Requirements
+
+### Payment Processing Testing
+
+- **Transaction Testing**: Comprehensive testing of all payment scenarios and edge cases
+- **Integration Testing**: Testing of all payment processor integrations and webhooks
+- **Error Handling**: Testing of all error conditions and failure scenarios
+- **Performance Testing**: Load testing under realistic transaction volumes
+- **Security Testing**: Penetration testing and vulnerability assessments
+
+### Compliance Testing
+
+- **PCI Testing**: Annual PCI compliance validation and quarterly security scans
+- **Fraud Testing**: Testing of fraud detection systems with simulated attack scenarios
+- **AML Testing**: Testing of anti-money laundering detection and reporting systems
+- **International Testing**: Testing of international payment methods and compliance
+- **Regulatory Testing**: Testing of regulatory reporting and compliance procedures
+
+### Business Logic Testing
+
+- **Commission Calculation**: Testing of all commission and fee calculations
+- **Escrow Logic**: Testing of escrow creation, management, and release procedures
+- **Refund Processing**: Testing of refund logic including partial and full refunds
+- **Dispute Handling**: Testing of dispute creation, evidence handling, and resolution
+- **Multi-Currency**: Testing of currency conversion and international transactions
+
+### Integration Testing
+
+- **Stripe Integration**: Comprehensive testing of Stripe Connect integration
+- **Webhook Testing**: Testing of all webhook endpoints and event handling
+- **External Service Testing**: Testing of all third-party service integrations
+- **Database Testing**: Testing of payment data storage and retrieval
+- **API Testing**: Testing of all payment APIs under various load conditions
+
+### User Acceptance Testing
+
+- **Seller Testing**: Testing by real sellers for onboarding and payment scenarios
+- **Buyer Testing**: Testing by buyers for payment flow and experience
+- **International Testing**: Testing by international users for cross-border payments
+- **Mobile Testing**: Testing of mobile payment flows and experiences
+- **Accessibility Testing**: Testing for accessibility compliance and usability
+
+## Supporting Requirements
+
+### Technical Requirements
 
 ### Payment Infrastructure
 
@@ -932,7 +1066,7 @@ class RealTimeRiskMonitor:
         )
 ```
 
-## Business Rules
+### Business Rules
 
 ### Payment Processing Rules
 
@@ -966,7 +1100,7 @@ class RealTimeRiskMonitor:
 4. **Consumer Protection**: Adherence to local consumer protection laws including refund rights and dispute procedures
 5. **Cross-Border Fees**: Transparent disclosure of all cross-border transaction fees and exchange rate spreads
 
-## Integration Requirements
+### Integration Requirements
 
 ### Payment Service Integrations
 
@@ -1000,41 +1134,7 @@ class RealTimeRiskMonitor:
 - **Customer Service**: Integration with support systems for payment-related inquiries
 - **Business Intelligence**: Payment data integration with analytics and reporting platforms
 
-## Performance Requirements
-
-### Transaction Processing Performance
-
-- **Payment Processing Time**: Standard transactions processed within 3 seconds
-- **Escrow Setup Time**: Escrow transactions established within 10 seconds
-- **Refund Processing**: Refunds initiated within 5 seconds, completed per processor timelines
-- **Dispute Response**: Dispute evidence submission processed within 30 seconds
-- **International Transactions**: Cross-border payments processed within 10 seconds
-
-### System Scalability
-
-- **Transaction Volume**: Support 100,000+ transactions per day with linear scaling
-- **Concurrent Processing**: Handle 1,000+ simultaneous payment processing requests
-- **Peak Load**: Handle 10x normal transaction volume during major events
-- **Database Performance**: Payment queries respond within 500ms under normal load
-- **API Response Times**: All payment APIs respond within 2 seconds
-
-### Financial Reporting Performance
-
-- **Real-Time Balance Updates**: Account balances updated within 30 seconds of transactions
-- **Report Generation**: Standard financial reports generated within 60 seconds
-- **Reconciliation Speed**: Daily reconciliation completed within 15 minutes
-- **Analytics Updates**: Payment analytics updated within 5 minutes of transactions
-- **Compliance Reporting**: Regulatory reports generated within 2 hours of request
-
-### Security Response Times
-
-- **Fraud Detection**: Real-time fraud scoring within 100ms of transaction
-- **Risk Assessment**: Comprehensive risk assessment within 500ms
-- **Alert Generation**: Security alerts generated within 10 seconds of detection
-- **Account Suspension**: High-risk account suspension within 60 seconds
-- **Investigation Response**: Security investigation initiation within 15 minutes
-
-## Security Requirements
+### Security Requirements
 
 ### Payment Data Security
 
@@ -1068,49 +1168,41 @@ class RealTimeRiskMonitor:
 - **Sanctions Compliance**: Real-time sanctions screening and enforcement
 - **Regulatory Reporting**: Automated compliance reporting with audit trails
 
-## Testing Requirements
+### Performance Requirements
 
-### Payment Processing Testing
+### Transaction Processing Performance
 
-- **Transaction Testing**: Comprehensive testing of all payment scenarios and edge cases
-- **Integration Testing**: Testing of all payment processor integrations and webhooks
-- **Error Handling**: Testing of all error conditions and failure scenarios
-- **Performance Testing**: Load testing under realistic transaction volumes
-- **Security Testing**: Penetration testing and vulnerability assessments
+- **Payment Processing Time**: Standard transactions processed within 3 seconds
+- **Escrow Setup Time**: Escrow transactions established within 10 seconds
+- **Refund Processing**: Refunds initiated within 5 seconds, completed per processor timelines
+- **Dispute Response**: Dispute evidence submission processed within 30 seconds
+- **International Transactions**: Cross-border payments processed within 10 seconds
 
-### Compliance Testing
+### System Scalability
 
-- **PCI Testing**: Annual PCI compliance validation and quarterly security scans
-- **Fraud Testing**: Testing of fraud detection systems with simulated attack scenarios
-- **AML Testing**: Testing of anti-money laundering detection and reporting systems
-- **International Testing**: Testing of international payment methods and compliance
-- **Regulatory Testing**: Testing of regulatory reporting and compliance procedures
+- **Transaction Volume**: Support 100,000+ transactions per day with linear scaling
+- **Concurrent Processing**: Handle 1,000+ simultaneous payment processing requests
+- **Peak Load**: Handle 10x normal transaction volume during major events
+- **Database Performance**: Payment queries respond within 500ms under normal load
+- **API Response Times**: All payment APIs respond within 2 seconds
 
-### Business Logic Testing
+### Financial Reporting Performance
 
-- **Commission Calculation**: Testing of all commission and fee calculations
-- **Escrow Logic**: Testing of escrow creation, management, and release procedures
-- **Refund Processing**: Testing of refund logic including partial and full refunds
-- **Dispute Handling**: Testing of dispute creation, evidence handling, and resolution
-- **Multi-Currency**: Testing of currency conversion and international transactions
+- **Real-Time Balance Updates**: Account balances updated within 30 seconds of transactions
+- **Report Generation**: Standard financial reports generated within 60 seconds
+- **Reconciliation Speed**: Daily reconciliation completed within 15 minutes
+- **Analytics Updates**: Payment analytics updated within 5 minutes of transactions
+- **Compliance Reporting**: Regulatory reports generated within 2 hours of request
 
-### Integration Testing
+### Security Response Times
 
-- **Stripe Integration**: Comprehensive testing of Stripe Connect integration
-- **Webhook Testing**: Testing of all webhook endpoints and event handling
-- **External Service Testing**: Testing of all third-party service integrations
-- **Database Testing**: Testing of payment data storage and retrieval
-- **API Testing**: Testing of all payment APIs under various load conditions
+- **Fraud Detection**: Real-time fraud scoring within 100ms of transaction
+- **Risk Assessment**: Comprehensive risk assessment within 500ms
+- **Alert Generation**: Security alerts generated within 10 seconds of detection
+- **Account Suspension**: High-risk account suspension within 60 seconds
+- **Investigation Response**: Security investigation initiation within 15 minutes
 
-### User Acceptance Testing
-
-- **Seller Testing**: Testing by real sellers for onboarding and payment scenarios
-- **Buyer Testing**: Testing by buyers for payment flow and experience
-- **International Testing**: Testing by international users for cross-border payments
-- **Mobile Testing**: Testing of mobile payment flows and experiences
-- **Accessibility Testing**: Testing for accessibility compliance and usability
-
-## UI/UX Requirements
+### UI/UX Requirements
 
 ### Payment Processing Interface Design
 
@@ -1529,3 +1621,4 @@ class RealTimeRiskMonitor:
 - **International Payment Testing**: Multi-currency and cross-border payment flows
 - **Compliance Interface Testing**: Regulatory compliance and reporting features
 - **Performance Testing**: Payment processing speed and scalability validation
+
