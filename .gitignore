@@ -2,7 +2,6 @@ backend/
 customer-backend/
 storefront/
 vendorpanel/
-.npm-cache
 
 # Node/JS common ignores (workspace-level only)
 node_modules/
