@@ -154,7 +154,7 @@ npm run dev              # Start development server
 npm run build            # Build for production
 npm run test             # Run tests
 npm run test:watch       # Run tests in watch mode
-npm run test:coverage    # Run tests with coverage
+npm run {{coverage-script}} # Optional coverage script (e.g. test:coverage)
 
 # Quality
 npm run lint             # Run ESLint
@@ -167,8 +167,8 @@ npm run migration:run    # Run migrations
 npm run migration:revert # Revert last migration
 
 # Deployment
-npm run deploy:staging   # Deploy to staging
-npm run deploy:prod      # Deploy to production
+npm run {{deploy-staging-script}}   # Optional staging deploy script
+npm run {{deploy-prod-script}}      # Optional production deploy script
 ```
 
 ### Testing
@@ -183,7 +183,7 @@ npm test
 npm test -- {{test-file}}
 
 # Run tests with coverage
-npm run test:coverage
+npm run {{coverage-script}}
 ```
 
 #### Test Structure
@@ -221,13 +221,13 @@ tests/
 ### Staging
 
 ```bash
-npm run deploy:staging
+npm run {{deploy-staging-script}}
 ```
 
 ### Production
 
 ```bash
-npm run deploy:prod
+npm run {{deploy-prod-script}}
 ```
 
 ### Environment-Specific Configuration
@@ -280,16 +280,16 @@ npm run deploy:prod
 DEBUG={{debug-namespace}} npm run dev
 
 # Run with profiling
-npm run dev:profile
+npm run {{dev-profile-script}}
 ```
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for version history.
+See [CHANGELOG.md]({{changelog-path}}) for version history.
 
 ## License
 
-{{License type}} - see [LICENSE](./LICENSE) file for details.
+{{License type}} - see [LICENSE]({{license-path}}) file for details.
 
 ## Support
 

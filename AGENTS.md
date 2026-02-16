@@ -1,237 +1,125 @@
-# AGENTS.md - SideDecked Implementation Guide for Codex CLI
+# AGENTS.md - SideDecked Codex Operating Guide
 
-## Purpose
+This file is the execution contract for Codex agents in this workspace.
 
-This document defines how Codex CLI agents work in the SideDecked workspace. It combines project architecture, implementation rules, and Codex‑specific operating practices so that every change is deliberate, verifiable, and production‑ready.
+Scope and precedence:
+- This root file applies to the whole workspace.
+- Repo-local `AGENTS.md` files in `backend/`, `customer-backend/`, `storefront/`, and `vendorpanel/` override root rules for their subtree.
+- If rules conflict, follow the most specific file closest to the edited code.
 
----
+## Core Architecture (Non-Negotiable)
 
-## Codex Operating Rules (MANDATORY)
+SideDecked is a split-domain system:
+- `backend/` uses `mercur-db` for commerce (orders, payments, vendors).
+- `customer-backend/` uses `sidedecked-db` for catalog, decks, community, pricing.
+- `storefront/` and `vendorpanel/` are UIs and must call APIs only.
 
-- Preamble: Before any tool call, send a 1–2 sentence note describing what you will do next. Group related actions.
-- Plans: Use `update_plan` for multi‑step or ambiguous work. Keep steps concise (5–7 words). Exactly one step `in_progress` at a time. Skip plans for trivial single‑step work.
-- Shell usage: Prefer `rg` for search and `rg --files` for discovery. Read files in max 250‑line chunks. Avoid commands that emit >10KB or >256 lines at once.
-- File references: Use clickable paths (e.g., `src/app.ts:42`). Do not include ranges. Avoid non‑file URIs.
-- Response style: Be concise and action‑oriented. Use short headers where helpful and single‑line bullets. Wrap code, paths, and commands in backticks.
-- Approvals/sandboxing: If sandboxed or network‑restricted, call out what you need and why. In non‑interactive modes, proactively validate your work.
-- Safety: No destructive actions (e.g., `rm -rf`, rewriting history) unless explicitly requested. Avoid changing unrelated code.
+Hard boundaries:
+- Never connect one backend directly to the other backend database.
+- Cross-domain behavior must go through HTTP APIs/events.
+- Do not move features to another bounded context without explicit approval.
 
----
+## Karpathy-Style Execution Loop (Codex-Optimized)
 
-## Project Architecture Overview
+Use this loop on every non-trivial task:
+1. Understand objective, constraints, and success criteria before editing.
+2. State assumptions explicitly; if ambiguity can cause rework, ask one focused clarification.
+3. Inspect existing code paths and mirror local patterns before introducing new structure.
+4. Plan small, reversible steps and implement the minimum necessary diff.
+5. Validate quickly at nearest scope first, then expand to repo-level checks.
+6. Report what changed, what was verified, and remaining risk.
 
-SideDecked is a community‑driven TCG marketplace built on a split‑brain architecture with four repositories:
+Quality heuristics:
+- Prefer simple implementations over broad abstractions.
+- Preserve existing conventions unless there is a clear defect.
+- Avoid speculative refactors unrelated to the requested outcome.
 
-```
-backend/            # MercurJS Commerce (mercur-db)
-customer-backend/   # Customer APIs & services (sidedecked-db)
-storefront/         # Next.js customer UI
-vendorpanel/        # React vendor/admin UI
-```
+## Required Workflow
 
-Database separation (critical):
+1. Announce next action before tool calls.
+2. Use `update_plan` for multi-step work.
+3. Search with `rg`, read in focused chunks, implement surgically.
+4. Validate with the nearest tests/checks.
+5. Summarize outcomes and any follow-up verification.
 
-- `mercur-db`: commerce operations only (orders, payments, vendors)
-- `sidedecked-db`: customer experience only (cards, decks, community, pricing)
+## Mandatory Engineering Rules
 
-Do not mix data models or connect directly across databases. Cross‑context communication happens via APIs/events.
+- No placeholders, stubbed production logic, or fake success paths.
+- TDD where a harness exists; keep changed-module coverage at `>=80%` when measurable.
+- TypeScript strict mode, zero lint/type errors, and passing build/tests before completion.
+- Follow existing service/controller/repository/event patterns.
+- Keep logging and error handling actionable.
 
-Primary tech:
+Medusa/MercurJS forbidden patterns:
+- `MedusaRequest` (use `MedusaStoreRequest`).
+- Bare module path strings (use `{ resolve: "..." }` object format).
+- `authIdentity: null` (use `undefined`).
+- Lambda defaults where literal defaults are expected.
 
-- Backend: Node.js, MercurJS/Medusa v2 patterns, TypeScript, TypeORM
-- Frontend: Next.js 14 + React
-- Infra: PostgreSQL, Redis, Stripe, Algolia
+## Work Selection and Acceptance Gate
 
----
+Source of truth: `module-status.json`.
 
-## Pre‑Implementation Protocol (STOP GATE)
+Selection order:
+1. Continue `current_specification` unless completed.
+2. Otherwise use lowest-numbered `in_progress`.
+3. Otherwise use lowest-numbered `not_started`.
 
-Complete these steps before writing code:
-
-1) Load core context
-- `cat AGENTS.md` (this document)
-- `cat docs/standards/code-standards.md`
-- `cat docs/standards/testing-standards.md`
-- `cat docs/architecture/02-architectural-principles.md`
-
-2) Read task‑specific architecture docs
-- New feature: `docs/architecture/03-domain-models.md`, `docs/architecture/04-architectural-patterns.md`
-- API change: `docs/architecture/06-integration-architecture.md`
-- Database change: `docs/architecture/05-data-architecture.md`
-- Authentication: `docs/architecture/07-authentication-architecture.md`
-
-3) Verification checklist
-- [ ] Correct bounded context identified
-- [ ] Correct database selected (mercur-db vs sidedecked-db)
-- [ ] Similar implementations reviewed
-- [ ] Testing plan defined (TDD, >80% coverage)
-- [ ] Documentation updates identified (README/CHANGELOG/architecture)
-
-4) Domain validation questions
-- Bounded context: Commerce (mercur-db) | Catalog | Deck | Community | Pricing (sidedecked-db)
-- Integration: Internal APIs | External services | Events | Cross‑service via APIs
-- Security: Public | Customer | Vendor | Admin | OAuth/JWT requirements
-- Performance: Query/caching strategy | p95 targets | real‑time needs
-
-Do not proceed until you can answer all items with confidence.
-
----
-
-## Codex Work Cadence
-
-- Announce next action (preamble). Example: “I’ll open the API routes to locate the handler.”
-- For multi‑step tasks, create/maintain a short plan with `update_plan`. Mark steps complete as you progress.
-- Explore with `rg` and targeted file reads (≤250 lines at a time).
-- Implement with `apply_patch`. Keep diffs surgical and consistent with existing style.
-- Validate: Run targeted checks/tests where available. If tests exist, start from the closest scope you changed.
-- Summarize outcome concisely, including next logical steps or validations the user may run.
-
----
-
-## Implementation Standards
-
-- Working code: No placeholders, mocks, or “TODO” implementations in production code.
-- TDD: Write tests first where a test harness exists; maintain >80% coverage for changed modules.
-- Patterns: Follow repository patterns for services, controllers, repositories, events.
-- Medusa/MercurJS specifics:
-  - Use `MedusaStoreRequest`/`MedusaResponse` correctly
-  - Use object module resolution: `{ resolve: './src/modules/auth' }`
-  - Avoid forbidden patterns like `authIdentity: null` (prefer `undefined`), or `() => new Date()` defaults
-- Performance: Aim for p95 API < 100ms; optimize queries (<50ms) and apply caching where specified.
-- Logging & errors: Add actionable error handling and logs for failure cases.
-
-Forbidden:
-
-- AI/automation mentions in code, docs, or commits (“Generated by …”, “Co‑Authored‑By: …”).
-- Cross‑database coupling or direct connections between mercur-db and sidedecked-db.
-- Destructive changes outside requested scope.
-
----
-
-## Validation & Quality Gates
-
-Local/dev scripts vary per repo; generally:
-
-- Lint/typecheck/build/tests must pass before considering work complete.
-- Coverage: >80% on changed modules if coverage tooling exists.
-- Documentation: Update README/CHANGELOG/architecture docs when behavior or APIs change.
-
-Quick examples:
-
-```
-# Build and test current package/repo
-npm run typecheck && npm run build && npm test
-
-# Coverage (if configured)
-npm run test:coverage
-```
-
----
-
-## Commits
-
-- Conventional commits: `type(scope): description`
-- Keep commits scoped to the repo you are changing (this workspace hosts multiple repos).
-- Do not reference AI/automation. Follow `docs/standards/commit-standards.md`.
-
-Example:
-
-```
-feat(auth): implement JWT refresh rotation
-
-- Add 30‑day refresh tokens and rotation
-- Rate limit refresh endpoint
-- Add integration tests for token lifecycle
-```
-
----
-
-## File/Answer Formatting (for Codex CLI)
-
-- Headers: Short, Title Case, prefixed with `**` when used.
-- Bullets: `- ` with a bolded keyword followed by a colon and a concise description.
-- Monospace: Wrap commands, paths, and identifiers in backticks.
-- File references: Use clickable paths like `src/server/index.ts:42`. Do not include ranges.
-- Brevity: Favor concise, scannable responses; add structure only when it adds clarity.
-
----
-
-## Shell Guidance
-
-- Prefer `rg` for fast search; fall back to platform tools if unavailable.
-- Read files in chunks (≤250 lines). Large outputs are truncated.
-- On Windows PowerShell, avoid `&&`; run commands separately or with `;` where supported.
-- Be explicit about working directory and context when it matters.
-
----
-
-## Quick Reference
-
-- Architecture: `docs/architecture/`
-- Specifications: `docs/specifications/`
-- Standards: `docs/standards/`
-- Templates: `docs/templates/`
-
----
-
-## Module Selection & Acceptance Criteria
-
-- Source of truth: `module-status.json`
-- Continue current: If `current_specification` exists and is not `completed`, continue working on it.
-- Otherwise pick next: lowest-numbered spec with `in_progress`, else lowest-numbered `not_started`.
-- Acceptance criteria gate: Do not move to the next story, epic, or spec until all acceptance criteria for the current unit are implemented.
-  - Spec files encode status per criterion via tags like `(IMPLEMENTED)`, `(IN PROGRESS)`, `(NOT BUILT)`.
-  - Treated equivalences: `IMPLEMENTED|COMPLETED` → completed; `IN PROGRESS|IN_PROGRESS|PARTIAL` → in_progress; `NOT BUILT|NOT STARTED|NOT_STARTED|TODO` → not_started.
+Acceptance rule:
+- Do not advance story/spec until all criteria for current unit are implemented.
+- Status mapping in spec files:
+  - `IMPLEMENTED` or `COMPLETED` => complete
+  - `IN PROGRESS` or `PARTIAL` => in progress
+  - `NOT BUILT`, `NOT STARTED`, `TODO` => not started
 
 Helper commands:
+- `node scripts/next-spec.js`
+- `node scripts/check-acceptance-criteria.js --id <spec-id>`
+- `node scripts/check-acceptance-criteria.js --id <spec-id> --next-story`
+- `node scripts/mark-spec.js --id <spec-id> --status in_progress`
+- `node scripts/mark-spec.js --id <spec-id> --status completed`
 
-- Print next spec id by rule:
-  - `node scripts/next-spec.js`
+## Context Loading Protocol
 
-- Check acceptance criteria completion for a spec:
-  - `node scripts/check-acceptance-criteria.js --id 04-vendor-management-system`
-  - Exit code 0 = all implemented, 2 = incomplete
+Always read first for architecture-sensitive work:
+- `docs/architecture/01-system-overview.md`
+- `docs/architecture/02-architectural-principles.md`
+- `docs/standards/code-standards.md`
+- `docs/standards/testing-standards.md`
 
-- Find next story within a spec that still has incomplete criteria:
-  - `node scripts/check-acceptance-criteria.js --id 04-vendor-management-system --next-story`
-  - Outputs `User Story X.Y: Title` (prefixed with its Epic) or `ALL_STORIES_COMPLETED`
+Then load task-specific architecture requirements:
 
-- Mark a spec status (guards on completion):
-  - `node scripts/mark-spec.js --id 04-vendor-management-system --status in_progress`
-  - `node scripts/mark-spec.js --id 04-vendor-management-system --status completed`
-    - Will refuse completion if any acceptance criteria are incomplete (use `--force` to override).
+| Task Type | Required Documentation |
+|-----------|------------------------|
+| New feature | `docs/architecture/03-domain-models.md`, `docs/architecture/04-architectural-patterns.md`, relevant spec in `docs/specifications/` |
+| Bug fix | `docs/architecture/04-architectural-patterns.md`, relevant repo architecture doc, relevant standards doc in `docs/standards/` |
+| API change | `docs/architecture/06-integration-architecture.md`, `docs/API-REFERENCE.md`, relevant repo architecture doc |
+| Database/schema change | `docs/architecture/05-data-architecture.md`, `docs/architecture/03-domain-models.md`, affected repo migration patterns |
+| Authentication/security | `docs/architecture/07-authentication-architecture.md`, `docs/architecture/06-integration-architecture.md`, `SECURITY.md` |
+| UI flow/component change | `docs/architecture/01-system-overview.md`, relevant UI architecture doc (`storefront/docs/ARCHITECTURE.md` or `vendorpanel/docs/ARCHITECTURE.md`) |
+| Performance/caching work | `docs/architecture/01-system-overview.md`, `docs/architecture/05-data-architecture.md`, `docs/architecture/06-integration-architecture.md` |
 
-Operational flow:
+Pre-implementation gate:
+- Identify bounded context and target repo.
+- Confirm required docs for task type were reviewed.
+- State affected APIs, data boundaries, and validation plan.
 
-1) Select work: `node scripts/next-spec.js`
-2) Within selected spec, pick first incomplete story: `node scripts/check-acceptance-criteria.js --id <id> --next-story`
-3) Implement story fully; ensure all its acceptance criteria read `(IMPLEMENTED)`
-4) Repeat for all stories in the epic; then for all epics in the spec
-5) When all criteria are implemented, mark the spec `completed`:
-   - `node scripts/mark-spec.js --id <id> --status completed`
+## Repo Routing Map
 
-Notes:
+Choose the right repo before implementation:
+- Commerce, sellers, checkout, payouts, orders => `backend/`
+- Catalog, decks, community, pricing intelligence => `customer-backend/`
+- Customer UI/UX flows => `storefront/`
+- Vendor/admin UI workflows => `vendorpanel/`
 
-- Do not cross databases: Commerce routes to `backend/`; Catalog/Deck/Community/Pricing route to `customer-backend/`; UI changes route to `storefront/` or `vendorpanel/`.
-- If selection is ambiguous, prefer items with clear acceptance criteria and highest downstream impact.
+## Validation and Delivery
 
----
+Before completion:
+- Run closest relevant checks in the edited repo.
+- If available, run `lint`, `typecheck`, `build`, and tests.
+- Update docs/changelog when behavior, APIs, or setup changed.
 
-## Example Mini‑Playbook
-
-1) Context
-- Preamble: “Scanning repo for route definitions.”
-- `rg -n "GET /api/cards|cards" storefront/src customer-backend/src`
-
-2) Plan (non‑trivial change)
-- `update_plan`: “Add endpoint”, “Write service”, “Add tests”, “Wire UI”
-
-3) Implement
-- `apply_patch` to add service/controller and route
-- Add tests using existing harness and fixtures
-
-4) Validate
-- Build, typecheck, and run nearest tests first
-- Summarize results and propose next verifications
-
----
+Commits:
+- Conventional format `type(scope): description`.
+- No AI/assistant/automation attribution text in commit messages.
+- Keep commits scoped to the repo actually changed.

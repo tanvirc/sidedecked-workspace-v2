@@ -1,7 +1,7 @@
 # System Overview
 
-**Version**: 2.1  
-**Last Updated**: 2025-09-11  
+**Version**: 2.2  
+**Last Updated**: 2026-02-16  
 **Author**: SideDecked Architecture Team  
 **Reviewers**: [Development Team]  
 **Status**: Approved
@@ -96,14 +96,84 @@ graph TB
     BE --> EM
 ```
 
-### Core Components
+### Multi-Repository Structure
 
-| Component | Technology | Purpose | Port | Repository |
-|-----------|------------|---------|------|------------|
-| **Backend** | MercurJS v2, Node.js, PostgreSQL | Commerce operations, payments, vendors | 9001 | backend |
-| **Customer Backend** | Node.js, Express, TypeORM, PostgreSQL | TCG catalog, decks, community | 7000 | customer-backend |
-| **Storefront** | Next.js 14, React, TypeScript | Customer UI experience | 3000 | storefront |
-| **Vendor Panel** | React, TypeScript, Admin Dashboard | Vendor management interface | 5173 | vendorpanel |
+```text
+sidedecked-workspace-v2/                  # Workspace repo (shared docs, scripts, orchestration)
+|-- AGENTS.md
+|-- module-status.json
+|-- docs/
+|
+|-- backend/                              # Independent commerce repo (mercur-db)
+|   |-- apps/backend/src/
+|   |   |-- admin/                        # Admin customizations
+|   |   |-- api/                          # Store/admin custom APIs
+|   |   |-- modules/                      # Domain modules (auth, vendor, csv)
+|   |   |-- workflows/                    # Workflow orchestration
+|   |   |-- subscribers/                  # Event subscribers
+|   |   |-- jobs/                         # Scheduled jobs
+|   |   |-- scripts/                      # Operational scripts
+|   |   `-- links/                        # Module links
+|   |-- packages/                         # Shared MercurJS workspace packages
+|   `-- package.json
+|
+|-- customer-backend/                     # Independent customer-experience repo (sidedecked-db)
+|   |-- src/
+|   |   |-- config/                       # Infra and runtime config
+|   |   |-- entities/                     # TypeORM entities
+|   |   |-- routes/                       # API routes
+|   |   |-- services/                     # Business logic
+|   |   |-- middleware/                   # Express middleware
+|   |   |-- migrations/                   # DB migrations
+|   |   |-- scripts/                      # ETL/utility scripts
+|   |   `-- workers/                      # Background workers (images, jobs)
+|   |-- packages/
+|   |   |-- tcg-catalog/                  # TCG domain package
+|   |   |-- shared/                       # Shared utilities/types
+|   |   `-- types/                        # Cross-package type contracts
+|   `-- package.json
+|
+|-- storefront/                           # Independent customer UI repo
+|   |-- src/
+|   |   |-- app/                          # Next.js App Router routes
+|   |   |-- components/                   # UI and feature components
+|   |   |-- lib/                          # API clients/services/helpers
+|   |   |-- hooks/                        # Client hooks
+|   |   `-- contexts/                     # App contexts/providers
+|   `-- package.json
+|
+`-- vendorpanel/                          # Independent vendor/admin UI repo
+    |-- src/
+    |   |-- routes/                       # Vendor workflows (inventory, analytics, csv import)
+    |   |-- components/                   # Reusable UI components
+    |   |-- hooks/                        # Data and interaction hooks
+    |   |-- providers/                    # App state providers
+    |   |-- extensions/                   # Medusa admin extensions
+    |   `-- lib/                          # API + utility integrations
+    `-- package.json
+```
+
+### Technology Stack
+
+#### Core Infrastructure
+
+| Component | Technology | Purpose | Database | Port | Repository |
+|-----------|------------|---------|----------|------|------------|
+| **Backend** | MercurJS (Medusa v2), Node.js, PostgreSQL | Commerce operations, orders, payments, vendors | mercur-db | 9001 | backend |
+| **Customer Backend** | Node.js, Express, TypeORM, PostgreSQL | TCG catalog, decks, community, pricing | sidedecked-db | 7000 | customer-backend |
+| **Storefront** | Next.js 14, React, TypeScript | Customer-facing web experience | API consumption | 3000 | storefront |
+| **Vendor Panel** | React 18, Vite, TypeScript | Vendor/admin operations and workflows | API consumption | 5173 | vendorpanel |
+
+#### External Services
+
+| Service | Provider | Purpose | Priority |
+|---------|----------|---------|----------|
+| **Search** | Algolia | Card search and discovery | R1 - Critical |
+| **Cache** | Redis | Caching, queueing, and rate-sensitive operations | R1 - Critical |
+| **Storage** | MinIO (S3-compatible) | Card/image and file storage | R1 - Core |
+| **Email** | Resend | Transactional notifications and auth emails | R1 - Critical |
+| **Hosting** | Railway | Service hosting and managed infrastructure | R1 - Critical |
+| **Payments** | Stripe Connect | Multi-seller payment processing | R1 - Critical |
 
 ### Data Architecture
 
@@ -394,6 +464,7 @@ Production:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-02-16 | Added explicit multi-repository directory tree and technology stack tables |
 | 2.1 | 2025-09-11 | Updated with current implementation status and performance metrics |
 | 2.0 | 2025-01-15 | Added deck builder architecture and community features |
 | 1.1 | 2025-01-01 | Enhanced split-brain architecture documentation |

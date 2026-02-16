@@ -661,7 +661,7 @@ jobs:
       - name: Validate code examples
         run: |
           # Extract and test all code examples
-          npm run test:docs
+          npm run test --if-present
 ```
 
 ## Documentation Anti-Patterns
@@ -719,11 +719,11 @@ cspell "docs/**/*.md" "*.md"
 
 # Test code examples
 echo "Testing code examples..."
-npm run test:examples
+npm run test --if-present
 
 # Generate API docs
 echo "Generating API documentation..."
-npm run generate:api-docs
+npm run generate:oas --if-present
 
 echo "✅ Documentation validation complete!"
 ```

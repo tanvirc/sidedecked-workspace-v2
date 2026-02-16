@@ -48,12 +48,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 5. Check test coverage (must be >80%)
+# 5. Check test coverage (must be >80% where configured)
 echo "📊 Checking test coverage..."
-npm run test:coverage
+npm run test -- --coverage --if-present
 COVERAGE_CHECK=$?
 if [ $COVERAGE_CHECK -ne 0 ]; then
-  echo "❌ Coverage below 80%. Add more tests."
+  echo "❌ Coverage check failed. Ensure coverage is >=80% for repos with coverage tooling."
   exit 1
 fi
 
@@ -347,7 +347,7 @@ Before every commit, verify:
 - [ ] No lint errors (`npm run lint`)
 - [ ] No TypeScript errors (`npm run typecheck`)
 - [ ] Build succeeds (`npm run build`)
-- [ ] Test coverage >80% (`npm run test:coverage`)
+- [ ] Test coverage >80% (`npm run test -- --coverage --if-present` or repo-specific equivalent)
 
 ### Functional Verification  
 - [ ] I ran the code and tested the changed functionality

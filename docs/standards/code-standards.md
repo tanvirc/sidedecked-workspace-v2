@@ -1181,7 +1181,7 @@ npx lint-staged
 npm run typecheck
 
 # Run tests for changed files
-npm run test:related
+npm run test --if-present
 
 # Check for forbidden patterns
 echo "🚫 Checking for forbidden patterns..."

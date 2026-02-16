@@ -38,16 +38,17 @@ touch src/features/deck-validation.ts
 #### Coverage Verification Commands
 ```bash
 # Run coverage for all services
-npm run test:coverage
+npm run test -- --coverage --if-present
 
 # Per-service coverage
-cd backend && npm run test:coverage
-cd customer-backend && npm run test:coverage
-cd storefront && npm run test:coverage
-cd vendorpanel && npm run test:coverage
+cd backend && npm run test:unit --workspace=apps/backend -- --coverage
+cd customer-backend && npm test -- --coverage
+cd vendorpanel && npm run test -- --coverage  # if coverage provider is configured
+# storefront currently has no default test script configured
 
 # Fail build if coverage below 80%
-npm run test:coverage:enforce
+# Enforce threshold in CI/tooling config where supported
+npm run test -- --coverage --if-present
 ```
 
 ## Testing Framework Standards
@@ -812,7 +813,7 @@ jobs:
       
       - name: Run tests
         working-directory: ${{ matrix.service }}
-        run: npm run test:coverage
+        run: npm run test -- --coverage --if-present
       
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3

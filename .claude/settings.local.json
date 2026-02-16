@@ -4,7 +4,22 @@
       "Bash(cat:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:www.builder.io)",
+      "WebFetch(domain:www.humanlayer.dev)",
+      "Bash(npm i -g @railway/cli)",
+      "Bash(cmd.exe //c \"echo %PATH%\")",
+      "Bash(tr:*)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:/c/Users/Tav/AppData/Roaming/npm:$PATH\")",
+      "Bash(cmd.exe //c \"node --version\")",
+      "Bash(cmd.exe //c \"npm --version\")",
+      "Bash(cmd.exe //c \"where node\")",
+      "Bash(where:*)",
+      "Bash(railway version:*)",
+      "Bash(railway:*)"
     ],
     "deny": [],
     "ask": []
