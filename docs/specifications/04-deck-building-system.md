@@ -223,8 +223,8 @@ _As a competitive player, I want my deck to be validated against specific format
   - Location: Deck validation panel includes dynamic format rule summaries and official rules documentation links
 - ✅ Rotation tracking for rotating formats with warnings for rotating cards (IMPLEMENTED)
   - Location: Rotation handling in format validation
-- 🔄 Custom format support for local tournament and casual play rules (PARTIAL)
-  - Location: Format system exists but custom format support unclear
+- ✅ Custom format support for local tournament and casual play rules (IMPLEMENTED)
+  - Location: Deck creation supports user-defined custom formats with persisted rules defaults per game
 
 #### User Story 1.3: Deck Zone Management
 
