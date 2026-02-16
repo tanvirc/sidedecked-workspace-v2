@@ -1,5 +1,7 @@
 # SideDecked System Specifications Overview
 
+> **BMAD Migration:** This legacy overview is retained for context. Refer to `docs/prd.md` for the current BMAD-aligned planning artifact.
+
 ## Purpose
 This document provides an overview of all SideDecked system specifications and how they integrate to form a complete TCG marketplace platform. Each specification is written as a greenfield implementation guide optimized for Claude Code development while remaining accessible to Business Analysts and Product Owners.
 

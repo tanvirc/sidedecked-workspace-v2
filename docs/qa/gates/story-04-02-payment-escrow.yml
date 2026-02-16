@@ -1,0 +1,16 @@
+schema: 1
+story: "4.2"
+story_title: "Payment Capture & Escrow Handling"
+gate: "CONCERNS"
+status_reason: "Escrow and dispute workflows require targeted testing before approving release."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-09-19T00:00:00Z"
+waiver: { active: false }
+top_issues: []
+risk_summary:
+  totals: { critical: 1, high: 1, medium: 0, low: 0 }
+  recommendations:
+    must_fix:
+      - "Simulate Stripe webhooks for capture, refund, and dispute paths with automated verification."
+    monitor:
+      - "Review escrow aging reports weekly during initial launch window."

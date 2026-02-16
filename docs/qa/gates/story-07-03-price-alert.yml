@@ -1,0 +1,16 @@
+schema: 1
+story: "7.3"
+story_title: "Price Alert Experience"
+gate: "CONCERNS"
+status_reason: "Alert deduplication and quiet-hour enforcement need validation guardrails."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-09-19T00:00:00Z"
+waiver: { active: false }
+top_issues: []
+risk_summary:
+  totals: { critical: 0, high: 1, medium: 1, low: 0 }
+  recommendations:
+    must_fix:
+      - "Load test alert dispatcher with burst scenarios to confirm rate limiting and quiet hours."
+    monitor:
+      - "Review alert opt-out rates to detect noisy rule configurations."
