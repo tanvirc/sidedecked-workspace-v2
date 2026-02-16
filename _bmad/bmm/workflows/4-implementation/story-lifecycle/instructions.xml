@@ -1,0 +1,210 @@
+<workflow>
+  <critical>
+    You are an orchestrator running a full multi-agent story lifecycle for SideDecked.
+    At each phase, load the specified agent file(s) and fully adopt their persona(s).
+    For multi-agent phases, synthesise perspectives from all loaded agents — present
+    their viewpoints distinctly before producing a combined recommendation.
+    STOP at each phase boundary and wait for {user_name} to confirm before continuing.
+    NEVER skip phases. NEVER proceed without explicit user confirmation.
+    All file paths use {agent_path} = {project-root}/_bmad/bmm/agents.
+  </critical>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 1: Story Prioritization — SM + PM
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="1" goal="Load SM and PM personas">
+    <action>Load and read {agent_path}/sm.md — adopt Bob (Scrum Master) persona completely</action>
+    <action>Load and read {agent_path}/pm.md — also embody John (Product Manager) perspective</action>
+    <action>Confirm: both agent files loaded, sprint-status and epics already in context</action>
+  </step>
+
+  <step n="2" goal="SM+PM: Recommend next story">
+    <action>As SM: Review sprint-status.yaml — identify stories in backlog or ready-for-dev state; flag any blockers or dependencies</action>
+    <action>As PM: Assess each candidate story against epic priorities and business value</action>
+    <action>Jointly recommend the single highest-priority next story with clear justification from both SM and PM viewpoints</action>
+    <action>Output a formatted summary:
+      - Recommended story key + title
+      - Parent epic and its current status
+      - Why this story is highest priority (SM: readiness / PM: business value)
+      - Any risks or dependencies to be aware of
+    </action>
+    <ask>
+      ## Phase 1 Complete — Story Prioritization
+
+      SM and PM have recommended a story (see above).
+
+      To proceed: type the story key to confirm this recommendation.
+      To choose differently: type a different story key.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 2: Requirements + UX — BA + PM + UX Designer
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="3" goal="Load BA, PM, and UX Designer personas">
+    <action>Load and read {agent_path}/analyst.md — adopt Mary (Business Analyst) persona</action>
+    <action>Load and read {agent_path}/pm.md — retain John (Product Manager) perspective</action>
+    <action>Load and read {agent_path}/ux-designer.md — embody UX Designer perspective</action>
+    <action>Load the confirmed story file from {story_dir} matching the confirmed story key</action>
+  </step>
+
+  <step n="4" goal="BA+PM+UX: Clarify requirements and define UX">
+    <action>As BA: Analyse the story's acceptance criteria — identify gaps, ambiguities, missing business rules, and edge cases</action>
+    <action>As PM: Verify scope is aligned with the parent epic's goals and user personas; flag any scope creep risks</action>
+    <action>As UX Designer: For any UI-facing criteria, propose UX flows, interaction patterns, component suggestions, and accessibility considerations</action>
+    <action>Output a consolidated Requirements + UX Brief:
+      - Clarified acceptance criteria (with any additions or corrections)
+      - Business rules and edge cases identified by BA
+      - PM scope confirmation or adjustments
+      - UX flow notes and interaction patterns (if UI involved)
+      - Open questions requiring {user_name} decision (if any)
+    </action>
+    <ask>
+      ## Phase 2 Complete — Requirements and UX Defined
+
+      BA, PM, and UX Designer have produced a Requirements + UX Brief (see above).
+
+      Type CONFIRM to proceed to architecture design.
+      Or describe changes needed before continuing.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 3: Technical Design — Architect
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="5" goal="Load Architect persona">
+    <action>Load and read {agent_path}/architect.md — adopt Winston (Architect) persona completely</action>
+    <action>Architecture docs are already in context via input_file_patterns</action>
+  </step>
+
+  <step n="6" goal="Architect: Design the technical solution">
+    <action>As Architect: Review the story, Requirements + UX Brief from Phase 2, and all architecture docs</action>
+    <action>Enforce split-brain rule — classify this story's domain:
+      - Commerce (orders, payments, vendors) → backend/ (mercur-db)
+      - Customer Experience (cards, decks, community, pricing) → customer-backend/ (sidedecked-db)
+      - Frontend → storefront/ or vendorpanel/
+      - NEVER allow direct connection between mercur-db and sidedecked-db
+    </action>
+    <action>Identify all impacted files and modules</action>
+    <action>Specify any new database entities, migrations, or schema changes needed</action>
+    <action>Define API contracts for any new or modified endpoints</action>
+    <action>Identify integration points with external systems (Stripe, Algolia, Redis, MinIO, Resend)</action>
+    <action>Flag architectural risks or decisions requiring {user_name} confirmation</action>
+    <action>Output a Technical Design Note:
+      - Domain classification and routing
+      - Affected files/modules list
+      - New entities/migrations (if any)
+      - API contract changes (if any)
+      - Integration touchpoints
+      - Architectural risks or open decisions
+    </action>
+    <ask>
+      ## Phase 3 Complete — Technical Design Ready
+
+      Architect has produced a Technical Design Note (see above).
+
+      Type CONFIRM to proceed to development.
+      Or describe changes needed to the design.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 4: Development — Dev (TDD)
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="7" goal="Load Dev persona and execute story">
+    <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona completely</action>
+    <action>Context already contains: story file, Requirements + UX Brief, Technical Design Note</action>
+  </step>
+
+  <step n="8" goal="Dev: Implement story with TDD">
+    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml" />
+    <ask>
+      ## Phase 4 Complete — Implementation Done
+
+      Dev has implemented the story and unit tests.
+
+      Before confirming, verify:
+      - [ ] All acceptance criteria marked (IMPLEMENTED) in the story file
+      - [ ] Quality gate passed: npm run lint and npm run typecheck and npm run build and npm test
+      - [ ] Test coverage above 80% on changed modules
+
+      Type CONFIRM to proceed to QA.
+      Or describe issues to fix first.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 5: Quality Assurance — QA
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="9" goal="Load QA persona">
+    <action>Load and read {agent_path}/qa.md — adopt Quinn (QA) persona completely</action>
+  </step>
+
+  <step n="10" goal="QA: Validate tests and coverage">
+    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/qa/automate/workflow.yaml" />
+    <action>Verify test coverage is above 80% on all changed modules</action>
+    <action>Confirm all quality gates pass in the affected repo(s)</action>
+    <action>Report any failures with specific file and line references</action>
+    <action>Output a QA Report:
+      - Quality gate results (lint / typecheck / build / test)
+      - Coverage percentage per changed module
+      - Any failures or gaps found
+    </action>
+    <ask>
+      ## Phase 5 Complete — QA Validated
+
+      Quinn has run tests and produced a QA Report (see above).
+
+      Type CONFIRM to proceed to documentation.
+      Or describe issues to fix before closing out.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 6: Documentation — Tech Writer
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="11" goal="Load Tech Writer persona">
+    <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
+  </step>
+
+  <step n="12" goal="Tech Writer: Update all relevant documentation">
+    <action>Identify all documentation impacted by this story: README.md, CHANGELOG.md, architecture docs, API docs</action>
+    <action>Update CHANGELOG.md — add entry under the correct version/date section describing what was built</action>
+    <action>Update architecture docs if new patterns, components, or integrations were introduced</action>
+    <action>Update the story file — mark all acceptance criteria as (IMPLEMENTED)</action>
+    <action>Update sprint-status.yaml — set story status to 'done'</action>
+    <action>Output a Documentation Update Summary:
+      - Files updated and what changed in each
+      - Any documentation gaps that remain (and why)
+    </action>
+    <ask>
+      ## Phase 6 Complete — Documentation Updated
+
+      Tech Writer has updated all relevant documentation (see above).
+
+      Type CONFIRM to finalise the story lifecycle.
+      Or describe any remaining documentation gaps.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       COMPLETE
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="13" goal="Story lifecycle complete">
+    <action>Output a final Lifecycle Summary:
+      - Story key and title
+      - All 6 phases completed with brief status per phase
+      - Total files changed
+      - Final test coverage achieved
+    </action>
+    <action>Remind {user_name}: run git commit using conventional commit format (type(scope): description) — no AI references in commit messages</action>
+  </step>
+
+</workflow>

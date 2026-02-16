@@ -146,6 +146,8 @@ For new epics or complex features, follow this path in order:
 6. Per story: /bmad-bmm-dev-story → /bmad-bmm-code-review
 ```
 
+For a single story end-to-end (all agents, approval gates between phases): `/bmad-bmm-story-lifecycle`
+
 For bug fixes and small features: `/bmad-bmm-quick-spec` → `/bmad-bmm-dev-story` → `/bmad-bmm-code-review`
 
 BMAD outputs: `_bmad-output/planning-artifacts/` (PRDs, architecture) · `_bmad-output/implementation-artifacts/` (stories, QA)
