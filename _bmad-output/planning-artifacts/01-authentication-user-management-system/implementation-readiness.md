@@ -1,4 +1,4 @@
-﻿---
+---
 stepsCompleted:
   - step-01-document-discovery
   - step-02-prd-analysis
@@ -19,7 +19,7 @@ inputDocuments:
 ## PM Validation Findings
 
 - Requirement traceability to user stories and acceptance criteria is present.
-- Scope and status are synchronized with module-status.json.
+- Scope and status are synchronized with docs/specifications/00-system-overview.md.
 - Acceptance criteria statuses remain in the approved parseable set.
 
 ## Architecture Readiness Findings

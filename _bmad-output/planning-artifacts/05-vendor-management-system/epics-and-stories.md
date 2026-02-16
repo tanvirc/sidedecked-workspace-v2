@@ -1,33 +1,78 @@
-﻿---
-stepsCompleted:
-  - step-01-init
-  - step-02-discovery
-  - step-03-success
-  - step-04-journeys
-  - step-05-domain
-  - step-08-scoping
-  - step-09-functional
-  - step-10-nonfunctional
-  - step-12-complete
-inputDocuments:
-  - docs/specifications/04-vendor-management-system.md
-workflowType: 'prd'
 ---
-# Product Requirements Document - Vendor Management System
+stepsCompleted:
+  - step-01-validate-prerequisites
+  - step-02-design-epics
+  - step-03-create-stories
+  - step-04-final-validation
+inputDocuments:
+  - docs/specifications/05-vendor-management-system.md
+---
+# Vendor Management System - Epic Breakdown
 
-**Author:** CodexSandboxOffline
-**Date:** 2026-02-16
-**Spec ID:** 04-vendor-management-system
-**Status:** in_progress
+## Overview
 
-## PRD Baseline
+This document decomposes 05-vendor-management-system into implementation-ready epics and stories for BMAD execution.
 
-- This specification is the source-of-truth PRD for the bounded context above.
-- Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
-- Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
-- Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
+## Requirements Inventory
 
-## Functional Requirements
+### Functional Requirements
+
+- Vendor Dashboard & Analytics
+- Inventory Management
+- Pricing & Market Intelligence
+- Automation Engine
+- Product Listing & Catalog Management
+- Order Fulfillment & Shipping
+- Returns & Customer Service Management
+- Reviews & Reputation Management
+
+### NonFunctional Requirements
+
+- Technical requirements are synchronized from the source specification.
+- Security and performance constraints are synchronized from the source specification.
+
+### Additional Requirements
+
+- Business rules and integration constraints remain authoritative in the source specification.
+
+### FR Coverage Map
+
+- Epic-to-story coverage is represented by the complete story list below.
+
+## Epic List
+
+- Vendor Dashboard & Analytics
+- Inventory Management
+- Pricing & Market Intelligence
+- Automation Engine
+- Product Listing & Catalog Management
+- Order Fulfillment & Shipping
+- Returns & Customer Service Management
+- Reviews & Reputation Management
+
+## Story Index
+
+- Performance Dashboard
+- Sales Analytics & Insights
+- Financial Reporting
+- Bulk CSV Import System
+- Inventory Tracking & Management
+- Listing Optimization Tools
+- Dynamic Pricing Tools
+- Market Intelligence Dashboard
+- Listing Automation
+- Communication Automation
+- Create Product Listings
+- Manage Existing Listings
+- Listing Quality Management
+- Vendor Order Processing
+- Shipping Management & Optimization
+- Vendor Return Processing
+- Customer Service Tools
+- Vendor Review Response System
+- Reputation Management & Analytics
+
+## Full Epic and Story Breakdown
 
 ### Epic 1: Vendor Dashboard & Analytics
 
@@ -92,7 +137,7 @@ _As a vendor, I want to see comprehensive performance metrics so that I can unde
   - Location: Customer chart data in statistics API
 - ✅ Trend analysis with month-over-month and year-over-year comparisons (IMPLEMENTED)
   - Location: Chart data with date range comparisons
-- ❌ Export functionality for all analytics data in CSV/Excel format (NOT BUILT)
+- ❌ Export functionality for all analytics data in CSV format (NOT BUILT)
 
 #### User Story 1.2: Sales Analytics & Insights
 
@@ -1288,33 +1333,4 @@ _As a vendor, I want to monitor and improve my reputation so that I can build tr
 - Reputation recovery programs for vendors with declining ratings
 - Brand reputation monitoring and social media integration
 
-## Non-Functional Requirements
-
-### Technical Requirements
-
-
-
-### Security Requirements
-
-
-
-### Performance Requirements
-
-
-
-### Testing Requirements
-
-
-
-## Additional Requirements
-
-### Business Rules
-
-
-
-### Integration Requirements
-
-
-
-### UI/UX Requirements
 

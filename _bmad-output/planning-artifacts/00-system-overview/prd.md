@@ -1,4 +1,4 @@
-﻿---
+---
 stepsCompleted:
   - step-01-init
   - step-02-discovery
@@ -25,7 +25,7 @@ Defines the cross-specification BMAD workflow contract and authoritative status/
 
 ## Requirements
 
-- Maintain synchronized spec ledger to module-status.json.
+- Maintain synchronized spec ledger to docs/specifications/00-system-overview.md.
 - Preserve split-domain routing and boundary constraints.
 - Keep acceptance criteria automation commands consistent and executable.
 

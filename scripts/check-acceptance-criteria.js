@@ -3,8 +3,8 @@
   Check acceptance criteria completion inside a specification markdown file.
 
   Usage:
-    node scripts/check-acceptance-criteria.js --id 04-vendor-management-system [--next-story]
-    node scripts/check-acceptance-criteria.js --file docs/specifications/04-vendor-management-system.md [--next-story]
+    node scripts/check-acceptance-criteria.js --id 05-vendor-management-system [--next-story]
+    node scripts/check-acceptance-criteria.js --file docs/specifications/05-vendor-management-system.md [--next-story]
 
   Exit codes:
     0 = all acceptance criteria implemented
@@ -143,7 +143,7 @@ function parseSpec(markdown) {
         if (incomplete.length) {
           console.log(`- ${storyKey}`);
           for (const it of incomplete) {
-            console.log(`  • L${it.line}: ${it.text}`);
+            console.log(`  - L${it.line}: ${it.text}`);
           }
         }
       }
@@ -156,3 +156,4 @@ function parseSpec(markdown) {
     process.exit(1);
   }
 })();
+

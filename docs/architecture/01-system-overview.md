@@ -101,7 +101,7 @@ graph TB
 ```text
 sidedecked-workspace-v2/                  # Workspace repo (shared docs, scripts, orchestration)
 |-- AGENTS.md
-|-- module-status.json
+|-- docs/specifications/00-system-overview.md
 |-- docs/
 |
 |-- backend/                              # Independent commerce repo (mercur-db)

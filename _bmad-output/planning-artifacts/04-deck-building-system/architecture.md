@@ -1,4 +1,4 @@
-﻿---
+---
 stepsCompleted:
   - step-01-init
   - step-02-context
@@ -7,27 +7,27 @@ stepsCompleted:
   - step-07-validation
   - step-08-complete
 inputDocuments:
-  - docs/specifications/04-vendor-management-system.md
+  - docs/specifications/04-deck-building-system.md
 ---
-# Architecture Decisions - Vendor Management System
+# Architecture Decisions - Deck Building System
 
 **Author:** CodexSandboxOffline
 **Date:** 2026-02-16
-**Spec ID:** 04-vendor-management-system
+**Spec ID:** 04-deck-building-system
 
 ## Context and Routing Boundaries
 
-- Bounded context: Vendor operations, analytics, and fulfillment workflows
-- Primary owner repo: backend
-- Participating repos: backend, vendorpanel, storefront
+- Bounded context: Deck construction, validation, and sharing
+- Primary owner repo: customer-backend
+- Participating repos: customer-backend, storefront, backend
 - API boundary constraints:
-  - Vendor onboarding, catalog operations, and fulfillment logic run in backend APIs
-  - Vendorpanel drives all vendor workflows as an API client
-  - Customer-facing status surfaces in storefront via backend APIs
+  - Deck CRUD, validation, and collaboration APIs remain in customer-backend
+  - Storefront deck builder consumes deck APIs only
+  - Commerce listing generation from decks uses explicit backend-to-customer-backend API contracts
 - Data boundary constraints:
-  - Vendor, order, payout, and listing business data remains in mercur-db
-  - Any card intelligence uses customer-backend APIs and never direct DB coupling
-  - Automation jobs publish events instead of writing across domain databases
+  - Deck entities and social metadata remain in sidedecked-db
+  - Commerce order/listing state remains in mercur-db
+  - No direct deck-table reads from commerce services
 
 ## Architecture Constraints
 
@@ -46,4 +46,5 @@ inputDocuments:
 
 
 ### Performance
+
 

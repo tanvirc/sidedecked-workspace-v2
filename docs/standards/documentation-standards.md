@@ -32,14 +32,14 @@
 
 ### File Naming Conventions
 ```
-# ✅ CORRECT: Kebab-case with descriptive names
+# âœ… CORRECT: Kebab-case with descriptive names
 api-reference.md
 authentication-architecture.md
 deck-builder-integration-guide.md
-04-vendor-management-system.md
+05-vendor-management-system.md
 ADR-001-database-selection.md
 
-# ❌ INCORRECT: Inconsistent naming
+# âŒ INCORRECT: Inconsistent naming
 API_Reference.md
 authenticationArchitecture.md
 deckbuilder.md
@@ -216,7 +216,7 @@ graph TD
 **REQUIREMENT: All APIs must have OpenAPI 3.0+ documentation**
 
 ```typescript
-// ✅ CORRECT: Comprehensive API Documentation
+// âœ… CORRECT: Comprehensive API Documentation
 /**
  * @openapi
  * /api/decks/{id}:
@@ -352,7 +352,7 @@ Before you start, ensure you have:
 1. Enter your deck name in the **"Deck Name"** field
 2. Select your game from the **"Game"** dropdown:
    - Magic: The Gathering
-   - Pokémon
+   - PokÃ©mon
    - Yu-Gi-Oh!
    - One Piece TCG
 3. Choose your format from the **"Format"** dropdown
@@ -455,11 +455,11 @@ try {
 
 ### Inline Code Documentation
 ```typescript
-// ✅ CORRECT: Comprehensive Code Documentation
+// âœ… CORRECT: Comprehensive Code Documentation
 /**
  * Validates a deck against format-specific rules and returns detailed validation results.
  * 
- * This service supports validation for multiple TCG formats including MTG, Pokémon,
+ * This service supports validation for multiple TCG formats including MTG, PokÃ©mon,
  * Yu-Gi-Oh!, and One Piece TCG. Each format has specific rules for deck composition,
  * banned cards, and card quantities.
  * 
@@ -550,11 +550,11 @@ npm run build
 ## Project Structure
 ```
 src/
-├── api/          # API routes and controllers
-├── services/     # Business logic services
-├── entities/     # Database entities
-├── types/        # TypeScript type definitions
-└── utils/        # Utility functions
+â”œâ”€â”€ api/          # API routes and controllers
+â”œâ”€â”€ services/     # Business logic services
+â”œâ”€â”€ entities/     # Database entities
+â”œâ”€â”€ types/        # TypeScript type definitions
+â””â”€â”€ utils/        # Utility functions
 ```
 
 ## Environment Variables
@@ -599,10 +599,10 @@ MIT License - see main repository LICENSE file for details.
 #### Documentation Health Metrics
 | Metric | Target | Current Status |
 |--------|--------|---------------|
-| Link Validity | 100% | ✅ 98% |
-| Example Accuracy | 100% | ✅ 95% |
-| Up-to-date Screenshots | 90% | ⚠️ 75% |
-| API Coverage | 100% | ✅ 100% |
+| Link Validity | 100% | âœ… 98% |
+| Example Accuracy | 100% | âœ… 95% |
+| Up-to-date Screenshots | 90% | âš ï¸ 75% |
+| API Coverage | 100% | âœ… 100% |
 
 ### Documentation Versioning
 ```markdown
@@ -666,7 +666,7 @@ jobs:
 
 ## Documentation Anti-Patterns
 
-### ❌ NEVER Do These
+### âŒ NEVER Do These
 - **Outdated examples**: Code examples that don't work with current version
 - **Broken links**: Links to non-existent pages or resources
 - **Incomplete information**: Missing required parameters or steps
@@ -676,7 +676,7 @@ jobs:
 - **Assume knowledge**: Not explaining prerequisites or context
 - **Generic examples**: Examples that don't relate to actual use cases
 
-### ✅ ALWAYS Do These
+### âœ… ALWAYS Do These
 - **Test all examples**: Every code example must be tested and working
 - **Keep it current**: Update documentation with every related code change
 - **Use clear structure**: Headers, lists, and formatting for readability
@@ -703,7 +703,7 @@ jobs:
 #!/bin/bash
 # scripts/validate-docs.sh
 
-echo "🔍 Validating documentation..."
+echo "ðŸ” Validating documentation..."
 
 # Check for broken links
 echo "Checking links..."
@@ -725,7 +725,8 @@ npm run test --if-present
 echo "Generating API documentation..."
 npm run generate:oas --if-present
 
-echo "✅ Documentation validation complete!"
+echo "âœ… Documentation validation complete!"
 ```
 
-**Remember: Documentation is not an afterthought—it's an integral part of the development process. Good documentation enables teams to move faster and build better software.**
+**Remember: Documentation is not an afterthoughtâ€”it's an integral part of the development process. Good documentation enables teams to move faster and build better software.**
+

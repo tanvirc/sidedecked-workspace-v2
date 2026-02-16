@@ -1,4 +1,4 @@
-﻿---
+---
 stepsCompleted:
   - step-01-init
   - step-02-vision
@@ -7,7 +7,7 @@ stepsCompleted:
   - step-05-scope
   - step-06-complete
 inputDocuments:
-  - docs/specifications/05-deck-building-system.md
+  - docs/specifications/04-deck-building-system.md
 date: 2026-02-16
 author: CodexSandboxOffline
 ---
@@ -37,4 +37,5 @@ The Deck Building System enables users to create, manage, and share card decks f
 - Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
 - Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
 - Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
+
 

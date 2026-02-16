@@ -1,4 +1,4 @@
-﻿---
+---
 stepsCompleted:
   - step-01-document-discovery
   - step-02-prd-analysis
@@ -7,19 +7,19 @@ stepsCompleted:
   - step-05-epic-quality-review
   - step-06-final-assessment
 inputDocuments:
-  - docs/specifications/04-vendor-management-system.md
+  - docs/specifications/05-vendor-management-system.md
 ---
 # Implementation Readiness Report - Vendor Management System
 
 **Author:** CodexSandboxOffline
 **Date:** 2026-02-16
-**Spec ID:** 04-vendor-management-system
+**Spec ID:** 05-vendor-management-system
 **Module Status:** in_progress
 
 ## PM Validation Findings
 
 - Requirement traceability to user stories and acceptance criteria is present.
-- Scope and status are synchronized with module-status.json.
+- Scope and status are synchronized with docs/specifications/00-system-overview.md.
 - Acceptance criteria statuses remain in the approved parseable set.
 
 ## Architecture Readiness Findings
@@ -31,8 +31,8 @@ inputDocuments:
 ## Delivery and Validation Plan
 
 - Required validation entrypoints:
-  - node scripts/check-acceptance-criteria.js --id 04-vendor-management-system
-  - node scripts/check-acceptance-criteria.js --id 04-vendor-management-system --next-story
+  - node scripts/check-acceptance-criteria.js --id 05-vendor-management-system
+  - node scripts/check-acceptance-criteria.js --id 05-vendor-management-system --next-story
   - node scripts/next-spec.js
 - Repo-level checks must include lint/typecheck/build/tests where applicable before marking the spec complete.
 - Story/spec status transitions are controlled through scripts/mark-spec.js after criteria pass.
@@ -66,6 +66,7 @@ inputDocuments:
 ## Risk and Gap Traceability
 
 - Open acceptance criteria are tracked directly in the source specification.
-- Source file: docs/specifications/04-vendor-management-system.md
-- Next-story command: node scripts/check-acceptance-criteria.js --id 04-vendor-management-system --next-story
+- Source file: docs/specifications/05-vendor-management-system.md
+- Next-story command: node scripts/check-acceptance-criteria.js --id 05-vendor-management-system --next-story
+
 

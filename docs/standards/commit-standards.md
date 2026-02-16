@@ -17,48 +17,48 @@ Save this as `.husky/pre-commit` or run manually before each commit:
 echo "Running pre-commit checks for SideDecked..."
 
 # 1. Run linter across all services
-echo "🔍 Running lint checks..."
+echo "ðŸ” Running lint checks..."
 npm run lint
 if [ $? -ne 0 ]; then
-  echo "❌ Lint failed. Fix errors before committing."
+  echo "âŒ Lint failed. Fix errors before committing."
   exit 1
 fi
 
 # 2. Run type check across all services
-echo "📝 Running TypeScript checks..."
+echo "ðŸ“ Running TypeScript checks..."
 npm run typecheck
 if [ $? -ne 0 ]; then
-  echo "❌ Type check failed. Fix errors before committing."
+  echo "âŒ Type check failed. Fix errors before committing."
   exit 1
 fi
 
 # 3. Run tests across all services
-echo "🧪 Running test suite..."
+echo "ðŸ§ª Running test suite..."
 npm test
 if [ $? -ne 0 ]; then
-  echo "❌ Tests failed. Fix failing tests before committing."
+  echo "âŒ Tests failed. Fix failing tests before committing."
   exit 1
 fi
 
 # 4. Run build across all services
-echo "🏗️ Running build checks..."
+echo "ðŸ—ï¸ Running build checks..."
 npm run build
 if [ $? -ne 0 ]; then
-  echo "❌ Build failed. Fix build errors before committing."
+  echo "âŒ Build failed. Fix build errors before committing."
   exit 1
 fi
 
 # 5. Check test coverage (must be >80% where configured)
-echo "📊 Checking test coverage..."
+echo "ðŸ“Š Checking test coverage..."
 npm run test -- --coverage --if-present
 COVERAGE_CHECK=$?
 if [ $COVERAGE_CHECK -ne 0 ]; then
-  echo "❌ Coverage check failed. Ensure coverage is >=80% for repos with coverage tooling."
+  echo "âŒ Coverage check failed. Ensure coverage is >=80% for repos with coverage tooling."
   exit 1
 fi
 
 # 6. Verify MercurJS specific patterns
-echo "🔧 Verifying MercurJS patterns..."
+echo "ðŸ”§ Verifying MercurJS patterns..."
 # Check for forbidden patterns
 FORBIDDEN_PATTERNS=(
   "MedusaRequest[^S]"
@@ -70,56 +70,56 @@ FORBIDDEN_PATTERNS=(
 
 for pattern in "${FORBIDDEN_PATTERNS[@]}"; do
   if grep -r "$pattern" --include="*.ts" --include="*.tsx" src/; then
-    echo "❌ Forbidden MercurJS pattern found: $pattern"
+    echo "âŒ Forbidden MercurJS pattern found: $pattern"
     echo "See AGENTS.md for correct patterns"
     exit 1
   fi
 done
 
 # 7. Feature Verification (MANDATORY)
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📋 30-SECOND REALITY CHECK - Answer ALL questions:"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-read -p "✓ Did you run/build the code? (y/n): " -n 1 -r
+echo "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”"
+echo "ðŸ“‹ 30-SECOND REALITY CHECK - Answer ALL questions:"
+echo "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”"
+read -p "âœ“ Did you run/build the code? (y/n): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ You must run/build the code before committing."
+  echo "âŒ You must run/build the code before committing."
   exit 1
 fi
 
-read -p "✓ Did you trigger the exact feature you changed? (y/n): " -n 1 -r
+read -p "âœ“ Did you trigger the exact feature you changed? (y/n): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ You must test the actual feature before committing."
+  echo "âŒ You must test the actual feature before committing."
   exit 1
 fi
 
-read -p "✓ Did you see the expected result with your own observation? (y/n): " -n 1 -r
+read -p "âœ“ Did you see the expected result with your own observation? (y/n): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ You must verify the result before committing."
+  echo "âŒ You must verify the result before committing."
   exit 1
 fi
 
-read -p "✓ Did you check for error messages in console/logs? (y/n): " -n 1 -r
+read -p "âœ“ Did you check for error messages in console/logs? (y/n): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ You must check for errors before committing."
+  echo "âŒ You must check for errors before committing."
   exit 1
 fi
 
-read -p "✓ Did you test cross-service integration if applicable? (y/n): " -n 1 -r
+read -p "âœ“ Did you test cross-service integration if applicable? (y/n): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ You must test service integration before committing."
+  echo "âŒ You must test service integration before committing."
   exit 1
 fi
 
 # 8. Documentation Check (for phase work)
 if git diff --cached --name-only | grep -E "src/|docs/"; then
-  echo "🔍 Checking documentation updates..."
+  echo "ðŸ” Checking documentation updates..."
   if ! git diff --cached --name-only | grep -E "(docs/|README|CHANGELOG)"; then
-    echo "⚠️  WARNING: No documentation updates detected for code changes."
+    echo "âš ï¸  WARNING: No documentation updates detected for code changes."
     echo "Consider updating:"
     echo "  - README.md for new features"
     echo "  - CHANGELOG.md for version tracking"
@@ -127,13 +127,13 @@ if git diff --cached --name-only | grep -E "src/|docs/"; then
     read -p "Continue without documentation updates? (y/n): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-      echo "❌ Add documentation updates before committing."
+      echo "âŒ Add documentation updates before committing."
       exit 1
     fi
   fi
 fi
 
-echo "✅ All pre-commit checks passed!"
+echo "âœ… All pre-commit checks passed!"
 ```
 
 ## Conventional Commit Format
@@ -200,7 +200,7 @@ type(scope): description
 
 ### Example Commit Messages
 
-#### ✅ CORRECT Examples
+#### âœ… CORRECT Examples
 ```bash
 feat(auth): implement JWT refresh token rotation
 
@@ -248,10 +248,10 @@ refactor(vendor): extract CSV parsing logic to service
 - Improve testability and maintainability
 ```
 
-#### ❌ FORBIDDEN Examples
+#### âŒ FORBIDDEN Examples
 ```bash
 # NO AI REFERENCES
-feat(auth): implement JWT tokens 🤖 Generated with Claude Code
+feat(auth): implement JWT tokens ðŸ¤– Generated with Claude Code
 fix: resolve auth bug Co-Authored-By: Claude <noreply@anthropic.com>
 docs: update readme Generated with AI assistance
 
@@ -306,9 +306,9 @@ feat(vendor): complete vendor management system implementation
 - Create vendor automation engine
 - Add 89% test coverage for all vendor features
 - Update architecture documentation
-- Mark specification as completed in module-status.json
+- Mark specification as completed in docs/specifications/00-system-overview.md
 
-Closes 04-vendor-management-system specification
+Closes 05-vendor-management-system specification
 Refs #234, #345, #456
 ```
 
@@ -522,3 +522,4 @@ git commit -m "feat(vendor): add CSV import validation"
 ```
 
 **Remember: Commit standards ensure code quality, project maintainability, and team collaboration. These standards are mandatory and non-negotiable.**
+

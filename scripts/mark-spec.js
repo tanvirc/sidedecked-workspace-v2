@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 /*
-  Mark a specification status in module-status.json with acceptance criteria guard.
+  Mark a specification status in BMAD specification frontmatter with
+  acceptance criteria guard.
 
   Usage:
-    node scripts/mark-spec.js --id 04-vendor-management-system --status in_progress
-    node scripts/mark-spec.js --id 04-vendor-management-system --status completed [--force]
+    node scripts/mark-spec.js --id 05-vendor-management-system --status in_progress
+    node scripts/mark-spec.js --id 05-vendor-management-system --status completed [--force]
 */
 
 const fs = require('fs');
+const path = require('path');
 const { spawnSync } = require('child_process');
+
+const SPEC_DIR = path.join('docs', 'specifications');
+const INDEX_FILE = path.join(SPEC_DIR, '00-system-overview.md');
 
 function parseArgs(argv) {
   const args = { id: null, status: null, force: false };
@@ -25,13 +30,67 @@ function parseArgs(argv) {
   return args;
 }
 
-function loadStatus() {
-  const raw = fs.readFileSync('module-status.json', 'utf8');
-  return JSON.parse(raw);
+function splitFrontmatter(markdown) {
+  const m = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!m) return null;
+  return {
+    frontmatter: m[1],
+    body: markdown.slice(m[0].length),
+    matched: m[0],
+  };
 }
 
-function saveStatus(json) {
-  fs.writeFileSync('module-status.json', JSON.stringify(json, null, 2) + '\n');
+function setFrontmatterValue(frontmatter, key, value) {
+  const lines = frontmatter.split(/\r?\n/);
+  const re = new RegExp(`^${key}:\\s*.*$`, 'i');
+  let found = false;
+  const out = lines.map(line => {
+    if (re.test(line)) {
+      found = true;
+      return `${key}: ${value}`;
+    }
+    return line;
+  });
+  if (!found) out.push(`${key}: ${value}`);
+  return out.join('\n');
+}
+
+function updateMarkdownFrontmatter(filePath, mutator) {
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const parsed = splitFrontmatter(raw);
+  if (!parsed) {
+    throw new Error(`Missing frontmatter in ${filePath}`);
+  }
+  const nextFrontmatter = mutator(parsed.frontmatter);
+  const next = `---\n${nextFrontmatter}\n---\n${parsed.body}`;
+  fs.writeFileSync(filePath, next, 'utf8');
+}
+
+function listSpecIds() {
+  return fs
+    .readdirSync(SPEC_DIR)
+    .filter(name => /^\d{2}-.+\.md$/.test(name) && !/^00-/.test(name))
+    .map(name => name.replace(/\.md$/, ''));
+}
+
+function updateIndexDocument(id, status) {
+  let raw = fs.readFileSync(INDEX_FILE, 'utf8');
+
+  const parsed = splitFrontmatter(raw);
+  if (!parsed) {
+    throw new Error(`Missing frontmatter in ${INDEX_FILE}`);
+  }
+
+  const nextFrontmatter = setFrontmatterValue(parsed.frontmatter, 'currentSpecification', id);
+  raw = `---\n${nextFrontmatter}\n---\n${parsed.body}`;
+
+  raw = raw.replace(/^-\s+Current active specification:\s+.*$/m, `- Current active specification: ${id}`);
+
+  const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const rowPattern = new RegExp(`^(\\|\\s*${escapedId}\\s*\\|\\s*)([^|]+?)(\\s*\\|.*)$`, 'm');
+  raw = raw.replace(rowPattern, (_, prefix, _oldStatus, suffix) => `${prefix}${status}${suffix}`);
+
+  fs.writeFileSync(INDEX_FILE, raw, 'utf8');
 }
 
 (function main() {
@@ -63,24 +122,30 @@ function saveStatus(json) {
       }
     }
 
-    const data = loadStatus();
-    if (!data.specifications || !(id in data.specifications)) {
-      console.error(`ERROR: Spec id not found in module-status.json: ${id}`);
+    const specIds = listSpecIds();
+    if (!specIds.includes(id)) {
+      console.error(`ERROR: Spec id not found in docs/specifications: ${id}`);
       process.exit(1);
     }
 
-    data.specifications[id] = status;
-    data.current_specification = id;
-    data.last_updated = new Date().toISOString();
-    // recompute completed_count
-    data.completed_count = Object.values(data.specifications).filter(v => v === 'completed').length;
-    data.total_count = Object.keys(data.specifications).length;
+    for (const specId of specIds) {
+      const specFile = path.join(SPEC_DIR, `${specId}.md`);
+      updateMarkdownFrontmatter(specFile, frontmatter => {
+        let next = setFrontmatterValue(frontmatter, 'currentSpecification', specId === id ? 'true' : 'false');
+        if (specId === id) {
+          next = setFrontmatterValue(next, 'status', status);
+        }
+        return next;
+      });
+    }
 
-    saveStatus(data);
+    updateIndexDocument(id, status);
+
     console.log(`Updated ${id} -> ${status}`);
   } catch (err) {
     console.error('ERROR:', err?.message || err);
     process.exit(1);
   }
 })();
+
 

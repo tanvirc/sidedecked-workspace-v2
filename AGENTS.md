@@ -96,7 +96,7 @@ Planning outputs must map to workspace source-of-truth files:
 - Product brief/research can live in `_bmad-output/planning-artifacts/`.
 - PRD and story acceptance criteria must be synchronized into `docs/specifications/<spec-id>.md`.
 - Architecture decisions must be synchronized to `docs/architecture/` (and ADRs in `docs/architecture/adr/` when relevant).
-- Story breakdown must align with the active spec selected by `module-status.json`.
+- Story breakdown must align with the active spec selected by `docs/specifications/00-system-overview.md`.
 
 Status and gate integration:
 - Before planning a new unit, select the active spec with `node scripts/next-spec.js`.
@@ -129,10 +129,10 @@ Medusa/MercurJS forbidden patterns:
 
 ## Work Selection and Acceptance Gate
 
-Source of truth: `module-status.json`.
+Source of truth: `docs/specifications/00-system-overview.md`.
 
 Selection order:
-1. Continue `current_specification` unless completed.
+1. Continue `currentSpecification` unless completed.
 2. Otherwise use lowest-numbered `in_progress`.
 3. Otherwise use lowest-numbered `not_started`.
 

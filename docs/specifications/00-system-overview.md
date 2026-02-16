@@ -1,8 +1,8 @@
-﻿---
+---
 workflowType: bmad-specification-index
 workflowVersion: 6.0.0-Beta.8
 indexScope: docs/specifications
-currentSpecification: 04-vendor-management-system
+currentSpecification: 04-deck-building-system
 stepsCompleted:
   - sidedecked-router.route
   - analyst.create-product-brief
@@ -30,13 +30,13 @@ This document is the root orchestration index for BMAD-driven specifications in 
 
 ## Active Spec Selection Rules
 
-Use module-status.json as source of truth:
+Use this document as source of truth:
 
-1. Continue current_specification unless complete.
+1. Continue currentSpecification unless complete.
 2. Otherwise choose the lowest-numbered in_progress spec.
 3. Otherwise choose the lowest-numbered not_started spec.
 
-- Current active specification: 04-vendor-management-system
+- Current active specification: 04-deck-building-system
 - Command: node scripts/next-spec.js
 
 ## Specification Ledger
@@ -46,8 +46,8 @@ Use module-status.json as source of truth:
 | 01-authentication-user-management-system | completed | backend | Authentication and user identity management | docs/specifications/01-authentication-user-management-system.md |
 | 02-commerce-marketplace-system | completed | backend | Commerce operations and marketplace transactions | docs/specifications/02-commerce-marketplace-system.md |
 | 03-tcg-catalog-card-database-system | completed | customer-backend | Universal TCG catalog and ETL pipelines | docs/specifications/03-tcg-catalog-card-database-system.md |
-| 04-vendor-management-system | in_progress | backend | Vendor operations, analytics, and fulfillment workflows | docs/specifications/04-vendor-management-system.md |
-| 05-deck-building-system | completed | customer-backend | Deck construction, validation, and sharing | docs/specifications/05-deck-building-system.md |
+| 04-deck-building-system | in_progress | customer-backend | Deck construction, validation, and sharing | docs/specifications/04-deck-building-system.md |
+| 05-vendor-management-system | in_progress | backend | Vendor operations, analytics, and fulfillment workflows | docs/specifications/05-vendor-management-system.md |
 | 06-community-social-system | not_started | customer-backend | Community identity, messaging, and social interactions | docs/specifications/06-community-social-system.md |
 | 07-pricing-intelligence-system | not_started | customer-backend | Pricing ingestion, analytics, and alerting | docs/specifications/07-pricing-intelligence-system.md |
 | 08-search-discovery-system | not_started | customer-backend | Federated search and discovery across catalog, community, and marketplace | docs/specifications/08-search-discovery-system.md |
@@ -86,4 +86,5 @@ Every spec document (01 to 10) follows this BMAD layout:
 
 - Detailed BMAD artifacts should be generated into _bmad-output/planning-artifacts/<spec-id>/ and synchronized back into these specification files.
 - Acceptance criteria statuses inside story sections must remain machine-parseable for automation scripts.
+
 

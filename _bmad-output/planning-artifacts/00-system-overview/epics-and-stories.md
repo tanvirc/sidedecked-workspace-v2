@@ -23,5 +23,5 @@ Index-level orchestration epic for managing planning-to-implementation handoff a
 
 - Story 1.1: Route each request to a bounded context and owner repo
 - Story 2.1: Validate PRD and architecture readiness before story execution
-- Story 3.1: Keep module-status and acceptance checks synchronized
+- Story 3.1: Keep specification index status and acceptance checks synchronized
 

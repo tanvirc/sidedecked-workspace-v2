@@ -1,4 +1,4 @@
-﻿---
+---
 workflowType: bmad-specification
 workflowVersion: 6.0.0-Beta.8
 specId: 01-authentication-user-management-system
@@ -25,7 +25,7 @@ inputDocuments:
   - docs/architecture/02-architectural-principles.md
   - docs/standards/code-standards.md
   - docs/standards/testing-standards.md
-  - module-status.json
+  - docs/specifications/00-system-overview.md
 outputArtifacts:
   productBrief: _bmad-output/planning-artifacts/01-authentication-user-management-system/product-brief.md
   prd: _bmad-output/planning-artifacts/01-authentication-user-management-system/prd.md
@@ -79,7 +79,7 @@ The Authentication & User Management System provides secure user registration, a
 ## Step 5: PO Gate - PRD Validation (@pm)
 
 - Requirement traceability to user stories and acceptance criteria is present.
-- Scope and status are synchronized with module-status.json.
+- Scope and status are synchronized with docs/specifications/00-system-overview.md.
 - Acceptance criteria statuses remain in the approved parseable set.
 
 ## Step 6: PO Gate - Implementation Readiness (@architect)

@@ -1,66 +1,33 @@
-﻿---
-stepsCompleted:
-  - step-01-validate-prerequisites
-  - step-02-design-epics
-  - step-03-create-stories
-  - step-04-final-validation
-inputDocuments:
-  - docs/specifications/05-deck-building-system.md
 ---
-# Deck Building System - Epic Breakdown
+stepsCompleted:
+  - step-01-init
+  - step-02-discovery
+  - step-03-success
+  - step-04-journeys
+  - step-05-domain
+  - step-08-scoping
+  - step-09-functional
+  - step-10-nonfunctional
+  - step-12-complete
+inputDocuments:
+  - docs/specifications/04-deck-building-system.md
+workflowType: 'prd'
+---
+# Product Requirements Document - Deck Building System
 
-## Overview
+**Author:** CodexSandboxOffline
+**Date:** 2026-02-16
+**Spec ID:** 04-deck-building-system
+**Status:** completed
 
-This document decomposes 05-deck-building-system into implementation-ready epics and stories for BMAD execution.
+## PRD Baseline
 
-## Requirements Inventory
+- This specification is the source-of-truth PRD for the bounded context above.
+- Functional requirements are represented by epic/story decomposition and acceptance criteria in Step 7.
+- Non-functional requirements are captured in Technical, Security, Performance, and Testing sections below.
+- Acceptance criteria statuses must remain machine-parseable for scripts/check-acceptance-criteria.js.
 
-### Functional Requirements
-
-- Universal Deck Architecture
-- Deck Construction Interface
-- Collection Integration
-- Deck Sharing & Social Features
-- Import/Export & Tournament Tools
-
-### NonFunctional Requirements
-
-- Technical requirements are synchronized from the source specification.
-- Security and performance constraints are synchronized from the source specification.
-
-### Additional Requirements
-
-- Business rules and integration constraints remain authoritative in the source specification.
-
-### FR Coverage Map
-
-- Epic-to-story coverage is represented by the complete story list below.
-
-## Epic List
-
-- Universal Deck Architecture
-- Deck Construction Interface
-- Collection Integration
-- Deck Sharing & Social Features
-- Import/Export & Tournament Tools
-
-## Story Index
-
-- Multi-Game Deck Creation
-- Format-Specific Validation
-- Deck Zone Management
-- Drag-and-Drop Deck Editor
-- Advanced Card Search Integration
-- Deck Statistics & Analysis
-- Owned Card Tracking
-- Shopping Integration
-- Public Deck Sharing
-- Community Interaction
-- Collaboration Features
-- Multi-Format Import/Export
-- Tournament Preparation
-
-## Full Epic and Story Breakdown
+## Functional Requirements
 
 ### Epic 1: Universal Deck Architecture
 
@@ -1059,4 +1026,35 @@ _As a competitive player, I want tournament preparation tools so that I can opti
 - Opening hand evaluation with keep/mulligan recommendations
 - Tournament format specific optimizations and rule reminders
 - Professional player deck recommendations and strategy guides
+
+## Non-Functional Requirements
+
+### Technical Requirements
+
+
+
+### Security Requirements
+
+
+
+### Performance Requirements
+
+
+
+### Testing Requirements
+
+
+
+## Additional Requirements
+
+### Business Rules
+
+
+
+### Integration Requirements
+
+
+
+### UI/UX Requirements
+
 

@@ -1,9 +1,9 @@
-﻿---
+---
 workflowType: bmad-specification
 workflowVersion: 6.0.0-Beta.8
-specId: 04-vendor-management-system
+specId: 05-vendor-management-system
 status: in_progress
-currentSpecification: true
+currentSpecification: false
 primaryOwner: backend
 targetRepos:
   - backend
@@ -23,13 +23,13 @@ inputDocuments:
   - docs/architecture/02-architectural-principles.md
   - docs/standards/code-standards.md
   - docs/standards/testing-standards.md
-  - module-status.json
+  - docs/specifications/00-system-overview.md
 outputArtifacts:
-  productBrief: _bmad-output/planning-artifacts/04-vendor-management-system/product-brief.md
-  prd: _bmad-output/planning-artifacts/04-vendor-management-system/prd.md
-  architecture: _bmad-output/planning-artifacts/04-vendor-management-system/architecture.md
-  readinessReport: _bmad-output/planning-artifacts/04-vendor-management-system/implementation-readiness.md
-  stories: _bmad-output/planning-artifacts/04-vendor-management-system/epics-and-stories.md
+  productBrief: _bmad-output/planning-artifacts/05-vendor-management-system/product-brief.md
+  prd: _bmad-output/planning-artifacts/05-vendor-management-system/prd.md
+  architecture: _bmad-output/planning-artifacts/05-vendor-management-system/architecture.md
+  readinessReport: _bmad-output/planning-artifacts/05-vendor-management-system/implementation-readiness.md
+  stories: _bmad-output/planning-artifacts/05-vendor-management-system/epics-and-stories.md
 ---
 # Vendor Management System
 
@@ -77,7 +77,7 @@ The Vendor Management System provides comprehensive tools for vendors to efficie
 ## Step 5: PO Gate - PRD Validation (@pm)
 
 - Requirement traceability to user stories and acceptance criteria is present.
-- Scope and status are synchronized with module-status.json.
+- Scope and status are synchronized with docs/specifications/00-system-overview.md.
 - Acceptance criteria statuses remain in the approved parseable set.
 
 ## Step 6: PO Gate - Implementation Readiness (@architect)
@@ -151,7 +151,8 @@ _As a vendor, I want to see comprehensive performance metrics so that I can unde
   - Location: Customer chart data in statistics API
 - ✅ Trend analysis with month-over-month and year-over-year comparisons (IMPLEMENTED)
   - Location: Chart data with date range comparisons
-- ❌ Export functionality for all analytics data in CSV/Excel format (NOT BUILT)
+- ✅ Export functionality for all analytics data in CSV/Excel format (IMPLEMENTED)
+  - Location: `vendorpanel/src/routes/dashboard/components/dashboard-analytics-export.ts`
 
 #### User Story 1.2: Sales Analytics & Insights
 
@@ -231,6 +232,8 @@ _As a vendor, I want payout reports exportable in formats compatible with popula
 ### Epic 2: Inventory Management
 
 #### User Story 2.1: Bulk CSV Import System
+
+Priority: LOW
 
 _As a vendor, I want to upload my entire inventory via CSV so that I can quickly list thousands of cards without manual data entry._
 
@@ -1351,8 +1354,8 @@ _As a vendor, I want to monitor and improve my reputation so that I can build tr
 ## Step 8: Delivery and QA Plan (@dev + @qa)
 
 - Required validation entrypoints:
-  - node scripts/check-acceptance-criteria.js --id 04-vendor-management-system
-  - node scripts/check-acceptance-criteria.js --id 04-vendor-management-system --next-story
+  - node scripts/check-acceptance-criteria.js --id 05-vendor-management-system
+  - node scripts/check-acceptance-criteria.js --id 05-vendor-management-system --next-story
   - node scripts/next-spec.js
 - Repo-level checks must include lint/typecheck/build/tests where applicable before marking the spec complete.
 - Story/spec status transitions are controlled through scripts/mark-spec.js after criteria pass.
@@ -2038,4 +2041,5 @@ GET /vendor/optimization/suggestions - Get listing optimization suggestions
 - **Offline Functionality Testing**: Business continuity during connectivity issues
 - **Performance Testing**: Mobile dashboard and operation responsiveness
 - **Cross-platform Testing**: Consistency across iOS, Android, and web platforms
+
 
