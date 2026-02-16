@@ -6,6 +6,7 @@ vendorpanel/
 # Node/JS common ignores (workspace-level only)
 node_modules/
 .pnpm-store/
+.npm-cache/
 
 # Env and local overrides
 .env
