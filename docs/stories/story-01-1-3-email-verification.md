@@ -10,13 +10,13 @@ _As a user, I want to verify my email address so that I can receive important no
 
 ## Acceptance Criteria
 
-- (NOT BUILT) System sends verification email immediately after registration (email/password only; social OAuth users are auto-verified)
-- (NOT BUILT) Verification email contains secure, single-use, time-limited token (24-hour expiry; prior tokens invalidated on resend)
-- (NOT BUILT) Users can click email link to verify their account (cross-device: token in URL, login prompt if not authenticated)
-- (NOT BUILT) Users can request new verification email if needed (rate-limited: 3 resends per hour per customer)
-- (NOT BUILT) Unverified accounts have limited functionality: purchases blocked, selling blocked, direct messages blocked; browsing, cart, forum view allowed
-- (NOT BUILT) Clear indication in UI when email is not verified (EmailVerificationBanner: sticky amber, role="alert", dismissible per session)
-- (NOT BUILT) Users can change email address (triggers new verification; security notification sent to old email)
+- (IMPLEMENTED) System sends verification email immediately after registration (email/password only; social OAuth users are auto-verified)
+- (IMPLEMENTED) Verification email contains secure, single-use, time-limited token (24-hour expiry; prior tokens invalidated on resend)
+- (IMPLEMENTED) Users can click email link to verify their account (cross-device: token in URL, login prompt if not authenticated)
+- (IMPLEMENTED) Users can request new verification email if needed (rate-limited: 3 resends per hour per customer)
+- (IMPLEMENTED) Unverified accounts have limited functionality: purchases blocked, selling blocked, direct messages blocked; browsing, cart, forum view allowed
+- (IMPLEMENTED) Clear indication in UI when email is not verified (EmailVerificationBanner: sticky amber, role="alert", dismissible per session)
+- (IMPLEMENTED) Users can change email address (triggers new verification; security notification sent to old email)
 
 ## Tasks/Subtasks
 

@@ -127,6 +127,61 @@ DELETE /store/auth/social/{id}      // Disconnect account
 PATCH /store/auth/social/{id}/primary // Set primary auth method
 ```
 
+#### 4. Email Verification (Security)
+
+```
+1. Customer registers with email/password
+2. Verification email sent immediately with unique token
+3. Customer clicks link in email (/user/verify-email/{token})
+4. Backend validates token (single-use, 24-hour expiry)
+5. Email marked as verified in customer profile
+6. Full platform access unlocked
+```
+
+**Key Features**:
+- **Single-Use Tokens**: SHA-256 hashed, 24-hour expiry, prior tokens invalidated on resend
+- **Rate Limiting**: Maximum 3 resend requests per hour per customer (Redis-based)
+- **OAuth Auto-Verification**: Social login users automatically verified
+- **Email Change Flow**: Triggers new verification, sends security notification to old email
+- **Limited Functionality**: Unverified users can browse and use cart, but cannot purchase, sell, or send direct messages
+
+```typescript
+// Send verification email
+POST /store/auth/email-verification/send
+// No body required (authenticated endpoint)
+
+// Verify token
+POST /store/auth/email-verification/verify
+{
+  "token": "64-character-hex-string"
+}
+
+// Change email address
+PATCH /store/auth/email/change
+{
+  "new_email": "newemail@example.com"
+}
+
+// Response from verify endpoint
+{
+  "success": true,          // or false with error code
+  "customerId": "cus_123",  // only on success
+  "error": "token_expired"  // 'invalid_token' | 'token_used' | 'token_expired'
+}
+```
+
+**Storefront Components**:
+- `EmailVerificationBanner`: Sticky amber banner with resend and change email actions
+- `VerificationStatus`: Success/error pages with resend CTA
+- `withEmailVerification` HOC: Blocked action modal for unverified users
+
+**Implementation Details**:
+- Dedicated `email-verification` module (MedusaJS v2 single-service-per-module pattern)
+- Token generation: `crypto.randomBytes(32).toString('hex')` (64-char hex)
+- Token storage: SHA-256 hash only (never stores raw token)
+- Email templates: Resend SDK with verification link and security notifications
+- Cross-device support: Token in URL, login prompt if not authenticated
+
 ### 🏢 Seller Authentication (Tiered)
 
 #### Business Vendors (Enhanced)

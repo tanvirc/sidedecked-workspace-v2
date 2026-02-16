@@ -4,10 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Email Verification System**: Complete email verification flow for customer accounts
+  - Single-use verification tokens with 24-hour expiry and SHA-256 hashing
+  - Rate-limited resend functionality (3 per hour per customer)
+  - OAuth auto-verification for social login users
+  - Email change flow with security notifications
+  - Storefront UI components: verification banner, status pages, blocked action modal
+  - Backend API routes with Redis rate limiting
+  - Complete test coverage (48 tests: 34 backend, 14 storefront)
 - Comprehensive documentation structure with standards, architecture, and templates
 - Automation scripts for setup, validation, and deployment
 - Enhanced workspace organization with split-brain architecture
 - Code templates for consistent development patterns
+- Vitest test infrastructure for storefront with React Testing Library
 ### Changed
 - Reorganized documentation into structured directories
 - Enhanced setup process with automated scripts
