@@ -306,9 +306,9 @@ feat(vendor): complete vendor management system implementation
 - Create vendor automation engine
 - Add 89% test coverage for all vendor features
 - Update architecture documentation
-- Mark specification as completed in module-status.json
+- Update epic status in docs/epics/epic-04-vendor-management.md
 
-Closes 04-vendor-management-system specification
+Closes epic-04-vendor-management
 Refs #234, #345, #456
 ```
 

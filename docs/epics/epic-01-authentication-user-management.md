@@ -1,6 +1,6 @@
 # Epic 1: Authentication & User Management
 
-**Status**: completed
+**Status**: in_progress
 **Domain**: Both
 
 ## Goal

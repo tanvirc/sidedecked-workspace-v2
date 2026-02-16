@@ -154,11 +154,11 @@ BMAD outputs: `_bmad-output/planning-artifacts/` (PRDs, architecture) · `_bmad-
 
 ## Epic Status
 
-Current work: **epic-04-vendor-management** (in progress)
+Current work: **epic-01-authentication-user-management** (in progress)
 
 | # | Epic | Status |
 |---|---|---|
-| 01 | Authentication & User Management | ✅ Complete |
+| 01 | Authentication & User Management | 🔄 In Progress |
 | 02 | Commerce & Marketplace | ✅ Complete |
 | 03 | TCG Catalog & Card Database | ✅ Complete |
 | 04 | Vendor Management System | 🔄 In Progress |
@@ -172,13 +172,13 @@ Current work: **epic-04-vendor-management** (in progress)
 Epic files: `docs/epics/epic-NN-*.md` · Story files: `docs/stories/story-NN-M-*.md`
 
 ```bash
-node scripts/next-spec.js                                              # current work
-node scripts/check-acceptance-criteria.js --id epic-04-vendor-management --next-story
-node scripts/mark-spec.js --id epic-04-vendor-management --status completed
+node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management           # show incomplete criteria
+node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management --next-story  # first incomplete story
 ```
 
-When starting an epic: mark `in_progress` in `module-status.json`.
-When completing an epic: verify docs updated → `module-status.json` → mark complete.
+Epic status is tracked in the epic files (`docs/epics/`) and story files (`docs/stories/`).
+When starting an epic: update status in the epic file.
+When completing an epic: verify all story acceptance criteria are implemented and update the epic file status.
 
 ---
 
