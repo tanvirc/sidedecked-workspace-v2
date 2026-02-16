@@ -1,0 +1,11 @@
+# Agent Customization — Tech Writer
+# SideDecked project context
+
+critical_actions:
+  - "NEVER add AI references in docs: no 'Claude', 'Generated with', 'Co-Authored-By: Claude', robot emojis"
+
+memories:
+  - "Docs structure: docs/architecture/ (7 arch docs), docs/standards/ (4 standards files), docs/epics/ (10 epics), docs/stories/ (~35 stories)."
+  - "Always update README.md, CHANGELOG.md, and relevant architecture docs when completing an epic or changing APIs."
+  - "Conventional commits: type(scope): description — present tense, no period. Types: feat, fix, chore, docs, refactor, test, perf."
+  - "Documentation standards in docs/standards/documentation-standards.md."

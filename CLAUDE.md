@@ -113,11 +113,50 @@ Format: `type(scope): description` — conventional commits, present tense, no p
 
 ---
 
-## Specification Status
+## BMAD Agents
 
-Current work: **04-vendor-management-system** (in progress)
+Invoke any agent as a slash command (e.g., `/bmad-agent-bmm-dev`).
 
-| # | Specification | Status |
+| Slash Command | Agent | Role |
+|---|---|---|
+| `/bmad-agent-bmm-analyst` | Mary — Business Analyst | Market research, discovery, competitive analysis |
+| `/bmad-agent-bmm-architect` | Winston — Architect | System design, architecture docs, integration planning |
+| `/bmad-agent-bmm-pm` | John — Product Manager | PRDs, epics, product strategy |
+| `/bmad-agent-bmm-sm` | Bob — Scrum Master | Story creation, sprint planning, epic orchestration |
+| `/bmad-agent-bmm-dev` | Amelia — Developer | TDD implementation, story execution, code review |
+| `/bmad-agent-bmm-qa` | Quinn — QA | Test automation, quality gates, coverage analysis |
+| `/bmad-agent-bmm-ux-designer` | UX Expert | Storefront/vendorpanel UX, wireframes |
+| `/bmad-agent-bmm-tech-writer` | Tech Writer | Docs, CHANGELOG, architecture updates |
+| `/bmad-agent-bmad-master` | BMad Master | Cross-agent orchestration, workflow execution |
+
+Agent customizations (SideDecked context): `_bmad/_config/agents/`
+
+---
+
+## BMAD Full Planning Path
+
+For new epics or complex features, follow this path in order:
+
+```
+1. /bmad-bmm-create-product-brief    → define problem + MVP scope
+2. /bmad-bmm-create-prd              → full requirements + personas
+3. /bmad-bmm-create-architecture     → technical design decisions
+4. /bmad-bmm-create-epics-and-stories → prioritized work breakdown
+5. /bmad-bmm-sprint-planning         → initialize story tracking
+6. Per story: /bmad-bmm-dev-story → /bmad-bmm-code-review
+```
+
+For bug fixes and small features: `/bmad-bmm-quick-spec` → `/bmad-bmm-dev-story` → `/bmad-bmm-code-review`
+
+BMAD outputs: `_bmad-output/planning-artifacts/` (PRDs, architecture) · `_bmad-output/implementation-artifacts/` (stories, QA)
+
+---
+
+## Epic Status
+
+Current work: **epic-04-vendor-management** (in progress)
+
+| # | Epic | Status |
 |---|---|---|
 | 01 | Authentication & User Management | ✅ Complete |
 | 02 | Commerce & Marketplace | ✅ Complete |
@@ -130,10 +169,16 @@ Current work: **04-vendor-management-system** (in progress)
 | 09 | Inventory Management | ⏳ Not Started |
 | 10 | Payment Processing | ⏳ Not Started |
 
-Spec files: `docs/specifications/XX-*.md`
+Epic files: `docs/epics/epic-NN-*.md` · Story files: `docs/stories/story-NN-M-*.md`
 
-When starting a spec: mark `in_progress` in `module-status.json` + TaskCreate.
-When completing a spec: verify docs updated → update `module-status.json` → mark complete.
+```bash
+node scripts/next-spec.js                                              # current work
+node scripts/check-acceptance-criteria.js --id epic-04-vendor-management --next-story
+node scripts/mark-spec.js --id epic-04-vendor-management --status completed
+```
+
+When starting an epic: mark `in_progress` in `module-status.json`.
+When completing an epic: verify docs updated → `module-status.json` → mark complete.
 
 ---
 

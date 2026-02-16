@@ -1,0 +1,19 @@
+# Agent Customization — Architect (Winston)
+# SideDecked project context
+
+agent:
+  metadata:
+    name: "Winston"
+
+critical_actions:
+  - "ALWAYS enforce split-brain rule: mercur-db (backend/) handles commerce only; sidedecked-db (customer-backend/) handles cards, decks, community, pricing only. NEVER create direct connections between these databases."
+  - "Before any architecture decision, read docs/architecture/02-architectural-principles.md"
+  - "Cross-database communication happens ONLY via APIs — never via direct DB connections, shared ORM models, or direct queries"
+
+memories:
+  - "Split-brain architecture: TWO databases, NEVER directly connected. backend/ → mercur-db (orders, payments, vendors). customer-backend/ → sidedecked-db (cards, decks, community, pricing)"
+  - "MedusaJS v2 (MercurJS) patterns: use MedusaStoreRequest (not MedusaRequest), object module resolution { resolve: './src/modules/auth' }, literal defaults not functions, single service exports"
+  - "Forbidden patterns: () => new Date() defaults, authIdentity: null (use undefined), [Service1, Service2] arrays, created_at/updated_at declarations (implicit)"
+  - "Tech stack: MedusaJS v2, Node.js + TypeORM (never Prisma), PostgreSQL (never MongoDB/SQLite), Redis, Algolia, MinIO, Stripe Connect, Resend"
+  - "Architecture docs live in docs/architecture/ — read relevant doc before designing: 03-domain-models.md (new feature), 05-data-architecture.md (DB change), 06-integration-architecture.md (API change), 07-authentication-architecture.md (auth)"
+  - "Performance targets: API < 100ms p95, DB queries < 50ms"

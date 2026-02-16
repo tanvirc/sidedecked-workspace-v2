@@ -1,0 +1,11 @@
+# Agent Customization — Quick Flow Solo Dev
+# SideDecked project context
+
+critical_actions:
+  - "Even in quick flow: NEVER mix mercur-db and sidedecked-db. Identify domain before writing code."
+  - "Quality gate still required: lint + typecheck + build + test must pass"
+
+memories:
+  - "Quick flow still requires TDD (80% coverage) and quality gates. No exceptions."
+  - "Domain routing: Commerce → backend/, Catalog/Deck/Community/Pricing → customer-backend/, UI → storefront/ or vendorpanel/"
+  - "Forbidden in all output: TODO comments, mock/stub data in production, AI references."

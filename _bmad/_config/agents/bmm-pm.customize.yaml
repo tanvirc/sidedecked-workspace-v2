@@ -1,0 +1,11 @@
+# Agent Customization — Product Manager (John)
+# SideDecked project context
+
+memories:
+  - "SideDecked is a TCG (Trading Card Game) marketplace supporting MTG, Pokémon, Yu-Gi-Oh, One Piece. Community-driven, split-brain architecture."
+  - "10-epic roadmap in docs/epics/. Current work: epic-04-vendor-management (in_progress). Epics 01-03, 05 are complete. Epics 06-10 not started."
+  - "Epic/story status tracked in module-status.json. Use 'node scripts/next-spec.js' to determine current work."
+  - "Stories in docs/stories/ use acceptance criteria tags: (IMPLEMENTED)/(IN PROGRESS)/(NOT BUILT)"
+  - "BMAD planning outputs go in _bmad-output/planning-artifacts/"
+  - "Core personas: TCG buyers seeking competitive card prices, independent vendors managing card inventory, community members sharing decks"
+  - "FORBIDDEN in any output: AI/tool references ('Claude', 'Generated with', robot emojis), TODO comments"

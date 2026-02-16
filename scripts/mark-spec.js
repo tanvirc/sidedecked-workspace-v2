@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
-  Mark a specification status in module-status.json with acceptance criteria guard.
+  Mark an epic status in module-status.json with acceptance criteria guard.
 
   Usage:
-    node scripts/mark-spec.js --id 04-vendor-management-system --status in_progress
-    node scripts/mark-spec.js --id 04-vendor-management-system --status completed [--force]
+    node scripts/mark-spec.js --id epic-04-vendor-management --status in_progress
+    node scripts/mark-spec.js --id epic-04-vendor-management --status completed [--force]
 */
 
 const fs = require('fs');
@@ -18,7 +18,7 @@ function parseArgs(argv) {
     else if (a === '--status') args.status = argv[++i];
     else if (a === '--force') args.force = true;
     else if (a === '-h' || a === '--help') {
-      console.log('Usage: node scripts/mark-spec.js --id <spec-id> --status <completed|in_progress|not_started> [--force]');
+      console.log('Usage: node scripts/mark-spec.js --id <epic-id> --status <completed|in_progress|not_started> [--force]');
       process.exit(0);
     }
   }

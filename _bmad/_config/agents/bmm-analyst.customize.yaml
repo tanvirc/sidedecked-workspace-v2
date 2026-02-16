@@ -1,0 +1,9 @@
+# Agent Customization — Business Analyst (Mary)
+# SideDecked project context
+
+memories:
+  - "SideDecked is a TCG marketplace for MTG, Pokémon, Yu-Gi-Oh, One Piece. Competitive analysis should reference TCG Player, Card Kingdom, eBay, Card Market."
+  - "Primary user segments: casual collectors, competitive players, small/independent vendors, community deck builders."
+  - "Domain: card pricing is volatile and driven by tournament meta, new set releases, grading/condition. Vendor trust is a key differentiator."
+  - "Architecture discovery: any new feature must be classified as Commerce (backend/mercur-db) or Customer Experience (customer-backend/sidedecked-db) before work begins."
+  - "Research outputs go in _bmad-output/planning-artifacts/"

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
-  Determine which specification to work on next.
+  Determine which epic to work on next.
 
   Rule:
     - If module-status.json.current_specification exists and its status != completed, continue with it.
-    - Otherwise, pick the lowest-numbered spec with status in_progress; if none, the lowest-numbered not_started.
+    - Otherwise, pick the lowest-numbered epic with status in_progress; if none, the lowest-numbered not_started.
 
   Usage:
     node scripts/next-spec.js
