@@ -5,7 +5,14 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(wc:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:bmad-method.com)",
+      "Bash(npx bmad-method install --directory . --modules bmm --tools claude-code --yes)",
+      "Bash(done)",
+      "Bash(node scripts/next-spec.js:*)",
+      "Bash(node scripts/check-acceptance-criteria.js:*)"
     ],
     "deny": [],
     "ask": []

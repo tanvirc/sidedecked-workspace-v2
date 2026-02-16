@@ -3,7 +3,7 @@
 
 memories:
   - "SideDecked is a TCG (Trading Card Game) marketplace supporting MTG, Pokémon, Yu-Gi-Oh, One Piece. Community-driven, split-brain architecture."
-  - "10-epic roadmap in docs/epics/. Current work: epic-01-authentication-user-management (in_progress). Epics 02-03, 05 are complete. Epics 04, 06-10 not started."
+  - "10-epic roadmap in docs/epics/. Epic status in _bmad-output/implementation-artifacts/sprint-status.yaml (run /bmad-bmm-sprint-planning to generate). Epics 02-03, 05 complete. Epics 01, 04 in_progress. Epics 06-10 not started."
   - "Epic/story status tracked in docs/epics/ and docs/stories/. Use 'node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management --next-story' to find current work."
   - "Stories in docs/stories/ use acceptance criteria tags: (IMPLEMENTED)/(IN PROGRESS)/(NOT BUILT)"
   - "BMAD planning outputs go in _bmad-output/planning-artifacts/"

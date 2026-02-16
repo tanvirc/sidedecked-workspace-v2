@@ -154,31 +154,19 @@ BMAD outputs: `_bmad-output/planning-artifacts/` (PRDs, architecture) · `_bmad-
 
 ## Epic Status
 
-Current work: **epic-01-authentication-user-management** (in progress)
+Status is owned by BMAD — not this file. Use these to check or update it:
 
-| # | Epic | Status |
-|---|---|---|
-| 01 | Authentication & User Management | 🔄 In Progress |
-| 02 | Commerce & Marketplace | ✅ Complete |
-| 03 | TCG Catalog & Card Database | ✅ Complete |
-| 04 | Vendor Management System | 🔄 In Progress |
-| 05 | Deck Building System | ✅ Complete |
-| 06 | Community & Social | ⏳ Not Started |
-| 07 | Pricing Intelligence | ⏳ Not Started |
-| 08 | Search & Discovery | ⏳ Not Started |
-| 09 | Inventory Management | ⏳ Not Started |
-| 10 | Payment Processing | ⏳ Not Started |
+- `/bmad-bmm-sprint-planning` — generate/refresh `_bmad-output/implementation-artifacts/sprint-status.yaml` from epic files
+- `/bmad-bmm-sprint-status` — summarize current epic/story status and surface risks
+- `/bmad-agent-bmm-sm` — Scrum Master menu (create stories, track progress, plan sprints)
 
-Epic files: `docs/epics/epic-NN-*.md` · Story files: `docs/stories/story-NN-M-*.md`
+Epic source files: `docs/epics/epic-NN-*.md` (each has a `**Status**:` header field)
+Story source files: `docs/stories/story-NN-M-*.md` (acceptance criteria tagged with `(NOT BUILT)` / `(IN PROGRESS)` / `(IMPLEMENTED)`)
 
 ```bash
 node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management           # show incomplete criteria
 node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management --next-story  # first incomplete story
 ```
-
-Epic status is tracked in the epic files (`docs/epics/`) and story files (`docs/stories/`).
-When starting an epic: update status in the epic file.
-When completing an epic: verify all story acceptance criteria are implemented and update the epic file status.
 
 ---
 
