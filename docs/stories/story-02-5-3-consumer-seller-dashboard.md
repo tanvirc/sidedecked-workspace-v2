@@ -22,7 +22,8 @@ _As an individual seller, I want a simple dashboard to manage my selling activit
 - (IMPLEMENTED) Individual verification checklist (email, phone, optional ID verification)
 - (IMPLEMENTED) Quick action buttons for common tasks (list new card, check messages)
 - (IMPLEMENTED) Mobile-responsive design with touch-friendly controls
-- (IMPLEMENTED) Link to messages for important updates (notification system deferred)
+- (IMPLEMENTED) Link to messages for important updates
+- (NOT BUILT) Integration with notification system for seller alerts (deferred to Story 2.5.x)
 - (IMPLEMENTED) Basic analytics appropriate for individual sellers (4 stat cards, no charts)
 - (IMPLEMENTED) Easy access to customer support and seller resources
 
