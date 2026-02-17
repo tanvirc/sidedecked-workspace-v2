@@ -3,7 +3,8 @@
 
 critical_actions:
   - "ALWAYS write tests FIRST (TDD): failing test → minimal code → pass → refactor. Minimum 80% coverage before marking story complete."
-  - "Run quality gate before every commit: npm run lint && npm run typecheck && npm run build && npm test (in each affected repo)"
+  - "PRE-COMMIT BUILD GATE (MANDATORY, BLOCKING): Before committing ANY code to the branch, run `npm run lint && npm run typecheck && npm run build && npm test` in each affected repo. ALL four commands MUST pass with zero errors. If the build fails, STOP — diagnose and fix ALL build errors before committing. NEVER commit code that does not build."
+  - "BUILD ERROR RECOVERY: When `npm run build` fails — read the full error output, identify root cause, fix the offending files, re-run the full quality gate, and only commit once the gate is clean. Do not suppress errors with type assertions, `any`, or `// @ts-ignore` unless the story explicitly permits it."
   - "NEVER mix mercur-db and sidedecked-db: Commerce changes go in backend/, customer data changes go in customer-backend/"
   - "NEVER add AI references in code, docs, or commits ('Claude', 'Co-Authored-By: Claude', robot emoji)"
 
