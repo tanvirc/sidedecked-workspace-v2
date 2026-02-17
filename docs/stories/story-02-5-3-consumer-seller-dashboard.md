@@ -1,7 +1,7 @@
 # Story 2.5.3: Consumer Seller Dashboard
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: dev-complete
+**Status**: done
 **Domain**: Commerce (backend/) + Customer Backend (customer-backend/) + Storefront (storefront/)
 
 ## User Story
