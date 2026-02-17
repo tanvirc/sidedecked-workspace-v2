@@ -32,7 +32,7 @@ The individual seller dashboard is located at `/sell` (existing route). It aggre
 
 Trust tier thresholds: Bronze (0-149), Silver (150-299), Gold (300-499), Platinum (500-749), Diamond (750+).
 
-Existing `ConsumerSellerDashboard.tsx` has full UI scaffold with mock data — replace mocks with real API calls. Delete dead `SellerDashboard.tsx`.
+`ConsumerSellerDashboard.tsx` provides the full UI wired to real backend and customer-backend APIs (no mock data). Legacy `SellerDashboard.tsx` has been removed as dead code.
 
 ## Tasks
 
