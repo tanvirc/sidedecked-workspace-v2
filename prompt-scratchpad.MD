@@ -9,3 +9,5 @@ Research best practices for Agent instruction files (AGENTS.md, CLAUDE.md, etc) 
 i want to ensure that the SM works with the PM to prioritise and assign the right next story. then the BA works with the PM and UX Designer to define and clarrify requirements and UX. Then the Architect designs the technical
    solution. Then the Dev builds code and unit tests. Then the QA testers runs tests. Then the Techn Writer updates any documents. How would i orchestrate this workflow?
 
+
+Review and action all PR comments in all repos
