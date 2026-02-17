@@ -4,6 +4,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Dispute Resolution System (Story 2.3.2)**: Backend infrastructure for marketplace dispute mediation
+  - `@mercurjs/dispute` module with Dispute, DisputeEvidence, DisputeMessage, DisputeTimeline entities
+  - 7 dispute workflow statuses: open → awaiting_vendor → under_review → decided → appealed / stripe_hold → closed
+  - Store API routes: initiate dispute, list/view disputes, send messages, submit appeals
+  - Vendor API routes: list/view disputes, submit response, send messages
+  - Admin API routes: list/view all disputes, assign mediator, render decision
+  - MedusaJS workflows: `initiate-dispute`, `render-decision`, `process-appeal`, `send-message`
+  - Stripe chargeback integration: `stripe.charge.dispute.created` subscriber pauses internal disputes
+  - 30-day eligibility window enforced at workflow layer; vendor_id resolved via seller-order link
+  - 7-day appeal window; 1 appeal per dispute; appeal assigned to different mediator
+  - Initial DB migration — 4 tables with FK constraints, enum checks, performance indexes
+  - 24 unit tests (100% branch coverage, 82.6% statement coverage)
 - **Two-Factor Authentication (2FA)**: Opt-in TOTP-based account security
   - Authenticator app setup with QR code and manual key entry
   - 10 single-use SHA-256 hashed backup codes with regeneration

@@ -288,31 +288,34 @@
     </ask>
   </step>
 
-  <step n="16" goal="Tech Writer: Create pull request to merge to main">
-    <action>Ensure all changes are committed and pushed to the feature branch</action>
-    <action>Create a pull request using gh CLI to merge feature branch to main</action>
-    <action>PR title should be concise and descriptive (matching the story title)</action>
-    <action>PR body should include:
-      - Story key reference
-      - Summary of changes (from documentation updates)
-      - Railway preview URL from deployment phase
-      - Testing notes
-      - Acceptance criteria checklist
+  <step n="16" goal="Tech Writer: Create pull requests in ALL repos that received commits">
+    <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
+    <action>For EACH repo that received commits during Phase 4 (root + any child repos):
+      - cd into the repo directory
+      - Check if the feature branch has commits ahead of main: git log main..HEAD --oneline
+      - If there ARE commits: create a PR using gh CLI
+        - PR title: concise and descriptive, matching the story title
+        - PR body must include:
+          - Story key reference
+          - Summary of changes specific to this repo
+          - Railway preview URL from deployment phase
+          - Testing notes
+          - Acceptance criteria checklist
+        - Do NOT use AI references in PR title or body
+      - If there are NO commits (branch was created but empty): skip — do NOT create an empty PR
+      - cd back to root
     </action>
-    <action>Do NOT use AI references in PR title or body</action>
-    <action>Output PR Creation Summary:
-      - PR number and URL
-      - PR title
-      - Feature branch name
-      - Target branch (main)
+    <action>Output a PR Creation Summary table listing all repos:
+      | Repo | Had commits? | PR created? | PR URL |
+      (one row per repo — root + all child repos with feature branches)
     </action>
     <ask>
-      ## Phase 7 Complete — Pull Request Created
+      ## Phase 7 Complete — Pull Requests Created
 
-      Pull request has been created (see above).
+      Pull requests have been created for all repos with commits (see table above).
 
       Type CONFIRM to finalize the story lifecycle.
-      Or describe any changes needed to the PR.
+      Or describe any changes needed to the PRs.
     </ask>
   </step>
 
@@ -326,11 +329,11 @@
       - All 7 phases completed with brief status per phase
       - Feature branch name
       - Railway preview URL
-      - Pull request number and URL
-      - Total files changed
+      - Pull requests created (one row per repo with commits): repo | PR number | PR URL
+      - Total files changed (across all repos)
       - Final test coverage achieved
     </action>
-    <action>Remind {user_name}: The PR is ready for review and can be merged to main after approval</action>
+    <action>Remind {user_name}: All PRs are ready for review and can be merged to main after approval</action>
   </step>
 
 </workflow>
