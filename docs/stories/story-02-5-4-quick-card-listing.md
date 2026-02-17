@@ -43,14 +43,14 @@ Split-brain: storefront fetches card data from customer-backend, creates listing
 
 ## Tasks
 
-- [x] Task 1: customer-backend — Add `GET /api/catalog/cards/sku/:sku` endpoint returning card data by catalog SKU for auto-population
+- [x] Task 1: customer-backend — Add `GET /api/catalog/sku/:sku` endpoint returning card data by catalog SKU for auto-population
 - [x] Task 2: backend — Wire `POST /store/consumer-seller/listings` to create real MedusaJS Product + ProductVariant + pricing (replace mock data)
 - [x] Task 3: backend — Add Zod validators + middleware for listing creation request
 - [x] Task 4: storefront — Create `ConditionGuide` component with 5-grade visual condition selector (NM/LP/MP/HP/DMG)
 - [x] Task 5: storefront — Create `ListingSuccessScreen` component with "View Listing" and "List Another Card" CTAs
 - [x] Task 6: storefront — Add `createSellerListing()` and `saveListingDraft()` server action functions in seller-dashboard.ts
 - [x] Task 7: storefront — Rewrite `SellThisCardButton.tsx`: standardize condition scale, wire to real API, add photo upload with mobile camera, add shipping options, add draft/publish, integrate ConditionGuide and ListingSuccessScreen
-- [x] Task 8: storefront — Update `CardListingForm.tsx`: replace mock game/set data with real catalog API, add `capture="camera"` to file input
+- [x] Task 8: storefront — Update `CardListingForm.tsx`: replace mock game/set data with real catalog API, add `capture="environment"` to file input
 - [x] Task 9: Quality gate — Run lint + typecheck + build + test in all affected repos
 
 ## Dev Agent Record
