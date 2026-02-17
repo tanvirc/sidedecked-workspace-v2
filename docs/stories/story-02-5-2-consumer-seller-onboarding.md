@@ -1,7 +1,7 @@
 # Story 2.5.2: Consumer Seller Onboarding
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: in_progress
+**Status**: done
 **Domain**: Commerce (backend/) + Customer Backend (customer-backend/) + Storefront (storefront/)
 
 ## User Story

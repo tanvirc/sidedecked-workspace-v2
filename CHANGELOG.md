@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Consumer Seller Onboarding (Story 2.5.2)**: Simplified upgrade flow for collectors to become individual sellers
+  - 5-step storefront wizard (Profile → Seller Type → Preferences → Terms → Activate)
+  - `POST /api/customers/:id/upgrade-to-seller` in customer-backend — creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
+  - `GET /api/customers/:id/seller-status` — returns current seller status
+  - `POST /store/consumer-seller/upgrade` in commerce backend — registers seller in MercurJS, activated immediately without upfront Stripe/identity verification
+  - Individual sellers bypass complex business verification (self-certification flow)
+  - Proper error state in UI replaces alert(); auto-redirect to `/sell` on success
+  - 15 Jest unit tests covering all happy paths and error cases
 - **Dispute Resolution System (Story 2.3.2)**: Backend infrastructure for marketplace dispute mediation
   - `@mercurjs/dispute` module with Dispute, DisputeEvidence, DisputeMessage, DisputeTimeline entities
   - 7 dispute workflow statuses: open → awaiting_vendor → under_review → decided → appealed / stripe_hold → closed
