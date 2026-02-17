@@ -2,7 +2,7 @@
 
 ## Overview
 
-`/bmad-bmm-story-lifecycle` runs a full story from prioritization to documentation, coordinating all BMAD agents in sequence. It pauses between each phase and waits for your approval before continuing.
+`/bmad-bmm-story-lifecycle` runs a full story from prioritization to deployment and documentation, coordinating all BMAD agents in sequence. It pauses between each phase and waits for your approval before continuing.
 
 **Invoke with:**
 ```
@@ -18,9 +18,12 @@
 | 1 | SM + PM | Recommended next story with priority rationale | Type the story key, or a different one |
 | 2 | BA + PM + UX Designer | Requirements + UX brief with clarified acceptance criteria | `CONFIRM` |
 | 3 | Architect | Technical design note: domain routing, affected files, API contracts, migrations | `CONFIRM` |
-| 4 | Dev | Implemented story + unit tests | `CONFIRM` after quality gate passes |
-| 5 | QA | QA report: coverage percentages and quality gate results | `CONFIRM` |
-| 6 | Tech Writer | Updated CHANGELOG.md, architecture docs, story file marked done | `CONFIRM` |
+| 4 | Dev | Implemented story + unit tests (committed + pushed) | `CONFIRM` after quality gate passes |
+| 5 | QA | QA report: coverage percentages and quality gate results (committed + pushed) | `CONFIRM` |
+| 6 | DevOps | Railway preview deployment + smoke test (committed + pushed) | `CONFIRM` |
+| 7 | Tech Writer | Updated CHANGELOG.md, architecture docs, story file marked done, PR created | `CONFIRM` |
+
+> **Note:** From Phase 4 onwards, each phase commits and pushes its changes to the feature branch before pausing for confirmation. This ensures no work is lost between phases.
 
 ---
 
@@ -70,6 +73,7 @@ Before confirming, verify manually:
 - All acceptance criteria marked `(IMPLEMENTED)` in the story file
 - Quality gate passes: `npm run lint && npm run typecheck && npm run build && npm test`
 - Test coverage above 80% on changed modules
+- Changes committed and pushed to the feature branch
 
 ---
 
@@ -79,17 +83,30 @@ Quinn (QA) runs the `qa-automate` workflow and validates:
 - Coverage percentage per changed module (must be >80%)
 - All quality gates pass in the affected repo(s)
 
-Any failures are reported with file and line references.
+Any failures are reported with file and line references. QA-related changes (test additions/fixes) are committed and pushed to the feature branch.
 
 ---
 
-### Phase 6 — Documentation (Tech Writer)
+### Phase 6 — Deployment (DevOps)
+
+Rex (DevOps Automation Engineer) deploys the feature branch to a Railway preview environment:
+- Identifies affected services (backend, customer-backend, storefront, vendorpanel)
+- Deploys using Railway CLI (`railway up --detach`)
+- Monitors logs and fixes deployment failures
+- Runs smoke tests against the preview URL
+- Commits any deployment config fixes to the feature branch
+
+---
+
+### Phase 7 — Documentation + PR (Tech Writer)
 
 The Tech Writer updates all impacted documentation:
 - `CHANGELOG.md` — new entry under the current version/date
 - Architecture docs — if new patterns, components, or integrations were introduced
 - Story file — all acceptance criteria set to `(IMPLEMENTED)`
 - `sprint-status.yaml` — story status set to `done`
+
+Then creates a pull request to merge the feature branch to main, including the Railway preview URL.
 
 ---
 
@@ -108,7 +125,7 @@ The Tech Writer updates all impacted documentation:
 ```
 _bmad/bmm/workflows/4-implementation/story-lifecycle/
 ├── workflow.yaml       # BMAD config: context loading, variable resolution
-└── instructions.xml    # 13 steps across 6 phases
+└── instructions.xml    # 17 steps across 7 phases
 
 .claude/commands/
 └── bmad-bmm-story-lifecycle.md   # Slash command entry point
@@ -123,4 +140,5 @@ _bmad/bmm/workflows/4-implementation/story-lifecycle/
 | `/bmad-bmm-dev-story` | Skip straight to Dev phase (story already defined) |
 | `/bmad-bmm-code-review` | Adversarial review after Dev phase |
 | `/bmad-bmm-quick-spec` → `/bmad-bmm-dev-story` | Bug fixes and small features |
+| `/bmad-agent-bmm-devops` | Standalone DevOps agent for deployment tasks |
 | `/bmad-agent-bmad-master` | Ad-hoc cross-agent coordination |

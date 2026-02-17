@@ -132,6 +132,12 @@
 
   <step n="9" goal="Dev: Implement story with TDD">
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml" />
+    <action>Commit all implementation changes to the feature branch:
+      - Stage all changed files (code + tests + story file updates)
+      - Commit with conventional commit format: feat({story-scope}): implement {story-title}
+      - Push to remote: git push -u origin feature/{story-key}
+      - Confirm commit hash and push status
+    </action>
     <ask>
       ## Phase 4 Complete — Implementation Done
 
@@ -141,7 +147,7 @@
       - [ ] All acceptance criteria marked (IMPLEMENTED) in the story file
       - [ ] Quality gate passed: npm run lint and npm run typecheck and npm run build and npm test
       - [ ] Test coverage above 80% on changed modules
-      - [ ] Changes committed to feature branch
+      - [ ] Changes committed and pushed to feature branch
 
       Type CONFIRM to proceed to QA.
       Or describe issues to fix first.
@@ -166,6 +172,12 @@
       - Coverage percentage per changed module
       - Any failures or gaps found
     </action>
+    <action>Commit any QA-related changes to the feature branch:
+      - Stage any new or modified test files and fixes
+      - If there are changes: commit with format test({story-scope}): add QA test coverage for {story-title}
+      - Push to remote: git push
+      - If no changes: skip commit (report "no additional changes from QA")
+    </action>
     <ask>
       ## Phase 5 Complete — QA Validated
 
@@ -177,13 +189,18 @@
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
-       PHASE 6: Deployment — Deploy to Railway Preview
+       PHASE 6: Deployment — DevOps (Railway Preview)
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="12" goal="Deploy: Deploy feature branch to Railway preview">
+  <step n="12" goal="Load DevOps persona">
+    <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
+  </step>
+
+  <step n="13" goal="DevOps: Deploy feature branch to Railway preview">
     <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
     <action>Ensure the feature branch is pushed to remote: git push -u origin feature/{story-key}</action>
-    <action>Deploy to Railway preview environment from the feature branch using: railway up --detach</action>
+    <action>Identify which services are affected by the story changes (backend, customer-backend, storefront, vendorpanel)</action>
+    <action>Deploy affected services to Railway preview environment using: railway up --detach</action>
     <action>Monitor deployment logs for errors using: railway logs</action>
     <action>If deployment fails:
       - Analyze error messages and logs
@@ -197,8 +214,15 @@
       - Test critical paths to verify the feature works in the preview environment
       - Document the preview URL
     </action>
+    <action>Commit any deployment configuration fixes to the feature branch:
+      - Stage any config or code changes made to fix deployment issues
+      - If there are changes: commit with format fix({story-scope}): resolve deployment issues for {story-title}
+      - Push to remote: git push
+      - If no changes: skip commit (report "no deployment fixes needed")
+    </action>
     <action>Output a Deployment Report:
       - Railway preview URL
+      - Services deployed
       - Deployment status (success/failure)
       - Any issues encountered and how they were resolved
       - Basic smoke test results
@@ -206,7 +230,7 @@
     <ask>
       ## Phase 6 Complete — Deployment to Preview Verified
 
-      Feature has been deployed to Railway preview environment (see above).
+      Rex (DevOps) has deployed the feature to Railway preview (see above).
 
       Before confirming, verify:
       - [ ] Preview environment is accessible
@@ -222,11 +246,11 @@
        PHASE 7: Documentation — Tech Writer
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="13" goal="Load Tech Writer persona">
+  <step n="14" goal="Load Tech Writer persona">
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
   </step>
 
-  <step n="14" goal="Tech Writer: Update all relevant documentation">
+  <step n="15" goal="Tech Writer: Update all relevant documentation">
     <action>Identify all documentation impacted by this story: README.md, CHANGELOG.md, architecture docs, API docs</action>
     <action>Update CHANGELOG.md — add entry under the correct version/date section describing what was built</action>
     <action>Update architecture docs if new patterns, components, or integrations were introduced</action>
@@ -249,7 +273,7 @@
     </ask>
   </step>
 
-  <step n="15" goal="Tech Writer: Create pull request to merge to main">
+  <step n="16" goal="Tech Writer: Create pull request to merge to main">
     <action>Ensure all changes are committed and pushed to the feature branch</action>
     <action>Create a pull request using gh CLI to merge feature branch to main</action>
     <action>PR title should be concise and descriptive (matching the story title)</action>
@@ -281,7 +305,7 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="16" goal="Story lifecycle complete">
+  <step n="17" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
       - All 7 phases completed with brief status per phase
