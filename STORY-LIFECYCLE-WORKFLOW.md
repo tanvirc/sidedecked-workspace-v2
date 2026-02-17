@@ -69,11 +69,13 @@ Output is a Technical Design Note covering: affected files, new entities/migrati
 
 Amelia (Developer) adopts TDD. The existing `dev-story` workflow is invoked for implementation.
 
+**Branch creation:** A feature branch is created not only in the root repo but also in every child repo (`backend/`, `customer-backend/`, `storefront/`, `vendorpanel/`) that will be modified — based on the Technical Design Note from Phase 3. Each child directory is an independent git repo; without its own feature branch, commits would land on `main`.
+
 Before confirming, verify manually:
 - All acceptance criteria marked `(IMPLEMENTED)` in the story file
 - Quality gate passes: `npm run lint && npm run typecheck && npm run build && npm test`
 - Test coverage above 80% on changed modules
-- Changes committed and pushed to the feature branch
+- Changes committed and pushed to the feature branch in **all** affected repos
 
 ---
 

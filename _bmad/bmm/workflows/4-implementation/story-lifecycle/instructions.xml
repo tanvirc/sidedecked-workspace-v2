@@ -120,23 +120,38 @@
     <action>Context already contains: story file, Requirements + UX Brief, Technical Design Note</action>
   </step>
 
-  <step n="8" goal="Dev: Create feature branch">
+  <step n="8" goal="Dev: Create feature branch in root and affected child repos">
     <action>Extract the story key from the confirmed story (e.g., "story-01-1-1" from the story file name)</action>
-    <action>Create a feature branch named "feature/{story-key}" from the current branch</action>
-    <action>Confirm branch creation and switch to the new feature branch</action>
+    <action>Create a feature branch named "feature/{story-key}" from the current branch in the root repo</action>
+    <action>Identify which child repos will be modified based on the Technical Design Note from Phase 3:
+      - backend/ (independent git repo)
+      - customer-backend/ (independent git repo)
+      - storefront/ (independent git repo)
+      - vendorpanel/ (independent git repo)
+    </action>
+    <action>For EACH affected child repo, create the same feature branch:
+      - cd into the child repo directory
+      - git checkout -b feature/{story-key}
+      - Confirm branch creation
+      - cd back to root
+    </action>
     <action>Output:
       - Feature branch name created
-      - Current git branch confirmation
+      - List of ALL repos where the branch was created (root + child repos)
+      - Current git branch confirmation for each repo
     </action>
   </step>
 
   <step n="9" goal="Dev: Implement story with TDD">
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml" />
-    <action>Commit all implementation changes to the feature branch:
-      - Stage all changed files (code + tests + story file updates)
-      - Commit with conventional commit format: feat({story-scope}): implement {story-title}
-      - Push to remote: git push -u origin feature/{story-key}
-      - Confirm commit hash and push status
+    <action>Commit all implementation changes to the feature branch in EACH affected repo:
+      - For each repo (root + affected child repos):
+        - cd into the repo directory
+        - Stage all changed files (code + tests + story file updates)
+        - Commit with conventional commit format: feat({story-scope}): implement {story-title}
+        - Push to remote: git push -u origin feature/{story-key}
+        - Confirm commit hash and push status
+        - cd back to root
     </action>
     <ask>
       ## Phase 4 Complete — Implementation Done
