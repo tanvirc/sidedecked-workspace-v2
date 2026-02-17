@@ -1,5 +1,5 @@
 name: story-lifecycle
-description: "Full multi-agent story lifecycle: SM+PM prioritize → BA+PM+UX define requirements → Architect design → Dev build → QA test → Tech Writer document"
+description: "Full multi-agent story lifecycle: SM+PM prioritize → BA+PM+UX define requirements → Architect design → Dev build (feature branch) → QA test → Deploy to Railway → Tech Writer document → Create PR"
 author: "SideDecked"
 
 config_source: "{project-root}/_bmad/bmm/config.yaml"
