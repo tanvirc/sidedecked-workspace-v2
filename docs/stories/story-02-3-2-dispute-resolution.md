@@ -15,9 +15,9 @@ _As a customer or vendor, I want access to fair dispute resolution so that trans
 - (IMPLEMENTED) Platform mediation with neutral case managers — mediator assignment via `PATCH /admin/disputes/:id`
 - (IMPLEMENTED) Time-limited response windows for all parties — vendor_respond_by (48h), mediator_decide_by (72h) set in workflow
 - (NOT BUILT) Escalation process for unresolved disputes
-- (IMPLEMENTED) Final decision communication with detailed reasoning — render-decision workflow + `POST /admin/disputes/:id`
+- (IN PROGRESS) Final decision communication with detailed reasoning — render-decision workflow + `POST /admin/disputes/:id`; email notifications pending (Task 6)
 - (NOT BUILT) Refund/compensation processing based on decisions — Stripe refund processor pending
-- (IMPLEMENTED) Dispute history tracking and pattern analysis — immutable `dispute_timeline` table; all actions logged
+- (IN PROGRESS) Dispute history tracking and pattern analysis — immutable `dispute_timeline` table; all actions logged (dispute open, decision, appeal, message_sent, vendor_responded logged; Stripe chargeback logged via subscriber)
 - (IMPLEMENTED) Appeal process for disputed decisions — 7-day window, 1 per dispute, `POST /store/disputes/:id/appeal`
 - (IMPLEMENTED) Integration with payment processor dispute systems — Stripe chargeback subscriber pauses internal disputes
 
@@ -179,6 +179,7 @@ _Empty_
 - `packages/modules/dispute/src/service.ts` — MedusaService-based DisputeModuleService
 - `packages/modules/dispute/src/index.ts` — Module registration
 - `packages/modules/dispute/src/migrations/Migration20260217000000.ts`
+- `packages/modules/dispute/src/migrations/Migration20260217000001.ts` — partial unique index: one active dispute per order
 - `packages/modules/dispute/package.json` + `tsconfig.json`
 
 ### backend/ — API routes
@@ -205,9 +206,10 @@ _Empty_
 - `apps/backend/src/workflows/dispute/workflows/send-message.ts`
 - `apps/backend/src/subscribers/stripe-chargeback.ts`
 
-### backend/ — Tests (24/24 passing, 82.6% coverage)
+### backend/ — Tests (29/29 passing)
 - `apps/backend/src/workflows/dispute/__tests__/dispute-validators.unit.spec.ts`
 - `apps/backend/src/workflows/dispute/__tests__/validate-dispute-eligibility.unit.spec.ts`
+- `apps/backend/src/workflows/dispute/__tests__/stripe-chargeback.unit.spec.ts`
 
 ### Config changes
 - `apps/backend/medusa-config.ts` — registered `@mercurjs/dispute`
@@ -222,3 +224,4 @@ _Empty_
 |------|--------|
 | 2026-02-17 | Story enriched with tasks/subtasks from Phase 3 Technical Design Note; status updated to in-progress |
 | 2026-02-17 | Phase 4 implementation: backend module, API routes, workflows, tests, migration — 24/24 tests passing, 82.6% coverage |
+| 2026-02-17 | Code review fixes: H1 eligibility window uses fulfilled_at (was created_at); H2 admin PATCH validates mediator user exists; M1 vendor response now logs timeline entry; M2 send-message workflow logs timeline entry; M3 Migration20260217000001 adds DB-level unique index for one-active-dispute-per-order; M4 stripe-chargeback subscriber tests added (29 total) |
