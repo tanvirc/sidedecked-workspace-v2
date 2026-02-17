@@ -120,17 +120,34 @@
     <action>Context already contains: story file, Requirements + UX Brief, Technical Design Note</action>
   </step>
 
-  <step n="8" goal="Dev: Implement story with TDD">
+  <step n="8" goal="Dev: Create feature branch">
+    <action>Extract the story key from the confirmed story (e.g., "story-01-1-1" from the story file name)</action>
+    <action>Create a feature branch named "feature/{story-key}" from the current branch</action>
+    <action>Confirm branch creation and switch to the new feature branch</action>
+    <action>Output:
+      - Feature branch name created
+      - Current git branch confirmation
+    </action>
+  </step>
+
+  <step n="9" goal="Dev: Implement story with TDD">
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml" />
+    <action>Commit all implementation changes to the feature branch:
+      - Stage all changed files (code + tests + story file updates)
+      - Commit with conventional commit format: feat({story-scope}): implement {story-title}
+      - Push to remote: git push -u origin feature/{story-key}
+      - Confirm commit hash and push status
+    </action>
     <ask>
       ## Phase 4 Complete — Implementation Done
 
-      Dev has implemented the story and unit tests.
+      Dev has implemented the story and unit tests on feature branch.
 
       Before confirming, verify:
       - [ ] All acceptance criteria marked (IMPLEMENTED) in the story file
       - [ ] Quality gate passed: npm run lint and npm run typecheck and npm run build and npm test
       - [ ] Test coverage above 80% on changed modules
+      - [ ] Changes committed and pushed to feature branch
 
       Type CONFIRM to proceed to QA.
       Or describe issues to fix first.
@@ -141,11 +158,11 @@
        PHASE 5: Quality Assurance — QA
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="9" goal="Load QA persona">
+  <step n="10" goal="Load QA persona">
     <action>Load and read {agent_path}/qa.md — adopt Quinn (QA) persona completely</action>
   </step>
 
-  <step n="10" goal="QA: Validate tests and coverage">
+  <step n="11" goal="QA: Validate tests and coverage">
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/qa/automate/workflow.yaml" />
     <action>Verify test coverage is above 80% on all changed modules</action>
     <action>Confirm all quality gates pass in the affected repo(s)</action>
@@ -155,41 +172,132 @@
       - Coverage percentage per changed module
       - Any failures or gaps found
     </action>
+    <action>Commit any QA-related changes to the feature branch:
+      - Stage any new or modified test files and fixes
+      - If there are changes: commit with format test({story-scope}): add QA test coverage for {story-title}
+      - Push to remote: git push
+      - If no changes: skip commit (report "no additional changes from QA")
+    </action>
     <ask>
       ## Phase 5 Complete — QA Validated
 
       Quinn has run tests and produced a QA Report (see above).
 
-      Type CONFIRM to proceed to documentation.
-      Or describe issues to fix before closing out.
+      Type CONFIRM to proceed to deployment.
+      Or describe issues to fix before deploying.
     </ask>
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
-       PHASE 6: Documentation — Tech Writer
+       PHASE 6: Deployment — DevOps (Railway Preview)
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="11" goal="Load Tech Writer persona">
+  <step n="12" goal="Load DevOps persona">
+    <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
+  </step>
+
+  <step n="13" goal="DevOps: Deploy feature branch to Railway preview">
+    <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
+    <action>Ensure the feature branch is pushed to remote: git push -u origin feature/{story-key}</action>
+    <action>Identify which services are affected by the story changes (backend, customer-backend, storefront, vendorpanel)</action>
+    <action>Deploy affected services to Railway preview environment using: railway up --detach</action>
+    <action>Monitor deployment logs for errors using: railway logs</action>
+    <action>If deployment fails:
+      - Analyze error messages and logs
+      - Fix configuration issues (environment variables, build settings, etc.)
+      - Fix code issues if deployment reveals runtime errors
+      - Re-deploy and verify
+      - Repeat until deployment succeeds
+    </action>
+    <action>Once deployed successfully:
+      - Get the preview URL using: railway status
+      - Test critical paths to verify the feature works in the preview environment
+      - Document the preview URL
+    </action>
+    <action>Commit any deployment configuration fixes to the feature branch:
+      - Stage any config or code changes made to fix deployment issues
+      - If there are changes: commit with format fix({story-scope}): resolve deployment issues for {story-title}
+      - Push to remote: git push
+      - If no changes: skip commit (report "no deployment fixes needed")
+    </action>
+    <action>Output a Deployment Report:
+      - Railway preview URL
+      - Services deployed
+      - Deployment status (success/failure)
+      - Any issues encountered and how they were resolved
+      - Basic smoke test results
+    </action>
+    <ask>
+      ## Phase 6 Complete — Deployment to Preview Verified
+
+      Rex (DevOps) has deployed the feature to Railway preview (see above).
+
+      Before confirming, verify:
+      - [ ] Preview environment is accessible
+      - [ ] Feature works as expected in preview
+      - [ ] No critical errors in Railway logs
+
+      Type CONFIRM to proceed to documentation.
+      Or describe deployment issues to fix.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 7: Documentation — Tech Writer
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="14" goal="Load Tech Writer persona">
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
   </step>
 
-  <step n="12" goal="Tech Writer: Update all relevant documentation">
+  <step n="15" goal="Tech Writer: Update all relevant documentation">
     <action>Identify all documentation impacted by this story: README.md, CHANGELOG.md, architecture docs, API docs</action>
     <action>Update CHANGELOG.md — add entry under the correct version/date section describing what was built</action>
     <action>Update architecture docs if new patterns, components, or integrations were introduced</action>
     <action>Update the story file — mark all acceptance criteria as (IMPLEMENTED)</action>
     <action>Update sprint-status.yaml — set story status to 'done'</action>
+    <action>Commit all documentation changes to the feature branch with conventional commit format</action>
+    <action>Push the updated feature branch: git push</action>
     <action>Output a Documentation Update Summary:
       - Files updated and what changed in each
       - Any documentation gaps that remain (and why)
+      - Commit hash of documentation updates
     </action>
     <ask>
-      ## Phase 6 Complete — Documentation Updated
+      ## Phase 7 Complete — Documentation Updated
 
       Tech Writer has updated all relevant documentation (see above).
 
-      Type CONFIRM to finalise the story lifecycle.
+      Type CONFIRM to create pull request.
       Or describe any remaining documentation gaps.
+    </ask>
+  </step>
+
+  <step n="16" goal="Tech Writer: Create pull request to merge to main">
+    <action>Ensure all changes are committed and pushed to the feature branch</action>
+    <action>Create a pull request using gh CLI to merge feature branch to main</action>
+    <action>PR title should be concise and descriptive (matching the story title)</action>
+    <action>PR body should include:
+      - Story key reference
+      - Summary of changes (from documentation updates)
+      - Railway preview URL from deployment phase
+      - Testing notes
+      - Acceptance criteria checklist
+    </action>
+    <action>Do NOT use AI references in PR title or body</action>
+    <action>Output PR Creation Summary:
+      - PR number and URL
+      - PR title
+      - Feature branch name
+      - Target branch (main)
+    </action>
+    <ask>
+      ## Phase 7 Complete — Pull Request Created
+
+      Pull request has been created (see above).
+
+      Type CONFIRM to finalize the story lifecycle.
+      Or describe any changes needed to the PR.
     </ask>
   </step>
 
@@ -197,14 +305,17 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="13" goal="Story lifecycle complete">
+  <step n="17" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
-      - All 6 phases completed with brief status per phase
+      - All 7 phases completed with brief status per phase
+      - Feature branch name
+      - Railway preview URL
+      - Pull request number and URL
       - Total files changed
       - Final test coverage achieved
     </action>
-    <action>Remind {user_name}: run git commit using conventional commit format (type(scope): description) — no AI references in commit messages</action>
+    <action>Remind {user_name}: The PR is ready for review and can be merged to main after approval</action>
   </step>
 
 </workflow>

@@ -125,6 +125,7 @@ Invoke any agent as a slash command (e.g., `/bmad-agent-bmm-dev`).
 | `/bmad-agent-bmm-sm` | Bob — Scrum Master | Story creation, sprint planning, epic orchestration |
 | `/bmad-agent-bmm-dev` | Amelia — Developer | TDD implementation, story execution, code review |
 | `/bmad-agent-bmm-qa` | Quinn — QA | Test automation, quality gates, coverage analysis |
+| `/bmad-agent-bmm-devops` | Rex — DevOps | Railway deployment, CI/CD, infrastructure automation |
 | `/bmad-agent-bmm-ux-designer` | UX Expert | Storefront/vendorpanel UX, wireframes |
 | `/bmad-agent-bmm-tech-writer` | Tech Writer | Docs, CHANGELOG, architecture updates |
 | `/bmad-agent-bmad-master` | BMad Master | Cross-agent orchestration, workflow execution |
