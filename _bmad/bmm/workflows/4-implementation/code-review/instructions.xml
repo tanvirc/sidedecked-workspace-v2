@@ -224,4 +224,121 @@
     </output>
   </step>
 
+  <!-- ═══════════════════════════════════════════════════════
+       PR COMMENT HANDLING — Read, Fix, Respond, Resolve, Merge
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="6" goal="Discover and read PR comments across all story repos">
+    <action>Derive the feature branch name for this story: "feature/{{story_key}}"</action>
+    <action>Identify all repos that may have PRs for this branch (root repo + child repos: backend/, customer-backend/, storefront/, vendorpanel/)</action>
+    <action>For EACH repo, check if a PR exists for the feature branch:
+      - cd into the repo directory
+      - Run: gh pr list --head feature/{{story_key}} --json number,title,url,state
+      - Record: repo path, PR number, PR URL, PR state
+      - cd back to root
+    </action>
+    <check if="no PRs found in any repo">
+      <output>No open PRs found for feature/{{story_key}} in any repo — skipping PR comment handling.</output>
+      <action>Exit this step and proceed to final summary</action>
+    </check>
+    <action>For EACH open PR found, read all comments:
+      - Run: gh pr view {pr_number} --comments --json comments,reviewComments,reviews
+      - Collect all review comments (inline code comments) and general PR comments
+      - For each comment record: comment_id, file, line (if inline), author, body, resolved status
+    </action>
+    <action>Categorize each unresolved comment:
+      - CHANGE_REQUEST: requires code or test modification
+      - QUESTION: requires a written response only
+      - SUGGESTION: optional improvement (accept or decline)
+      - Already resolved: skip entirely
+    </action>
+    <action>Set {{total_pr_comments}} = total unresolved comments across all PRs</action>
+    <output>**PR Comment Triage**
+
+      | Repo | PR | URL | CHANGE_REQUEST | QUESTION | SUGGESTION |
+      |---|---|---|---|---|---|
+      (one row per repo with an open PR)
+
+      Total unresolved comments: {{total_pr_comments}}
+    </output>
+  </step>
+
+  <step n="7" goal="Fix code, respond to, and resolve all PR comments">
+    <critical>Address comments IN ORDER per PR: CHANGE_REQUEST first, then QUESTION, then SUGGESTION</critical>
+    <critical>After fixing code for a CHANGE_REQUEST, always run the quality gate in the affected repo before pushing</critical>
+
+    <action>For EACH CHANGE_REQUEST comment (across all PRs):
+      1. Read the full comment text — understand exactly what change is requested
+      2. Locate the referenced file and line
+      3. Make the required code or test change
+      4. Run quality gate in the affected repo: npm run lint and npm run typecheck and npm run build and npm test
+      5. Stage and commit: git commit -m "fix({{story_key}}): address review comment — {brief description}"
+      6. Push to the feature branch: git push
+      7. Respond to the comment explaining what was changed and why:
+         gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="{response text}"
+      8. Resolve the comment thread:
+         gh api -X PUT repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id}/comments/{comment_id} -f resolved=true
+         (or use the equivalent endpoint to mark as resolved)
+    </action>
+
+    <action>For EACH QUESTION comment (across all PRs):
+      1. Read the question carefully
+      2. Formulate a clear, factual answer based on the actual implementation
+      3. Reply to the comment:
+         gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="{answer text}"
+      4. Resolve the thread
+    </action>
+
+    <action>For EACH SUGGESTION comment (across all PRs):
+      1. Evaluate: does this improve quality without expanding story scope?
+      2. If ACCEPTING: implement the change, commit, push, reply "Accepted — [description of change made]", resolve
+      3. If DECLINING: reply explaining clearly why it is out of scope or not the right approach, resolve
+    </action>
+
+    <action>After all comments for a given PR are addressed:
+      - Run: gh pr view {pr_number} --json reviewDecision,reviewRequests
+      - Note if re-review was requested by the original reviewer
+      - Set {{pr_comments_resolved_{{pr_number}}}} = true if all threads resolved, else false
+    </action>
+
+    <output>**PR Comment Resolution Summary**
+
+      | Repo | PR | Resolved | Commits Made | Re-review Requested? |
+      |---|---|---|---|---|
+      (one row per PR)
+    </output>
+  </step>
+
+  <step n="8" goal="Merge PRs once all comments are resolved">
+    <critical>Only merge a PR when ALL comment threads are resolved and no CHANGES_REQUESTED review blocks it</critical>
+
+    <action>For EACH PR in order:
+      1. Verify no remaining unresolved threads:
+         gh pr view {pr_number} --json reviewThreads
+      2. Verify no blocking CHANGES_REQUESTED reviews:
+         gh pr view {pr_number} --json reviews
+      3. If all clear:
+         a. Post a merge summary comment:
+            gh pr comment {pr_number} -b "All review comments addressed. Merging."
+         b. Merge the PR with squash:
+            gh pr merge {pr_number} --squash --delete-branch
+         c. Confirm merge success and record the merge commit SHA
+      4. If unresolved threads or blocking reviews remain:
+         a. List the outstanding threads
+         b. Return to step 7 to address the new or remaining comments before retrying merge
+    </action>
+
+    <check if="any PR still has unresolved threads after retry">
+      <action>Report the specific unresolved threads and which reviewer must take action</action>
+      <action>Do NOT force-merge — stop and surface the blocker to the user</action>
+    </check>
+
+    <output>**Merge Summary**
+
+      | Repo | PR | Merged? | Merge Commit | Notes |
+      |---|---|---|---|---|
+      (one row per PR)
+    </output>
+  </step>
+
 </workflow>

@@ -314,8 +314,38 @@
 
       Pull requests have been created for all repos with commits (see table above).
 
-      Type CONFIRM to finalize the story lifecycle.
+      Type CONFIRM to proceed to code review and PR comment handling.
       Or describe any changes needed to the PRs.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 8: Code Review + PR Comment Resolution — Code Reviewer
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="17" goal="Load Code Reviewer persona">
+    <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona in adversarial code reviewer mode</action>
+    <action>Context already contains: story file, all phase outputs, PR URLs from Phase 7</action>
+    <action>Confirm: feature branch name is "feature/{{story_key}}" and PRs are open in all affected repos</action>
+  </step>
+
+  <step n="18" goal="Code Reviewer: Run adversarial code review then handle all PR comments">
+    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml" />
+    <action>The code-review workflow includes PR comment handling (steps 6–8):
+      - Step 6: Discover and read all PR comments across every repo with an open PR for this story's feature branch
+      - Step 7: For each comment — fix code if needed, run quality gate, commit and push fix, respond to comment, resolve thread
+      - Step 8: Once all threads are resolved on a PR, post a merge summary comment and merge the PR (squash + delete branch)
+    </action>
+    <ask>
+      ## Phase 8 Complete — Code Review and PR Comment Resolution Done
+
+      The adversarial code review ran and all PR comments have been addressed and resolved.
+      PRs with all threads resolved have been merged.
+
+      See the Merge Summary table above for per-repo merge status.
+
+      Type CONFIRM to finalize the story lifecycle.
+      Or describe any remaining issues or re-review requests to handle.
     </ask>
   </step>
 
@@ -323,17 +353,18 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="17" goal="Story lifecycle complete">
+  <step n="19" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
-      - All 7 phases completed with brief status per phase
+      - All 8 phases completed with brief status per phase
       - Feature branch name
       - Railway preview URL
-      - Pull requests created (one row per repo with commits): repo | PR number | PR URL
+      - Pull requests created and merged (one row per repo with commits): repo | PR number | PR URL | Merge status
       - Total files changed (across all repos)
       - Final test coverage achieved
+      - Total PR comments resolved
     </action>
-    <action>Remind {user_name}: All PRs are ready for review and can be merged to main after approval</action>
+    <action>Remind {user_name}: All PRs have been reviewed, comment-resolved, and merged to main</action>
   </step>
 
 </workflow>
