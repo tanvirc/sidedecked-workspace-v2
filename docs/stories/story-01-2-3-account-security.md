@@ -1,7 +1,7 @@
 # Story 1.2.3: Account Security
 
 **Epic**: [epic-01-authentication-user-management.md](../epics/epic-01-authentication-user-management.md)
-**Status**: review
+**Status**: done
 **Domain**: backend/ + storefront/ (mercur-db only — no customer-backend involvement)
 
 ## User Story

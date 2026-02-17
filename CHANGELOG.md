@@ -4,6 +4,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Two-Factor Authentication (2FA)**: Opt-in TOTP-based account security
+  - Authenticator app setup with QR code and manual key entry
+  - 10 single-use SHA-256 hashed backup codes with regeneration
+  - Trusted device management with 30-day expiry
+  - Sensitive action gating (purchases > $500, email/password change, payment methods)
+  - Redis rate limiting (5 attempts per 5 minutes) with HTTP 429
+  - Email notifications on 2FA enable/disable via Resend
+  - AES-256-GCM encryption for TOTP secrets at rest
+  - 4-step setup wizard, challenge modal, and device management UI
+  - 7 backend API routes + storefront proxy routes
+  - 35 unit tests with 95% statement coverage
 - **Email Verification System**: Complete email verification flow for customer accounts
   - Single-use verification tokens with 24-hour expiry and SHA-256 hashing
   - Rate-limited resend functionality (3 per hour per customer)
