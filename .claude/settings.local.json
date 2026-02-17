@@ -70,7 +70,11 @@
       "Bash(gh pr view:*)",
       "Bash(gh api:*)",
       "Bash(for id in 95e6ce84-d2c7-4c6d-a245-9c4cca9a0a15 f3bc13c1-74b1-4a68-86d2-fc0dda968973 e1a990bd-327f-4ca8-88d3-5bf4ab073562 00d16b6b-7ab5-4bcb-8ba1-4da41a2aa6f2 9adc8683-768a-4f3f-a686-6282403aee45 bc9406a1-eac9-42ea-8218-1c628bf830c0)",
-      "Bash(do echo \"=== $id ===\")"
+      "Bash(do echo \"=== $id ===\")",
+      "Bash(npx next lint:*)",
+      "Bash(messages\" part and a NOT BUILT deferred notification system integration\nto accurately reflect story completion status per PR review feedback.\nEOF\n\\)\")",
+      "Bash(gh pr merge:*)",
+      "Bash(npx vitest run:*)"
     ],
     "deny": [],
     "ask": []
