@@ -17,7 +17,7 @@ _As a collector, I want a simple upgrade process to become an individual seller 
 - (NOT BUILT) Email verification confirmation integrated into flow — seller is created with UNVERIFIED status; email notification on upgrade is deferred
 - (IMPLEMENTED) Initial trust score assignment (60 points for new individual sellers)
 - (IMPLEMENTED) Welcome message with immediate next steps after completion
-- (IMPLEMENTED) Automatic redirect to consumer seller dashboard upon success
+- (IMPLEMENTED) Automatic redirect to `/sell` (sell landing page) upon success; dedicated consumer seller dashboard follows in Story 2.5.3
 - (IMPLEMENTED) Mobile-optimized upgrade experience for phone users
 - (IMPLEMENTED) Skip complex business verification requirements for individuals
 - (IMPLEMENTED) Integration with existing customer account (no separate registration)
@@ -25,14 +25,14 @@ _As a collector, I want a simple upgrade process to become an individual seller 
 
 ## Implementation Notes
 
-The simplified consumer seller onboarding is a separate, lighter flow from the full business seller onboarding at `/sell/upgrade`. It would feature a clean 3-step process: Choose Seller Type → Accept Terms → Complete Setup. Individual sellers would bypass complex business verification, requiring only email verification and basic terms acceptance. A trust score of 60 points would be assigned on completion.
+The simplified consumer seller onboarding is implemented at `/sell/upgrade` as a lighter flow compared to the full business seller onboarding. It features a clean 5-step process: Profile → Seller Type → Preferences → Terms → Activate. Individual sellers bypass complex business verification, requiring only basic terms acceptance. A trust score of 60 points is assigned on completion.
 
 ## Tasks
 
 - [x] customer-backend: `POST /api/customers/:id/upgrade-to-seller` — creates `SellerRating` with `trust_score=60`, `seller_tier=BRONZE`, `verification_status=UNVERIFIED`
 - [x] customer-backend: `GET /api/customers/:id/seller-status` — returns seller status
 - [x] customer-backend: Jest config (`jest.config.js`) + test suite (`src/tests/routes/customers.test.ts`) — 15 tests, all passing
-- [x] backend: `POST /store/consumer-seller/upgrade` — registers customer as seller in MercurJS (mercur-db); individual sellers activated immediately without Stripe/identity verification upfront
+- [x] backend: `POST /store/consumer-seller/upgrade` — registers customer as seller in MercurJS (mercur-db); individual sellers activated immediately without upfront identity verification. Note: architecture doc 07 defines `POST /vendor/consumer-seller/upgrade` with `identity_document` payload and `pending` verification status — this story intentionally implements a simplified storefront-facing path; full vendor route alignment with identity document collection is deferred to Story 2.5.3.
 - [x] storefront: `CustomerToSellerUpgrade.tsx` — 5-step wizard (Profile, Seller Type, Preferences, Terms, Activate); calls both customer-backend (critical) and backend (best-effort); proper error state replacing `alert()`; auto-redirect to `/sell` on success via `onUpgradeComplete`
 - [x] storefront: `/sell/upgrade/page.tsx` — auth gate + `onUpgradeComplete` redirect handler
 - [x] customer-backend: add `authenticateToken` + IDOR check to seller routes; fix `seller_since` field; fix `as any` casts (code review fixes)

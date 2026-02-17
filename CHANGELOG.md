@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 5-step storefront wizard (Profile → Seller Type → Preferences → Terms → Activate)
   - `POST /api/customers/:id/upgrade-to-seller` in customer-backend — creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
   - `GET /api/customers/:id/seller-status` — returns current seller status
-  - `POST /store/consumer-seller/upgrade` in commerce backend — registers seller in MercurJS, activated immediately without upfront Stripe/identity verification
+  - `POST /store/consumer-seller/upgrade` in commerce backend — registers seller in MercurJS with immediate activation (simplified individual flow); full vendor route with identity document collection and `pending` verification status per `docs/architecture/07-authentication-architecture.md` is deferred to Story 2.5.3
   - Individual sellers bypass complex business verification (self-certification flow)
   - Proper error state in UI replaces alert(); auto-redirect to `/sell` on success
   - 15 Jest unit tests covering all happy paths and error cases
