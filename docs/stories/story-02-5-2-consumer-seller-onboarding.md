@@ -31,7 +31,7 @@ The simplified consumer seller onboarding is implemented at `/sell/upgrade` as a
 
 - [x] customer-backend: `POST /api/customers/:id/upgrade-to-seller` — creates `SellerRating` with `trust_score=60`, `seller_tier=BRONZE`, `verification_status=UNVERIFIED`
 - [x] customer-backend: `GET /api/customers/:id/seller-status` — returns seller status
-- [x] customer-backend: Jest config (`jest.config.js`) + test suite (`src/tests/routes/customers.test.ts`) — 15 tests, all passing
+- [x] customer-backend: Jest config (`jest.config.js`) + test suite (`src/tests/routes/customers.test.ts`) — 16 tests, all passing
 - [x] backend: `POST /store/consumer-seller/upgrade` — simplified storefront-facing path; registers customer as seller in MercurJS (mercur-db) with immediate activation; architecture specifies `/vendor/consumer-seller/upgrade` with `identity_document` payload and `verification_status=pending` — full alignment deferred to Story 2.5.3
 - [x] storefront: `CustomerToSellerUpgrade.tsx` — 5-step wizard (Profile, Seller Type, Preferences, Terms, Activate); calls both customer-backend (critical) and backend (best-effort); proper error state replacing `alert()`; auto-redirect to `/sell` on success via `onUpgradeComplete`
 - [x] storefront: `/sell/upgrade/page.tsx` — auth gate + `onUpgradeComplete` redirect handler
