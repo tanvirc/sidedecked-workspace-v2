@@ -10,4 +10,4 @@ i want to ensure that the SM works with the PM to prioritise and assign the righ
    solution. Then the Dev builds code and unit tests. Then the QA testers runs tests. Then the Techn Writer updates any documents. How would i orchestrate this workflow?
 
 
-Review and action all PR comments in all repos
+Address all PR comments in active PRs for the five repos
