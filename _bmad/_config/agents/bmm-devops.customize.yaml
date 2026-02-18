@@ -1,0 +1,18 @@
+# Agent Customization — DevOps Automation Engineer (Rex)
+# SideDecked project context
+
+critical_actions:
+  - "NEVER deploy directly to production — preview environments only unless explicitly instructed by the user"
+  - "NEVER add AI references in code, docs, or commits ('Claude', 'Co-Authored-By: Claude', robot emoji)"
+  - "Always push the feature branch to remote before deploying to Railway"
+  - "Commit any deployment configuration fixes to the feature branch before reporting success"
+
+memories:
+  - "SideDecked is split-brain: backend/ (MercurJS, mercur-db) and customer-backend/ (Node.js+TypeORM, sidedecked-db) are separate services that NEVER share a database"
+  - "Four deployable services: backend (:9000), customer-backend (:7000), storefront (:3000), vendorpanel (:5173)"
+  - "Railway is the hosting platform. Use 'railway up --detach' for preview deployments, 'railway logs' for log monitoring, 'railway status' for deployment status"
+  - "CRITICAL: Railway is linked per child repo, NOT at the monorepo root. You MUST cd into the child directory before running ANY railway command. Example: 'cd backend && railway status' or 'cd storefront && railway logs'. Running railway from the project root will fail with 'No linked project found'."
+  - "Railway service mapping: backend/ → sidedecked-backend, customer-backend/ → sidedecked-customer-backend, storefront/ → sidedecked-storefront, vendorpanel/ → sidedecked-vendorpanel"
+  - "Commits: conventional commits format 'type(scope): description'. FORBIDDEN: 'Claude', 'Co-Authored-By: Claude', TODO comments, robot emojis"
+  - "Quality gate must pass before deployment: npm run lint && npm run typecheck && npm run build && npm test"
+  - "Only deploy services affected by the current story — don't redeploy unchanged services"

@@ -127,6 +127,61 @@ DELETE /store/auth/social/{id}      // Disconnect account
 PATCH /store/auth/social/{id}/primary // Set primary auth method
 ```
 
+#### 4. Email Verification (Security)
+
+```
+1. Customer registers with email/password
+2. Verification email sent immediately with unique token
+3. Customer clicks link in email (/user/verify-email/{token})
+4. Backend validates token (single-use, 24-hour expiry)
+5. Email marked as verified in customer profile
+6. Full platform access unlocked
+```
+
+**Key Features**:
+- **Single-Use Tokens**: SHA-256 hashed, 24-hour expiry, prior tokens invalidated on resend
+- **Rate Limiting**: Maximum 3 resend requests per hour per customer (Redis-based)
+- **OAuth Auto-Verification**: Social login users automatically verified
+- **Email Change Flow**: Triggers new verification, sends security notification to old email
+- **Limited Functionality**: Unverified users can browse and use cart, but cannot purchase, sell, or send direct messages
+
+```typescript
+// Send verification email
+POST /store/auth/email-verification/send
+// No body required (authenticated endpoint)
+
+// Verify token
+POST /store/auth/email-verification/verify
+{
+  "token": "64-character-hex-string"
+}
+
+// Change email address
+PATCH /store/auth/email/change
+{
+  "new_email": "newemail@example.com"
+}
+
+// Response from verify endpoint
+{
+  "success": true,          // or false with error code
+  "customerId": "cus_123",  // only on success
+  "error": "token_expired"  // 'invalid_token' | 'token_used' | 'token_expired'
+}
+```
+
+**Storefront Components**:
+- `EmailVerificationBanner`: Sticky amber banner with resend and change email actions
+- `VerificationStatus`: Success/error pages with resend CTA
+- `withEmailVerification` HOC: Blocked action modal for unverified users
+
+**Implementation Details**:
+- Dedicated `email-verification` module (MedusaJS v2 single-service-per-module pattern)
+- Token generation: `crypto.randomBytes(32).toString('hex')` (64-char hex)
+- Token storage: SHA-256 hash only (never stores raw token)
+- Email templates: Resend SDK with verification link and security notifications
+- Cross-device support: Token in URL, login prompt if not authenticated
+
 ### 🏢 Seller Authentication (Tiered)
 
 #### Business Vendors (Enhanced)
@@ -937,6 +992,60 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 - `GET /store/auth/profile` - Get customer social profile
 - `PATCH /store/auth/profile` - Update customer social preferences
 
+## Two-Factor Authentication (2FA)
+
+SideDecked supports opt-in TOTP-based two-factor authentication for customer accounts.
+
+### Architecture
+
+- **Module**: `backend/apps/backend/src/modules/two-factor-auth/` (dedicated MedusaJS v2 module)
+- **Models**: `TotpSecret` and `TrustedDevice` in `modules/authentication/models/`
+- **Database**: mercur-db only (no customer-backend involvement)
+- **Library**: `otpauth` (RFC 6238 compliant, zero dependencies)
+
+### TOTP Secret Storage
+
+- Secrets encrypted at rest with AES-256-GCM using `TOTP_ENCRYPTION_KEY` env var
+- Random IV per secret, auth tag appended to ciphertext
+- Backup codes: 10 per user, 8 alphanumeric chars each, individually SHA-256 hashed, single-use
+
+### Trusted Devices
+
+- 64-byte random token stored as SHA-256 hash in DB
+- Raw token returned to client (stored in httpOnly cookie `_sd_trusted_device`)
+- 30-day expiry, auto-cleaned on validation
+
+### Sensitive Action Gating
+
+When 2FA is enabled, re-authentication is required for:
+- Purchases exceeding $500
+- Email address changes
+- Password changes
+- 2FA disable
+- Payment method changes
+
+### Rate Limiting
+
+- Redis key: `2fa_verify_rate:{customerId}`
+- Max 5 attempts per 5 minutes (300s TTL)
+- Returns HTTP 429 with `Retry-After: 300` header
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/store/auth/2fa/setup` | Generate TOTP secret and QR URI |
+| POST | `/store/auth/2fa/verify` | Verify code and enable 2FA |
+| POST | `/store/auth/2fa/disable` | Disable 2FA (requires valid code) |
+| POST | `/store/auth/2fa/challenge` | Verify code for sensitive actions |
+| POST | `/store/auth/2fa/backup-codes` | Regenerate backup codes |
+| GET | `/store/auth/2fa/trusted-devices` | List trusted devices |
+| DELETE | `/store/auth/2fa/trusted-devices/:id` | Revoke a trusted device |
+
+### Environment Variables
+
+- `TOTP_ENCRYPTION_KEY`: 32-byte hex string for AES-256 encryption (required)
+
 ## Security Considerations
 
 - **Never log OAuth tokens or sensitive authentication data**
@@ -945,6 +1054,9 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 - **Implement proper session timeout and cleanup**
 - **Regularly rotate OAuth client secrets**
 - **Monitor for suspicious authentication patterns**
+- **TOTP secrets encrypted at rest with AES-256-GCM**
+- **Backup codes are single-use and SHA-256 hashed**
+- **2FA verification is rate-limited to prevent brute force**
 
 ## Compliance
 
@@ -964,4 +1076,5 @@ The authentication system supports:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-02-17 | Added Two-Factor Authentication (2FA) section: TOTP, trusted devices, sensitive action gating, rate limiting |
 | 1.0 | 2025-09-12 | Initial authentication architecture documentation with OAuth patterns and troubleshooting guide |

@@ -1,0 +1,18 @@
+# Agent Customization — Developer (Amelia)
+# SideDecked project context
+
+critical_actions:
+  - "ALWAYS write tests FIRST (TDD): failing test → minimal code → pass → refactor. Minimum 80% coverage before marking story complete."
+  - "PRE-COMMIT BUILD GATE (MANDATORY, BLOCKING): Before committing ANY code to the branch, run `npm run lint && npm run typecheck && npm run build && npm test` in each affected repo. ALL four commands MUST pass with zero errors. If the build fails, STOP — diagnose and fix ALL build errors before committing. NEVER commit code that does not build."
+  - "BUILD ERROR RECOVERY: When `npm run build` fails — read the full error output, identify root cause, fix the offending files, re-run the full quality gate, and only commit once the gate is clean. Do not suppress errors with type assertions, `any`, or `// @ts-ignore` unless the story explicitly permits it."
+  - "NEVER mix mercur-db and sidedecked-db: Commerce changes go in backend/, customer data changes go in customer-backend/"
+  - "NEVER add AI references in code, docs, or commits ('Claude', 'Co-Authored-By: Claude', robot emoji)"
+
+memories:
+  - "Four repos: backend/ (MercurJS :9000, mercur-db), customer-backend/ (Node.js+TypeORM :7000, sidedecked-db), storefront/ (Next.js 14 :3000), vendorpanel/ (React+Vite :5173)"
+  - "MedusaJS v2 forbidden patterns: MedusaRequest (use MedusaStoreRequest), './modules/auth' string (use { resolve: }), () => new Date() defaults, authIdentity: null (use undefined), [Service1, Service2] array exports, declaring created_at/updated_at (implicit)"
+  - "ORM: TypeORM always (NEVER Prisma). Database: PostgreSQL (NEVER MongoDB/SQLite). Testing: Vitest + Jest (NEVER Mocha)"
+  - "Quality gate: lint + typecheck + build + test must ALL pass. Coverage > 80% on changed modules."
+  - "Commits: conventional commits format 'type(scope): description'. FORBIDDEN: 'Claude', 'Co-Authored-By: Claude', TODO comments, robot emojis"
+  - "Stories live in docs/stories/. Epics live in docs/epics/. Use node scripts/next-spec.js to find current work."
+  - "Acceptance criteria tags: (IMPLEMENTED) = done, (IN PROGRESS) = partial, (NOT BUILT) = not started"

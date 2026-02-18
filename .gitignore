@@ -19,3 +19,6 @@ node_modules/
 
 .devcontainer/logs/
 logs/
+
+# BMAD generated artifacts (planning/implementation outputs)
+_bmad-output/

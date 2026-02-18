@@ -4,10 +4,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Consumer Seller Onboarding (Story 2.5.2)**: Simplified upgrade flow for collectors to become individual sellers
+  - 5-step storefront wizard (Profile → Seller Type → Preferences → Terms → Activate)
+  - `POST /api/customers/:id/upgrade-to-seller` in customer-backend — creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
+  - `GET /api/customers/:id/seller-status` — returns current seller status
+  - `POST /store/consumer-seller/upgrade` in commerce backend — simplified storefront-facing path that registers seller in MercurJS with immediate activation; architecture defines `/vendor/consumer-seller/upgrade` with identity document collection and `verification_status=pending` (deferred to Story 2.5.3)
+  - Individual sellers bypass complex business verification (self-certification flow)
+  - Proper error state in UI replaces alert(); auto-redirect to `/sell` on success
+  - 15 Jest unit tests covering all happy paths and error cases
+- **Dispute Resolution System (Story 2.3.2)**: Backend infrastructure for marketplace dispute mediation
+  - `@mercurjs/dispute` module with Dispute, DisputeEvidence, DisputeMessage, DisputeTimeline entities
+  - 7 dispute workflow statuses: open → awaiting_vendor → under_review → decided → appealed / stripe_hold → closed
+  - Store API routes: initiate dispute, list/view disputes, send messages, submit appeals
+  - Vendor API routes: list/view disputes, submit response, send messages
+  - Admin API routes: list/view all disputes, assign mediator, render decision
+  - MedusaJS workflows: `initiate-dispute`, `render-decision`, `process-appeal`, `send-message`
+  - Stripe chargeback integration: `stripe.charge.dispute.created` subscriber pauses internal disputes
+  - 30-day eligibility window enforced at workflow layer; vendor_id resolved via seller-order link
+  - 7-day appeal window; 1 appeal per dispute; appeal assigned to different mediator
+  - Initial DB migration — 4 tables with FK constraints, enum checks, performance indexes
+  - 24 unit tests (100% branch coverage, 82.6% statement coverage)
+- **Two-Factor Authentication (2FA)**: Opt-in TOTP-based account security
+  - Authenticator app setup with QR code and manual key entry
+  - 10 single-use SHA-256 hashed backup codes with regeneration
+  - Trusted device management with 30-day expiry
+  - Sensitive action gating (purchases > $500, email/password change, payment methods)
+  - Redis rate limiting (5 attempts per 5 minutes) with HTTP 429
+  - Email notifications on 2FA enable/disable via Resend
+  - AES-256-GCM encryption for TOTP secrets at rest
+  - 4-step setup wizard, challenge modal, and device management UI
+  - 7 backend API routes + storefront proxy routes
+  - 35 unit tests with 95% statement coverage
+- **Email Verification System**: Complete email verification flow for customer accounts
+  - Single-use verification tokens with 24-hour expiry and SHA-256 hashing
+  - Rate-limited resend functionality (3 per hour per customer)
+  - OAuth auto-verification for social login users
+  - Email change flow with security notifications
+  - Storefront UI components: verification banner, status pages, blocked action modal
+  - Backend API routes with Redis rate limiting
+  - Complete test coverage (48 tests: 34 backend, 14 storefront)
 - Comprehensive documentation structure with standards, architecture, and templates
 - Automation scripts for setup, validation, and deployment
 - Enhanced workspace organization with split-brain architecture
 - Code templates for consistent development patterns
+- Vitest test infrastructure for storefront with React Testing Library
 ### Changed
 - Reorganized documentation into structured directories
 - Enhanced setup process with automated scripts

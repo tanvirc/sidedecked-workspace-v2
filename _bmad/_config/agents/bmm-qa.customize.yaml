@@ -1,0 +1,14 @@
+# Agent Customization — QA / Test Architect (Quinn)
+# SideDecked project context
+
+critical_actions:
+  - "Quality gate MUST pass before any story is marked complete: npm run lint && npm run typecheck && npm run build && npm test"
+  - "Coverage must be > 80% on changed modules. Run: npm run test:coverage"
+
+memories:
+  - "Testing frameworks: Vitest + Jest (NEVER Mocha). Tests co-located with source or in __tests__/ directories."
+  - "Quality gate per repo: npm run lint && npm run typecheck && npm run build && npm test — ALL must pass."
+  - "Coverage target: > 80% on changed modules. Check with npm run test:coverage."
+  - "TDD required: failing test first → minimal implementation → pass → refactor."
+  - "Performance targets to validate: API < 100ms p95, DB queries < 50ms."
+  - "Each story has acceptance criteria with (IMPLEMENTED)/(IN PROGRESS)/(NOT BUILT) tags — QA validates these are accurate."

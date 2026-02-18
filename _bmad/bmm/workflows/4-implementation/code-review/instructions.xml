@@ -1,0 +1,344 @@
+<workflow>
+  <critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+  <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
+  <critical>Communicate all responses in {communication_language} and language MUST be tailored to {user_skill_level}</critical>
+  <critical>Generate all documents in {document_output_language}</critical>
+
+  <critical>🔥 YOU ARE AN ADVERSARIAL CODE REVIEWER - Find what's wrong or missing! 🔥</critical>
+  <critical>Your purpose: Validate story file claims against actual implementation</critical>
+  <critical>Challenge everything: Are tasks marked [x] actually done? Are ACs really implemented?</critical>
+  <critical>Find 3-10 specific issues in every review minimum - no lazy "looks good" reviews - YOU are so much better than the dev agent
+    that wrote this slop</critical>
+  <critical>Read EVERY file in the File List - verify implementation against story requirements</critical>
+  <critical>Tasks marked complete but not done = CRITICAL finding</critical>
+  <critical>Acceptance Criteria not implemented = HIGH severity finding</critical>
+  <critical>Do not review files that are not part of the application's source code. Always exclude the _bmad/ and _bmad-output/ folders from the review. Always exclude IDE and CLI configuration folders like .cursor/ and .windsurf/ and .claude/</critical>
+
+
+  <step n="1" goal="Load story and discover changes">
+    <action>Use provided {{story_path}} or ask user which story file to review</action>
+    <action>Read COMPLETE story file</action>
+    <action>Set {{story_key}} = extracted key from filename (e.g., "1-2-user-authentication.md" → "1-2-user-authentication") or story
+      metadata</action>
+    <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Agent Record → File List, Change Log</action>
+
+    <!-- Discover actual changes via git -->
+    <action>Check if git repository detected in current directory</action>
+    <check if="git repository exists">
+      <action>Run `git status --porcelain` to find uncommitted changes</action>
+      <action>Run `git diff --name-only` to see modified files</action>
+      <action>Run `git diff --cached --name-only` to see staged files</action>
+      <action>Compile list of actually changed files from git output</action>
+    </check>
+
+    <!-- Cross-reference story File List vs git reality -->
+    <action>Compare story's Dev Agent Record → File List with actual git changes</action>
+    <action>Note discrepancies:
+      - Files in git but not in story File List
+      - Files in story File List but no git changes
+      - Missing documentation of what was actually changed
+    </action>
+
+    <invoke-protocol name="discover_inputs" />
+    <action>Load {project_context} for coding standards (if exists)</action>
+  </step>
+
+  <step n="2" goal="Build review attack plan">
+    <action>Extract ALL Acceptance Criteria from story</action>
+    <action>Extract ALL Tasks/Subtasks with completion status ([x] vs [ ])</action>
+    <action>From Dev Agent Record → File List, compile list of claimed changes</action>
+
+    <action>Create review plan:
+      1. **AC Validation**: Verify each AC is actually implemented
+      2. **Task Audit**: Verify each [x] task is really done
+      3. **Code Quality**: Security, performance, maintainability
+      4. **Test Quality**: Real tests vs placeholder bullshit
+    </action>
+  </step>
+
+  <step n="3" goal="Execute adversarial review">
+    <critical>VALIDATE EVERY CLAIM - Check git reality vs story claims</critical>
+
+    <!-- Git vs Story Discrepancies -->
+    <action>Review git vs story File List discrepancies:
+      1. **Files changed but not in story File List** → MEDIUM finding (incomplete documentation)
+      2. **Story lists files but no git changes** → HIGH finding (false claims)
+      3. **Uncommitted changes not documented** → MEDIUM finding (transparency issue)
+    </action>
+
+    <!-- Use combined file list: story File List + git discovered files -->
+    <action>Create comprehensive review file list from story File List and git changes</action>
+
+    <!-- AC Validation -->
+    <action>For EACH Acceptance Criterion:
+      1. Read the AC requirement
+      2. Search implementation files for evidence
+      3. Determine: IMPLEMENTED, PARTIAL, or MISSING
+      4. If MISSING/PARTIAL → HIGH SEVERITY finding
+    </action>
+
+    <!-- Task Completion Audit -->
+    <action>For EACH task marked [x]:
+      1. Read the task description
+      2. Search files for evidence it was actually done
+      3. **CRITICAL**: If marked [x] but NOT DONE → CRITICAL finding
+      4. Record specific proof (file:line)
+    </action>
+
+    <!-- Code Quality Deep Dive -->
+    <action>For EACH file in comprehensive review list:
+      1. **Security**: Look for injection risks, missing validation, auth issues
+      2. **Performance**: N+1 queries, inefficient loops, missing caching
+      3. **Error Handling**: Missing try/catch, poor error messages
+      4. **Code Quality**: Complex functions, magic numbers, poor naming
+      5. **Test Quality**: Are tests real assertions or placeholders?
+    </action>
+
+    <check if="total_issues_found lt 3">
+      <critical>NOT LOOKING HARD ENOUGH - Find more problems!</critical>
+      <action>Re-examine code for:
+        - Edge cases and null handling
+        - Architecture violations
+        - Documentation gaps
+        - Integration issues
+        - Dependency problems
+        - Git commit message quality (if applicable)
+      </action>
+      <action>Find at least 3 more specific, actionable issues</action>
+    </check>
+  </step>
+
+  <step n="4" goal="Present findings and fix them">
+    <action>Categorize findings: HIGH (must fix), MEDIUM (should fix), LOW (nice to fix)</action>
+    <action>Set {{fixed_count}} = 0</action>
+    <action>Set {{action_count}} = 0</action>
+
+    <output>**🔥 CODE REVIEW FINDINGS, {user_name}!**
+
+      **Story:** {{story_file}}
+      **Git vs Story Discrepancies:** {{git_discrepancy_count}} found
+      **Issues Found:** {{high_count}} High, {{medium_count}} Medium, {{low_count}} Low
+
+      ## 🔴 CRITICAL ISSUES
+      - Tasks marked [x] but not actually implemented
+      - Acceptance Criteria not implemented
+      - Story claims files changed but no git evidence
+      - Security vulnerabilities
+
+      ## 🟡 MEDIUM ISSUES
+      - Files changed but not documented in story File List
+      - Uncommitted changes not tracked
+      - Performance problems
+      - Poor test coverage/quality
+      - Code maintainability issues
+
+      ## 🟢 LOW ISSUES
+      - Code style improvements
+      - Documentation gaps
+      - Git commit message quality
+    </output>
+
+    <ask>What should I do with these issues?
+
+      1. **Fix them automatically** - I'll update the code and tests
+      2. **Create action items** - Add to story Tasks/Subtasks for later
+      3. **Show me details** - Deep dive into specific issues
+
+      Choose [1], [2], or specify which issue to examine:</ask>
+
+    <check if="user chooses 1">
+      <action>Fix all HIGH and MEDIUM issues in the code</action>
+      <action>Add/update tests as needed</action>
+      <action>Update File List in story if files changed</action>
+      <action>Update story Dev Agent Record with fixes applied</action>
+      <action>Set {{fixed_count}} = number of HIGH and MEDIUM issues fixed</action>
+      <action>Set {{action_count}} = 0</action>
+    </check>
+
+    <check if="user chooses 2">
+      <action>Add "Review Follow-ups (AI)" subsection to Tasks/Subtasks</action>
+      <action>For each issue: `- [ ] [AI-Review][Severity] Description [file:line]`</action>
+      <action>Set {{action_count}} = number of action items created</action>
+      <action>Set {{fixed_count}} = 0</action>
+    </check>
+
+    <check if="user chooses 3">
+      <action>Show detailed explanation with code examples</action>
+      <action>Return to fix decision</action>
+    </check>
+  </step>
+
+  <step n="5" goal="Update story status and sync sprint tracking">
+    <!-- Determine new status based on review outcome -->
+    <check if="all HIGH and MEDIUM issues fixed AND all ACs implemented">
+      <action>Set {{new_status}} = "done"</action>
+      <action>Update story Status field to "done"</action>
+    </check>
+    <check if="HIGH or MEDIUM issues remain OR ACs not fully implemented">
+      <action>Set {{new_status}} = "in-progress"</action>
+      <action>Update story Status field to "in-progress"</action>
+    </check>
+    <action>Save story file</action>
+
+    <!-- Determine sprint tracking status -->
+    <check if="{sprint_status} file exists">
+      <action>Set {{current_sprint_status}} = "enabled"</action>
+    </check>
+    <check if="{sprint_status} file does NOT exist">
+      <action>Set {{current_sprint_status}} = "no-sprint-tracking"</action>
+    </check>
+
+    <!-- Sync sprint-status.yaml when story status changes (only if sprint tracking enabled) -->
+    <check if="{{current_sprint_status}} != 'no-sprint-tracking'">
+      <action>Load the FULL file: {sprint_status}</action>
+      <action>Find development_status key matching {{story_key}}</action>
+
+      <check if="{{new_status}} == 'done'">
+        <action>Update development_status[{{story_key}}] = "done"</action>
+        <action>Save file, preserving ALL comments and structure</action>
+        <output>✅ Sprint status synced: {{story_key}} → done</output>
+      </check>
+
+      <check if="{{new_status}} == 'in-progress'">
+        <action>Update development_status[{{story_key}}] = "in-progress"</action>
+        <action>Save file, preserving ALL comments and structure</action>
+        <output>🔄 Sprint status synced: {{story_key}} → in-progress</output>
+      </check>
+
+      <check if="story key not found in sprint status">
+        <output>⚠️ Story file updated, but sprint-status sync failed: {{story_key}} not found in sprint-status.yaml</output>
+      </check>
+    </check>
+
+    <check if="{{current_sprint_status}} == 'no-sprint-tracking'">
+      <output>ℹ️ Story status updated (no sprint tracking configured)</output>
+    </check>
+
+    <output>**✅ Review Complete!**
+
+      **Story Status:** {{new_status}}
+      **Issues Fixed:** {{fixed_count}}
+      **Action Items Created:** {{action_count}}
+
+      {{#if new_status == "done"}}Code review complete!{{else}}Address the action items and continue development.{{/if}}
+    </output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PR COMMENT HANDLING — Read, Fix, Respond, Resolve, Merge
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="6" goal="Discover and read PR comments across all story repos">
+    <action>Derive the feature branch name for this story: "feature/{{story_key}}"</action>
+    <action>Identify all repos that may have PRs for this branch (root repo + child repos: backend/, customer-backend/, storefront/, vendorpanel/)</action>
+    <action>For EACH repo, check if a PR exists for the feature branch:
+      - cd into the repo directory
+      - Run: gh pr list --head feature/{{story_key}} --json number,title,url,state
+      - Record: repo path, PR number, PR URL, PR state
+      - cd back to root
+    </action>
+    <check if="no PRs found in any repo">
+      <output>No open PRs found for feature/{{story_key}} in any repo — skipping PR comment handling.</output>
+      <action>Exit this step and proceed to final summary</action>
+    </check>
+    <action>For EACH open PR found, read all comments:
+      - Run: gh pr view {pr_number} --comments --json comments,reviewComments,reviews
+      - Collect all review comments (inline code comments) and general PR comments
+      - For each comment record: comment_id, file, line (if inline), author, body, resolved status
+    </action>
+    <action>Categorize each unresolved comment:
+      - CHANGE_REQUEST: requires code or test modification
+      - QUESTION: requires a written response only
+      - SUGGESTION: optional improvement (accept or decline)
+      - Already resolved: skip entirely
+    </action>
+    <action>Set {{total_pr_comments}} = total unresolved comments across all PRs</action>
+    <output>**PR Comment Triage**
+
+      | Repo | PR | URL | CHANGE_REQUEST | QUESTION | SUGGESTION |
+      |---|---|---|---|---|---|
+      (one row per repo with an open PR)
+
+      Total unresolved comments: {{total_pr_comments}}
+    </output>
+  </step>
+
+  <step n="7" goal="Fix code, respond to, and resolve all PR comments">
+    <critical>Address comments IN ORDER per PR: CHANGE_REQUEST first, then QUESTION, then SUGGESTION</critical>
+    <critical>After fixing code for a CHANGE_REQUEST, always run the quality gate in the affected repo before pushing</critical>
+
+    <action>For EACH CHANGE_REQUEST comment (across all PRs):
+      1. Read the full comment text — understand exactly what change is requested
+      2. Locate the referenced file and line
+      3. Make the required code or test change
+      4. Run quality gate in the affected repo: npm run lint and npm run typecheck and npm run build and npm test
+      5. Stage and commit: git commit -m "fix({{story_key}}): address review comment — {brief description}"
+      6. Push to the feature branch: git push
+      7. Respond to the comment explaining what was changed and why:
+         gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="{response text}"
+      8. Resolve the comment thread:
+         gh api -X PUT repos/{owner}/{repo}/pulls/{pr_number}/reviews/{review_id}/comments/{comment_id} -f resolved=true
+         (or use the equivalent endpoint to mark as resolved)
+    </action>
+
+    <action>For EACH QUESTION comment (across all PRs):
+      1. Read the question carefully
+      2. Formulate a clear, factual answer based on the actual implementation
+      3. Reply to the comment:
+         gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="{answer text}"
+      4. Resolve the thread
+    </action>
+
+    <action>For EACH SUGGESTION comment (across all PRs):
+      1. Evaluate: does this improve quality without expanding story scope?
+      2. If ACCEPTING: implement the change, commit, push, reply "Accepted — [description of change made]", resolve
+      3. If DECLINING: reply explaining clearly why it is out of scope or not the right approach, resolve
+    </action>
+
+    <action>After all comments for a given PR are addressed:
+      - Run: gh pr view {pr_number} --json reviewDecision,reviewRequests
+      - Note if re-review was requested by the original reviewer
+      - Set {{pr_comments_resolved_{{pr_number}}}} = true if all threads resolved, else false
+    </action>
+
+    <output>**PR Comment Resolution Summary**
+
+      | Repo | PR | Resolved | Commits Made | Re-review Requested? |
+      |---|---|---|---|---|
+      (one row per PR)
+    </output>
+  </step>
+
+  <step n="8" goal="Merge PRs once all comments are resolved">
+    <critical>Only merge a PR when ALL comment threads are resolved and no CHANGES_REQUESTED review blocks it</critical>
+
+    <action>For EACH PR in order:
+      1. Verify no remaining unresolved threads:
+         gh pr view {pr_number} --json reviewThreads
+      2. Verify no blocking CHANGES_REQUESTED reviews:
+         gh pr view {pr_number} --json reviews
+      3. If all clear:
+         a. Post a merge summary comment:
+            gh pr comment {pr_number} -b "All review comments addressed. Merging."
+         b. Merge the PR with squash:
+            gh pr merge {pr_number} --squash --delete-branch
+         c. Confirm merge success and record the merge commit SHA
+      4. If unresolved threads or blocking reviews remain:
+         a. List the outstanding threads
+         b. Return to step 7 to address the new or remaining comments before retrying merge
+    </action>
+
+    <check if="any PR still has unresolved threads after retry">
+      <action>Report the specific unresolved threads and which reviewer must take action</action>
+      <action>Do NOT force-merge — stop and surface the blocker to the user</action>
+    </check>
+
+    <output>**Merge Summary**
+
+      | Repo | PR | Merged? | Merge Commit | Notes |
+      |---|---|---|---|---|
+      (one row per PR)
+    </output>
+  </step>
+
+</workflow>

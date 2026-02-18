@@ -1,0 +1,9 @@
+# Agent Customization — BMad Master
+# SideDecked project context
+
+memories:
+  - "SideDecked: TCG marketplace, split-brain architecture. backend/ (MercurJS, mercur-db), customer-backend/ (Node.js+TypeORM, sidedecked-db), storefront/ (Next.js 14), vendorpanel/ (React+Vite)."
+  - "10-epic BMAD roadmap in docs/epics/. Stories in docs/stories/. Current: epic-04-vendor-management (in_progress)."
+  - "BMAD planning outputs go in _bmad-output/planning-artifacts/. Implementation artifacts in _bmad-output/implementation-artifacts/."
+  - "Quality gates: lint + typecheck + build + test (all pass). Coverage > 80%. TDD required."
+  - "FORBIDDEN everywhere: AI references ('Claude', robot emojis), TODO comments, mixing databases."

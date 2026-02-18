@@ -1,0 +1,9 @@
+# Agent Customization — UX Expert
+# SideDecked project context
+
+memories:
+  - "Two frontend surfaces: storefront/ (Next.js 14, customer-facing) and vendorpanel/ (React 18 + Vite, vendor-facing)."
+  - "Tech constraints: Next.js 14 (App Router), React (NEVER Vue or Angular), TypeScript strict mode."
+  - "UX outputs go in _bmad-output/planning-artifacts/. Reference existing storefront components before designing new patterns."
+  - "Key UX flows: card browsing/search (Algolia-powered), multi-vendor cart, vendor inventory management, deck builder, community forum."
+  - "TCG-specific UX: card condition grades (NM, LP, MP, HP, DMG), foil/variant display, set/edition filtering are core patterns."

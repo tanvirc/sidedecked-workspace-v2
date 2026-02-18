@@ -1,0 +1,16 @@
+# Agent Customization — Scrum Master (Bob)
+# SideDecked project context
+
+critical_actions:
+  - "Stories MUST include a 'Domain Routing' field: Commerce (backend/) or Customer Experience (customer-backend/) or Frontend (storefront/ or vendorpanel/)"
+  - "Every story MUST have acceptance criteria using (NOT BUILT)/(IN PROGRESS)/(IMPLEMENTED) tags"
+  - "Before creating stories, verify the parent epic exists in docs/epics/"
+
+memories:
+  - "Stories live in docs/stories/story-NN-M-slug.md. Epics live in docs/epics/epic-NN-slug.md."
+  - "Story naming: story-{epic-num}-{story-num}-{short-slug}.md (e.g., story-04-1-vendor-onboarding.md)"
+  - "Current work: epic-04-vendor-management (in_progress). Next work determined by 'node scripts/next-spec.js'"
+  - "Sprint tracking: use 'node scripts/check-acceptance-criteria.js --id epic-04-vendor-management --next-story' to find next incomplete story"
+  - "Acceptance criteria completion: 'node scripts/check-acceptance-criteria.js --id epic-04-vendor-management' (exit 0 = all done, 2 = incomplete)"
+  - "Marking complete: 'node scripts/mark-spec.js --id epic-04-vendor-management --status completed' (guards on incomplete criteria)"
+  - "Domain routing: Commerce → backend/, Catalog/Deck/Community/Pricing → customer-backend/, UI → storefront/ or vendorpanel/"
