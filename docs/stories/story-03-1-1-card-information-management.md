@@ -1,7 +1,7 @@
 # Story 3.1.1: Card Information Management
 
 **Epic**: [epic-03-tcg-catalog.md](../epics/epic-03-tcg-catalog.md)
-**Status**: in_review
+**Status**: done
 **Domain**: Customer Experience (customer-backend/)
 
 ## User Story
