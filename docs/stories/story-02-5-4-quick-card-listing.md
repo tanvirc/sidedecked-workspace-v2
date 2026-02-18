@@ -1,7 +1,7 @@
 # Story 2.5.4: Quick Card Listing from Collection
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: review
+**Status**: done
 **Domain**: Commerce (backend/) + Customer Backend (customer-backend/) + Storefront (storefront/)
 
 ## User Story

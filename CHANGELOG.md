@@ -4,6 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Quick Card Listing (Story 2.5.4)**: One-click listing creation for individual sellers from any card detail page
+  - "Sell This Card" button on card detail pages with auto-populated card info (name, set, game, rarity)
+  - 5-grade condition selector (NM/LP/MP/HP/DMG) with visual condition guide
+  - Market price suggestions based on recent sales data from catalog SKU pricing
+  - Photo upload with mobile camera integration (`capture="environment"`)
+  - 3 hardcoded shipping options (Standard $3.99, Priority $7.99, Free >$25)
+  - Draft/publish workflow with quantity cap of 10 per listing
+  - `GET /api/catalog/sku/:sku` and `GET /api/catalog/sku/:gameCode/:setCode/:collectorNumber/prices` in customer-backend
+  - `POST /store/consumer-seller/listings` in commerce backend using `createProductsWorkflow` for immediate product creation
+  - Zod validation middleware for listing requests
+  - `ConditionGuide` and `ListingSuccessScreen` storefront components
+  - `createSellerListing()` and `saveListingDraft()` server actions
+  - 5 Jest tests for catalog SKU endpoints
 - **Consumer Seller Onboarding (Story 2.5.2)**: Simplified upgrade flow for collectors to become individual sellers
   - 5-step storefront wizard (Profile → Seller Type → Preferences → Terms → Activate)
   - `POST /api/customers/:id/upgrade-to-seller` in customer-backend — creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
