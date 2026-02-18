@@ -74,7 +74,10 @@
       "Bash(npx next lint:*)",
       "Bash(messages\" part and a NOT BUILT deferred notification system integration\nto accurately reflect story completion status per PR review feedback.\nEOF\n\\)\")",
       "Bash(gh pr merge:*)",
-      "Bash(npx vitest run:*)"
+      "Bash(npx vitest run:*)",
+      "Bash(dir:*)",
+      "Bash(npm ls:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []
