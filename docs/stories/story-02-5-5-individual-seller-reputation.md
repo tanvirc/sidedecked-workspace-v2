@@ -1,7 +1,7 @@
 # Story 2.5.5: Individual Seller Reputation Management
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: review
+**Status**: done
 **Domain**: Customer Experience (customer-backend/) + Storefront (storefront/)
 
 ## User Story
