@@ -1,7 +1,7 @@
 # Story 2.5.6: Individual Seller Payment & Payout
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: review
+**Status**: done
 **Domain**: Commerce (backend/) + Storefront (storefront/)
 
 ## User Story
