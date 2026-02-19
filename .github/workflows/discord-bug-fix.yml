@@ -1,0 +1,123 @@
+name: Discord Bug Fix
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  fix-bug:
+    if: contains(github.event.issue.labels.*.name, 'discord-bug')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Create fix branch
+        run: |
+          BRANCH="fix/discord-bug-${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Build prompt from template
+        id: prompt
+        run: |
+          ISSUE_BODY=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")
+          PROMPT=$(sed "s|\${ISSUE_BODY}|${ISSUE_BODY}|g" .github/claude-bug-fix-prompt.md)
+          EOF_MARKER=$(openssl rand -hex 16)
+          echo "prompt<<${EOF_MARKER}" >> $GITHUB_OUTPUT
+          echo "$PROMPT" >> $GITHUB_OUTPUT
+          echo "${EOF_MARKER}" >> $GITHUB_OUTPUT
+
+      - name: Run Claude Code
+        id: claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set +e
+          claude -p "${{ steps.prompt.outputs.prompt }}" \
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
+            --output-format json > claude-output.json 2>&1
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push and create PR
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create \
+            --title "fix: discord bug #${{ github.event.issue.number }}" \
+            --body "Automated fix for #${{ github.event.issue.number }}" \
+            --head "$BRANCH" \
+            --base main)
+          gh pr merge "$PR_URL" --auto --squash
+          echo "PR_URL=$PR_URL" >> $GITHUB_ENV
+
+      - name: Wait for merge
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 30); do
+            STATE=$(gh pr view "$PR_URL" --json state -q .state)
+            if [ "$STATE" = "MERGED" ]; then
+              echo "PR merged"
+              break
+            fi
+            sleep 10
+          done
+
+      - name: Deploy to Railway
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd backend && railway up --detach 2>/dev/null || true
+          cd ../customer-backend && railway up --detach 2>/dev/null || true
+          cd ../storefront && railway up --detach 2>/dev/null || true
+
+      - name: Notify success
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          COMMIT_SHA=$(git rev-parse HEAD)
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}/webhook" \
+            -H "Content-Type: application/json" \
+            -H "X-Webhook-Secret: ${{ secrets.DISCORD_WEBHOOK_SECRET }}" \
+            -d "{\"issue_number\": ${{ github.event.issue.number }}, \"status\": \"success\", \"commit_sha\": \"$COMMIT_SHA\"}"
+          gh issue comment ${{ github.event.issue.number }} --body "Fix deployed. Commit: \`$COMMIT_SHA\`"
+
+      - name: Notify failure
+        if: steps.changes.outputs.has_changes == 'false' || failure()
+        run: |
+          gh issue label ${{ github.event.issue.number }} --add "needs-human" 2>/dev/null || true
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}/webhook" \
+            -H "Content-Type: application/json" \
+            -H "X-Webhook-Secret: ${{ secrets.DISCORD_WEBHOOK_SECRET }}" \
+            -d "{\"issue_number\": ${{ github.event.issue.number }}, \"status\": \"failure\", \"message\": \"Could not auto-fix. Needs developer attention.\"}" || true
+          gh issue comment ${{ github.event.issue.number }} --body "Auto-fix failed. Needs manual investigation." || true
