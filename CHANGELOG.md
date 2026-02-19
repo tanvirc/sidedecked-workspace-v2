@@ -4,6 +4,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Individual Seller Communication (Story 2.5.7)**: Seller-buyer messaging tools and response time tracking
+  - `seller-messaging` backend module with `SellerMessageTemplate` and `SellerResponseMetric` entities
+  - `GET /vendor/message-templates` — 5 default template categories (shipping, thanks, condition, delay, return), auto-seeded on first access
+  - `GET /vendor/response-metrics` — seller badge tier and avg response time
+  - `GET /store/sellers/:id/response-metrics` — public badge display for storefront
+  - `POST /vendor/orders/:id/escalate` — create TalkJS escalation conversation with platform support
+  - Nightly cron job `compute-response-metrics` — computes avg first-reply time and badge tier (Lightning <1h, Fast <4h, Responsive <24h)
+  - Vendorpanel: "Message Buyer" button on order detail, order-scoped chat drawer with TalkJS, quick response chips, escalation to support
+  - Vendorpanel: Message templates sidebar on Messages page, response metrics badge, communication guidelines onboarding banner
+  - Storefront: `SellerResponseBadge` component on seller profile pages and order parcels
+  - 26 backend unit tests
 - **Individual Seller Payment & Payout (Story 2.5.6)**: Stripe Connect Express payment processing and payout management for individual sellers
   - `GET/POST /store/consumer-seller/payout-account` — create and retrieve Stripe Connect Express payout accounts
   - `POST /store/consumer-seller/payout-account/onboarding` — initiate Stripe hosted onboarding redirect flow

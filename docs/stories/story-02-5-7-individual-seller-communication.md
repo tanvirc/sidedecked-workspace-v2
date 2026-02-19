@@ -1,7 +1,7 @@
 # Story 2.5.7: Individual Seller Communication
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: in_progress
+**Status**: done
 **Domain**: Hybrid — Commerce (backend/) + Vendorpanel + Storefront
 **Feature Branch**: `feature/story-2-5-7`
 
@@ -188,7 +188,11 @@ All 7 ACs implemented. 26 backend unit tests pass. No customer-backend changes n
 
 ### Storefront (modified)
 - `src/lib/data/seller.ts` — added `getSellerResponseMetrics()` function
+- `src/types/seller.ts` — added `SellerResponseMetrics` type
 - `src/components/organisms/OrderParcels/OrderParcels.tsx` — integrated SellerResponseBadge
+- `src/components/organisms/SellerHeading/SellerHeading.tsx` — added response badge next to chat
+- `src/components/sections/SellerPageHeader/SellerPageHeader.tsx` — pass responseMetrics prop
+- `src/app/[locale]/(main)/sellers/[handle]/page.tsx` — fetch seller response metrics
 
 ## Change Log
 
