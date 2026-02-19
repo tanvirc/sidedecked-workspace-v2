@@ -65,8 +65,15 @@ export async function handleWebhook(req: Request, res: Response) {
     return;
   }
 
+  let discordClient: ReturnType<typeof getDiscordClient>;
   try {
-    const discordClient = getDiscordClient();
+    discordClient = getDiscordClient();
+  } catch {
+    res.status(503).json({ error: "Discord client not ready" });
+    return;
+  }
+
+  try {
     const channel = (await discordClient.channels.fetch(
       config.channelId
     )) as TextChannel;

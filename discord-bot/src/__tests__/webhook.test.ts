@@ -80,6 +80,22 @@ describe("handleWebhook", () => {
     expect(res.body).toEqual({ error: "Invalid request body" });
   });
 
+  it("returns 503 when Discord client is not initialized", async () => {
+    mockIssueThreadMap.set(1, "thread-123");
+    mockGetDiscordClient.mockImplementation(() => {
+      throw new Error("Discord client not initialized");
+    });
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({ issue_number: 1, status: "success" });
+
+    expect(res.status).toBe(503);
+    expect(res.body).toEqual({ error: "Discord client not ready" });
+  });
+
   it("returns 404 when issue thread is not in map and not in issue body", async () => {
     mockGetGitHubIssueBody.mockResolvedValue("No thread URL here");
 

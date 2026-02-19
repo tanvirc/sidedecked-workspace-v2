@@ -113,7 +113,7 @@ Discord notification for failures: "Could not auto-fix this bug. A developer wil
 - Anthropic API key as GitHub secret
 - Railway token as GitHub secret (scoped to deploy only)
 - Claude Code runs with restricted tool permissions (no destructive git ops)
-- Webhook endpoint validates request signature from GitHub
+- Webhook endpoint validates shared secret header (`X-Webhook-Secret`) on incoming requests
 - Bot only monitors one specific channel (not all server messages)
 
 ## Cost Estimates

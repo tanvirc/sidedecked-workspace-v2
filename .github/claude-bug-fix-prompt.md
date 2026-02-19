@@ -12,6 +12,8 @@ Follow these steps exactly:
    - `storefront/` — Next.js frontend
    - `vendorpanel/` — React vendor panel
 
+   Note: Only services present in the workspace checkout are fixable. If the affected service directory does not exist, report that the fix requires manual intervention.
+
 2. **Search the codebase** for the relevant code. Read the related files to understand context.
 
 3. **Write a failing test** that reproduces the bug.
