@@ -4,6 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Individual Seller Payment & Payout (Story 2.5.6)**: Stripe Connect Express payment processing and payout management for individual sellers
+  - `GET/POST /store/consumer-seller/payout-account` — create and retrieve Stripe Connect Express payout accounts
+  - `POST /store/consumer-seller/payout-account/onboarding` — initiate Stripe hosted onboarding redirect flow
+  - `POST /store/consumer-seller/payout-account/sync` — sync Stripe account status
+  - `GET /store/consumer-seller/financial/summary` — balance overview (available, pending, reserve, lifetime, qualification progress)
+  - `GET /store/consumer-seller/financial/fees` — fee structure display (10% platform + Stripe processing fees)
+  - `GET /store/consumer-seller/payouts` — paginated payout history with status filtering
+  - `PATCH /store/consumer-seller/payouts/settings` — payout schedule preference (weekly default, daily for qualified sellers)
+  - `fetchConsumerSellerByCustomerId()` utility for customer-authenticated seller lookup
+  - Storefront `/sell/payouts` dashboard with balance cards, payout history, and setup banner
+  - Storefront `/sell/payouts/settings` page with schedule selector, reserve policy info, and fee calculator
+  - "Payouts" quick action link added to existing ConsumerSellerDashboard
+  - 24 unit tests (validators, query configs, utility functions)
 - **Quick Card Listing (Story 2.5.4)**: One-click listing creation for individual sellers from any card detail page
   - "Sell This Card" button on card detail pages with auto-populated card info (name, set, game, rarity)
   - 5-grade condition selector (NM/LP/MP/HP/DMG) with visual condition guide
