@@ -4,6 +4,7 @@ import request from "supertest";
 
 const mockIssueThreadMap = new Map<number, string>();
 const mockGetDiscordClient = vi.fn();
+const mockGetGitHubIssueBody = vi.fn();
 
 vi.mock("../config.js", () => ({
   config: {
@@ -15,6 +16,10 @@ vi.mock("../config.js", () => ({
 vi.mock("../state.js", () => ({
   issueThreadMap: mockIssueThreadMap,
   getDiscordClient: mockGetDiscordClient,
+}));
+
+vi.mock("../github.js", () => ({
+  getGitHubIssueBody: (...args: unknown[]) => mockGetGitHubIssueBody(...args),
 }));
 
 const { handleWebhook } = await import("../webhook.js");
@@ -34,7 +39,9 @@ describe("handleWebhook", () => {
 
   it("rejects requests with missing secret", async () => {
     const app = createApp();
-    const res = await request(app).post("/webhook").send({ issue_number: 1 });
+    const res = await request(app)
+      .post("/webhook")
+      .send({ issue_number: 1, status: "success" });
 
     expect(res.status).toBe(401);
     expect(res.body).toEqual({ error: "Unauthorized" });
@@ -45,21 +52,70 @@ describe("handleWebhook", () => {
     const res = await request(app)
       .post("/webhook")
       .set("x-webhook-secret", "wrong-secret")
-      .send({ issue_number: 1 });
+      .send({ issue_number: 1, status: "success" });
 
     expect(res.status).toBe(401);
     expect(res.body).toEqual({ error: "Unauthorized" });
   });
 
-  it("returns 404 when issue thread is not found", async () => {
+  it("rejects requests with invalid body (missing issue_number)", async () => {
     const app = createApp();
     const res = await request(app)
       .post("/webhook")
       .set("x-webhook-secret", "test-secret")
-      .send({ issue_number: 999 });
+      .send({ status: "success" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: "Invalid request body" });
+  });
+
+  it("rejects requests with invalid body (bad status value)", async () => {
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({ issue_number: 1, status: "invalid" });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ error: "Invalid request body" });
+  });
+
+  it("returns 404 when issue thread is not in map and not in issue body", async () => {
+    mockGetGitHubIssueBody.mockResolvedValue("No thread URL here");
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({ issue_number: 999, status: "success" });
 
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ error: "Thread not found for issue" });
+  });
+
+  it("falls back to GitHub issue body when thread not in map", async () => {
+    mockGetGitHubIssueBody.mockResolvedValue(
+      "Bug report\n\n---\n_Discord thread: https://discord.com/channels/100200300400/999888777666555_"
+    );
+
+    const mockSend = vi.fn().mockResolvedValue(undefined);
+    const mockThread = { send: mockSend };
+    const mockThreadsCache = new Map([["999888777666555", mockThread]]);
+    const mockChannel = { threads: { cache: mockThreadsCache } };
+    const mockFetch = vi.fn().mockResolvedValue(mockChannel);
+
+    mockGetDiscordClient.mockReturnValue({ channels: { fetch: mockFetch } });
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({ issue_number: 42, status: "success", commit_sha: "abc123" });
+
+    expect(res.status).toBe(200);
+    expect(mockGetGitHubIssueBody).toHaveBeenCalledWith(42);
+    expect(mockSend).toHaveBeenCalledOnce();
+    expect(mockIssueThreadMap.get(42)).toBe("999888777666555");
   });
 
   it("sends success message to Discord thread", async () => {
@@ -197,5 +253,18 @@ describe("handleWebhook", () => {
 
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: "Internal error" });
+  });
+
+  it("handles GitHub API failure during fallback gracefully", async () => {
+    mockGetGitHubIssueBody.mockRejectedValue(new Error("GitHub API error"));
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({ issue_number: 99, status: "success" });
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ error: "Thread not found for issue" });
   });
 });

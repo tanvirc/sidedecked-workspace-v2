@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const mockCreate = vi.fn();
+const mockGet = vi.fn();
 
 vi.mock("@octokit/rest", () => ({
   Octokit: vi.fn().mockImplementation(() => ({
-    issues: { create: mockCreate },
+    issues: { create: mockCreate, get: mockGet },
   })),
 }));
 
@@ -16,7 +17,7 @@ vi.mock("../config.js", () => ({
   },
 }));
 
-const { createGitHubIssue } = await import("../github.js");
+const { createGitHubIssue, getGitHubIssueBody } = await import("../github.js");
 
 describe("createGitHubIssue", () => {
   beforeEach(() => {
@@ -70,5 +71,41 @@ describe("createGitHubIssue", () => {
     mockCreate.mockRejectedValue(new Error("GitHub API error"));
 
     await expect(createGitHubIssue("fail")).rejects.toThrow("GitHub API error");
+  });
+});
+
+describe("getGitHubIssueBody", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns the issue body from GitHub API", async () => {
+    mockGet.mockResolvedValue({
+      data: { body: "Bug report content here" },
+    });
+
+    const result = await getGitHubIssueBody(42);
+
+    expect(mockGet).toHaveBeenCalledWith({
+      owner: "test-owner",
+      repo: "test-repo",
+      issue_number: 42,
+    });
+    expect(result).toBe("Bug report content here");
+  });
+
+  it("returns empty string when issue body is null", async () => {
+    mockGet.mockResolvedValue({
+      data: { body: null },
+    });
+
+    const result = await getGitHubIssueBody(1);
+    expect(result).toBe("");
+  });
+
+  it("propagates errors from Octokit", async () => {
+    mockGet.mockRejectedValue(new Error("Not found"));
+
+    await expect(getGitHubIssueBody(999)).rejects.toThrow("Not found");
   });
 });

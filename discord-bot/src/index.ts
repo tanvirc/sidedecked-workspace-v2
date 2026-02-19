@@ -2,14 +2,14 @@ import {
   Client,
   GatewayIntentBits,
   Events,
-  TextChannel,
   Message,
 } from "discord.js";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { config } from "./config.js";
-import { createGitHubIssue } from "./github.js";
 import { handleWebhook } from "./webhook.js";
-import { issueThreadMap, setDiscordClient } from "./state.js";
+import { handleBugReport } from "./handler.js";
+import { setDiscordClient } from "./state.js";
 
 const client = new Client({
   intents: [
@@ -25,40 +25,8 @@ client.once(Events.ClientReady, (c) => {
 });
 
 client.on(Events.MessageCreate, async (message: Message) => {
-  if (message.author.bot) return;
-  if (message.channelId !== config.channelId) return;
-
   try {
-    await message.react("\uD83D\uDD0D");
-
-    const thread = await (message.channel as TextChannel).threads.create({
-      name: `Bug Report — ${message.content.slice(0, 50)}`,
-      startMessage: message,
-    });
-
-    await thread.send("Investigating — creating GitHub issue...");
-
-    const imageUrls = message.attachments
-      .filter((a) => a.contentType?.startsWith("image/"))
-      .map((a) => a.url);
-
-    let issueBody = message.content;
-    if (imageUrls.length > 0) {
-      issueBody += "\n\n**Screenshots:**\n";
-      issueBody += imageUrls
-        .map((url, i) => `![screenshot-${i + 1}](${url})`)
-        .join("\n");
-    }
-
-    issueBody += `\n\n---\n_Discord thread: ${thread.url}_`;
-
-    const issue = await createGitHubIssue(issueBody);
-
-    issueThreadMap.set(issue.number, thread.id);
-
-    await thread.send(
-      `Created [Issue #${issue.number}](${issue.html_url}) — fix in progress...`
-    );
+    await handleBugReport(message);
   } catch (err) {
     console.error("Failed to process bug report:", err);
   }
@@ -67,7 +35,15 @@ client.on(Events.MessageCreate, async (message: Message) => {
 // Express server for incoming webhooks from GitHub Actions
 const app = express();
 app.use(express.json());
-app.post("/webhook", handleWebhook);
+
+const webhookLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
+
+app.post("/webhook", webhookLimiter, handleWebhook);
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 app.listen(config.port, () => {

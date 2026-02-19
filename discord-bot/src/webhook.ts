@@ -1,18 +1,65 @@
+import { timingSafeEqual } from "node:crypto";
 import { Request, Response } from "express";
 import { TextChannel } from "discord.js";
 import { config } from "./config.js";
+import { getGitHubIssueBody } from "./github.js";
 import { issueThreadMap, getDiscordClient } from "./state.js";
+
+function safeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
+
+interface WebhookBody {
+  issue_number: number;
+  status: "success" | "failure";
+  message?: string;
+  commit_sha?: string;
+}
+
+function isValidWebhookBody(body: unknown): body is WebhookBody {
+  if (typeof body !== "object" || body === null) return false;
+  const b = body as Record<string, unknown>;
+  return (
+    typeof b.issue_number === "number" &&
+    (b.status === "success" || b.status === "failure")
+  );
+}
+
+function extractThreadIdFromIssueBody(body: string): string | undefined {
+  const match = body.match(/discord\.com\/channels\/\d+\/(\d+)/);
+  return match?.[1];
+}
 
 export async function handleWebhook(req: Request, res: Response) {
   const secret = req.headers["x-webhook-secret"];
-  if (secret !== config.webhookSecret) {
+  if (typeof secret !== "string" || !safeCompare(secret, config.webhookSecret)) {
     res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+
+  if (!isValidWebhookBody(req.body)) {
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
   const { issue_number, status, message, commit_sha } = req.body;
 
-  const threadId = issueThreadMap.get(issue_number);
+  let threadId = issueThreadMap.get(issue_number);
+  if (!threadId) {
+    try {
+      const issueBody = await getGitHubIssueBody(issue_number);
+      threadId = extractThreadIdFromIssueBody(issueBody);
+      if (threadId) {
+        issueThreadMap.set(issue_number, threadId);
+      }
+    } catch {
+      // GitHub API failure — fall through to 404
+    }
+  }
+
   if (!threadId) {
     res.status(404).json({ error: "Thread not found for issue" });
     return;

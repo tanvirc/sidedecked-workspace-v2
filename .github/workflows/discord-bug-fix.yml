@@ -37,21 +37,28 @@ jobs:
 
       - name: Build prompt from template
         id: prompt
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          ISSUE_BODY=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")
-          PROMPT=$(sed "s|\${ISSUE_BODY}|${ISSUE_BODY}|g" .github/claude-bug-fix-prompt.md)
+          python3 -c "
+          import os
+          template = open('.github/claude-bug-fix-prompt.md').read()
+          body = os.environ['ISSUE_BODY']
+          print(template.replace('\${ISSUE_BODY}', body))
+          " > /tmp/claude-prompt.txt
           EOF_MARKER=$(openssl rand -hex 16)
           echo "prompt<<${EOF_MARKER}" >> $GITHUB_OUTPUT
-          echo "$PROMPT" >> $GITHUB_OUTPUT
+          cat /tmp/claude-prompt.txt >> $GITHUB_OUTPUT
           echo "${EOF_MARKER}" >> $GITHUB_OUTPUT
 
       - name: Run Claude Code
         id: claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_PROMPT: ${{ steps.prompt.outputs.prompt }}
         run: |
           set +e
-          claude -p "${{ steps.prompt.outputs.prompt }}" \
+          claude -p "$CLAUDE_PROMPT" \
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
             --output-format json > claude-output.json 2>&1
           echo "exit_code=$?" >> $GITHUB_OUTPUT
@@ -69,11 +76,12 @@ jobs:
         if: steps.changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
         run: |
           git push origin "$BRANCH"
           PR_URL=$(gh pr create \
-            --title "fix: discord bug #${{ github.event.issue.number }}" \
-            --body "Automated fix for #${{ github.event.issue.number }}" \
+            --title "fix: discord bug #${ISSUE_NUM}" \
+            --body "Automated fix for #${ISSUE_NUM}" \
             --head "$BRANCH" \
             --base main)
           gh pr merge "$PR_URL" --auto --squash
@@ -88,10 +96,12 @@ jobs:
             STATE=$(gh pr view "$PR_URL" --json state -q .state)
             if [ "$STATE" = "MERGED" ]; then
               echo "PR merged"
-              break
+              exit 0
             fi
             sleep 10
           done
+          echo "::warning::PR did not merge within 5 minutes"
+          exit 1
 
       - name: Deploy to Railway
         if: steps.changes.outputs.has_changes == 'true'
@@ -104,20 +114,28 @@ jobs:
 
       - name: Notify success
         if: steps.changes.outputs.has_changes == 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_SECRET: ${{ secrets.DISCORD_WEBHOOK_SECRET }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
         run: |
           COMMIT_SHA=$(git rev-parse HEAD)
-          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}/webhook" \
+          curl -s -X POST "${DISCORD_WEBHOOK_URL}/webhook" \
             -H "Content-Type: application/json" \
-            -H "X-Webhook-Secret: ${{ secrets.DISCORD_WEBHOOK_SECRET }}" \
-            -d "{\"issue_number\": ${{ github.event.issue.number }}, \"status\": \"success\", \"commit_sha\": \"$COMMIT_SHA\"}"
-          gh issue comment ${{ github.event.issue.number }} --body "Fix deployed. Commit: \`$COMMIT_SHA\`"
+            -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
+            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"success\", \"commit_sha\": \"${COMMIT_SHA}\"}"
+          gh issue comment "${ISSUE_NUM}" --body "Fix deployed. Commit: \`${COMMIT_SHA}\`"
 
       - name: Notify failure
         if: steps.changes.outputs.has_changes == 'false' || failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_SECRET: ${{ secrets.DISCORD_WEBHOOK_SECRET }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
         run: |
-          gh issue label ${{ github.event.issue.number }} --add "needs-human" 2>/dev/null || true
-          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}/webhook" \
+          gh issue label "${ISSUE_NUM}" --add "needs-human" 2>/dev/null || true
+          curl -s -X POST "${DISCORD_WEBHOOK_URL}/webhook" \
             -H "Content-Type: application/json" \
-            -H "X-Webhook-Secret: ${{ secrets.DISCORD_WEBHOOK_SECRET }}" \
-            -d "{\"issue_number\": ${{ github.event.issue.number }}, \"status\": \"failure\", \"message\": \"Could not auto-fix. Needs developer attention.\"}" || true
-          gh issue comment ${{ github.event.issue.number }} --body "Auto-fix failed. Needs manual investigation." || true
+            -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
+            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"failure\", \"message\": \"Could not auto-fix. Needs developer attention.\"}" || true
+          gh issue comment "${ISSUE_NUM}" --body "Auto-fix failed. Needs manual investigation." || true

@@ -13,3 +13,14 @@ export async function createGitHubIssue(body: string) {
   });
   return data;
 }
+
+export async function getGitHubIssueBody(
+  issueNumber: number
+): Promise<string> {
+  const { data } = await octokit.issues.get({
+    owner: config.githubOwner,
+    repo: config.githubRepo,
+    issue_number: issueNumber,
+  });
+  return data.body ?? "";
+}
