@@ -77,7 +77,8 @@
       "Bash(npx vitest run:*)",
       "Bash(dir:*)",
       "Bash(npm ls:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(gh pr comment:*)"
     ],
     "deny": [],
     "ask": []
