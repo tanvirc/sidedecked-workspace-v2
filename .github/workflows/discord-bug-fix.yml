@@ -1,0 +1,178 @@
+name: Discord Bug Fix
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  fix-bug:
+    if: contains(github.event.issue.labels.*.name, 'discord-bug')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Verify issue author
+        env:
+          EXPECTED_BOT: ${{ vars.DISCORD_BOT_GITHUB_USER || 'sidedecked-bot' }}
+        run: |
+          AUTHOR="${{ github.event.issue.user.login }}"
+          if [ "$AUTHOR" != "$EXPECTED_BOT" ]; then
+            echo "::error::Issue #${{ github.event.issue.number }} created by '$AUTHOR', expected '$EXPECTED_BOT'. Skipping."
+            exit 1
+          fi
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create fix branch
+        run: |
+          BRANCH="fix/discord-bug-${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Build prompt from template
+        id: prompt
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 -c "
+          import os
+          template = open('.github/claude-bug-fix-prompt.md').read()
+          body = os.environ['ISSUE_BODY']
+          print(template.replace('\${ISSUE_BODY}', body))
+          " > /tmp/claude-prompt.txt
+          EOF_MARKER=$(openssl rand -hex 16)
+          echo "prompt<<${EOF_MARKER}" >> $GITHUB_OUTPUT
+          cat /tmp/claude-prompt.txt >> $GITHUB_OUTPUT
+          echo "${EOF_MARKER}" >> $GITHUB_OUTPUT
+
+      - name: Run Claude Code
+        id: claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_PROMPT: ${{ steps.prompt.outputs.prompt }}
+        run: |
+          set +e
+          claude -p "$CLAUDE_PROMPT" \
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
+            --output-format json > claude-output.json 2> claude-stderr.log
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            echo "::warning::Claude Code exited with code $EXIT_CODE"
+            cat claude-stderr.log
+          fi
+
+      - name: Check for changes
+        id: changes
+        if: steps.claude.outputs.exit_code == '0'
+        run: |
+          git fetch origin main
+          COMMITS_AHEAD=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+          if [ "$COMMITS_AHEAD" -gt 0 ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          elif ! git diff --quiet || ! git diff --cached --quiet; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Push and create PR
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+        run: |
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create \
+            --title "fix: discord bug #${ISSUE_NUM}" \
+            --body "Automated fix for #${ISSUE_NUM}" \
+            --head "$BRANCH" \
+            --base main)
+          gh pr merge "$PR_URL" --auto --squash
+          echo "PR_URL=$PR_URL" >> $GITHUB_ENV
+
+      - name: Wait for merge
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 30); do
+            STATE=$(gh pr view "$PR_URL" --json state -q .state)
+            if [ "$STATE" = "MERGED" ]; then
+              echo "PR merged"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::warning::PR did not merge within 5 minutes"
+          exit 1
+
+      - name: Deploy to Railway
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          DEPLOYED=0
+          for dir in backend customer-backend storefront; do
+            if [ -d "$dir" ]; then
+              echo "Deploying $dir..."
+              cd "$dir" && railway up --detach 2>/dev/null && cd ..
+              DEPLOYED=$((DEPLOYED + 1))
+            else
+              echo "::notice::Directory '$dir' not found in workspace, skipping deploy"
+            fi
+          done
+          if [ "$DEPLOYED" -eq 0 ]; then
+            echo "::warning::No services deployed — service directories not present in workspace repo"
+          fi
+
+      - name: Notify success
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_SECRET: ${{ secrets.DISCORD_WEBHOOK_SECRET }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+        run: |
+          COMMIT_SHA=$(git rev-parse HEAD)
+          curl -s -X POST "${DISCORD_WEBHOOK_URL}/webhook" \
+            -H "Content-Type: application/json" \
+            -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
+            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"success\", \"commit_sha\": \"${COMMIT_SHA}\"}"
+          gh issue comment "${ISSUE_NUM}" --body "Fix deployed. Commit: \`${COMMIT_SHA}\`"
+
+      - name: Notify failure
+        if: steps.changes.outputs.has_changes == 'false' || failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_SECRET: ${{ secrets.DISCORD_WEBHOOK_SECRET }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+        run: |
+          gh issue label "${ISSUE_NUM}" --add "needs-human" 2>/dev/null || true
+          curl -s -X POST "${DISCORD_WEBHOOK_URL}/webhook" \
+            -H "Content-Type: application/json" \
+            -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
+            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"failure\", \"message\": \"Could not auto-fix. Needs developer attention.\"}" || true
+          gh issue comment "${ISSUE_NUM}" --body "Auto-fix failed. Needs manual investigation." || true

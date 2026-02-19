@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Vendorpanel: Message templates sidebar on Messages page, response metrics badge, communication guidelines onboarding banner
   - Storefront: `SellerResponseBadge` component on seller profile pages and order parcels
   - 26 backend unit tests
+- **Discord Bug Fix Pipeline**: Automated bug triage and fix system for beta testers
+  - Discord bot (`discord-bot/`) monitors `#bugs` channel for free-form bug reports with screenshots
+  - Bot creates GitHub issues with `discord-bug` label and tracks threads for status updates
+  - GitHub Actions workflow (`.github/workflows/discord-bug-fix.yml`) triggers on labeled issues
+  - Claude Code runs BMAD workflows to auto-fix bugs via TDD, creates PR, auto-merges, deploys
+  - Bot notifies tester in Discord thread when fix is deployed or when human intervention is needed
+  - Webhook endpoint for GitHub Actions to report completion status back to Discord
+  - 12 unit tests covering GitHub issue creation and webhook handler
 - **Individual Seller Payment & Payout (Story 2.5.6)**: Stripe Connect Express payment processing and payout management for individual sellers
   - `GET/POST /store/consumer-seller/payout-account` — create and retrieve Stripe Connect Express payout accounts
   - `POST /store/consumer-seller/payout-account/onboarding` — initiate Stripe hosted onboarding redirect flow
