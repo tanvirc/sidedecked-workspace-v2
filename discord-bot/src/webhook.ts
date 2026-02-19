@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
-import { Client, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 import { config } from "./config.js";
-import { issueThreadMap } from "./index.js";
-
-let discordClient: Client;
-
-export function setDiscordClient(client: Client) {
-  discordClient = client;
-}
+import { issueThreadMap, getDiscordClient } from "./state.js";
 
 export async function handleWebhook(req: Request, res: Response) {
   const secret = req.headers["x-webhook-secret"];
@@ -25,12 +19,13 @@ export async function handleWebhook(req: Request, res: Response) {
   }
 
   try {
+    const discordClient = getDiscordClient();
     const channel = (await discordClient.channels.fetch(
       config.channelId
     )) as TextChannel;
     const thread =
       channel.threads.cache.get(threadId) ??
-      (await channel.threads.fetch(threadId).then((t) => t));
+      (await channel.threads.fetch(threadId));
 
     if (!thread || !("send" in thread)) {
       res.status(404).json({ error: "Thread not found" });

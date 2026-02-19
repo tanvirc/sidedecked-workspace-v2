@@ -8,7 +8,8 @@ import {
 import express from "express";
 import { config } from "./config.js";
 import { createGitHubIssue } from "./github.js";
-import { handleWebhook, setDiscordClient } from "./webhook.js";
+import { handleWebhook } from "./webhook.js";
+import { issueThreadMap, setDiscordClient } from "./state.js";
 
 const client = new Client({
   intents: [
@@ -17,9 +18,6 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-
-// Track thread IDs mapped to issue numbers for webhook replies
-export const issueThreadMap = new Map<number, string>();
 
 client.once(Events.ClientReady, (c) => {
   console.log(`Bot ready as ${c.user.tag}`);
