@@ -31,7 +31,7 @@ jobs:
 
       - name: Verify issue author
         env:
-          EXPECTED_BOT: ${{ vars.DISCORD_BOT_GITHUB_USER || 'sidedecked-bot' }}
+          EXPECTED_BOT: ${{ vars.DISCORD_BOT_GITHUB_USER || 'tanvirc' }}
         run: |
           AUTHOR="${{ github.event.issue.user.login }}"
           if [ "$AUTHOR" != "$EXPECTED_BOT" ]; then
