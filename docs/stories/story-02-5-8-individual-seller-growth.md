@@ -1,7 +1,7 @@
 # Story 2.5.8: Individual Seller Growth & Success
 
 **Epic**: [epic-02-commerce-marketplace.md](../epics/epic-02-commerce-marketplace.md)
-**Status**: not_started
+**Status**: deferred
 **Domain**: Commerce (backend/)
 
 ## User Story

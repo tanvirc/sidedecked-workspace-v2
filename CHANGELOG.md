@@ -4,6 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Create Product Listings (Story 4.5.1)**: TCG card listing wizard for vendor product creation
+  - 4-step ProgressTabs wizard in vendorpanel: Select Card → Listing Details → Images → Review
+  - Card catalog search via customer-backend API integration (`useCardSearch` hook)
+  - Auto-populate card details (name, set, rarity, game, collector number, catalog image)
+  - Condition grading (NM/LP/MP/HP/DMG), price with market price comparison, quantity, seller notes
+  - Vendor photo upload (max 10 images) alongside catalog-provided default images
+  - Real-time Zod validation with inline error messages
+  - Storefront-style listing preview with card image, badges, and variant summary
+  - Save as draft or submit for review (draft/proposed status)
+  - Bulk mode: multiple condition/price/quantity variants per card
+  - Auto-generated SKU format: `{game}-{set}-{number}-{lang}-{condition}-{finish}`
+  - Backend: Extended `CreateProductVariant` schema with optional TCG fields (`catalog_sku`, `condition`, `language`, `finish`)
+  - Backend: `transformTcgVariants` utility for SKU generation and metadata merging
+  - 65 unit/component tests (vendorpanel: 41, backend: 24)
 - **Individual Seller Communication (Story 2.5.7)**: Seller-buyer messaging tools and response time tracking
   - `seller-messaging` backend module with `SellerMessageTemplate` and `SellerResponseMetric` entities
   - `GET /vendor/message-templates` — 5 default template categories (shipping, thanks, condition, delay, return), auto-seeded on first access
