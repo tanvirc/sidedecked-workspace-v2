@@ -34,6 +34,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
 
 // Express server for incoming webhooks from GitHub Actions
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
 
 const webhookLimiter = rateLimit({
