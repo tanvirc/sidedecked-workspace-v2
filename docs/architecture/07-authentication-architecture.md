@@ -390,8 +390,11 @@ interface OAuthState {
 ```
 
 #### Session Management
+
+**Token Architecture**: Short-lived access tokens (JWT) paired with long-lived refresh tokens (UUID v4) provide a balance of security and UX. Access tokens are stateless; refresh tokens are stored server-side for revocation support.
+
 ```typescript
-// Customer JWT Token Structure
+// Customer JWT Access Token (15-minute TTL)
 {
   "actor_id": "cus_01H...",
   "actor_type": "customer",
@@ -402,10 +405,10 @@ interface OAuthState {
     "seller_verified": true
   },
   "iat": 1755070885,
-  "exp": 1755157285
+  "exp": 1755071785               // 15 min from iat
 }
 
-// Seller JWT Token Structure (for business vendors)
+// Seller JWT Access Token (for business vendors)
 {
   "actor_id": "sel_01H...",
   "actor_type": "seller",
@@ -416,15 +419,48 @@ interface OAuthState {
     "permissions": ["inventory", "orders", "analytics"]
   },
   "iat": 1755070885,
-  "exp": 1755157285
+  "exp": 1755071785
 }
+```
 
+**Refresh Token Rotation**: Each refresh token is single-use. When a token is exchanged for a new access token, the old refresh token is revoked and a new one is issued. This limits the window for token theft.
+
+```
+Login/OAuth → access token (15m) + refresh token (30d, SHA-256 hashed in DB)
+                ↓
+Token expires → POST /auth/refresh with refresh cookie
+                ↓
+Old refresh token revoked → new access token + new refresh token issued
+                ↓
+Security event (password change, 2FA toggle) → all refresh tokens revoked
+```
+
+**Cookie Configuration**:
+```typescript
+// Access token cookie
+{ name: '_medusa_jwt', maxAge: 900, httpOnly: true, sameSite: 'strict', secure: true, path: '/' }
+
+// Refresh token cookie
+{ name: '_medusa_refresh', maxAge: 2592000, httpOnly: true, sameSite: 'strict', secure: true, path: '/' }
+```
+
+**Session Revocation**: Two mechanisms work together:
+1. **Refresh token revocation** — `revoked_at` timestamp set on all tokens for a customer; prevents new access tokens from being issued
+2. **Immediate invalidation** — `sessionInvalidatedAt` timestamp on `user_profiles` (customer-backend); the auth middleware rejects JWTs with `iat` before this timestamp, providing sub-second invalidation without waiting for token expiry
+
+**Idle Session Detection**: Client-side localStorage tracks last user activity. On tab focus or visibility change, if >30 days have elapsed since last activity, the client automatically logs out.
+
+```typescript
 // Session Features:
 // ✅ JWT integration with MedusaJS auth framework
 // ✅ Session isolation (customer vs seller)
 // ✅ Seller tier context in tokens
-// ✅ Token refresh handling
-// ✅ Secure logout and revocation
+// ✅ Single-use refresh token rotation (30-day TTL)
+// ✅ Server-side token revocation (immediate via sessionInvalidatedAt)
+// ✅ Automatic session revocation on security events
+// ✅ Cross-service auth event logging (fire-and-forget)
+// ✅ Client-side idle session detection (30-day threshold)
+// ✅ Secure logout clears both access and refresh cookies
 ```
 
 ### 🗄️ Database Schema
@@ -436,9 +472,10 @@ customer                    -- Core customer data
 auth_identity              -- OAuth identity linkage  
 auth_token                 -- Token storage
 
--- Custom Enhancement Tables  
+-- Custom Enhancement Tables
 customer_profile           -- Extended customer profiles
 social_account_metadata    -- Social account management
+refresh_token              -- Refresh token storage (single-use, hashed)
 ```
 
 #### customer_profile Table
@@ -460,6 +497,23 @@ CREATE TABLE customer_profile (
   created_at           TIMESTAMPTZ DEFAULT NOW(),
   updated_at           TIMESTAMPTZ DEFAULT NOW()
 );
+```
+
+#### refresh_token Table (mercur-db)
+```sql
+CREATE TABLE refresh_token (
+  id                   TEXT PRIMARY KEY,           -- rtok_xxx
+  customer_id         TEXT NOT NULL,
+  token_hash          TEXT NOT NULL UNIQUE,        -- SHA-256 hash of UUID v4 token
+  expires_at          TIMESTAMPTZ NOT NULL,        -- 30 days from creation
+  revoked_at          TIMESTAMPTZ,                 -- NULL = active
+  device_info         TEXT,
+  ip_address          TEXT,
+  user_agent          TEXT,
+  created_at          TIMESTAMPTZ DEFAULT NOW(),
+  updated_at          TIMESTAMPTZ DEFAULT NOW()
+);
+-- Indexes: (customer_id), (token_hash UNIQUE), (customer_id, revoked_at), (expires_at WHERE revoked_at IS NULL)
 ```
 
 #### social_account_metadata Table
@@ -516,6 +570,12 @@ SocialAccountManagementService {
   linkAccount()              // Link new social account
   unlinkAccount()            // Remove social account
   setPrimaryProvider()       // Set primary auth method
+
+  // Session Management (refresh tokens)
+  generateRefreshToken()                // Create hashed token, store in DB
+  validateAndRotateRefreshToken()       // Validate, revoke old, issue new
+  revokeRefreshToken()                  // Revoke a single token
+  revokeAllRefreshTokensForCustomer()   // Revoke all (with optional exclusion)
 }
 ```
 
@@ -578,6 +638,10 @@ BACKEND_URL=https://sidedecked-backend-production.up.railway.app
 STORE_CORS=https://sidedecked-storefront-production.up.railway.app
 VENDOR_CORS=https://sidedecked-vendorpanel-production.up.railway.app
 AUTH_CORS=https://sidedecked-backend-production.up.railway.app,https://sidedecked-vendorpanel-production.up.railway.app,https://sidedecked-storefront-production.up.railway.app
+
+# Service-to-Service Authentication (must match customer-backend SERVICE_API_KEY)
+SERVICE_API_KEY="shared-secret-key"
+CUSTOMER_BACKEND_URL="http://localhost:7000"
 ```
 
 ## OAuth Flow Details
@@ -899,10 +963,20 @@ GitHub OAuth:
 3. Set `sameSite: 'lax'` for cross-site OAuth flows
 
 ```typescript
+// Access token (15-minute TTL)
 cookieStore.set('_medusa_jwt', token, {
-  maxAge: 60 * 60 * 24,
+  maxAge: 60 * 15,
   httpOnly: true,
-  sameSite: 'lax',
+  sameSite: 'strict',
+  secure: process.env.NODE_ENV === 'production',
+  path: '/'
+})
+
+// Refresh token (30-day TTL)
+cookieStore.set('_medusa_refresh', refreshToken, {
+  maxAge: 60 * 60 * 24 * 30,
+  httpOnly: true,
+  sameSite: 'strict',
   secure: process.env.NODE_ENV === 'production',
   path: '/'
 })
@@ -976,6 +1050,26 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 | is_active | boolean | Account active status |
 | is_verified | boolean | Provider verification status |
 
+### auth_events Table (sidedecked-db)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | uuid | Primary key (auto-generated) |
+| customerId | text | Customer who triggered the event |
+| eventType | enum | LOGIN, LOGOUT, TOKEN_REFRESH, SESSION_TERMINATED, PASSWORD_CHANGED, TWO_FA_TOGGLED, EMAIL_CHANGED |
+| ipAddress | text | Client IP (nullable) |
+| userAgent | text | Client user-agent (nullable) |
+| metadata | jsonb | Event-specific data (nullable) |
+| createdAt | timestamptz | Event timestamp |
+
+Composite index: `(customerId, createdAt DESC)` for efficient per-customer audit queries.
+
+### user_profiles Session Fields (sidedecked-db)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| sessionInvalidatedAt | timestamptz | When set, JWTs with `iat` before this timestamp are rejected by auth middleware |
+
 ## API Routes Reference
 
 ### Core Authentication Routes
@@ -991,6 +1085,15 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 - `PATCH /store/auth/social/{id}/primary` - Set primary social account
 - `GET /store/auth/profile` - Get customer social profile
 - `PATCH /store/auth/profile` - Update customer social preferences
+
+### Session Management Routes (Backend)
+- `POST /auth/refresh` - Exchange refresh token for new access + refresh tokens (single-use rotation)
+- `POST /auth/revoke-sessions` - Revoke all refresh tokens for the authenticated customer (supports `except_current: true`)
+
+### Auth Event Logging Routes (Customer-Backend)
+- `POST /api/auth-events` - Record auth event (service-to-service, requires `X-Service-Key` header)
+
+Auth events tracked: `LOGIN`, `LOGOUT`, `TOKEN_REFRESH`, `SESSION_TERMINATED`, `PASSWORD_CHANGED`, `TWO_FA_TOGGLED`, `EMAIL_CHANGED`
 
 ## Two-Factor Authentication (2FA)
 
@@ -1057,6 +1160,11 @@ When 2FA is enabled, re-authentication is required for:
 - **TOTP secrets encrypted at rest with AES-256-GCM**
 - **Backup codes are single-use and SHA-256 hashed**
 - **2FA verification is rate-limited to prevent brute force**
+- **Refresh tokens are SHA-256 hashed before storage — raw tokens never persisted**
+- **Single-use token rotation limits the window for stolen refresh tokens**
+- **Security events (password change, 2FA toggle, email change) immediately revoke all sessions**
+- **Service-to-service auth uses shared `SERVICE_API_KEY` via `X-Service-Key` header**
+- **Auth events logged to sidedecked-db for audit trail (fire-and-forget, non-blocking)**
 
 ## Compliance
 
@@ -1076,5 +1184,6 @@ The authentication system supports:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2 | 2026-02-20 | Added Session Management: refresh token rotation, immediate session revocation, auth event logging, idle session detection, service-to-service auth |
 | 1.1 | 2026-02-17 | Added Two-Factor Authentication (2FA) section: TOTP, trusted devices, sensitive action gating, rate limiting |
 | 1.0 | 2025-09-12 | Initial authentication architecture documentation with OAuth patterns and troubleshooting guide |
