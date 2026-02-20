@@ -1,6 +1,6 @@
 # Discord Bug Fix Pipeline
 
-Automated bug triage and fix system for SideDecked beta testers. Testers post bug reports in a Discord `#bugs` channel, and an AI agent automatically fixes, tests, and deploys the fix.
+Automated bug triage and fix system for SideDecked beta testers. Testers post bug reports in a Discord `#bugs` channel, and an AI agent automatically investigates, fixes, and creates PRs across the affected service repos.
 
 ## How It Works
 
@@ -11,22 +11,50 @@ Tester posts in #bugs (text + screenshots)
 Discord Bot (Railway)
     |- Acknowledges with reaction
     |- Creates thread for status updates
-    |- Creates GitHub Issue (label: discord-bug)
+    |- Creates GitHub Issue in workspace-v2 (label: discord-bug)
     |
     v
-GitHub Actions (triggers on issue creation)
-    |- Runs Claude Code with BMAD workflows
-    |- Writes failing test, implements fix
-    |- Runs quality gate (lint, typecheck, build, test)
-    |- Creates PR, auto-merges after tests pass
-    |- Deploys to production via Railway CLI
+GitHub Actions (triggers on issue creation in workspace-v2)
+    |- Checks out all 4 service repos side-by-side
+    |- Downloads bug report screenshots
+    |- Installs Claude Code + superpowers plugin
+    |- Runs Claude Code once with access to all codebases
+    |- Detects which repos were modified
+    |- Creates a PR in each affected service repo
     |
     v
 Discord Bot receives webhook
-    |- Notifies tester: "Fix deployed. Please retest."
+    |- Notifies tester with PR links: "Fix PRs created. Please review and approve."
 ```
 
 ## Architecture
+
+### Repo Layout
+
+| Repo | Role | Service |
+|---|---|---|
+| `tanvirc/sidedecked-workspace-v2` | Orchestrator | Discord bot, workflow, prompt, docs |
+| `tanvirc/sidedecked-storefront` | Service | Next.js 14 frontend |
+| `tanvirc/sidedecked-vendorpanel` | Service | React 18 + Vite vendor panel |
+| `tanvirc/sidedecked-backend` | Service | MedusaJS v2 commerce (orders, payments, vendors) |
+| `tanvirc/sidedecked-customer-backend` | Service | Node.js + TypeORM (cards, decks, community, pricing) |
+
+### Runner Directory Layout
+
+The GitHub Actions runner checks out all repos side-by-side:
+
+```
+$GITHUB_WORKSPACE/
+├── workspace/            # workspace-v2 (prompt template, docs)
+├── repos/
+│   ├── storefront/       # sidedecked-storefront
+│   ├── vendorpanel/      # sidedecked-vendorpanel
+│   ├── backend/          # sidedecked-backend
+│   └── customer-backend/ # sidedecked-customer-backend
+└── screenshots/          # Downloaded bug report images (if any)
+```
+
+### Components
 
 | Component | Tech | Location | Hosted On |
 |---|---|---|---|
@@ -67,30 +95,46 @@ openssl rand -hex 32
 
 Save this as `DISCORD_WEBHOOK_SECRET`.
 
-### Step 4: Add GitHub Repository Secrets
+### Step 4: Create Cross-Repo Token
 
-Go to your repository on GitHub → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.
+The workflow needs access to all 4 service repos. Create a Fine-Grained Personal Access Token:
+
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
+2. Configure:
+   - Token name: `sidedecked-cross-repo-pipeline`
+   - Resource owner: `tanvirc`
+   - Repository access: Select repositories: `sidedecked-storefront`, `sidedecked-vendorpanel`, `sidedecked-backend`, `sidedecked-customer-backend`
+   - Permissions:
+     - Contents: Read and Write
+     - Pull requests: Read and Write
+     - Metadata: Read
+
+Save this as `CROSS_REPO_TOKEN`.
+
+### Step 5: Add GitHub Repository Secrets
+
+Go to `tanvirc/sidedecked-workspace-v2` → **Settings** → **Secrets and variables** → **Actions**.
 
 Add these secrets:
 
 | Secret Name | Value | Source |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Your Anthropic API key | https://console.anthropic.com |
-| `RAILWAY_TOKEN` | Railway deploy token | Railway dashboard → Account → Tokens |
+| `CROSS_REPO_TOKEN` | Fine-Grained PAT | Step 4 |
 | `DISCORD_BOT_TOKEN` | Bot token | Step 1 |
 | `DISCORD_CHANNEL_ID` | Channel ID | Step 2 |
 | `DISCORD_WEBHOOK_SECRET` | Random string | Step 3 |
-| `DISCORD_WEBHOOK_URL` | Bot's Railway URL | Step 5 (add after deploying) |
+| `DISCORD_WEBHOOK_URL` | Bot's Railway URL | Step 7 (add after deploying) |
 
-### Step 5: Enable Auto-Merge
+### Step 6: Configure Repository Variable
 
-1. Go to your repository → **Settings** → **General**
-2. Scroll to **Pull Requests**
-3. Check **Allow auto-merge**
+Go to `tanvirc/sidedecked-workspace-v2` → **Settings** → **Secrets and variables** → **Actions** → **Variables**.
 
-This allows the GitHub Action to auto-merge PRs after tests pass.
+| Variable Name | Value | Description |
+|---|---|---|
+| `DISCORD_BOT_GITHUB_USER` | GitHub username of the PAT owner | Safety gate — only issues created by this user trigger the workflow |
 
-### Step 6: Deploy Discord Bot to Railway
+### Step 7: Deploy Discord Bot to Railway
 
 ```bash
 cd discord-bot
@@ -116,10 +160,10 @@ Set environment variables in the Railway dashboard for the discord-bot service:
 
 After deployment, Railway will give you a public URL (e.g., `https://sidedecked-discord-bot-production.up.railway.app`).
 
-**Go back to GitHub Secrets** (Step 4) and add:
+**Go back to GitHub Secrets** (Step 5) and add:
 - `DISCORD_WEBHOOK_URL` = the Railway URL (without trailing slash, no `/webhook` suffix)
 
-### Step 7: Verify Deployment
+### Step 8: Verify Deployment
 
 1. Check the bot is online:
    ```bash
@@ -137,10 +181,12 @@ After deployment, Railway will give you a public URL (e.g., `https://sidedecked-
 4. Verify the pipeline:
    - Bot reacts with magnifying glass
    - Bot creates a thread
-   - GitHub issue appears with `discord-bug` label
+   - GitHub issue appears in workspace-v2 with `discord-bug` label
    - GitHub Actions workflow triggers
-   - PR is created, tests run, auto-merges
-   - Bot replies in thread: "Fix deployed to production. Please retest."
+   - All 4 service repos are checked out
+   - Claude Code runs with superpowers skills
+   - PRs created in affected service repo(s)
+   - Bot replies in thread with PR links: "Fix PRs created. Please review and approve."
 
 ## Failure Handling
 
@@ -148,16 +194,18 @@ After deployment, Railway will give you a public URL (e.g., `https://sidedecked-
 |---|---|
 | Claude Code can't fix the bug | Issue labeled `needs-human`, bot notifies: "Could not auto-fix. A developer will look into it." |
 | Tests fail after fix attempt | Same as above |
-| Deploy fails | Issue labeled `deploy-failed`, bot notifies with error |
+| No repos modified | Same as above |
 | Workflow times out (45 min) | Same as `needs-human` |
 
 Issues labeled `needs-human` require a developer to investigate manually.
+
+Deployment is no longer handled by the orchestrator workflow. Each service repo's own CI/CD pipeline handles deployment after PR merge.
 
 ## Monitoring
 
 **Discord:** All status updates appear as threaded replies under the original bug report.
 
-**GitHub:** Each bug creates an issue. Fixed bugs have a linked, merged PR. Unfixed bugs are labeled `needs-human`.
+**GitHub:** Each bug creates an issue in workspace-v2. Fixed bugs have linked PRs in the affected service repos. Unfixed bugs are labeled `needs-human`.
 
 **Railway:** The bot service has a `/health` endpoint and is configured with restart-on-failure (max 3 retries).
 
@@ -182,22 +230,21 @@ Defined in `discord-bot/.env.example`:
 | Secret | Description |
 |---|---|
 | `ANTHROPIC_API_KEY` | Claude Code API authentication |
-| `RAILWAY_TOKEN` | Railway CLI deploy token |
+| `CROSS_REPO_TOKEN` | Fine-Grained PAT for cross-repo checkout, push, and PR creation |
 | `DISCORD_WEBHOOK_URL` | Bot's Railway URL for completion notifications |
 | `DISCORD_WEBHOOK_SECRET` | Must match bot's `WEBHOOK_SECRET` |
 
 ### Claude Code Prompt
 
-The bug-fixing prompt template is at `.github/claude-bug-fix-prompt.md`. It instructs Claude Code to:
+The bug-fixing prompt template is at `.github/claude-bug-fix-prompt.md`. It tells Claude Code to:
 
-1. Analyze the bug report and identify the affected service
-2. Search the codebase for relevant code
-3. Write a failing test (TDD)
-4. Implement the minimal fix
-5. Run the quality gate
-6. Commit the fix
+1. Use `systematic-debugging` skill to investigate the bug across all service repos
+2. Use `test-driven-development` skill when implementing fixes
+3. Use `verification-before-completion` skill before committing
+4. Run quality gate per affected service
+5. Commit separately in each affected repo
 
-Edit this file to adjust the AI agent's behavior.
+Edit this file to adjust the agent's behavior.
 
 ## Cost
 
@@ -222,6 +269,16 @@ Edit this file to adjust the AI agent's behavior.
 - Verify the issue has the `discord-bug` label
 - Check that the workflow file exists on the `main` branch (merge the PR first)
 
+**Cross-repo checkout fails:**
+- Verify `CROSS_REPO_TOKEN` has access to all 4 service repos
+- Verify the PAT has Contents (Read and Write) and Metadata (Read) permissions
+- Check that the repository names match: `sidedecked-storefront`, `sidedecked-vendorpanel`, `sidedecked-backend`, `sidedecked-customer-backend`
+
+**PRs not created in service repos:**
+- Verify `CROSS_REPO_TOKEN` has Pull requests (Read and Write) permission
+- Check the Actions log for the "Create PRs for changed repos" step
+- Ensure Claude Code actually committed changes (check the Claude output log)
+
 **Claude Code fails to fix the bug:**
 - Check the GitHub Actions run log for details
 - The issue will be labeled `needs-human`
@@ -232,6 +289,6 @@ Edit this file to adjust the AI agent's behavior.
 - Verify `DISCORD_WEBHOOK_SECRET` matches the bot's `WEBHOOK_SECRET`
 - Check the bot's `/health` endpoint is responding
 
-**Auto-merge not working:**
-- Ensure auto-merge is enabled in repository settings
-- Ensure no branch protection rules require manual review
+**Issue author verification fails:**
+- The `DISCORD_BOT_GITHUB_USER` variable must match the GitHub user that owns the PAT used by the Discord bot to create issues
+- Check the Actions log for the actual vs expected author
