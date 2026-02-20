@@ -57,13 +57,15 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Claude Code
-        run: npm install -g @anthropic-ai/claude-code
+      - name: Install OpenCode
+        run: npm install -g opencode-ai
 
       - name: Install superpowers plugin
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: claude plugins install superpowers
+        run: |
+          git clone --depth 1 https://github.com/obra/superpowers.git ~/.config/opencode/superpowers
+          mkdir -p ~/.config/opencode/plugins ~/.config/opencode/skills
+          ln -s ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js ~/.config/opencode/plugins/superpowers.js
+          ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpowers
 
       # --- Safety gate ---
 
@@ -149,42 +151,41 @@ jobs:
         run: |
           python3 -c "
           import os
-          template = open('workspace/.github/claude-bug-fix-prompt.md').read()
+          template = open('workspace/.github/bug-fix-prompt.md').read()
           body = os.environ['ISSUE_BODY']
           images = os.environ.get('IMAGE_SECTION', '')
           result = template.replace('\${ISSUE_BODY}', body).replace('\${IMAGE_SECTION}', images)
           print(result)
-          " > /tmp/claude-prompt.txt
+          " > /tmp/bug-fix-prompt.txt
           EOF_MARKER=$(openssl rand -hex 16)
           echo "prompt<<${EOF_MARKER}" >> $GITHUB_OUTPUT
-          cat /tmp/claude-prompt.txt >> $GITHUB_OUTPUT
+          cat /tmp/bug-fix-prompt.txt >> $GITHUB_OUTPUT
           echo "${EOF_MARKER}" >> $GITHUB_OUTPUT
 
-      # --- Run Claude Code ---
+      # --- Run OpenCode ---
 
-      - name: Run Claude Code
-        id: claude
+      - name: Run OpenCode
+        id: opencode
         working-directory: ${{ github.workspace }}
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          CLAUDE_PROMPT: ${{ steps.prompt.outputs.prompt }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          BUG_FIX_PROMPT: ${{ steps.prompt.outputs.prompt }}
         run: |
           set +e
-          claude -p "$CLAUDE_PROMPT" \
-            --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
-            --output-format json > claude-output.json 2> claude-stderr.log
+          opencode run --model google/gemini-2.5-pro --format json \
+            "$BUG_FIX_PROMPT" > opencode-output.json 2> opencode-stderr.log
           EXIT_CODE=$?
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
           if [ "$EXIT_CODE" -ne 0 ]; then
-            echo "::warning::Claude Code exited with code $EXIT_CODE"
-            cat claude-stderr.log
+            echo "::warning::OpenCode exited with code $EXIT_CODE"
+            cat opencode-stderr.log
           fi
 
       # --- Create PRs per repo ---
 
       - name: Create PRs for changed repos
         id: prs
-        if: steps.claude.outputs.exit_code == '0'
+        if: steps.opencode.outputs.exit_code == '0'
         env:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
           ISSUE_NUM: ${{ github.event.issue.number }}
