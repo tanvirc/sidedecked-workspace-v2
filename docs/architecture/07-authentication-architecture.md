@@ -784,7 +784,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
 ### Storefront OAuth Callback Handler Pattern
 
-Always use dynamic route handlers for processing OAuth tokens:
+Use the centralized cookie helpers (`setAuthToken`, `setRefreshToken` from `cookies.ts`) to store both the access and refresh tokens:
 
 ```typescript
 // File: storefront/src/app/auth/callback/route.ts
@@ -802,16 +802,12 @@ export async function GET(request: NextRequest) {
   }
   
   if (token) {
-    const cookieStore = await cookies()
-    
-    cookieStore.set('_medusa_jwt', token, {
-      maxAge: 60 * 60 * 24, // 24 hours
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/'
-    })
-    
+    // Use centralized cookie helpers (httpOnly, sameSite: 'strict', secure in prod)
+    await setAuthToken(token)           // 15-minute access token
+    if (refreshToken) {
+      await setRefreshToken(refreshToken) // 30-day refresh token
+    }
+
     return NextResponse.redirect(new URL('/user', baseUrl))
   }
   
@@ -960,7 +956,7 @@ GitHub OAuth:
 **Solution**:
 1. Ensure CORS allows your storefront domain
 2. Use proper cookie settings for production vs development
-3. Set `sameSite: 'lax'` for cross-site OAuth flows
+3. Set `sameSite: 'strict'` for auth session cookies (access + refresh tokens); use `sameSite: 'lax'` only for the OAuth state cookie that initiates the cross-origin redirect
 
 ```typescript
 // Access token (15-minute TTL)
