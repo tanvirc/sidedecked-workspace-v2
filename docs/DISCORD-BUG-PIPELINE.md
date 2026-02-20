@@ -17,8 +17,8 @@ Discord Bot (Railway)
 GitHub Actions (triggers on issue creation in workspace-v2)
     |- Checks out all 4 service repos side-by-side
     |- Downloads bug report screenshots
-    |- Installs Claude Code + superpowers plugin
-    |- Runs Claude Code once with access to all codebases
+    |- Installs OpenCode + superpowers plugin
+    |- Runs OpenCode (Gemini 2.5 Pro) with access to all codebases
     |- Detects which repos were modified
     |- Creates a PR in each affected service repo
     |
@@ -60,7 +60,7 @@ $GITHUB_WORKSPACE/
 |---|---|---|---|
 | Discord Bot | Node.js + discord.js + Express | `discord-bot/` | Railway |
 | GitHub Action | YAML workflow | `.github/workflows/discord-bug-fix.yml` | GitHub Actions |
-| Claude Prompt | Markdown template | `.github/claude-bug-fix-prompt.md` | Repo |
+| Bug Fix Prompt | Markdown template | `.github/claude-bug-fix-prompt.md` | Repo |
 
 ## Setup Guide
 
@@ -119,7 +119,7 @@ Add these secrets:
 
 | Secret Name | Value | Source |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key | https://console.anthropic.com |
+| `GOOGLE_API_KEY` | Your Google AI API key | https://ai.google.dev/ |
 | `CROSS_REPO_TOKEN` | Fine-Grained PAT | Step 4 |
 | `DISCORD_BOT_TOKEN` | Bot token | Step 1 |
 | `DISCORD_CHANNEL_ID` | Channel ID | Step 2 |
@@ -184,7 +184,7 @@ After deployment, Railway will give you a public URL (e.g., `https://sidedecked-
    - GitHub issue appears in workspace-v2 with `discord-bug` label
    - GitHub Actions workflow triggers
    - All 4 service repos are checked out
-   - Claude Code runs with superpowers skills
+   - OpenCode runs with superpowers skills (Gemini 2.5 Pro)
    - PRs created in affected service repo(s)
    - Bot replies in thread with PR links: "Fix PRs created. Please review and approve."
 
@@ -192,7 +192,7 @@ After deployment, Railway will give you a public URL (e.g., `https://sidedecked-
 
 | Scenario | What Happens |
 |---|---|
-| Claude Code can't fix the bug | Issue labeled `needs-human`, bot notifies: "Could not auto-fix. A developer will look into it." |
+| OpenCode can't fix the bug | Issue labeled `needs-human`, bot notifies: "Could not auto-fix. A developer will look into it." |
 | Tests fail after fix attempt | Same as above |
 | No repos modified | Same as above |
 | Workflow times out (45 min) | Same as `needs-human` |
@@ -229,14 +229,14 @@ Defined in `discord-bot/.env.example`:
 
 | Secret | Description |
 |---|---|
-| `ANTHROPIC_API_KEY` | Claude Code API authentication |
+| `GOOGLE_API_KEY` | Google AI API key (Gemini) |
 | `CROSS_REPO_TOKEN` | Fine-Grained PAT for cross-repo checkout, push, and PR creation |
 | `DISCORD_WEBHOOK_URL` | Bot's Railway URL for completion notifications |
 | `DISCORD_WEBHOOK_SECRET` | Must match bot's `WEBHOOK_SECRET` |
 
-### Claude Code Prompt
+### Bug Fix Prompt
 
-The bug-fixing prompt template is at `.github/claude-bug-fix-prompt.md`. It tells Claude Code to:
+The bug-fixing prompt template is at `.github/claude-bug-fix-prompt.md`. It tells OpenCode to:
 
 1. Use `systematic-debugging` skill to investigate the bug across all service repos
 2. Use `test-driven-development` skill when implementing fixes
@@ -251,7 +251,7 @@ Edit this file to adjust the agent's behavior.
 | Component | Cost |
 |---|---|
 | Discord Bot (Railway) | ~$5/month |
-| Claude Code API | ~$0.50–$2.00 per bug fix |
+| Google AI API (Gemini) | Free tier (rate-limited) |
 | GitHub Actions | Free tier (2,000 min/month) |
 
 ## Troubleshooting
@@ -277,12 +277,12 @@ Edit this file to adjust the agent's behavior.
 **PRs not created in service repos:**
 - Verify `CROSS_REPO_TOKEN` has Pull requests (Read and Write) permission
 - Check the Actions log for the "Create PRs for changed repos" step
-- Ensure Claude Code actually committed changes (check the Claude output log)
+- Ensure OpenCode actually committed changes (check the output log)
 
-**Claude Code fails to fix the bug:**
+**OpenCode fails to fix the bug:**
 - Check the GitHub Actions run log for details
 - The issue will be labeled `needs-human`
-- Review the Claude Code output in the Actions log for diagnostic info
+- Review the OpenCode output in the Actions log for diagnostic info
 
 **Webhook not reaching the bot:**
 - Verify `DISCORD_WEBHOOK_URL` secret matches the Railway URL
