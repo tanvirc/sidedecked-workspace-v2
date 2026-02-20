@@ -164,6 +164,64 @@ describe("handleWebhook", () => {
     );
   });
 
+  it("sends success message with PR URLs when provided", async () => {
+    mockIssueThreadMap.set(42, "thread-abc");
+
+    const mockSend = vi.fn().mockResolvedValue(undefined);
+    const mockThread = { send: mockSend };
+    const mockThreadsCache = new Map([["thread-abc", mockThread]]);
+    const mockChannel = { threads: { cache: mockThreadsCache } };
+    const mockFetch = vi.fn().mockResolvedValue(mockChannel);
+
+    mockGetDiscordClient.mockReturnValue({ channels: { fetch: mockFetch } });
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({
+        issue_number: 42,
+        status: "success",
+        pr_urls: "- storefront: https://github.com/tanvirc/sidedecked-storefront/pull/5\n- backend: https://github.com/tanvirc/sidedecked-backend/pull/3",
+      });
+
+    expect(res.status).toBe(200);
+    expect(mockSend).toHaveBeenCalledOnce();
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.stringContaining("sidedecked-storefront/pull/5")
+    );
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.stringContaining("sidedecked-backend/pull/3")
+    );
+  });
+
+  it("still supports legacy commit_sha success format", async () => {
+    mockIssueThreadMap.set(42, "thread-abc");
+
+    const mockSend = vi.fn().mockResolvedValue(undefined);
+    const mockThread = { send: mockSend };
+    const mockThreadsCache = new Map([["thread-abc", mockThread]]);
+    const mockChannel = { threads: { cache: mockThreadsCache } };
+    const mockFetch = vi.fn().mockResolvedValue(mockChannel);
+
+    mockGetDiscordClient.mockReturnValue({ channels: { fetch: mockFetch } });
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({
+        issue_number: 42,
+        status: "success",
+        commit_sha: "abc1234",
+      });
+
+    expect(res.status).toBe(200);
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.stringContaining("abc1234")
+    );
+  });
+
   it("sends failure message to Discord thread", async () => {
     mockIssueThreadMap.set(7, "thread-xyz");
 

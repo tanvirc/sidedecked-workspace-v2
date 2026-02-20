@@ -17,6 +17,7 @@ interface WebhookBody {
   status: "success" | "failure";
   message?: string;
   commit_sha?: string;
+  pr_urls?: string;
 }
 
 function isValidWebhookBody(body: unknown): body is WebhookBody {
@@ -45,7 +46,7 @@ export async function handleWebhook(req: Request, res: Response) {
     return;
   }
 
-  const { issue_number, status, message, commit_sha } = req.body;
+  const { issue_number, status, message, commit_sha, pr_urls } = req.body;
 
   let threadId = issueThreadMap.get(issue_number);
   if (!threadId) {
@@ -87,9 +88,15 @@ export async function handleWebhook(req: Request, res: Response) {
     }
 
     if (status === "success") {
-      await thread.send(
-        `Fix deployed to production (commit: \`${commit_sha}\`). Please retest and confirm.`
-      );
+      if (pr_urls) {
+        await thread.send(
+          `Fix PRs created. Please review and approve:\n${pr_urls}`
+        );
+      } else {
+        await thread.send(
+          `Fix deployed to production (commit: \`${commit_sha}\`). Please retest and confirm.`
+        );
+      }
     } else if (status === "failure") {
       await thread.send(
         `Could not auto-fix this bug. A developer will look into it.\n\nReason: ${message}`
