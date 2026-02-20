@@ -15,13 +15,13 @@ _As a logged-in user, I want my session to remain active across browser tabs and
 - (IMPLEMENTED) Sessions survive browser restart if refresh token is valid
 - (IMPLEMENTED) Idle sessions expire after 30 days of inactivity
 - (IMPLEMENTED) System logs all authentication events for security monitoring
-- (IMPLEMENTED) Session termination on password/security changes
+- (PARTIAL) Session termination on password/security changes (password change handler deferred to story 1-2-1; 2FA toggle and email change are implemented)
 
 ## Tasks/Subtasks
 
 ### Task 1: Refresh Token Model & Migration (backend/)
 - [x] 1.1 Create `RefreshToken` entity in `backend/apps/backend/src/modules/authentication/models/`
-- [x] 1.2 Create database migration for `refresh_tokens` table with indexes
+- [x] 1.2 Create database migration for `refresh_token` table with indexes
 - [x] 1.3 Add refresh token service methods: `generateRefreshToken()`, `validateAndRotateRefreshToken()`, `revokeRefreshToken()`, `revokeAllRefreshTokensForCustomer()`
 
 ### Task 2: Token Generation in OAuth Callback (backend/)
@@ -107,7 +107,7 @@ _As a logged-in user, I want my session to remain active across browser tabs and
 - Date mock in test-setup.ts broke lodash → removed global Date mock
 
 ### Completion Notes
-All 9 tasks implemented. All 6 acceptance criteria marked IMPLEMENTED.
+All 9 tasks implemented. 5 of 6 acceptance criteria fully implemented; criterion #6 partial (password change revocation deferred to story 1-2-1).
 Task 4.3 (password change revocation) deferred — no password change handler exists yet (story 1-2-1).
 Client-side singleton Promise refresh deduplication deferred in favor of server-side `authenticatedFetch()` pattern.
 

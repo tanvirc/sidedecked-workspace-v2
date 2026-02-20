@@ -438,10 +438,10 @@ Security event (password change, 2FA toggle) → all refresh tokens revoked
 **Cookie Configuration**:
 ```typescript
 // Access token cookie
-{ name: '_medusa_jwt', maxAge: 900, httpOnly: true, sameSite: 'strict', secure: true, path: '/' }
+{ name: '_medusa_jwt', maxAge: 900, httpOnly: true, sameSite: 'strict', secure: process.env.NODE_ENV === 'production', path: '/' }
 
 // Refresh token cookie
-{ name: '_medusa_refresh', maxAge: 2592000, httpOnly: true, sameSite: 'strict', secure: true, path: '/' }
+{ name: '_medusa_refresh', maxAge: 2592000, httpOnly: true, sameSite: 'strict', secure: process.env.NODE_ENV === 'production', path: '/' }
 ```
 
 **Session Revocation**: Two mechanisms work together:
@@ -640,7 +640,7 @@ VENDOR_CORS=https://sidedecked-vendorpanel-production.up.railway.app
 AUTH_CORS=https://sidedecked-backend-production.up.railway.app,https://sidedecked-vendorpanel-production.up.railway.app,https://sidedecked-storefront-production.up.railway.app
 
 # Service-to-Service Authentication (must match customer-backend SERVICE_API_KEY)
-SERVICE_API_KEY="shared-secret-key"
+SERVICE_API_KEY="<your-service-api-key>"
 CUSTOMER_BACKEND_URL="http://localhost:7000"
 ```
 
@@ -792,25 +792,23 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const token = searchParams.get('token')
   const error = searchParams.get('message')
-  
-  const baseUrl = process.env.NODE_ENV === 'production' 
+
+  const baseUrl = process.env.NODE_ENV === 'production'
     ? 'https://your-production-domain.com'
     : `${request.nextUrl.protocol}//${request.nextUrl.host}`
-  
+
   if (error) {
     return NextResponse.redirect(new URL(`/user?error=${encodeURIComponent(error)}`, baseUrl))
   }
-  
+
   if (token) {
-    // Use centralized cookie helpers (httpOnly, sameSite: 'strict', secure in prod)
+    // Use centralized cookie helper (httpOnly, sameSite: 'strict', secure in prod)
     await setAuthToken(token)           // 15-minute access token
-    if (refreshToken) {
-      await setRefreshToken(refreshToken) // 30-day refresh token
-    }
+    // Refresh token is set directly by the backend via Set-Cookie header on the redirect response
 
     return NextResponse.redirect(new URL('/user', baseUrl))
   }
-  
+
   return NextResponse.redirect(new URL('/user?error=No%20authentication%20token%20received', baseUrl))
 }
 ```
@@ -1051,12 +1049,12 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 | Column | Type | Description |
 |--------|------|-------------|
 | id | uuid | Primary key (auto-generated) |
-| customerId | text | Customer who triggered the event |
-| eventType | enum | LOGIN, LOGOUT, TOKEN_REFRESH, SESSION_TERMINATED, PASSWORD_CHANGED, TWO_FA_TOGGLED, EMAIL_CHANGED |
-| ipAddress | text | Client IP (nullable) |
-| userAgent | text | Client user-agent (nullable) |
+| customer_id | text | Customer who triggered the event |
+| event_type | enum | LOGIN, LOGOUT, TOKEN_REFRESH, SESSION_TERMINATED, PASSWORD_CHANGED, TWO_FA_TOGGLED, EMAIL_CHANGED |
+| ip_address | text | Client IP (nullable) |
+| user_agent | text | Client user-agent (nullable) |
 | metadata | jsonb | Event-specific data (nullable) |
-| createdAt | timestamptz | Event timestamp |
+| created_at | timestamptz | Event timestamp |
 
 Composite index: `(customerId, createdAt DESC)` for efficient per-customer audit queries.
 
@@ -1064,7 +1062,7 @@ Composite index: `(customerId, createdAt DESC)` for efficient per-customer audit
 
 | Column | Type | Description |
 |--------|------|-------------|
-| sessionInvalidatedAt | timestamptz | When set, JWTs with `iat` before this timestamp are rejected by auth middleware |
+| session_invalidated_at | timestamptz | When set, JWTs with `iat` before this timestamp are rejected by auth middleware |
 
 ## API Routes Reference
 
