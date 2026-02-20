@@ -1,7 +1,7 @@
 # Story 4.5.1: Create Product Listings
 
 **Epic**: [epic-04-vendor-management.md](../epics/epic-04-vendor-management.md)
-**Status**: in_progress
+**Status**: done
 **Domain**: Both
 **Feature Branch**: `feature/story-4-5-1`
 
@@ -11,16 +11,16 @@ _As a vendor, I want to create detailed product listings for my cards so that cu
 
 ## Acceptance Criteria
 
-- (IN PROGRESS) **AC1**: Vendors can access "Create Card Listing" from vendorpanel product list page
-- (NOT BUILT) **AC2**: Card selection step searches customer-backend catalog API with card results showing images, set, game badge
-- (NOT BUILT) **AC3**: On card selection, auto-populate listing details from catalog: card name, set, rarity, game, collector number, default images, market price reference
-- (NOT BUILT) **AC4**: Listing form includes vendor-editable fields: condition grade (NM/LP/MP/HP/DMG), price with market price comparison, quantity, seller description/notes
-- (NOT BUILT) **AC5**: Image upload supports vendor's own photos (max 10 images, 5MB each, JPG/PNG/WEBP) alongside catalog-provided default images
-- (NOT BUILT) **AC6**: Real-time Zod validation of required fields (card selected, condition, price > 0, quantity > 0) with inline error messages
-- (NOT BUILT) **AC7**: Preview pane shows how listing will appear to customers on storefront
-- (NOT BUILT) **AC8**: Save as draft functionality using Medusa product `draft` status
-- (NOT BUILT) **AC9**: Bulk mode: vendor can add multiple condition/price/quantity rows for the same card (each becomes a product variant)
-- (NOT BUILT) **AC10**: Automatic SKU generation linking to catalog entries (format: `{game}-{set}-{number}-{condition}`)
+- (IMPLEMENTED) **AC1**: Vendors can access "Create Card Listing" from vendorpanel product list page
+- (IMPLEMENTED) **AC2**: Card selection step searches customer-backend catalog API with card results showing images, set, game badge
+- (IMPLEMENTED) **AC3**: On card selection, auto-populate listing details from catalog: card name, set, rarity, game, collector number, default images, market price reference
+- (IMPLEMENTED) **AC4**: Listing form includes vendor-editable fields: condition grade (NM/LP/MP/HP/DMG), price with market price comparison, quantity, seller description/notes
+- (IMPLEMENTED) **AC5**: Image upload supports vendor's own photos (max 10 images, 5MB each, JPG/PNG/WEBP) alongside catalog-provided default images
+- (IMPLEMENTED) **AC6**: Real-time Zod validation of required fields (card selected, condition, price > 0, quantity > 0) with inline error messages
+- (IMPLEMENTED) **AC7**: Preview pane shows how listing will appear to customers on storefront
+- (IMPLEMENTED) **AC8**: Save as draft functionality using Medusa product `draft` status
+- (IMPLEMENTED) **AC9**: Bulk mode: vendor can add multiple condition/price/quantity rows for the same card (each becomes a product variant)
+- (IMPLEMENTED) **AC10**: Automatic SKU generation linking to catalog entries (format: `{game}-{set}-{number}-{condition}`)
 
 ## Implementation Notes
 
