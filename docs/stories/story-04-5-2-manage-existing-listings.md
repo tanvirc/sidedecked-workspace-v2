@@ -86,7 +86,7 @@ _As a vendor, I want to edit, pause, or delete my product listings so that I can
 - [x] 7.4: Bulk delete with confirmation dialog, iterates selected IDs
 
 ### Task 8: Quality gate - DONE
-- [x] 8.1: All ACs marked (IMPLEMENTED)
+- [x] 8.1: 7 of 9 ACs implemented (AC6 and AC8 deferred)
 - [x] 8.2: Build passes, typecheck has only pre-existing errors (JSX in .ts file)
 - [x] 8.3: All 60 tests pass (7 test files)
 
@@ -102,7 +102,7 @@ TDD approach: RED (failing tests) → GREEN (minimal code) → REFACTOR for each
 - Typecheck has 3 pre-existing errors in `product-additional-attributes/helpers.ts` (JSX in .ts file) — not related to this story
 
 ### Completion Notes
-- All 7 acceptance criteria implemented
+- All 7 implemented acceptance criteria completed (7 of 9 original: AC1–AC5, AC7, AC9; AC6 and AC8 deferred)
 - 60 tests pass across 7 test files (18 new tests added)
 - Build passes successfully
 - No new API endpoints required — used existing vendor product APIs
