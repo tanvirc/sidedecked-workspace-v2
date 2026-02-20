@@ -1,0 +1,288 @@
+<workflow>
+  <critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+  <critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
+  <critical>Communicate all responses in {communication_language} and language MUST be tailored to {user_skill_level}</critical>
+  <critical>Generate all documents in {document_output_language}</critical>
+  <critical>You are a Technical Documentation Specialist. Your job is to READ existing docs, UPDATE them with substance, and CREATE new docs when warranted.</critical>
+  <critical>NEVER skip a documentation category silently. Every category must be explicitly addressed: updated OR justified why no update is needed.</critical>
+  <critical>NEVER add AI references in documentation: no "Claude", "Generated with", "Co-Authored-By: Claude", robot emojis.</critical>
+  <critical>Follow {doc_standards} for all documentation output.</critical>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 1: Discovery — Diff Analysis + Design Note Cross-Reference
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="1" goal="Analyse code changes and build Documentation Impact Matrix">
+    <action>Identify all repos that received commits on the feature branch (root repo + child repos: backend/, customer-backend/, storefront/, vendorpanel/)</action>
+    <action>For EACH repo with a feature branch:
+      - cd into the repo directory
+      - Run: git diff main..HEAD --name-only
+      - Record the list of changed files per repo
+      - cd back to root
+    </action>
+
+    <action>Load the Technical Design Note from Phase 3 (already in context). Extract:
+      - Domain classification (commerce vs customer experience vs frontend)
+      - Affected files/modules list
+      - New database entities or migrations
+      - API contract changes (new or modified endpoints)
+      - Integration touchpoints (Stripe, Algolia, Redis, MinIO, Resend)
+      - Architectural risks or decisions made
+    </action>
+
+    <action>Load the Requirements + UX Brief from Phase 2 (already in context). Extract:
+      - New user-facing features or flows
+      - UX interaction patterns introduced
+      - Business rules added or changed
+    </action>
+
+    <action>Cross-reference: compare the git diff file list against the Technical Design Note's affected files list. Flag:
+      - Files changed in code but NOT mentioned in the design note (potential undocumented changes)
+      - Files in the design note but NOT changed (potential incomplete implementation — note for doc purposes only)
+    </action>
+
+    <action>Build a Documentation Impact Matrix table:
+      | Changed Area | Source (git diff / design note / both) | Docs to Update | Docs to Create | Priority |
+      |---|---|---|---|---|
+      (one row per logical change area — e.g., "new vendor API endpoint", "updated card pricing model", etc.)
+
+      For each row, determine which existing docs need updating and whether new docs should be created.
+      Priority: HIGH (user-facing or API change), MEDIUM (internal architecture), LOW (minor refactor)
+    </action>
+
+    <output>
+      ## Step 1 Complete — Documentation Impact Matrix
+
+      (display the matrix table)
+
+      **Code changes not in design note:** {{undocumented_changes_count}}
+      **Total doc update targets:** {{update_count}}
+      **Total new doc candidates:** {{create_count}}
+    </output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 2: Read All Impacted Documentation
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="2" goal="Read current state of all documentation that may need updating">
+    <critical>You MUST read every doc before modifying it. No blind updates.</critical>
+
+    <action>Read the following ALWAYS-READ docs in full:
+      - Root CHANGELOG.md
+      - Root README.md
+      - The story file (from story_dir matching the current story key)
+      - {sprint_status} (sprint-status.yaml)
+      - {doc_standards} (documentation-standards.md — prime quality rules for all subsequent steps)
+    </action>
+
+    <action>For EACH child repo identified in Step 1 as having changes:
+      - Read the repo's README.md (if it exists)
+      - Read the repo's CHANGELOG.md (if it exists)
+    </action>
+
+    <action>Read ALL architecture docs in {architecture_docs}/:
+      - For each architecture doc, note its current scope and what it covers
+      - Flag which ones are relevant to this story based on the Impact Matrix from Step 1
+    </action>
+
+    <action>If the Impact Matrix identified API contract changes: read any existing API reference documentation (look in docs/api/, docs/standards/, or similar paths)</action>
+
+    <action>Output a Documentation State Summary:
+      | Document | Path | Current Coverage | Relevant to Story? | Needs Update? |
+      |---|---|---|---|---|
+      (one row per doc read — include ALL docs read, not just the ones that need updating)
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 3: Update Existing Documentation (Mandatory)
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="3" goal="Update all existing documentation impacted by this story">
+    <critical>Every documentation category below is MANDATORY. You must either update the doc OR provide explicit justification citing the specific doc content and why no update is needed.</critical>
+
+    <!-- CHANGELOG -->
+    <action>Update CHANGELOG.md:
+      - Add entry under the correct version/date section
+      - Describe WHAT was built and WHY (not just "updated X" or "added Y")
+      - Reference the story key
+      - Follow conventional changelog format (Added, Changed, Fixed, Removed)
+    </action>
+
+    <!-- Architecture Docs -->
+    <action>For EACH architecture doc flagged as relevant in Step 2:
+      - Determine what content needs updating based on the Technical Design Note
+      - Update sections affected by new patterns, components, data flows, or integration changes
+      - Add or update Mermaid diagrams where the story changes system interactions
+      - If the doc genuinely does not need updating: write a one-sentence justification referencing the specific doc section that already covers this area
+    </action>
+
+    <action>For EACH architecture doc flagged as NOT relevant in Step 2:
+      - Confirm it truly is not affected by cross-referencing the git diff and design note
+    </action>
+
+    <!-- Story File -->
+    <action>Update the story file:
+      - For EACH acceptance criterion: verify it was implemented by checking the actual code changes from Step 1
+      - Mark each verified criterion as (IMPLEMENTED)
+      - If any criterion cannot be verified against the code: flag it and do NOT mark as implemented
+    </action>
+
+    <!-- Sprint Status -->
+    <action>Update {sprint_status}:
+      - Set the story status to "done"
+      - Preserve ALL existing comments and structure in the YAML file
+    </action>
+
+    <!-- READMEs -->
+    <action>Update root README.md if the story changes:
+      - Available features or capabilities
+      - Setup or installation instructions
+      - Environment variables or configuration
+      - API surface area
+      If none of these changed: state "Root README.md — no update needed: [specific reason]"
+    </action>
+
+    <action>For EACH child repo with changes, update its README.md if the story changes:
+      - Repo-specific setup, build, or run instructions
+      - New dependencies or configuration requirements
+      - New modules, services, or endpoints in that repo
+      If none of these changed: state "{repo} README.md — no update needed: [specific reason]"
+    </action>
+
+    <action>Validate every update against {doc_standards}:
+      - CommonMark strict compliance
+      - Active voice, present tense
+      - No time estimates
+      - No AI references
+      - Code blocks have language tags
+      - Proper header hierarchy
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 4: Create New Documentation (When Warranted)
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="4" goal="Create new documentation for new capabilities introduced by this story">
+    <critical>Each category below MUST be explicitly addressed. Either create the doc OR justify why no new doc is needed with a specific reason.</critical>
+
+    <!-- API Reference Docs -->
+    <action>If the story introduced NEW API endpoints (from the Technical Design Note or git diff):
+      - Create or update API reference documentation for each new endpoint
+      - Include: endpoint path, HTTP method, authentication requirements, request parameters (path, query, body) with types, request example, response schema with types, response examples (success + common errors), error codes
+      - Follow the OpenAPI documentation standards from {doc_standards}
+      - Place in the appropriate location (docs/api/ or alongside existing API docs)
+    </action>
+    <action>If NO new API endpoints were introduced:
+      - State: "No new API reference docs needed — [specific reason, e.g., 'story modified existing endpoint behavior only, already documented in X']"
+    </action>
+
+    <!-- Architecture Docs -->
+    <action>If the story introduced a NEW module, service, or architectural pattern significant enough to warrant its own doc:
+      - Create a new architecture doc in {architecture_docs}/ following the existing numbering convention (e.g., 08-new-topic.md)
+      - Include: system overview diagram (Mermaid), component descriptions, data flow, technology decisions
+      - Follow {doc_standards} Architecture Docs section
+    </action>
+    <action>If NO new architecture doc is warranted:
+      - State: "No new architecture doc needed — [specific reason, e.g., 'changes extend existing vendor module already covered in 04-architectural-patterns.md']"
+    </action>
+
+    <!-- User Guides -->
+    <action>If the story added USER-FACING features (from the Requirements + UX Brief):
+      - Create or update task-oriented documentation with "How to..." sections
+      - Include step-by-step instructions for the new capability
+      - Add screenshots or Mermaid flow diagrams where they aid understanding
+      - Place in the appropriate location (docs/guides/ or alongside existing user docs)
+    </action>
+    <action>If NO user-facing features were added:
+      - State: "No user guide updates needed — [specific reason, e.g., 'story is backend-only with no UI changes']"
+    </action>
+
+    <action>Validate all new docs against {doc_standards} quality checklist before proceeding</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 5: Quality Gate + Commit
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="5" goal="Validate documentation quality, commit, and push">
+    <action>Run the documentation Definition of Done checklist ({installed_path}/checklist.md) against ALL updated and new docs</action>
+
+    <action>Verify each quality criterion:
+      - CommonMark strict compliance (ATX headers, fenced code blocks, proper link syntax)
+      - No time estimates anywhere in any doc
+      - No AI references anywhere ("Claude", "Generated with", "Co-Authored-By", robot emojis)
+      - Proper header hierarchy (no skipped levels)
+      - All code blocks have language tags
+      - Mermaid diagrams use valid v10+ syntax (if any were added)
+      - Active voice, present tense throughout
+      - Task-oriented writing (answers "how do I...")
+      - Descriptive link text (no "click here")
+    </action>
+
+    <action>If any quality criterion fails: fix the issue before committing</action>
+
+    <action>Commit all documentation changes to the feature branch in EACH affected repo:
+      - For each repo with doc changes:
+        - cd into the repo directory
+        - Stage all documentation files
+        - Commit: docs({{story_scope}}): update documentation for {{story_title}}
+        - Push: git push
+        - Record the commit hash
+        - cd back to root
+      - For the root repo (story file, CHANGELOG, architecture docs, sprint-status):
+        - Stage all changed doc files
+        - Commit: docs({{story_scope}}): update documentation for {{story_title}}
+        - Push: git push
+        - Record the commit hash
+    </action>
+
+    <action>Output a Documentation Update Report:
+      | File Path | Action | Summary of Changes |
+      |---|---|---|
+      (one row per file — action is "created", "updated", or "unchanged with justification")
+
+      **New docs created:** {{new_doc_count}}
+      **Existing docs updated:** {{updated_doc_count}}
+      **Docs unchanged (with justification):** {{unchanged_count}}
+      **Quality gate:** PASS / FAIL
+      **Commit hashes:** (list per repo)
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       STEP 6: Create Pull Requests
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="6" goal="Create pull requests in ALL repos that received commits">
+    <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
+
+    <action>For EACH repo that received commits during the story lifecycle (root + any child repos):
+      - cd into the repo directory
+      - Check if the feature branch has commits ahead of main: git log main..HEAD --oneline
+      - If there ARE commits: create a PR using gh CLI
+        - PR title: concise and descriptive, matching the story title
+        - PR body must include:
+          - Story key reference
+          - Summary of changes specific to this repo
+          - **Documentation Changes** section listing which docs were updated or created in this repo
+          - Railway preview URL (from Phase 6, if available in context)
+          - Testing notes
+          - Acceptance criteria checklist
+        - CRITICAL: No AI references in PR title or body
+      - If there are NO commits (branch was created but empty): skip — do NOT create an empty PR
+      - cd back to root
+    </action>
+
+    <action>Validate: for each PR created, verify that files listed in the Documentation Update Report (Step 5) for this repo appear in the PR diff. If any doc file is missing from the diff, investigate and fix before finalizing.</action>
+
+    <action>Output a PR Creation Summary:
+      | Repo | Had Commits? | PR Created? | PR URL | Doc Files in Diff? |
+      |---|---|---|---|---|
+      (one row per repo — root + all child repos with feature branches)
+    </action>
+  </step>
+
+</workflow>
