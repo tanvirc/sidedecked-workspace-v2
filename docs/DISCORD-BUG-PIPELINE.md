@@ -221,7 +221,7 @@ Defined in `discord-bot/.env.example`:
 | `DISCORD_CHANNEL_ID` | Yes | — | ID of the `#bugs` channel to monitor |
 | `GITHUB_TOKEN` | Yes | — | GitHub PAT with `repo` scope |
 | `GITHUB_OWNER` | No | `tanvirc` | GitHub repository owner |
-| `GITHUB_REPO` | No | `sidedecked` | GitHub repository name |
+| `GITHUB_REPO` | No | `sidedecked-workspace-v2` | GitHub repository name (where issues are created) |
 | `WEBHOOK_SECRET` | Yes | — | Shared secret for webhook authentication |
 | `PORT` | No | `3001` | Express server port |
 

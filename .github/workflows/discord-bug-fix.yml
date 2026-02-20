@@ -101,11 +101,38 @@ jobs:
           if [ -n "$URLS" ]; then
             i=1
             while IFS= read -r url; do
+              # Enforce HTTPS-only
+              if ! echo "$url" | grep -q '^https://'; then
+                echo "Skipping non-HTTPS URL: $url"
+                continue
+              fi
+
+              # Enforce Discord CDN allowlist
+              host="${url#https://}"
+              host="${host%%/*}"
+              case "$host" in
+                cdn.discordapp.com|media.discordapp.net|discordapp.com) ;;
+                *)
+                  echo "Skipping URL not on allowlist: $url"
+                  continue
+                  ;;
+              esac
+
               FILE="screenshots/screenshot-${i}.png"
-              curl -sL "$url" -o "$FILE" && echo "Downloaded: $FILE"
-              i=$((i + 1))
+              if curl --silent --show-error --fail --location \
+                --max-time 30 --connect-timeout 5 \
+                --max-filesize 5242880 \
+                "$url" -o "$FILE"; then
+                echo "Downloaded: $FILE"
+                i=$((i + 1))
+              else
+                echo "Failed to download: $url"
+                rm -f "$FILE"
+              fi
             done <<< "$URLS"
-            IMAGE_SECTION="## Screenshots\nBug report screenshots have been downloaded to ./screenshots/. Use the Read tool to view them."
+            if [ "$i" -gt 1 ]; then
+              IMAGE_SECTION="## Screenshots\nBug report screenshots have been downloaded to ./screenshots/. Use the Read tool to view them."
+            fi
           fi
           EOF_MARKER=$(openssl rand -hex 16)
           echo "image_section<<${EOF_MARKER}" >> $GITHUB_OUTPUT
@@ -171,8 +198,8 @@ jobs:
 
             cd "$REPO_DIR"
 
-            # Stage any uncommitted changes
-            if ! git diff --quiet || ! git diff --cached --quiet; then
+            # Stage any uncommitted changes, including untracked files
+            if [ -n "$(git status --porcelain)" ]; then
               git add -A
               git commit -m "fix: discord bug #${ISSUE_NUM}"
             fi
@@ -183,16 +210,27 @@ jobs:
               HAS_CHANGES=true
               BRANCH="fix/discord-bug-${ISSUE_NUM}"
 
-              # Create branch from current HEAD (which has the commits)
-              git checkout -b "$BRANCH"
-              git push origin "$BRANCH"
+              # Create branch (force-create handles re-runs)
+              git checkout -B "$BRANCH"
+              git push --force-with-lease origin "$BRANCH"
 
-              PR_URL=$(gh pr create \
+              # Check for existing PR before creating
+              EXISTING_PR=$(gh pr list \
                 --repo "tanvirc/sidedecked-${SERVICE}" \
-                --title "fix: discord bug #${ISSUE_NUM}" \
-                --body "Automated fix for sidedecked-workspace-v2#${ISSUE_NUM}" \
                 --head "$BRANCH" \
-                --base main)
+                --json url --jq '.[0].url // empty' 2>/dev/null || true)
+
+              if [ -n "$EXISTING_PR" ]; then
+                PR_URL="$EXISTING_PR"
+                echo "Updated existing PR in sidedecked-${SERVICE}: ${PR_URL}"
+              else
+                PR_URL=$(gh pr create \
+                  --repo "tanvirc/sidedecked-${SERVICE}" \
+                  --title "fix: discord bug #${ISSUE_NUM}" \
+                  --body "Automated fix for sidedecked-workspace-v2#${ISSUE_NUM}" \
+                  --head "$BRANCH" \
+                  --base main)
+              fi
 
               PR_URLS="${PR_URLS}- ${SERVICE}: ${PR_URL}\n"
               echo "Created PR in sidedecked-${SERVICE}: ${PR_URL}"
@@ -223,13 +261,13 @@ jobs:
             -H "Content-Type: application/json" \
             -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
             -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"success\", \"pr_urls\": \"${ESCAPED_URLS}\"}"
+          COMMENT_BODY=$(printf "Fix PRs created:\n%s" "$PR_URLS")
           gh issue comment "${ISSUE_NUM}" \
             --repo tanvirc/sidedecked-workspace-v2 \
-            --body "Fix PRs created:
-          ${PR_URLS}"
+            --body "$COMMENT_BODY"
 
       - name: Notify failure
-        if: steps.prs.outputs.has_changes != 'true' || failure()
+        if: always() && steps.prs.outputs.has_changes != 'true'
         env:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
