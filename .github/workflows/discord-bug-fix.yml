@@ -168,7 +168,7 @@ jobs:
         id: opencode
         working-directory: ${{ github.workspace }}
         env:
-          GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           BUG_FIX_PROMPT: ${{ steps.prompt.outputs.prompt }}
         run: |
           set +e
