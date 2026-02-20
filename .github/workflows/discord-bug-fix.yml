@@ -181,15 +181,36 @@ jobs:
         run: |
           set +e
           timeout 30m opencode run --model google/gemini-2.5-pro --format json \
-            "$BUG_FIX_PROMPT" > opencode-output.json
-          EXIT_CODE=$?
+            "$BUG_FIX_PROMPT" 2>&1 | tee opencode-output.json | \
+            python3 -u -c "
+          import sys, json
+          for line in sys.stdin:
+              line = line.strip()
+              if not line:
+                  continue
+              try:
+                  evt = json.loads(line)
+                  t = evt.get('type','')
+                  if t == 'text':
+                      print(f\"[text] {evt.get('content','')[:200]}\", file=sys.stderr)
+                  elif t == 'tool_start':
+                      print(f\"[tool] {evt.get('tool','')} {evt.get('input',{}).get('path','')}\", file=sys.stderr)
+                  elif t == 'tool_result':
+                      print(f\"[done] {evt.get('tool','')}\", file=sys.stderr)
+                  elif t == 'error':
+                      err = evt.get('error',{})
+                      print(f\"[ERROR] {err.get('name','')}: {err.get('data',{}).get('message','')}\", file=sys.stderr)
+                  elif t in ('session_start','session_end','finish'):
+                      print(f\"[{t}]\", file=sys.stderr)
+                  else:
+                      print(f\"[{t}]\", file=sys.stderr)
+              except json.JSONDecodeError:
+                  print(line, file=sys.stderr)
+          " || true
+          EXIT_CODE=${PIPESTATUS[0]}
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
 
           echo "--- OpenCode exit code: $EXIT_CODE ---"
-          echo "--- OpenCode JSON output (last 50 lines) ---"
-          tail -50 opencode-output.json 2>/dev/null || true
-          echo "---"
-
           if [ "$EXIT_CODE" -ne 0 ]; then
             echo "::warning::OpenCode exited with code $EXIT_CODE"
           fi
