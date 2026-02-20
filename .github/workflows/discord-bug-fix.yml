@@ -168,7 +168,7 @@ jobs:
         id: opencode
         working-directory: ${{ github.workspace }}
         env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           BUG_FIX_PROMPT: ${{ steps.prompt.outputs.prompt }}
         run: |
           set +e
@@ -176,9 +176,16 @@ jobs:
             "$BUG_FIX_PROMPT" > opencode-output.json 2> opencode-stderr.log
           EXIT_CODE=$?
           echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+
+          echo "--- OpenCode exit code: $EXIT_CODE ---"
+          echo "--- OpenCode stderr ---"
+          cat opencode-stderr.log || true
+          echo "--- OpenCode stdout (first 100 lines) ---"
+          head -100 opencode-output.json || true
+          echo "---"
+
           if [ "$EXIT_CODE" -ne 0 ]; then
             echo "::warning::OpenCode exited with code $EXIT_CODE"
-            cat opencode-stderr.log
           fi
 
       # --- Create PRs per repo ---
