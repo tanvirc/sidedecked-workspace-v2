@@ -60,7 +60,7 @@ $GITHUB_WORKSPACE/
 |---|---|---|---|
 | Discord Bot | Node.js + discord.js + Express | `discord-bot/` | Railway |
 | GitHub Action | YAML workflow | `.github/workflows/discord-bug-fix.yml` | GitHub Actions |
-| Bug Fix Prompt | Markdown template | `.github/claude-bug-fix-prompt.md` | Repo |
+| Bug Fix Prompt | Markdown template | `.github/bug-fix-prompt.md` | Repo |
 
 ## Setup Guide
 
@@ -236,7 +236,7 @@ Defined in `discord-bot/.env.example`:
 
 ### Bug Fix Prompt
 
-The bug-fixing prompt template is at `.github/claude-bug-fix-prompt.md`. It tells OpenCode to:
+The bug-fixing prompt template is at `.github/bug-fix-prompt.md`. It tells OpenCode to:
 
 1. Use `systematic-debugging` skill to investigate the bug across all service repos
 2. Use `test-driven-development` skill when implementing fixes
