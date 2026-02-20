@@ -21,7 +21,10 @@
       - cd back to root
     </action>
 
-    <action>Load the Technical Design Note from Phase 3 (already in context). Extract:
+    <action>Load the Technical Design Note from Phase 3.
+      - If running inside story-lifecycle: the note is already in conversation context
+      - If running standalone: look for docs/plans/*-plan.md matching the story key, or fall back to the story file's technical notes section
+      Extract:
       - Domain classification (commerce vs customer experience vs frontend)
       - Affected files/modules list
       - New database entities or migrations
@@ -30,7 +33,10 @@
       - Architectural risks or decisions made
     </action>
 
-    <action>Load the Requirements + UX Brief from Phase 2 (already in context). Extract:
+    <action>Load the Requirements + UX Brief from Phase 2.
+      - If running inside story-lifecycle: the brief is already in conversation context
+      - If running standalone: look for the story file's acceptance criteria and any linked PRD in docs/
+      Extract:
       - New user-facing features or flows
       - UX interaction patterns introduced
       - Business rules added or changed
@@ -123,15 +129,16 @@
     </action>
 
     <!-- Story File -->
-    <action>Update the story file:
+    <action>Verify acceptance criteria in the story file:
       - For EACH acceptance criterion: verify it was implemented by checking the actual code changes from Step 1
-      - Mark each verified criterion as (IMPLEMENTED)
-      - If any criterion cannot be verified against the code: flag it and do NOT mark as implemented
+      - If a criterion is already marked (IMPLEMENTED): confirm the marking is accurate against the code
+      - If a criterion is NOT yet marked (IMPLEMENTED) but the code supports it: flag for the dev-story workflow to mark (do NOT mark it here — AC status is owned by the dev-story workflow)
+      - If any criterion cannot be verified against the code: flag it as a gap
     </action>
 
     <!-- Sprint Status -->
     <action>Update {sprint_status}:
-      - Set the story status to "done"
+      - Set the story status to "docs-complete" (the parent workflow controls the final "done" transition after code review and merge)
       - Preserve ALL existing comments and structure in the YAML file
     </action>
 
@@ -252,37 +259,7 @@
     </action>
   </step>
 
-  <!-- ═══════════════════════════════════════════════════════
-       STEP 6: Create Pull Requests
-       ═══════════════════════════════════════════════════════ -->
-
-  <step n="6" goal="Create pull requests in ALL repos that received commits">
-    <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
-
-    <action>For EACH repo that received commits during the story lifecycle (root + any child repos):
-      - cd into the repo directory
-      - Check if the feature branch has commits ahead of main: git log main..HEAD --oneline
-      - If there ARE commits: create a PR using gh CLI
-        - PR title: concise and descriptive, matching the story title
-        - PR body must include:
-          - Story key reference
-          - Summary of changes specific to this repo
-          - **Documentation Changes** section listing which docs were updated or created in this repo
-          - Railway preview URL (from Phase 6, if available in context)
-          - Testing notes
-          - Acceptance criteria checklist
-        - CRITICAL: No AI references in PR title or body
-      - If there are NO commits (branch was created but empty): skip — do NOT create an empty PR
-      - cd back to root
-    </action>
-
-    <action>Validate: for each PR created, verify that files listed in the Documentation Update Report (Step 5) for this repo appear in the PR diff. If any doc file is missing from the diff, investigate and fix before finalizing.</action>
-
-    <action>Output a PR Creation Summary:
-      | Repo | Had Commits? | PR Created? | PR URL | Doc Files in Diff? |
-      |---|---|---|---|---|
-      (one row per repo — root + all child repos with feature branches)
-    </action>
-  </step>
+  <!-- NOTE: PR creation is handled by the parent story-lifecycle workflow (step 16).
+       This sub-workflow focuses on documentation only. -->
 
 </workflow>
