@@ -67,6 +67,15 @@ jobs:
           ln -s ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js ~/.config/opencode/plugins/superpowers.js
           ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpowers
 
+      - name: Configure OpenCode for CI
+        run: |
+          cat > ~/.config/opencode/opencode.json << 'EOCONFIG'
+          {
+            "$schema": "https://opencode.ai/config.json",
+            "permission": "allow"
+          }
+          EOCONFIG
+
       # --- Safety gate ---
 
       - name: Verify issue author
