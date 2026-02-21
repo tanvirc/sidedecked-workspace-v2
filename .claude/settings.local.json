@@ -120,7 +120,17 @@
       "Bash(gh issue view:*)",
       "Bash(# Check if there''s an opencode config file \\(not just a git ref\\) find \"\"C:\\\\Code\\\\GitHub\\\\tanvirc\\\\sidedecked-workspace-v2\"\" -name \"\"opencode.json\"\" -o -name \"\"opencode.toml\"\" -o -name \"\"opencode.yaml\"\")",
       "Bash(# Try to find the actual action.yml path in the opencode repo curl -s \"\"https://api.github.com/repos/anomalyco/opencode/contents/packages/github\"\")",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(grep error TS:*)",
+      "WebFetch(domain:interfacecraft.dev)",
+      "WebFetch(domain:www.optimonk.com)",
+      "WebFetch(domain:crehler.com)",
+      "WebFetch(domain:techfelts.com)",
+      "WebFetch(domain:gapsystudio.com)",
+      "WebFetch(domain:excited.agency)",
+      "mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram"
     ],
     "deny": [],
     "ask": []

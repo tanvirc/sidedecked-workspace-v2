@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Design Direction Showcase</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Midnight Forge
+   ============================================================ */
+:root {
+  /* Backgrounds */
+  --bg-base: #0C0D12;
+  --bg-surface-1: #13141A;
+  --bg-surface-2: #1A1C24;
+  --bg-surface-3: #22242E;
+  --bg-surface-4: #2A2D38;
+
+  /* Accent */
+  --accent-primary: #D4A843;
+  --accent-primary-hover: #E0B94F;
+
+  /* Interactive */
+  --interactive: #7C8CFF;
+  --interactive-hover: #9BA6FF;
+
+  /* Semantic */
+  --positive: #4ADE80;
+  --negative: #EF5350;
+  --warning: #FBBF24;
+
+  /* Text */
+  --text-primary: #E8ECF1;
+  --text-secondary: #8B93A6;
+  --text-tertiary: #4F5568;
+  --text-price: #D4A843;
+
+  /* Borders */
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-default: rgba(255,255,255,0.10);
+
+  /* Rarity — MTG */
+  --rarity-common: #6B6B6B;
+  --rarity-uncommon: #A8B4C0;
+  --rarity-rare: #D4A843;
+  --rarity-mythic: #E85D26;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Spacing */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body { min-height: 100vh; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.showcase-header {
+  text-align: center;
+  padding: var(--sp-7) var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
+}
+
+.showcase-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.showcase-header h1 span { color: var(--accent-primary); }
+
+.showcase-header p {
+  margin-top: var(--sp-2);
+  font-size: 14px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ============================================================
+   TAB NAV
+   ============================================================ */
+.tab-nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--bg-surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--interactive);
+  background: rgba(124,140,255,0.06);
+}
+
+.tab-btn.active {
+  color: var(--bg-base);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.tab-btn .tab-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.08);
+}
+
+.tab-btn.active .tab-num {
+  background: rgba(0,0,0,0.2);
+  color: var(--bg-base);
+}
+
+/* ============================================================
+   PANEL CONTAINER
+   ============================================================ */
+.panels { padding: var(--sp-6) var(--sp-5) var(--sp-7); }
+
+.panel {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel-label {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: rgba(124,140,255,0.10);
+  color: var(--interactive);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--sp-3);
+}
+
+.panel-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.panel-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-6);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   SHARED UTILITY
+   ============================================================ */
+.price {
+  font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--text-price);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-common   { background: rgba(107,107,107,0.18); color: var(--rarity-common); }
+.badge-uncommon { background: rgba(168,180,192,0.14); color: var(--rarity-uncommon); }
+.badge-rare     { background: rgba(212,168,67,0.14);  color: var(--rarity-rare); }
+.badge-mythic   { background: rgba(232,93,38,0.14);   color: var(--rarity-mythic); }
+
+.rarity-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-common   { background: var(--rarity-common); }
+.dot-uncommon { background: var(--rarity-uncommon); }
+.dot-rare     { background: var(--rarity-rare); }
+.dot-mythic   { background: var(--rarity-mythic); }
+
+.card-placeholder {
+  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border-subtle);
+}
+
+.card-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5));
+  pointer-events: none;
+}
+
+.gold-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--accent-primary);
+  color: var(--bg-base);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.gold-btn:hover { background: var(--accent-primary-hover); }
+
+.blue-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--interactive);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.blue-btn:hover { background: var(--interactive-hover); }
+
+/* ============================================================
+   1  CARD GALLERY
+   ============================================================ */
+.gallery-search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.gallery-search-input {
+  flex: 1;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.gallery-search-input:focus { border-color: var(--interactive); }
+.gallery-search-input::placeholder { color: var(--text-tertiary); }
+
+.game-tabs {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+
+.game-tab {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.game-tab:hover { color: var(--text-primary); border-color: var(--interactive); }
+.game-tab.active { background: var(--interactive); color: #fff; border-color: var(--interactive); }
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200px;
+  gap: var(--sp-4);
+  position: relative;
+}
+
+.bento-card {
+  position: relative;
+  background: linear-gradient(160deg, var(--bg-surface-2) 0%, var(--bg-surface-3) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--sp-4);
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-primary);
+}
+
+.bento-card.tall { grid-row: span 2; }
+
+.bento-card-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.5;
+  text-align: center;
+  width: 80%;
+  z-index: 1;
+}
+
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.65));
+  z-index: 1;
+}
+
+.bento-card-meta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bento-card-meta .badge { font-size: 10px; }
+
+.floating-cart {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 200;
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-xl);
+  background: var(--accent-primary);
+  color: var(--bg-base);
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(212,168,67,0.3);
+  transition: background 0.15s ease, transform 0.15s ease;
+  font-family: inherit;
+}
+
+.floating-cart:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   2  COMMAND CENTER
+   ============================================================ */
+.cc-backdrop {
+  position: relative;
+  height: 640px;
+  background: var(--bg-surface-1);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.cc-dimmed {
+  position: absolute;
+  inset: 0;
+  padding: var(--sp-5);
+  opacity: 0.25;
+  filter: blur(2px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+  padding-top: 72px;
+}
+
+.cc-dim-card {
+  background: var(--bg-surface-2);
+  border-radius: var(--radius-md);
+  height: 180px;
+  border: 1px solid var(--border-subtle);
+}
+
+.cc-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 560px;
+  max-width: 90%;
+  background: rgba(34,36,46,0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+  overflow: hidden;
+}
+
+.cc-search-row {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--sp-3);
+}
+
+.cc-search-icon { color: var(--text-tertiary); font-size: 16px; flex-shrink: 0; }
+
+.cc-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 16px;
+  outline: none;
+  font-family: inherit;
+}
+
+.cc-search-input::placeholder { color: var(--text-tertiary); }
+
+.cc-results { padding: var(--sp-3) 0; max-height: 400px; overflow-y: auto; }
+
+.cc-section-label {
+  padding: var(--sp-2) var(--sp-5);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cc-result {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-5);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.cc-result:hover { background: rgba(124,140,255,0.08); }
+.cc-result.selected { background: rgba(124,140,255,0.12); }
+
+.cc-result-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.cc-result-info { flex: 1; min-width: 0; }
+
+.cc-result-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cc-result-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.cc-result-price { flex-shrink: 0; }
+
+.cc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  padding: var(--sp-3) var(--sp-5);
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(19,20,26,0.5);
+}
+
+.cc-shortcut {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.cc-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-surface-4);
+  border: 1px solid var(--border-default);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+/* ============================================================
+   3  SPLIT PANEL DECK BUILDER
+   ============================================================ */
+.deck-builder {
+  display: flex;
+  gap: 0;
+  height: 620px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
+}
+
+.db-left {
+  width: 40%;
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface-1);
+}
+
+.db-right {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+}
+
+.db-search-area {
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.db-search {
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  margin-bottom: var(--sp-3);
+}
+
+.db-search:focus { border-color: var(--interactive); }
+.db-search::placeholder { color: var(--text-tertiary); }
+
+.db-filters { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+
+.db-filter-pill {
+  padding: 3px 10px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.db-filter-pill:hover { color: var(--text-primary); border-color: var(--interactive); }
+.db-filter-pill.active { background: var(--interactive); color: #fff; border-color: var(--interactive); }
+
+.db-card-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  align-content: start;
+}
+
+.db-small-card {
+  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--sp-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  position: relative;
+}
+
+.db-small-card:hover { border-color: var(--interactive); }
+
+.db-small-card-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.db-small-card-price { font-size: 11px; }
+
+.db-deck-header {
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.db-deck-title { font-size: 16px; font-weight: 600; }
+
+.db-deck-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-4);
+}
+
+.db-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
+.db-section-title:first-child { margin-top: 0; }
+
+.db-card-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  transition: background 0.12s ease;
+  cursor: pointer;
+}
+
+.db-card-row:hover { background: var(--bg-surface-2); }
+
+.db-qty {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--bg-surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.db-card-row-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.db-mana-dots {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.mana-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.mana-w { background: #F9FAF4; color: #33302D; }
+.mana-u { background: #0E68AB; color: #fff; }
+.mana-b { background: #150B00; color: #A69F9D; border: 1px solid #3B3131; }
+.mana-r { background: #D3202A; color: #fff; }
+.mana-g { background: #00733E; color: #fff; }
+.mana-c { background: #6B6B6B; color: #fff; }
+
+.db-card-row-price { font-size: 12px; flex-shrink: 0; }
+
+.db-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-5);
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.db-stats {
+  display: flex;
+  gap: var(--sp-4);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.db-stats strong { color: var(--text-primary); font-weight: 600; }
+
+.db-mana-curve {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+}
+
+.db-mana-bar {
+  width: 8px;
+  border-radius: 2px 2px 0 0;
+  min-height: 3px;
+}
+
+.db-format-badge {
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(74,222,128,0.12);
+  color: var(--positive);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ============================================================
+   4  MARKETPLACE GRID
+   ============================================================ */
+.mp-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--bg-surface-1);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.mp-select {
+  padding: var(--sp-2) var(--sp-3);
+  padding-right: var(--sp-5);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238B93A6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.mp-select:focus { border-color: var(--interactive); }
+
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.mp-product {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  display: flex;
+  gap: var(--sp-4);
+  transition: border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.mp-product:hover { border-color: var(--accent-primary); }
+
+.mp-product-img {
+  width: 80px;
+  height: 112px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 4px;
+}
+
+.mp-product-info { flex: 1; display: flex; flex-direction: column; gap: var(--sp-1); min-width: 0; }
+
+.mp-product-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-product-set { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: var(--sp-2); }
+
+.mp-condition {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--positive);
+}
+
+.mp-seller {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.mp-pricing { display: flex; align-items: baseline; gap: var(--sp-2); margin-top: auto; }
+
+.mp-price-main { font-size: 18px; font-weight: 600; }
+.mp-price-market { font-size: 11px; color: var(--text-tertiary); }
+
+.mp-add-btn {
+  margin-top: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-primary);
+  background: transparent;
+  color: var(--accent-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.mp-add-btn:hover {
+  background: var(--accent-primary);
+  color: var(--bg-base);
+}
+
+.mp-pagination {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.mp-page {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.mp-page:hover { border-color: var(--interactive); color: var(--text-primary); }
+.mp-page.active { background: var(--interactive); color: #fff; border-color: var(--interactive); }
+
+/* ============================================================
+   5  SOCIAL FEED
+   ============================================================ */
+.feed {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.feed-card {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  transition: border-color 0.15s ease;
+}
+
+.feed-card:hover { border-color: var(--border-default); }
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.feed-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.feed-user {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.feed-action {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.feed-time {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+
+.feed-deck-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--interactive);
+  margin-bottom: var(--sp-3);
+  cursor: pointer;
+}
+
+.feed-deck-title:hover { color: var(--interactive-hover); text-decoration: underline; }
+
+.feed-deck-thumbs {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.feed-deck-thumb {
+  width: 60px;
+  height: 84px;
+  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.feed-deck-meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-3);
+}
+
+.feed-engagement {
+  display: flex;
+  gap: var(--sp-5);
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.feed-engagement span { cursor: pointer; transition: color 0.15s ease; }
+.feed-engagement span:hover { color: var(--text-primary); }
+
+.feed-alert-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: rgba(239,83,80,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.feed-alert-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.feed-chart-placeholder {
+  height: 80px;
+  margin: var(--sp-3) 0;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.feed-alert-prices {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.feed-alert-old {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+.feed-trending-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-4);
+}
+
+.feed-trending-row {
+  display: flex;
+  gap: var(--sp-4);
+}
+
+.feed-trending-item {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.feed-trending-thumb {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: var(--sp-2);
+  transition: border-color 0.15s ease;
+}
+
+.feed-trending-item:hover .feed-trending-thumb { border-color: var(--interactive); }
+
+.feed-trending-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.feed-change-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.feed-change-up { background: rgba(74,222,128,0.12); color: var(--positive); }
+.feed-change-down { background: rgba(239,83,80,0.12); color: var(--negative); }
+
+/* ============================================================
+   6  MOBILE STACK
+   ============================================================ */
+.mobile-frame {
+  width: 390px;
+  margin: 0 auto;
+  background: var(--bg-base);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+  position: relative;
+  min-height: 780px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+}
+
+.mobile-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-4);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 130px;
+}
+
+.mobile-card-img {
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(160deg, var(--bg-surface-2) 0%, var(--bg-surface-3) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+}
+
+.mobile-card-img::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(transparent, var(--bg-base));
+}
+
+.mobile-card-info {
+  padding: var(--sp-4) var(--sp-4) 0;
+}
+
+.mobile-card-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-1);
+}
+
+.mobile-card-set {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.mobile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 var(--sp-4);
+}
+
+.mobile-tab {
+  flex: 1;
+  padding: var(--sp-3) 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.mobile-tab:hover { color: var(--text-secondary); }
+
+.mobile-tab.active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+.mobile-listings {
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.mobile-listing {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--bg-surface-1);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.mobile-seller-info { flex: 1; }
+
+.mobile-seller-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.mobile-seller-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: 2px;
+}
+
+.mobile-condition-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(74,222,128,0.12);
+  color: var(--positive);
+}
+
+.mobile-listing-price {
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mobile-buy-btn {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  background: var(--accent-primary);
+  color: var(--bg-base);
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.mobile-buy-btn:hover { background: var(--accent-primary-hover); }
+
+.mobile-bottom-nav {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+  display: flex;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
+  padding: var(--sp-2) 0 var(--sp-3);
+}
+
+.mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: var(--sp-1) 0;
+}
+
+.mobile-nav-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobile-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.mobile-nav-item.active .mobile-nav-label { color: var(--accent-primary); }
+.mobile-nav-item.active .mobile-nav-icon { color: var(--accent-primary); }
+.mobile-nav-item:not(.active) .mobile-nav-icon { color: var(--text-tertiary); }
+
+.mobile-sticky-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-surface-1);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mobile-sticky-bar .blue-btn,
+.mobile-sticky-bar .gold-btn {
+  flex: 1;
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-surface-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .mp-grid { grid-template-columns: 1fr; }
+  .deck-builder { flex-direction: column; height: auto; }
+  .db-left, .db-right { width: 100%; }
+  .db-left { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========================================================
+     HEADER
+     ======================================================== -->
+<header class="showcase-header">
+  <h1>Side<span>Decked</span> — Design Direction Showcase</h1>
+  <p>Midnight Forge Design System &middot; 6 Visual Directions</p>
+</header>
+
+<!-- ========================================================
+     TAB NAVIGATION
+     ======================================================== -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="1">
+    <span class="tab-num">1</span> Card Gallery
+  </button>
+  <button class="tab-btn" data-tab="2">
+    <span class="tab-num">2</span> Command Center
+  </button>
+  <button class="tab-btn" data-tab="3">
+    <span class="tab-num">3</span> Deck Builder
+  </button>
+  <button class="tab-btn" data-tab="4">
+    <span class="tab-num">4</span> Marketplace Grid
+  </button>
+  <button class="tab-btn" data-tab="5">
+    <span class="tab-num">5</span> Social Feed
+  </button>
+  <button class="tab-btn" data-tab="6">
+    <span class="tab-num">6</span> Mobile Stack
+  </button>
+</nav>
+
+<!-- ========================================================
+     PANELS
+     ======================================================== -->
+<main class="panels">
+
+<!-- ─────────────────────────────────────────────────────────
+     1 · CARD GALLERY
+     ───────────────────────────────────────────────────────── -->
+<section class="panel active" id="panel-1">
+  <span class="panel-label">Direction 1</span>
+  <h2 class="panel-title">Card Gallery</h2>
+  <p class="panel-desc">An immersive, image-first browsing experience. Cards are displayed in a bento-style grid with varying sizes, letting the artwork breathe. Minimal chrome keeps the focus on discovery.</p>
+
+  <div class="gallery-search">
+    <input type="text" class="gallery-search-input" placeholder="Search for cards..." readonly>
+  </div>
+
+  <div class="game-tabs">
+    <button class="game-tab active">MTG</button>
+    <button class="game-tab">Pokemon</button>
+    <button class="game-tab">Yu-Gi-Oh!</button>
+    <button class="game-tab">One Piece</button>
+  </div>
+
+  <div class="bento-grid">
+    <div class="bento-card tall">
+      <span class="bento-card-name">Sheoldred, the Apocalypse</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-mythic"><span class="rarity-dot dot-mythic"></span> Mythic</span>
+        <span class="price">$72.99</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Lightning Bolt</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-common"><span class="rarity-dot dot-common"></span> Common</span>
+        <span class="price">$2.99</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Counterspell</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-uncommon"><span class="rarity-dot dot-uncommon"></span> Uncommon</span>
+        <span class="price">$1.49</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Fatal Push</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-uncommon"><span class="rarity-dot dot-uncommon"></span> Uncommon</span>
+        <span class="price">$3.50</span>
+      </div>
+    </div>
+    <div class="bento-card tall">
+      <span class="bento-card-name">Ragavan, Nimble Pilferer</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-mythic"><span class="rarity-dot dot-mythic"></span> Mythic</span>
+        <span class="price">$42.99</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Aether Vial</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-rare"><span class="rarity-dot dot-rare"></span> Rare</span>
+        <span class="price">$28.50</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Thoughtseize</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-rare"><span class="rarity-dot dot-rare"></span> Rare</span>
+        <span class="price">$12.99</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Path to Exile</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-uncommon"><span class="rarity-dot dot-uncommon"></span> Uncommon</span>
+        <span class="price">$4.25</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Wrenn and Six</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-mythic"><span class="rarity-dot dot-mythic"></span> Mythic</span>
+        <span class="price">$56.00</span>
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-card-name">Collected Company</span>
+      <div class="bento-card-meta">
+        <span class="badge badge-rare"><span class="rarity-dot dot-rare"></span> Rare</span>
+        <span class="price">$8.75</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="floating-cart">Cart (3)</button>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     2 · COMMAND CENTER
+     ───────────────────────────────────────────────────────── -->
+<section class="panel" id="panel-2">
+  <span class="panel-label">Direction 2</span>
+  <h2 class="panel-title">Command Center</h2>
+  <p class="panel-desc">A Linear/Raycast-inspired command palette that surfaces everything instantly. Glass-morphism overlay with grouped, keyboard-navigable results. Power users will feel at home.</p>
+
+  <div class="cc-backdrop">
+    <!-- Dimmed background cards -->
+    <div class="cc-dimmed">
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+      <div class="cc-dim-card"></div>
+    </div>
+
+    <!-- Command palette overlay -->
+    <div class="cc-overlay">
+      <div class="cc-search-row">
+        <span class="cc-search-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input type="text" class="cc-search-input" placeholder="Search cards, decks, sellers..." value="ragavan" readonly>
+      </div>
+
+      <div class="cc-results">
+        <div class="cc-section-label">Cards</div>
+
+        <div class="cc-result selected">
+          <div class="cc-result-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M6 5h4M6 8h4" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">Ragavan, Nimble Pilferer</div>
+            <div class="cc-result-meta">Modern Horizons 2 &middot; <span style="color:var(--rarity-mythic)">Mythic</span></div>
+          </div>
+          <div class="cc-result-price price">$42.99</div>
+        </div>
+
+        <div class="cc-result">
+          <div class="cc-result-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M6 5h4M6 8h4" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">Ragavan, Nimble Pilferer (Foil)</div>
+            <div class="cc-result-meta">Modern Horizons 2 &middot; <span style="color:var(--rarity-mythic)">Mythic</span></div>
+          </div>
+          <div class="cc-result-price price">$67.50</div>
+        </div>
+
+        <div class="cc-result">
+          <div class="cc-result-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M6 5h4M6 8h4" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">Ragavan, Nimble Pilferer (Borderless)</div>
+            <div class="cc-result-meta">Modern Horizons 2 &middot; <span style="color:var(--rarity-mythic)">Mythic</span></div>
+          </div>
+          <div class="cc-result-price price">$89.00</div>
+        </div>
+
+        <div class="cc-section-label">Decks</div>
+
+        <div class="cc-result">
+          <div class="cc-result-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="9" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/>
+              <rect x="5" y="1" width="9" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">Izzet Ragavan Tempo</div>
+            <div class="cc-result-meta">Modern &middot; 60 cards &middot; by Alex</div>
+          </div>
+          <div class="cc-result-price price" style="font-size:12px">$485</div>
+        </div>
+
+        <div class="cc-result">
+          <div class="cc-result-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="9" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/>
+              <rect x="5" y="1" width="9" height="12" rx="1" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">Jund with Ragavan</div>
+            <div class="cc-result-meta">Modern &middot; 60 cards &middot; by Sam</div>
+          </div>
+          <div class="cc-result-price price" style="font-size:12px">$920</div>
+        </div>
+
+        <div class="cc-section-label">Sellers</div>
+
+        <div class="cc-result">
+          <div class="cc-result-icon" style="border-radius:50%;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M1.5 13c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="cc-result-info">
+            <div class="cc-result-name">RagavanDeals</div>
+            <div class="cc-result-meta">99.5% positive &middot; 1,204 sales</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cc-footer">
+        <div class="cc-shortcut"><span class="cc-kbd">&uarr;</span><span class="cc-kbd">&darr;</span> navigate</div>
+        <div class="cc-shortcut"><span class="cc-kbd">&crarr;</span> select</div>
+        <div class="cc-shortcut"><span class="cc-kbd">esc</span> close</div>
+        <div class="cc-shortcut"><span class="cc-kbd">tab</span> section</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     3 · SPLIT PANEL DECK BUILDER
+     ───────────────────────────────────────────────────────── -->
+<section class="panel" id="panel-3">
+  <span class="panel-label">Direction 3</span>
+  <h2 class="panel-title">Split Panel Deck Builder</h2>
+  <p class="panel-desc">A productivity-focused two-panel layout. Search and browse cards on the left, build your deck on the right. Instant stats, mana curve visualization, and one-click purchasing of missing cards.</p>
+
+  <div class="deck-builder">
+    <!-- Left: card search -->
+    <div class="db-left">
+      <div class="db-search-area">
+        <input type="text" class="db-search" placeholder="Search cards..." readonly>
+        <div class="db-filters">
+          <button class="db-filter-pill active">Type</button>
+          <button class="db-filter-pill">Color</button>
+          <button class="db-filter-pill">CMC</button>
+          <button class="db-filter-pill">Set</button>
+        </div>
+      </div>
+      <div class="db-card-results">
+        <div class="db-small-card">
+          <div class="db-small-card-name">Opt</div>
+          <div class="db-small-card-price price">$0.25</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Consider</div>
+          <div class="db-small-card-price price">$0.35</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Spell Pierce</div>
+          <div class="db-small-card-price price">$0.50</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Delver of Secrets</div>
+          <div class="db-small-card-price price">$1.25</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Brazen Borrower</div>
+          <div class="db-small-card-price price">$4.50</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Archmage's Charm</div>
+          <div class="db-small-card-price price">$3.75</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Murktide Regent</div>
+          <div class="db-small-card-price price">$18.99</div>
+        </div>
+        <div class="db-small-card">
+          <div class="db-small-card-name">Subtlety</div>
+          <div class="db-small-card-price price">$7.25</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: deck composition -->
+    <div class="db-right">
+      <div class="db-deck-header">
+        <span class="db-deck-title">Azorius Control</span>
+        <span style="font-size:12px;color:var(--text-tertiary)">Standard &middot; 60 cards</span>
+      </div>
+      <div class="db-deck-content">
+        <div class="db-section-title">Creatures (8)</div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Solitude</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">3</span>
+            <span class="mana-dot mana-w">W</span>
+            <span class="mana-dot mana-w">W</span>
+          </div>
+          <span class="db-card-row-price price">$38.00</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">2</span>
+          <span class="db-card-row-name">Snapcaster Mage</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">1</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$24.50</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">2</span>
+          <span class="db-card-row-name">Subtlety</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">2</span>
+            <span class="mana-dot mana-u">U</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$7.25</span>
+        </div>
+
+        <div class="db-section-title">Instants (18)</div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Counterspell</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-u">U</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$1.49</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Archmage's Charm</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-u">U</span>
+            <span class="mana-dot mana-u">U</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$3.75</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">3</span>
+          <span class="db-card-row-name">Prismatic Ending</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">X</span>
+            <span class="mana-dot mana-w">W</span>
+          </div>
+          <span class="db-card-row-price price">$2.10</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">3</span>
+          <span class="db-card-row-name">Spell Pierce</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$0.50</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Path to Exile</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-w">W</span>
+          </div>
+          <span class="db-card-row-price price">$4.25</span>
+        </div>
+
+        <div class="db-section-title">Sorceries (8)</div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Supreme Verdict</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">1</span>
+            <span class="mana-dot mana-w">W</span>
+            <span class="mana-dot mana-w">W</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$5.99</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Preordain</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$0.75</span>
+        </div>
+
+        <div class="db-section-title">Planeswalkers (4)</div>
+        <div class="db-card-row">
+          <span class="db-qty">2</span>
+          <span class="db-card-row-name">Teferi, Hero of Dominaria</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">3</span>
+            <span class="mana-dot mana-w">W</span>
+            <span class="mana-dot mana-u">U</span>
+          </div>
+          <span class="db-card-row-price price">$14.50</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">2</span>
+          <span class="db-card-row-name">The Wandering Emperor</span>
+          <div class="db-mana-dots">
+            <span class="mana-dot mana-c">2</span>
+            <span class="mana-dot mana-w">W</span>
+            <span class="mana-dot mana-w">W</span>
+          </div>
+          <span class="db-card-row-price price">$9.99</span>
+        </div>
+
+        <div class="db-section-title">Lands (22)</div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Hallowed Fountain</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$11.50</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Flooded Strand</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$28.99</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">4</span>
+          <span class="db-card-row-name">Celestial Colonnade</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$6.50</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">5</span>
+          <span class="db-card-row-name">Island</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$0.10</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">3</span>
+          <span class="db-card-row-name">Plains</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$0.10</span>
+        </div>
+        <div class="db-card-row">
+          <span class="db-qty">2</span>
+          <span class="db-card-row-name">Mystic Gate</span>
+          <div class="db-mana-dots"></div>
+          <span class="db-card-row-price price">$7.25</span>
+        </div>
+      </div>
+
+      <!-- Bottom stats bar -->
+      <div class="db-bottom-bar">
+        <div class="db-stats">
+          <span>Cards: <strong>60</strong></span>
+          <span>Creatures: <strong>8</strong></span>
+          <span>Spells: <strong>30</strong></span>
+          <span>Lands: <strong>22</strong></span>
+        </div>
+        <div class="db-mana-curve" title="Mana Curve">
+          <div class="db-mana-bar" style="height:12px;background:var(--bg-surface-4)"></div>
+          <div class="db-mana-bar" style="height:22px;background:var(--interactive)"></div>
+          <div class="db-mana-bar" style="height:28px;background:var(--interactive)"></div>
+          <div class="db-mana-bar" style="height:16px;background:var(--interactive)"></div>
+          <div class="db-mana-bar" style="height:10px;background:var(--bg-surface-4)"></div>
+          <div class="db-mana-bar" style="height:6px;background:var(--bg-surface-4)"></div>
+        </div>
+        <span class="db-format-badge">Standard Legal &#10003;</span>
+        <button class="gold-btn" style="padding:var(--sp-3) var(--sp-5);">Buy Missing Cards (12) &middot; ~$45</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     4 · MARKETPLACE GRID
+     ───────────────────────────────────────────────────────── -->
+<section class="panel" id="panel-4">
+  <span class="panel-label">Direction 4</span>
+  <h2 class="panel-title">Marketplace Grid</h2>
+  <p class="panel-desc">Dense, information-rich product listings optimized for comparison shopping. Filter toolbar, seller reputation, market pricing, and quick add-to-cart on every card.</p>
+
+  <div class="mp-toolbar">
+    <select class="mp-select">
+      <option>Game: MTG</option>
+      <option>Pokemon</option>
+      <option>Yu-Gi-Oh!</option>
+      <option>One Piece</option>
+    </select>
+    <select class="mp-select">
+      <option>Set: All Sets</option>
+      <option>Modern Horizons 2</option>
+      <option>Dominaria United</option>
+    </select>
+    <select class="mp-select">
+      <option>Condition: Any</option>
+      <option>Near Mint</option>
+      <option>Lightly Played</option>
+      <option>Moderately Played</option>
+    </select>
+    <select class="mp-select">
+      <option>Price: Any</option>
+      <option>Under $5</option>
+      <option>$5 - $25</option>
+      <option>$25 - $100</option>
+      <option>$100+</option>
+    </select>
+    <select class="mp-select" style="margin-left:auto;">
+      <option>Sort: Best Match</option>
+      <option>Price: Low to High</option>
+      <option>Price: High to Low</option>
+      <option>Newest</option>
+    </select>
+  </div>
+
+  <div class="mp-grid">
+    <!-- Product 1 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Sheoldred,<br>the Apocalypse</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Sheoldred, the Apocalypse</div>
+        <div class="mp-product-set">Dominaria United <span class="badge badge-mythic" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-mythic"></span> Mythic</span></div>
+        <span class="mp-condition">NM</span>
+        <span class="mp-seller">99.2% &middot; 412 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$72.99</span>
+          <span class="mp-price-market">Market: $75.50</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Product 2 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Ragavan,<br>Nimble Pilferer</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Ragavan, Nimble Pilferer</div>
+        <div class="mp-product-set">Modern Horizons 2 <span class="badge badge-mythic" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-mythic"></span> Mythic</span></div>
+        <span class="mp-condition">NM</span>
+        <span class="mp-seller">97.8% &middot; 890 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$42.99</span>
+          <span class="mp-price-market">Market: $45.00</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Product 3 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Wrenn<br>and Six</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Wrenn and Six</div>
+        <div class="mp-product-set">Modern Horizons <span class="badge badge-mythic" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-mythic"></span> Mythic</span></div>
+        <span class="mp-condition">NM</span>
+        <span class="mp-seller">99.5% &middot; 1,204 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$56.00</span>
+          <span class="mp-price-market">Market: $58.25</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Product 4 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Aether<br>Vial</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Aether Vial</div>
+        <div class="mp-product-set">Iconic Masters <span class="badge badge-rare" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-rare"></span> Rare</span></div>
+        <span class="mp-condition">NM</span>
+        <span class="mp-seller">98.1% &middot; 567 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$28.50</span>
+          <span class="mp-price-market">Market: $30.00</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Product 5 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Thoughtseize</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Thoughtseize</div>
+        <div class="mp-product-set">Theros <span class="badge badge-rare" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-rare"></span> Rare</span></div>
+        <span class="mp-condition" style="color:var(--warning)">LP</span>
+        <span class="mp-seller">96.3% &middot; 234 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$11.99</span>
+          <span class="mp-price-market">Market: $12.99</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+    <!-- Product 6 -->
+    <div class="mp-product">
+      <div class="mp-product-img">Lightning<br>Bolt</div>
+      <div class="mp-product-info">
+        <div class="mp-product-name">Lightning Bolt</div>
+        <div class="mp-product-set">Masters 25 <span class="badge badge-uncommon" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-uncommon"></span> Uncommon</span></div>
+        <span class="mp-condition">NM</span>
+        <span class="mp-seller">100% &middot; 89 sales</span>
+        <div class="mp-pricing">
+          <span class="price mp-price-main">$2.99</span>
+          <span class="mp-price-market">Market: $3.25</span>
+        </div>
+        <button class="mp-add-btn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mp-pagination">
+    <button class="mp-page active">1</button>
+    <button class="mp-page">2</button>
+    <button class="mp-page">3</button>
+    <button class="mp-page">4</button>
+    <button class="mp-page" style="width:auto;padding:0 12px">...</button>
+    <button class="mp-page">24</button>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     5 · SOCIAL FEED
+     ───────────────────────────────────────────────────────── -->
+<section class="panel" id="panel-5">
+  <span class="panel-label">Direction 5</span>
+  <h2 class="panel-title">Social Feed</h2>
+  <p class="panel-desc">A community-driven feed blending deck shares, price alerts, and trending cards. Social proof and real-time market data woven into a familiar scrolling experience.</p>
+
+  <div class="feed">
+    <!-- Feed Item 1: Deck Share -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-avatar" style="background:linear-gradient(135deg,#7C8CFF,#9BA6FF)">A</div>
+        <div>
+          <span class="feed-user">Alex</span>
+          <span class="feed-action"> shared a deck</span>
+          <div style="font-size:12px;color:var(--text-tertiary)">2 hours ago</div>
+        </div>
+      </div>
+      <div class="feed-deck-title">Azorius Control</div>
+      <div class="feed-deck-thumbs">
+        <div class="feed-deck-thumb"></div>
+        <div class="feed-deck-thumb"></div>
+        <div class="feed-deck-thumb"></div>
+        <div class="feed-deck-thumb"></div>
+      </div>
+      <div class="feed-deck-meta">60 cards &middot; Standard &middot; <span class="price">$245 total</span></div>
+      <div class="feed-engagement">
+        <span>&#9825; 24 likes</span>
+        <span>&#128488; 8 comments</span>
+        <span style="color:var(--interactive);cursor:pointer;">Share</span>
+      </div>
+    </div>
+
+    <!-- Feed Item 2: Price Alert -->
+    <div class="feed-card">
+      <div class="feed-header">
+        <div class="feed-alert-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L2 18h16L10 2z" stroke="#EF5350" stroke-width="1.5" fill="none"/>
+            <path d="M10 8v4M10 14v1" stroke="#EF5350" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="feed-alert-title">Ragavan, Nimble Pilferer dropped 15%</div>
+          <div style="font-size:12px;color:var(--text-tertiary)">Price alert &middot; 45 min ago</div>
+        </div>
+      </div>
+      <div class="feed-chart-placeholder">
+        <svg width="100%" height="100%" viewBox="0 0 600 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#EF5350" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#EF5350" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,20 C50,18 100,15 150,22 C200,30 250,25 300,35 C350,40 400,38 450,50 C500,58 550,55 600,65" fill="none" stroke="#EF5350" stroke-width="2"/>
+          <path d="M0,20 C50,18 100,15 150,22 C200,30 250,25 300,35 C350,40 400,38 450,50 C500,58 550,55 600,65 L600,80 L0,80 Z" fill="url(#chartGrad)"/>
+        </svg>
+      </div>
+      <div class="feed-alert-prices">
+        <span class="price" style="font-size:18px">$42.99</span>
+        <span class="feed-alert-old">$50.50</span>
+        <span class="feed-change-badge feed-change-down" style="margin-left:4px">-15%</span>
+      </div>
+      <button class="gold-btn" style="width:100%">Add to Cart &middot; $42.99</button>
+    </div>
+
+    <!-- Feed Item 3: Trending -->
+    <div class="feed-card">
+      <div class="feed-trending-title">Trending in MTG</div>
+      <div class="feed-trending-row">
+        <div class="feed-trending-item">
+          <div class="feed-trending-thumb"></div>
+          <div class="feed-trending-name">Sheoldred</div>
+          <span class="feed-change-badge feed-change-up">+5%</span>
+        </div>
+        <div class="feed-trending-item">
+          <div class="feed-trending-thumb"></div>
+          <div class="feed-trending-name">Fable of the Mirror-Breaker</div>
+          <span class="feed-change-badge feed-change-down">-12%</span>
+        </div>
+        <div class="feed-trending-item">
+          <div class="feed-trending-thumb"></div>
+          <div class="feed-trending-name">Leyline Binding</div>
+          <span class="feed-change-badge feed-change-up">+2%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     6 · MOBILE STACK
+     ───────────────────────────────────────────────────────── -->
+<section class="panel" id="panel-6">
+  <span class="panel-label">Direction 6</span>
+  <h2 class="panel-title">Mobile Stack</h2>
+  <p class="panel-desc">A card detail view optimized for mobile. Thumb-friendly bottom navigation, sticky purchase bar, and a tab-based information hierarchy for listings, price history, and deck inclusion.</p>
+
+  <div class="mobile-frame">
+    <!-- Status bar -->
+    <div class="mobile-status-bar">
+      <span>9:41</span>
+      <span style="display:flex;gap:4px;align-items:center;">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="4" width="3" height="8" rx="0.5" opacity="0.3"/><rect x="4.5" y="2.5" width="3" height="9.5" rx="0.5" opacity="0.5"/><rect x="9" y="1" width="3" height="11" rx="0.5" opacity="0.7"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+        <svg width="22" height="12" viewBox="0 0 22 12" fill="none"><rect x="0.5" y="0.5" width="19" height="11" rx="2" stroke="currentColor" opacity="0.4"/><rect x="20" y="3.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.4"/><rect x="1.5" y="1.5" width="14" height="9" rx="1" fill="var(--positive)"/></svg>
+      </span>
+    </div>
+
+    <!-- Main content -->
+    <div class="mobile-content">
+      <div class="mobile-card-img">
+        <span style="position:relative;z-index:1">Lightning Bolt</span>
+      </div>
+
+      <div class="mobile-card-info">
+        <div class="mobile-card-name">Lightning Bolt</div>
+        <div class="mobile-card-set">
+          Alpha &middot; <span class="badge badge-common" style="font-size:9px;padding:1px 5px"><span class="rarity-dot dot-common"></span> Common</span> &middot; Instant
+        </div>
+      </div>
+
+      <div class="mobile-tabs">
+        <button class="mobile-tab active">Listings</button>
+        <button class="mobile-tab">Price History</button>
+        <button class="mobile-tab">Decks</button>
+      </div>
+
+      <div class="mobile-listings">
+        <div class="mobile-listing">
+          <div class="mobile-seller-info">
+            <div class="mobile-seller-name">CardKingdom_MTG</div>
+            <div class="mobile-seller-meta">
+              <span class="mobile-condition-badge">NM</span>
+              <span>99.8% &middot; 2,341 sales</span>
+            </div>
+          </div>
+          <span class="price mobile-listing-price">$2.99</span>
+          <button class="mobile-buy-btn">Buy</button>
+        </div>
+
+        <div class="mobile-listing">
+          <div class="mobile-seller-info">
+            <div class="mobile-seller-name">BoltCollector</div>
+            <div class="mobile-seller-meta">
+              <span class="mobile-condition-badge">NM</span>
+              <span>97.5% &middot; 456 sales</span>
+            </div>
+          </div>
+          <span class="price mobile-listing-price">$3.15</span>
+          <button class="mobile-buy-btn">Buy</button>
+        </div>
+
+        <div class="mobile-listing">
+          <div class="mobile-seller-info">
+            <div class="mobile-seller-name">VintageFinds</div>
+            <div class="mobile-seller-meta">
+              <span class="mobile-condition-badge" style="background:rgba(251,191,36,0.12);color:var(--warning)">LP</span>
+              <span>96.2% &middot; 189 sales</span>
+            </div>
+          </div>
+          <span class="price mobile-listing-price">$2.49</span>
+          <button class="mobile-buy-btn">Buy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="mobile-bottom-nav">
+      <button class="mobile-nav-item">
+        <span class="mobile-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7-5 7 5v8a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"/></svg>
+        </span>
+        <span class="mobile-nav-label">Home</span>
+      </button>
+      <button class="mobile-nav-item active">
+        <span class="mobile-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4" stroke-linecap="round"/></svg>
+        </span>
+        <span class="mobile-nav-label">Search</span>
+      </button>
+      <button class="mobile-nav-item">
+        <span class="mobile-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="10" rx="1"/><rect x="7" y="5" width="7" height="10" rx="1"/><rect x="11" y="3" width="7" height="10" rx="1" opacity="0.4"/></svg>
+        </span>
+        <span class="mobile-nav-label">Decks</span>
+      </button>
+      <button class="mobile-nav-item">
+        <span class="mobile-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="16" r="1.5"/><circle cx="15" cy="16" r="1.5"/><path d="M2 3h2l2.5 10h9l2-7H6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="mobile-nav-label">Cart</span>
+      </button>
+      <button class="mobile-nav-item">
+        <span class="mobile-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="4"/><path d="M3 18c0-3.5 3-6 7-6s7 2.5 7 6" stroke-linecap="round"/></svg>
+        </span>
+        <span class="mobile-nav-label">Profile</span>
+      </button>
+    </div>
+
+    <!-- Sticky buy bar -->
+    <div class="mobile-sticky-bar">
+      <button class="blue-btn">Add to Deck</button>
+      <button class="gold-btn">Buy &middot; $2.99</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========================================================
+     JAVASCRIPT — Tab Switching
+     ======================================================== -->
+<script>
+(function() {
+  var buttons = document.querySelectorAll('.tab-btn');
+  var panels  = document.querySelectorAll('.panel');
+  var cart     = document.querySelector('.floating-cart');
+
+  function switchTab(id) {
+    buttons.forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('data-tab') === id);
+    });
+    panels.forEach(function(p) {
+      p.classList.toggle('active', p.id === 'panel-' + id);
+    });
+    // Only show floating cart in Direction 1
+    if (cart) {
+      cart.style.display = id === '1' ? 'block' : 'none';
+    }
+  }
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      switchTab(this.getAttribute('data-tab'));
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
