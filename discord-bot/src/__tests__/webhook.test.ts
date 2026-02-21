@@ -222,7 +222,7 @@ describe("handleWebhook", () => {
     );
   });
 
-  it("sends acknowledged message when no code changes needed", async () => {
+  it("sends custom failure message when provided", async () => {
     mockIssueThreadMap.set(42, "thread-abc");
 
     const mockSend = vi.fn().mockResolvedValue(undefined);
@@ -239,18 +239,19 @@ describe("handleWebhook", () => {
       .set("x-webhook-secret", "test-secret")
       .send({
         issue_number: 42,
-        status: "acknowledged",
+        status: "failure",
+        message: "Reviewed — no code changes needed. See the GitHub issue for details.",
       });
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ ok: true });
     expect(mockSend).toHaveBeenCalledOnce();
     expect(mockSend).toHaveBeenCalledWith(
-      "The bot reviewed this report and responded on the GitHub issue. No code changes were needed."
+      "Reviewed — no code changes needed. See the GitHub issue for details."
     );
   });
 
-  it("sends failure message to Discord thread", async () => {
+  it("sends default failure message when no message provided", async () => {
     mockIssueThreadMap.set(7, "thread-xyz");
 
     const mockSend = vi.fn().mockResolvedValue(undefined);
@@ -268,14 +269,13 @@ describe("handleWebhook", () => {
       .send({
         issue_number: 7,
         status: "failure",
-        message: "Build failed",
       });
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ ok: true });
     expect(mockSend).toHaveBeenCalledOnce();
     expect(mockSend).toHaveBeenCalledWith(
-      expect.stringContaining("Build failed")
+      "Could not auto-fix this bug. A developer will look into it."
     );
   });
 

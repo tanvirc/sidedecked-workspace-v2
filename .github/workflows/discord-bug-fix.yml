@@ -236,7 +236,7 @@ jobs:
           curl -s -X POST "${DISCORD_WEBHOOK_URL}/webhook" \
             -H "Content-Type: application/json" \
             -H "X-Webhook-Secret: ${DISCORD_WEBHOOK_SECRET}" \
-            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"acknowledged\"}" || true
+            -d "{\"issue_number\": ${ISSUE_NUM}, \"status\": \"failure\", \"message\": \"Reviewed — no code changes needed. See the GitHub issue for details.\"}" || true
 
       - name: Notify success
         if: steps.prs.outputs.has_changes == 'true'

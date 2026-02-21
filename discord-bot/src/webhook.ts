@@ -14,7 +14,7 @@ function safeCompare(a: string, b: string): boolean {
 
 interface WebhookBody {
   issue_number: number;
-  status: "success" | "failure" | "acknowledged";
+  status: "success" | "failure";
   message?: string;
   commit_sha?: string;
   pr_urls?: string;
@@ -25,7 +25,7 @@ function isValidWebhookBody(body: unknown): body is WebhookBody {
   const b = body as Record<string, unknown>;
   return (
     typeof b.issue_number === "number" &&
-    (b.status === "success" || b.status === "failure" || b.status === "acknowledged")
+    (b.status === "success" || b.status === "failure")
   );
 }
 
@@ -87,11 +87,7 @@ export async function handleWebhook(req: Request, res: Response) {
       return;
     }
 
-    if (status === "acknowledged") {
-      await thread.send(
-        "The bot reviewed this report and responded on the GitHub issue. No code changes were needed."
-      );
-    } else if (status === "success") {
+    if (status === "success") {
       if (pr_urls) {
         await thread.send(
           `Fix PRs created. Please review and approve:\n${pr_urls}`
@@ -101,9 +97,9 @@ export async function handleWebhook(req: Request, res: Response) {
           `Fix deployed to production (commit: \`${commit_sha}\`). Please retest and confirm.`
         );
       }
-    } else if (status === "failure") {
+    } else {
       await thread.send(
-        `Could not auto-fix this bug. A developer will look into it.\n\nReason: ${message}`
+        message || "Could not auto-fix this bug. A developer will look into it."
       );
     }
 
