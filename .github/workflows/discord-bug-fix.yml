@@ -183,6 +183,7 @@ jobs:
             HAS_CHANGES=true
             BRANCH="fix/discord-bug-${ISSUE_NUM}"
             git checkout -B "$BRANCH"
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/tanvirc/sidedecked-workspace-v2.git"
             git push --force-with-lease origin "$BRANCH"
             EXISTING_PR=$(gh pr list --head "$BRANCH" --json url --jq '.[0].url // empty' 2>/dev/null || true)
             if [ -n "$EXISTING_PR" ]; then
@@ -218,6 +219,7 @@ jobs:
 
               # Create branch (force-create handles re-runs)
               git checkout -B "$BRANCH"
+              git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/tanvirc/sidedecked-${SERVICE}.git"
               git push --force-with-lease origin "$BRANCH"
 
               # Check for existing PR before creating
