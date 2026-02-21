@@ -110,7 +110,17 @@
       "Bash(gh issue create:*)",
       "Bash(npm:*)",
       "Bash(claude:*)",
-      "Bash(wait:*)"
+      "Bash(wait:*)",
+      "WebFetch(domain:opencode.ai)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:apidog.com)",
+      "Bash(gh run watch:*)",
+      "Bash(gh run cancel:*)",
+      "Bash(gh issue view:*)",
+      "Bash(# Check if there''s an opencode config file \\(not just a git ref\\) find \"\"C:\\\\Code\\\\GitHub\\\\tanvirc\\\\sidedecked-workspace-v2\"\" -name \"\"opencode.json\"\" -o -name \"\"opencode.toml\"\" -o -name \"\"opencode.yaml\"\")",
+      "Bash(# Try to find the actual action.yml path in the opencode repo curl -s \"\"https://api.github.com/repos/anomalyco/opencode/contents/packages/github\"\")",
+      "Bash(cd:*)"
     ],
     "deny": [],
     "ask": []
