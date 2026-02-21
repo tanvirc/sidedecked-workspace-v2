@@ -21,7 +21,6 @@ jobs:
       - name: Checkout workspace-v2
         uses: actions/checkout@v4
         with:
-          path: workspace
           persist-credentials: false
 
       - name: Checkout storefront
@@ -136,7 +135,7 @@ jobs:
         run: |
           python3 -c "
           import os
-          template = open('workspace/.github/bug-fix-prompt.md').read()
+          template = open('.github/bug-fix-prompt.md').read()
           body = os.environ['ISSUE_BODY']
           images = os.environ.get('IMAGE_SECTION', '')
           result = template.replace('\${ISSUE_BODY}', body).replace('\${IMAGE_SECTION}', images)

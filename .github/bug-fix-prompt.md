@@ -14,7 +14,7 @@ Each service is a separate git repo checked out under `./repos/`:
 - `repos/backend/`            — MedusaJS v2 commerce (orders, payments, vendors)
 - `repos/customer-backend/`   — Node.js + TypeORM (cards, decks, community, pricing)
 
-Project docs are in `./workspace/docs/`.
+Project docs are in `./docs/`.
 ${IMAGE_SECTION}
 
 ## Instructions
