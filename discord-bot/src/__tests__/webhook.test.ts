@@ -222,6 +222,34 @@ describe("handleWebhook", () => {
     );
   });
 
+  it("sends acknowledged message when no code changes needed", async () => {
+    mockIssueThreadMap.set(42, "thread-abc");
+
+    const mockSend = vi.fn().mockResolvedValue(undefined);
+    const mockThread = { send: mockSend };
+    const mockThreadsCache = new Map([["thread-abc", mockThread]]);
+    const mockChannel = { threads: { cache: mockThreadsCache } };
+    const mockFetch = vi.fn().mockResolvedValue(mockChannel);
+
+    mockGetDiscordClient.mockReturnValue({ channels: { fetch: mockFetch } });
+
+    const app = createApp();
+    const res = await request(app)
+      .post("/webhook")
+      .set("x-webhook-secret", "test-secret")
+      .send({
+        issue_number: 42,
+        status: "acknowledged",
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ ok: true });
+    expect(mockSend).toHaveBeenCalledOnce();
+    expect(mockSend).toHaveBeenCalledWith(
+      "The bot reviewed this report and responded on the GitHub issue. No code changes were needed."
+    );
+  });
+
   it("sends failure message to Discord thread", async () => {
     mockIssueThreadMap.set(7, "thread-xyz");
 
