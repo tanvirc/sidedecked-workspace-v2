@@ -7,7 +7,7 @@ function requireEnv(name: string): string {
 export const config = {
   discordToken: requireEnv("DISCORD_BOT_TOKEN"),
   channelId: requireEnv("DISCORD_CHANNEL_ID"),
-  githubToken: requireEnv("GITHUB_TOKEN"),
+  githubToken: requireEnv("CROSS_REPO_TOKEN"),
   githubOwner: process.env.GITHUB_OWNER ?? "tanvirc",
   githubRepo: process.env.GITHUB_REPO ?? "sidedecked",
   webhookSecret: requireEnv("WEBHOOK_SECRET"),
