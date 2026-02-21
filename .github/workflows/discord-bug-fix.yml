@@ -245,7 +245,7 @@ jobs:
             --body "$COMMENT_BODY"
 
       - name: Notify failure
-        if: always() && steps.prs.outputs.has_changes != 'true'
+        if: failure()
         env:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
