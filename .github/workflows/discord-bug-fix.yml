@@ -21,7 +21,7 @@ jobs:
       - name: Checkout workspace-v2
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          token: ${{ secrets.CROSS_REPO_TOKEN }}
 
       - name: Checkout storefront
         uses: actions/checkout@v4
@@ -172,6 +172,31 @@ jobs:
         run: |
           PR_URLS=""
           HAS_CHANGES=false
+
+          # Handle workspace-v2 root changes (discord-bot, .github, etc.)
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "fix: discord bug #${ISSUE_NUM}"
+          fi
+          COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+          if [ "$COMMITS" -gt 0 ]; then
+            HAS_CHANGES=true
+            BRANCH="fix/discord-bug-${ISSUE_NUM}"
+            git checkout -B "$BRANCH"
+            git push --force-with-lease origin "$BRANCH"
+            EXISTING_PR=$(gh pr list --head "$BRANCH" --json url --jq '.[0].url // empty' 2>/dev/null || true)
+            if [ -n "$EXISTING_PR" ]; then
+              PR_URL="$EXISTING_PR"
+              echo "Updated existing PR in workspace-v2: ${PR_URL}"
+            else
+              PR_URL=$(gh pr create \
+                --title "fix: discord bug #${ISSUE_NUM}" \
+                --body "Automated fix for #${ISSUE_NUM}" \
+                --head "$BRANCH" --base main)
+            fi
+            PR_URLS="${PR_URLS}- workspace-v2: ${PR_URL}\n"
+            echo "Created PR in workspace-v2: ${PR_URL}"
+          fi
 
           for SERVICE in storefront vendorpanel backend customer-backend; do
             REPO_DIR="repos/${SERVICE}"
