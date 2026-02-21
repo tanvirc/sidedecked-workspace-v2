@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
+      id-token: write
       contents: write
       pull-requests: write
       issues: write
@@ -21,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: workspace
+          persist-credentials: false
 
       - name: Checkout storefront
         uses: actions/checkout@v4
@@ -49,31 +51,6 @@ jobs:
           repository: tanvirc/sidedecked-customer-backend
           token: ${{ secrets.CROSS_REPO_TOKEN }}
           path: repos/customer-backend
-
-      # --- Setup tools ---
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install OpenCode
-        run: npm install -g opencode-ai
-
-      - name: Install superpowers plugin
-        run: |
-          git clone --depth 1 https://github.com/obra/superpowers.git ~/.config/opencode/superpowers
-          mkdir -p ~/.config/opencode/plugins ~/.config/opencode/skills
-          ln -s ~/.config/opencode/superpowers/.opencode/plugins/superpowers.js ~/.config/opencode/plugins/superpowers.js
-          ln -s ~/.config/opencode/superpowers/skills ~/.config/opencode/skills/superpowers
-
-      - name: Configure OpenCode for CI
-        run: |
-          CONFIG='{"$schema":"https://opencode.ai/config.json","permission":"allow"}'
-          echo "$CONFIG" > ~/.config/opencode/opencode.json
-          echo "$CONFIG" > "$GITHUB_WORKSPACE/opencode.json"
-          echo "OpenCode config written to global and project dirs"
-          cat ~/.config/opencode/opencode.json
 
       # --- Safety gate ---
 
@@ -174,52 +151,17 @@ jobs:
 
       - name: Run OpenCode
         id: opencode
-        working-directory: ${{ github.workspace }}
+        uses: anomalyco/opencode/github@latest
         env:
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          BUG_FIX_PROMPT: ${{ steps.prompt.outputs.prompt }}
-        run: |
-          set +e
-          timeout 30m opencode run --model google/gemini-2.5-pro --format json \
-            "$BUG_FIX_PROMPT" 2>&1 | tee opencode-output.json | \
-            python3 -u -c "
-          import sys, json
-          for line in sys.stdin:
-              line = line.strip()
-              if not line:
-                  continue
-              try:
-                  evt = json.loads(line)
-                  t = evt.get('type','')
-                  if t == 'text':
-                      print(f\"[text] {evt.get('content','')[:200]}\", file=sys.stderr)
-                  elif t == 'tool_start':
-                      print(f\"[tool] {evt.get('tool','')} {evt.get('input',{}).get('path','')}\", file=sys.stderr)
-                  elif t == 'tool_result':
-                      print(f\"[done] {evt.get('tool','')}\", file=sys.stderr)
-                  elif t == 'error':
-                      err = evt.get('error',{})
-                      print(f\"[ERROR] {err.get('name','')}: {err.get('data',{}).get('message','')}\", file=sys.stderr)
-                  elif t in ('session_start','session_end','finish'):
-                      print(f\"[{t}]\", file=sys.stderr)
-                  else:
-                      print(f\"[{t}]\", file=sys.stderr)
-              except json.JSONDecodeError:
-                  print(line, file=sys.stderr)
-          " || true
-          EXIT_CODE=${PIPESTATUS[0]}
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-
-          echo "--- OpenCode exit code: $EXIT_CODE ---"
-          if [ "$EXIT_CODE" -ne 0 ]; then
-            echo "::warning::OpenCode exited with code $EXIT_CODE"
-          fi
+        with:
+          model: google/gemini-2.5-pro
+          prompt: ${{ steps.prompt.outputs.prompt }}
 
       # --- Create PRs per repo ---
 
       - name: Create PRs for changed repos
         id: prs
-        if: steps.opencode.outputs.exit_code == '0'
         env:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
           ISSUE_NUM: ${{ github.event.issue.number }}
