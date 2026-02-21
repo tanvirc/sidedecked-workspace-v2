@@ -67,6 +67,8 @@ jobs:
 
       - name: Configure git identity
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           for SERVICE in storefront vendorpanel backend customer-backend; do
             cd "repos/${SERVICE}"
             git config user.name "github-actions[bot]"
