@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Story 2-2: Storefront Design Foundation Wireframe</title>
+<style>
+
+/* ============================================================
+   MIDNIGHT FORGE DESIGN TOKENS (canonical reference)
+   Source of truth for storefront/src/styles/globals.css
+   ============================================================ */
+:root {
+  /* Surfaces */
+  --bg-base:      #0C0D12;
+  --bg-surface-1: #13141A;
+  --bg-surface-2: #1A1C24;
+  --bg-surface-3: #22242E;
+  --bg-surface-4: #2A2D38;
+
+  /* Accent — Arcane Gold (CTAs, value signals, prices) */
+  --accent-gold:        #D4A843;
+  --accent-gold-hover:  #E0B94F;
+  --accent-gold-muted:  rgba(212,168,67,0.15);
+
+  /* Interactive — Mystic Blue (links, navigation, interactive) */
+  --interactive:        #7C8CFF;
+  --interactive-hover:  #9BA6FF;
+  --interactive-muted:  rgba(124,140,255,0.12);
+
+  /* Semantic */
+  --positive:  #4ADE80;
+  --negative:  #EF5350;
+  --warning:   #FBBF24;
+  --info:      #38BDF8;
+
+  /* Text */
+  --text-primary:   #E8ECF1;
+  --text-secondary: #8B93A6;
+  --text-tertiary:  #4F5568;
+  --text-price:     #D4A843;
+  --text-link:      #7C8CFF;
+
+  /* Borders */
+  --border-subtle:  rgba(255,255,255,0.06);
+  --border-default: rgba(255,255,255,0.10);
+  --border-focus:   #D4A843;
+
+  /* Rarity — MTG */
+  --mtg-common:   #6B6B6B;
+  --mtg-uncommon: #A8B4C0;
+  --mtg-rare:     #D4A843;
+  --mtg-mythic:   #E85D26;
+
+  /* Rarity — Pokemon */
+  --pkm-common:    #7A7A7A;
+  --pkm-uncommon:  #6FB8E0;
+  --pkm-rare:      #D4A843;
+  --pkm-holo-rare: #B87FFF;
+  --pkm-ex:        #E85D26;
+
+  /* Rarity — Yu-Gi-Oh! */
+  --ygo-common:      #7A7A7A;
+  --ygo-rare:        #A8B4C0;
+  --ygo-super-rare:  #D4A843;
+  --ygo-ultra-rare:  #E85D26;
+
+  /* Rarity — One Piece */
+  --op-common:      #7A7A7A;
+  --op-uncommon:    #6FB8E0;
+  --op-rare:        #D4A843;
+  --op-super-rare:  #E85D26;
+
+  /* Typography */
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Geist Sans', 'Inter', sans-serif;
+  --font-mono:    'Geist Mono', 'JetBrains Mono', monospace;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.5);
+
+  /* Card aspect ratio — TCG standard */
+  --card-aspect: 5 / 7;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+body { min-height: 100vh; padding: var(--sp-6); }
+
+/* ============================================================
+   WIREFRAME LAYOUT UTILITIES
+   ============================================================ */
+.section {
+  margin-bottom: var(--sp-8);
+}
+
+.section-header {
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.section-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: var(--sp-1);
+}
+
+.subsection {
+  margin-bottom: var(--sp-6);
+}
+
+.subsection-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--sp-3);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  align-items: flex-start;
+}
+
+.annotation {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid var(--accent-gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* ============================================================
+   SECTION 1 — TOKEN SYSTEM REFERENCE
+   ============================================================ */
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--sp-3);
+}
+
+.token-swatch {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.token-color {
+  height: 48px;
+  width: 100%;
+}
+
+.token-label {
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--bg-surface-2);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.token-value {
+  display: block;
+  color: var(--text-tertiary);
+  font-size: 9px;
+  margin-top: 1px;
+}
+
+/* ============================================================
+   SECTION 2 — CARD COMPONENT
+   ============================================================ */
+
+/* CardDisplay — the core reusable card component */
+.card-display {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  min-width: 100px; /* prevents collapse in hidden tabs or 0-width containers */
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-2);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  position: relative;
+}
+
+/* State: hover — ONLY on pointer:fine devices (mouse/trackpad)
+   Without this guard, :hover fires on tap and stays sticky on touch screens */
+@media (pointer: fine) {
+  .card-display:hover {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 1px var(--accent-gold), var(--shadow-card);
+  }
+}
+
+/* State: focus-visible (keyboard nav) */
+.card-display:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+/* State: active/press */
+.card-display:active {
+  transform: scale(0.98);
+}
+
+/* Card image container — enforces 2.5:3.5 (5:7) aspect ratio */
+.card-image-container {
+  aspect-ratio: var(--card-aspect);
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-surface-3);
+  position: relative;
+}
+
+.card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* never stretched */
+  display: block;
+}
+
+/* Error state — image failed to load */
+.card-image-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  text-align: center;
+  padding: var(--sp-3);
+}
+
+.card-image-error-icon {
+  font-size: 24px;
+  opacity: 0.4;
+}
+
+.card-meta {
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.card-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-1);
+  overflow: hidden; /* prevents price overflow on extreme values ($99,999.99) */
+  flex-wrap: nowrap;
+}
+
+/* SetIcon — set symbol with text fallback */
+.set-icon {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.set-icon-symbol {
+  width: 14px;
+  height: 14px;
+  background: var(--bg-surface-4);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+}
+
+/* ============================================================
+   RarityBadge — WCAG compliant: color + text, never color alone
+   ============================================================ */
+.rarity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rarity-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* MTG rarities */
+.rarity-mtg-common    { background: rgba(107,107,107,0.2); color: #A8A8A8; }
+.rarity-mtg-common .rarity-dot { background: var(--mtg-common); }
+.rarity-mtg-uncommon  { background: rgba(168,180,192,0.15); color: #C4CDD8; }
+.rarity-mtg-uncommon .rarity-dot { background: var(--mtg-uncommon); }
+.rarity-mtg-rare      { background: rgba(212,168,67,0.15); color: var(--mtg-rare); }
+.rarity-mtg-rare .rarity-dot { background: var(--mtg-rare); }
+.rarity-mtg-mythic    { background: rgba(232,93,38,0.15); color: var(--mtg-mythic); }
+.rarity-mtg-mythic .rarity-dot { background: var(--mtg-mythic); }
+
+/* Pokemon rarities */
+.rarity-pkm-common    { background: rgba(122,122,122,0.2); color: #A8A8A8; }
+.rarity-pkm-common .rarity-dot { background: var(--pkm-common); }
+.rarity-pkm-rare      { background: rgba(212,168,67,0.15); color: var(--pkm-rare); }
+.rarity-pkm-rare .rarity-dot { background: var(--pkm-rare); }
+.rarity-pkm-holo      { background: rgba(184,127,255,0.15); color: var(--pkm-holo-rare); }
+.rarity-pkm-holo .rarity-dot { background: var(--pkm-holo-rare); }
+.rarity-pkm-ex        { background: rgba(232,93,38,0.15); color: var(--pkm-ex); }
+.rarity-pkm-ex .rarity-dot { background: var(--pkm-ex); }
+
+/* Yu-Gi-Oh! rarities */
+.rarity-ygo-common    { background: rgba(122,122,122,0.2); color: #A8A8A8; }
+.rarity-ygo-common .rarity-dot { background: var(--ygo-common); }
+.rarity-ygo-rare      { background: rgba(168,180,192,0.15); color: #C4CDD8; }
+.rarity-ygo-rare .rarity-dot { background: var(--ygo-rare); }
+.rarity-ygo-super     { background: rgba(212,168,67,0.15); color: var(--ygo-super-rare); }
+.rarity-ygo-super .rarity-dot { background: var(--ygo-super-rare); }
+.rarity-ygo-ultra     { background: rgba(232,93,38,0.15); color: var(--ygo-ultra-rare); }
+.rarity-ygo-ultra .rarity-dot { background: var(--ygo-ultra-rare); }
+
+/* One Piece rarities */
+.rarity-op-common     { background: rgba(122,122,122,0.2); color: #A8A8A8; }
+.rarity-op-common .rarity-dot { background: var(--op-common); }
+.rarity-op-uncommon   { background: rgba(111,184,224,0.15); color: var(--op-uncommon); }
+.rarity-op-uncommon .rarity-dot { background: var(--op-uncommon); }
+.rarity-op-rare       { background: rgba(212,168,67,0.15); color: var(--op-rare); }
+.rarity-op-rare .rarity-dot { background: var(--op-rare); }
+.rarity-op-super      { background: rgba(232,93,38,0.15); color: var(--op-super-rare); }
+.rarity-op-super .rarity-dot { background: var(--op-super-rare); }
+
+/* ============================================================
+   PriceTag — tabular figures, smallest-currency-unit integers
+   ============================================================ */
+.price-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-price);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.01em;
+}
+
+.price-tag.price-free { color: var(--positive); }
+.price-tag.price-none { color: var(--text-tertiary); font-weight: 400; font-size: 11px; }
+
+.price-tag-context {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  font-feature-settings: normal;
+  font-weight: 400;
+}
+
+.price-tag-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* ============================================================
+   CardSkeleton — loading placeholder
+   Shimmer uses opacity only (not position) to respect prefers-reduced-motion
+   ============================================================ */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.8; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.5; }
+  }
+}
+
+.card-skeleton {
+  width: 140px;
+  min-width: 100px; /* matches CardDisplay min-width */
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-2);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.skeleton-image {
+  aspect-ratio: var(--card-aspect);
+  width: 100%;
+  background: linear-gradient(135deg, var(--bg-surface-3) 0%, var(--bg-surface-4) 50%, var(--bg-surface-3) 100%);
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.skeleton-meta {
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.skeleton-line {
+  height: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-3);
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+
+/* ============================================================
+   SECTION 3 — CARD GRID LAYOUTS (responsive)
+   ============================================================ */
+.card-grid {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+/* Mobile: 2 columns */
+.card-grid-mobile {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 360px;
+}
+
+/* Tablet: 3 columns */
+.card-grid-tablet {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 520px;
+}
+
+/* Desktop: 4-5 columns */
+.card-grid-desktop {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 680px;
+}
+
+.card-grid .card-display,
+.card-grid .card-skeleton {
+  width: 100%;
+}
+
+/* ============================================================
+   SECTION 4 — TOAST SYSTEM (sonner)
+   ============================================================ */
+.toast-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  max-width: 380px;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elevated);
+  font-size: 13px;
+  position: relative;
+}
+
+.toast::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.toast-success::before { background: var(--positive); }
+.toast-error::before   { background: var(--negative); }
+.toast-warning::before { background: var(--warning); }
+.toast-info::before    { background: var(--info); }
+
+.toast-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.toast-content { flex: 1; }
+.toast-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.toast-body {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.toast-actions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+.toast-action-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  background: var(--interactive-muted);
+  color: var(--interactive);
+}
+
+.toast-action-undo {
+  background: var(--accent-gold-muted);
+  color: var(--accent-gold);
+}
+
+.toast-dismiss {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.toast-position-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--bg-surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.toast-position-note strong { color: var(--text-primary); }
+
+/* ============================================================
+   SECTION 5 — ALERT DIALOG (replaces confirm())
+   ============================================================ */
+.dialog-overlay {
+  position: relative;
+  background: rgba(12,13,18,0.85);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 1px dashed var(--border-default);
+}
+
+.dialog-box {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.dialog-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.dialog-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--sp-5);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+
+.btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+
+.btn-ghost:hover { background: var(--bg-surface-3); color: var(--text-primary); }
+
+.btn-destructive {
+  background: var(--negative);
+  color: white;
+}
+
+.btn-primary {
+  background: var(--accent-gold);
+  color: var(--bg-base);
+  font-weight: 600;
+}
+
+/* ============================================================
+   SECTION 6 — COMPONENT AUDIT TABLE
+   ============================================================ */
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.audit-table th {
+  text-align: left;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.audit-table td {
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.audit-table tr:last-child td { border-bottom: none; }
+
+.audit-table code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--bg-surface-3);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--text-primary);
+}
+
+.status-keep      { color: var(--positive); font-weight: 600; }
+.status-migrate   { color: var(--warning); font-weight: 600; }
+.status-replace   { color: var(--negative); font-weight: 600; }
+.status-new       { color: var(--interactive); font-weight: 600; }
+
+/* ============================================================
+   SECTION 7 — TYPOGRAPHY SCALE
+   ============================================================ */
+.type-sample {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-5);
+}
+
+.type-meta {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  width: 160px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header {
+  margin-bottom: var(--sp-7);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.page-title span { color: var(--accent-gold); }
+
+.page-meta {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--sp-3);
+}
+
+.breadcrumb a { color: var(--interactive); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { margin: 0 var(--sp-2); }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tag-story   { background: var(--interactive-muted); color: var(--interactive); }
+.tag-phase   { background: var(--accent-gold-muted); color: var(--accent-gold); }
+.tag-ui      { background: rgba(74,222,128,0.1); color: var(--positive); }
+
+</style>
+</head>
+
+<body>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="#">SideDecked</a>
+    <span>›</span>
+    <a href="#">Epic 2: Card Catalog & Discovery</a>
+    <span>›</span>
+    Story 2-2
+  </div>
+  <h1 class="page-title">Storefront Design Foundation <span>&amp; Card Display</span></h1>
+  <div class="row" style="gap:var(--sp-2); margin-top:var(--sp-3); margin-bottom:var(--sp-4);">
+    <span class="tag tag-story">Story 2-2</span>
+    <span class="tag tag-phase">Phase 2B Wireframe</span>
+    <span class="tag tag-ui">storefront/ UI</span>
+  </div>
+  <p class="page-meta">
+    UX Designer: Sally &nbsp;·&nbsp; 2026-02-23 &nbsp;·&nbsp;
+    Covers: Token System · CardDisplay · CardSkeleton · PriceTag · RarityBadge · SetIcon · Toast · AlertDialog · Component Audit
+  </p>
+</div>
+
+
+<!-- ============================================================
+     SECTION 1 — TOKEN SYSTEM
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">1 — Midnight Forge Token System</h2>
+    <p class="section-subtitle">CSS custom properties defined in <code>storefront/src/styles/globals.css</code> — single source of truth for all color, spacing, and typography</p>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Surfaces</div>
+    <div class="token-grid">
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--bg-base)"></div>
+        <div class="token-label">--bg-base<span class="token-value">#0C0D12 · Page background</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--bg-surface-1)"></div>
+        <div class="token-label">--bg-surface-1<span class="token-value">#13141A · Nav, sidebar</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--bg-surface-2)"></div>
+        <div class="token-label">--bg-surface-2<span class="token-value">#1A1C24 · Cards, panels</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--bg-surface-3)"></div>
+        <div class="token-label">--bg-surface-3<span class="token-value">#22242E · Inputs, rows</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--bg-surface-4)"></div>
+        <div class="token-label">--bg-surface-4<span class="token-value">#2A2D38 · Hover, selected</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Accent &amp; Interactive</div>
+    <div class="token-grid">
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--accent-gold)"></div>
+        <div class="token-label">--accent-gold<span class="token-value">#D4A843 · CTAs, prices, value</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--accent-gold-hover)"></div>
+        <div class="token-label">--accent-gold-hover<span class="token-value">#E0B94F · Hover state</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--interactive)"></div>
+        <div class="token-label">--interactive<span class="token-value">#7C8CFF · Mystic Blue · links, nav</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--interactive-hover)"></div>
+        <div class="token-label">--interactive-hover<span class="token-value">#9BA6FF</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--positive)"></div>
+        <div class="token-label">--positive<span class="token-value">#4ADE80</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--negative)"></div>
+        <div class="token-label">--negative<span class="token-value">#EF5350</span></div>
+      </div>
+      <div class="token-swatch">
+        <div class="token-color" style="background:var(--warning)"></div>
+        <div class="token-label">--warning<span class="token-value">#FBBF24</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Rarity Tokens — all 4 games (color + text label required — NFR40)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--sp-3);">
+      <!-- MTG -->
+      <div>
+        <div class="subsection-label" style="margin-bottom:var(--sp-2);">MTG</div>
+        <div class="row">
+          <span class="rarity-badge rarity-mtg-common"><span class="rarity-dot"></span>Common</span>
+          <span class="rarity-badge rarity-mtg-uncommon"><span class="rarity-dot"></span>Uncommon</span>
+          <span class="rarity-badge rarity-mtg-rare"><span class="rarity-dot"></span>Rare</span>
+          <span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic Rare</span>
+        </div>
+      </div>
+      <!-- Pokemon -->
+      <div>
+        <div class="subsection-label" style="margin-bottom:var(--sp-2);">Pokemon</div>
+        <div class="row">
+          <span class="rarity-badge rarity-pkm-common"><span class="rarity-dot"></span>Common</span>
+          <span class="rarity-badge rarity-pkm-rare"><span class="rarity-dot"></span>Rare</span>
+          <span class="rarity-badge rarity-pkm-holo"><span class="rarity-dot"></span>Holo Rare</span>
+          <span class="rarity-badge rarity-pkm-ex"><span class="rarity-dot"></span>EX</span>
+        </div>
+      </div>
+      <!-- YGO -->
+      <div>
+        <div class="subsection-label" style="margin-bottom:var(--sp-2);">Yu-Gi-Oh!</div>
+        <div class="row">
+          <span class="rarity-badge rarity-ygo-common"><span class="rarity-dot"></span>Common</span>
+          <span class="rarity-badge rarity-ygo-rare"><span class="rarity-dot"></span>Rare</span>
+          <span class="rarity-badge rarity-ygo-super"><span class="rarity-dot"></span>Super Rare</span>
+          <span class="rarity-badge rarity-ygo-ultra"><span class="rarity-dot"></span>Ultra Rare</span>
+        </div>
+      </div>
+      <!-- One Piece -->
+      <div>
+        <div class="subsection-label" style="margin-bottom:var(--sp-2);">One Piece</div>
+        <div class="row">
+          <span class="rarity-badge rarity-op-common"><span class="rarity-dot"></span>Common</span>
+          <span class="rarity-badge rarity-op-uncommon"><span class="rarity-dot"></span>Uncommon</span>
+          <span class="rarity-badge rarity-op-rare"><span class="rarity-dot"></span>Rare</span>
+          <span class="rarity-badge rarity-op-super"><span class="rarity-dot"></span>Super Rare</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    Rule: Every rarity badge requires both a color dot AND a text label — never color alone (NFR40, WCAG 1.4.1).
+    Tokens must cover all 4 games before any subsequent Epic 2 story begins.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 2 — TYPOGRAPHY SCALE
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">2 — Typography Scale</h2>
+    <p class="section-subtitle">Inter (body) · Geist Sans (display) · Geist Mono (code, prices)</p>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-meta">font-display · 28px / 700</div>
+    <div style="font-size:28px;font-weight:700;color:var(--text-primary);">Hero Heading — SideDecked</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-meta">font-display · 20px / 600</div>
+    <div style="font-size:20px;font-weight:600;color:var(--text-primary);">Section Title</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-meta">font-body · 14px / 500</div>
+    <div style="font-size:14px;font-weight:500;color:var(--text-primary);">Body — Card Name, Labels</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-meta">font-body · 13px / 400</div>
+    <div style="font-size:13px;color:var(--text-secondary);">Secondary — Descriptions, metadata</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-meta">font-body · 12px / 400</div>
+    <div style="font-size:12px;color:var(--text-tertiary);">Tertiary — Hints, timestamps, captions</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-meta">font-mono · 14px / 600<br>font-feature-settings: 'tnum'</div>
+    <div style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text-price);font-feature-settings:'tnum' 1;">$15.99 · $124.50 · $1,299.00</div>
+  </div>
+  <div class="annotation">
+    Prices use tabular figures via <code>font-feature-settings: 'tnum' 1</code> — ensures price columns align vertically in seller lists.
+    Geist Mono falls back to JetBrains Mono → monospace.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 3 — CardDisplay COMPONENT STATES
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">3 — CardDisplay Component States</h2>
+    <p class="section-subtitle">Reusable across search results, catalog, deck builder, cart optimizer · aspect-ratio: 5/7 enforced</p>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">State 1 — Default (image loaded)</div>
+    <div class="row">
+      <!-- MTG Card -->
+      <div>
+        <div class="card-display" tabindex="0" aria-label="Black Lotus, MTG Alpha, Mythic Rare">
+          <div class="card-image-container">
+            <div style="background:linear-gradient(135deg,#1a2a1a,#2d4a2d);width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:32px;opacity:0.6;">🌿</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name" title="Black Lotus">Black Lotus</div>
+            <div class="card-footer">
+              <div class="set-icon">
+                <div class="set-icon-symbol">α</div>
+                <span>Alpha</span>
+              </div>
+              <span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">MTG · Mythic Rare<br>Keyboard focusable (tabindex=0)<br>aria-label for screen readers</div>
+      </div>
+
+      <!-- Pokemon Card -->
+      <div>
+        <div class="card-display" tabindex="0" aria-label="Charizard, Base Set, Holo Rare">
+          <div class="card-image-container">
+            <div style="background:linear-gradient(135deg,#3a1a0a,#6b2a10);width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:32px;opacity:0.6;">🔥</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name" title="Charizard">Charizard</div>
+            <div class="card-footer">
+              <div class="set-icon">
+                <div class="set-icon-symbol">B</div>
+                <span>Base</span>
+              </div>
+              <span class="rarity-badge rarity-pkm-holo"><span class="rarity-dot"></span>Holo Rare</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">Pokemon · Holo Rare</div>
+      </div>
+
+      <!-- YGO Card -->
+      <div>
+        <div class="card-display" tabindex="0" aria-label="Dark Magician, Legend of Blue Eyes, Ultra Rare">
+          <div class="card-image-container">
+            <div style="background:linear-gradient(135deg,#0a0a3a,#1a1a6b);width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:32px;opacity:0.6;">🔮</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name" title="Dark Magician">Dark Magician</div>
+            <div class="card-footer">
+              <div class="set-icon">
+                <div class="set-icon-symbol">LOB</div>
+              </div>
+              <span class="rarity-badge rarity-ygo-ultra"><span class="rarity-dot"></span>Ultra Rare</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">Yu-Gi-Oh! · Ultra Rare<br>Set icon text fallback when no icon SVG available</div>
+      </div>
+
+      <!-- Long name card -->
+      <div>
+        <div class="card-display" tabindex="0" aria-label="Boseiju, Who Endures, Kamigawa Neon Dynasty, Rare">
+          <div class="card-image-container">
+            <div style="background:linear-gradient(135deg,#1a0a2a,#2a1a4a);width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:32px;opacity:0.6;">🌸</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name" title="Boseiju, Who Endures">Boseiju, Who Endures</div>
+            <div class="card-footer">
+              <div class="set-icon">
+                <div class="set-icon-symbol">NEO</div>
+              </div>
+              <span class="rarity-badge rarity-mtg-rare"><span class="rarity-dot"></span>Rare</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">Long name → overflow: hidden + text-overflow: ellipsis<br>Full name in title attr + aria-label</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">State 2 — Image load failure (fallback placeholder)</div>
+    <div class="row">
+      <div>
+        <div class="card-display" tabindex="0" aria-label="Liliana of the Veil — image unavailable">
+          <div class="card-image-container">
+            <div class="card-image-error">
+              <div class="card-image-error-icon">🃏</div>
+              <span>Image unavailable</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name">Liliana of the Veil</div>
+            <div class="card-footer">
+              <div class="set-icon"><div class="set-icon-symbol">INN</div></div>
+              <span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">NFR38: alt text always present on img element.<br>Placeholder shown when image 404s or fails to load.<br>Card shape (5:7) preserved — no layout shift.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">State 3 — Focus state (keyboard navigation)</div>
+    <div class="row">
+      <div>
+        <div class="card-display" style="outline: 2px solid var(--border-focus); outline-offset: 2px;" tabindex="0">
+          <div class="card-image-container">
+            <div style="background:linear-gradient(135deg,#1a2a1a,#2d4a2d);width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:32px;opacity:0.6;">🌿</span>
+            </div>
+          </div>
+          <div class="card-meta">
+            <div class="card-name">Black Lotus</div>
+            <div class="card-footer">
+              <div class="set-icon"><div class="set-icon-symbol">α</div><span>Alpha</span></div>
+              <span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span>
+            </div>
+          </div>
+        </div>
+        <div class="annotation">Focus state: 2px solid var(--border-focus) / 2px offset<br>NFR36: all interactive elements keyboard reachable<br>NFR42: focus indicators visible</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 4 — CardSkeleton (loading placeholder)
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">4 — CardSkeleton Placeholder</h2>
+    <p class="section-subtitle">Exact 5:7 dimensions preserved during load — prevents Cumulative Layout Shift (NFR3: CLS &lt; 0.1)</p>
+  </div>
+
+  <div class="row">
+    <div class="card-skeleton">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-meta">
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="card-skeleton">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-meta">
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="card-skeleton">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-meta">
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="card-skeleton">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-meta">
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+  </div>
+  <div class="annotation">
+    Animation: opacity pulse only — NOT position/transform-based. Respects <code>prefers-reduced-motion</code> (NFR43).
+    Width/height identical to CardDisplay — renders in place, no reflow when image loads.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 5 — PriceTag COMPONENT
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">5 — PriceTag Component</h2>
+    <p class="section-subtitle">Accepts amount: number (integer, smallest-currency-unit), currency: string · Geist Mono · tabular figures</p>
+  </div>
+
+  <div class="row" style="align-items:flex-start;gap:var(--sp-6);">
+    <div>
+      <div class="subsection-label">Standard price</div>
+      <div class="price-tag-group">
+        <span class="price-tag">$15.99</span>
+        <span class="price-tag-context">3 sellers · lowest NM</span>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-label">High value</div>
+      <div class="price-tag-group">
+        <span class="price-tag">$1,249.00</span>
+        <span class="price-tag-context">1 seller · PSA 10</span>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-label">Free (price = 0)</div>
+      <div class="price-tag-group">
+        <span class="price-tag price-free">Free</span>
+        <span class="price-tag-context">Promotional item</span>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-label">No listings (price = null)</div>
+      <span class="price-tag price-none">No listings</span>
+    </div>
+    <div>
+      <div class="subsection-label">Price column alignment (tnum)</div>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span class="price-tag">$4.99</span>
+        <span class="price-tag">$14.99</span>
+        <span class="price-tag">$124.99</span>
+        <span class="price-tag">$1,249.99</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    Props: <code>amount: number</code> (integer, e.g., 1599 for $15.99) · <code>currency: string</code> (e.g., "USD")
+    · <code>context?: string</code> (e.g., "3 sellers · lowest NM").
+    Component divides by 100 internally; never receives floats.
+    Prices align in columns because <code>font-feature-settings: 'tnum' 1</code> gives each digit equal width.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 6 — RESPONSIVE CARD GRIDS
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">6 — Responsive Card Grid Layouts</h2>
+    <p class="section-subtitle">CardDisplay is grid-agnostic · grid defined by page layout, not the component</p>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Mobile — 2 columns (max-width: 360px grid)</div>
+    <div class="card-grid card-grid-mobile">
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container">
+          <div style="background:linear-gradient(135deg,#1a2a1a,#2d4a2d);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:24px;">🌿</span></div>
+        </div>
+        <div class="card-meta">
+          <div class="card-name">Black Lotus</div>
+          <div class="card-footer">
+            <span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container">
+          <div style="background:linear-gradient(135deg,#3a1a0a,#6b2a10);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:24px;">🔥</span></div>
+        </div>
+        <div class="card-meta">
+          <div class="card-name">Charizard</div>
+          <div class="card-footer">
+            <span class="rarity-badge rarity-pkm-holo"><span class="rarity-dot"></span>Holo Rare</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-skeleton"><div class="skeleton-image"></div><div class="skeleton-meta"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+      <div class="card-skeleton"><div class="skeleton-image"></div><div class="skeleton-meta"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div></div>
+    </div>
+    <div class="annotation">Mobile 2-col: touch targets full card width · no hover overlays on mobile</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Tablet — 3 columns</div>
+    <div class="card-grid card-grid-tablet">
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#1a2a1a,#2d4a2d);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🌿</span></div></div>
+        <div class="card-meta"><div class="card-name">Black Lotus</div><div class="card-footer"><span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span></div></div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#3a1a0a,#6b2a10);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🔥</span></div></div>
+        <div class="card-meta"><div class="card-name">Charizard</div><div class="card-footer"><span class="rarity-badge rarity-pkm-holo"><span class="rarity-dot"></span>Holo Rare</span></div></div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#0a0a3a,#1a1a6b);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🔮</span></div></div>
+        <div class="card-meta"><div class="card-name">Dark Magician</div><div class="card-footer"><span class="rarity-badge rarity-ygo-ultra"><span class="rarity-dot"></span>Ultra Rare</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-label">Desktop — 4 columns</div>
+    <div class="card-grid card-grid-desktop">
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#1a2a1a,#2d4a2d);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🌿</span></div></div>
+        <div class="card-meta"><div class="card-name">Black Lotus</div><div class="card-footer"><span class="rarity-badge rarity-mtg-mythic"><span class="rarity-dot"></span>Mythic</span></div></div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#3a1a0a,#6b2a10);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🔥</span></div></div>
+        <div class="card-meta"><div class="card-name">Charizard</div><div class="card-footer"><span class="rarity-badge rarity-pkm-holo"><span class="rarity-dot"></span>Holo Rare</span></div></div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#0a0a3a,#1a1a6b);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🔮</span></div></div>
+        <div class="card-meta"><div class="card-name">Dark Magician</div><div class="card-footer"><span class="rarity-badge rarity-ygo-ultra"><span class="rarity-dot"></span>Ultra Rare</span></div></div>
+      </div>
+      <div class="card-display" tabindex="0">
+        <div class="card-image-container"><div style="background:linear-gradient(135deg,#1a0a2a,#2a1a4a);height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-size:28px;">🌸</span></div></div>
+        <div class="card-meta"><div class="card-name">Boseiju, Who Endures</div><div class="card-footer"><span class="rarity-badge rarity-mtg-rare"><span class="rarity-dot"></span>Rare</span></div></div>
+      </div>
+    </div>
+    <div class="annotation">CardDisplay is grid-agnostic. The grid template-columns is defined by the parent page layout, not the component. Component always fills its grid cell.</div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 7 — TOAST NOTIFICATION SYSTEM (sonner)
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">7 — Toast Notification System (sonner)</h2>
+    <p class="section-subtitle">Replaces all alert() / confirm() / prompt() · positioned bottom-right (desktop), bottom-center (mobile)</p>
+  </div>
+
+  <div class="row" style="align-items:flex-start;">
+    <div style="flex:1;min-width:280px;">
+      <div class="subsection-label">Toast types</div>
+      <div class="toast-showcase">
+        <!-- Success with undo -->
+        <div class="toast toast-success">
+          <div class="toast-icon">✅</div>
+          <div class="toast-content">
+            <div class="toast-title">Added to cart</div>
+            <div class="toast-body">Black Lotus (NM) · 1× · $1,249.00</div>
+            <div class="toast-actions">
+              <button class="toast-action-btn toast-action-undo">Undo</button>
+            </div>
+          </div>
+          <div class="toast-dismiss">×</div>
+        </div>
+
+        <!-- Info -->
+        <div class="toast toast-info">
+          <div class="toast-icon">ℹ️</div>
+          <div class="toast-content">
+            <div class="toast-title">Shipment tracked</div>
+            <div class="toast-body">USPS 9400111899223751234567 — Expected Thu</div>
+          </div>
+          <div class="toast-dismiss">×</div>
+        </div>
+
+        <!-- Warning -->
+        <div class="toast toast-warning">
+          <div class="toast-icon">⚠️</div>
+          <div class="toast-content">
+            <div class="toast-title">Listing under review</div>
+            <div class="toast-body">Price is significantly below market — admin review required</div>
+          </div>
+          <div class="toast-dismiss">×</div>
+        </div>
+
+        <!-- Error — persistent with action -->
+        <div class="toast toast-error">
+          <div class="toast-icon">❌</div>
+          <div class="toast-content">
+            <div class="toast-title">Out of stock</div>
+            <div class="toast-body">That listing was purchased by another buyer</div>
+            <div class="toast-actions">
+              <button class="toast-action-btn">Find alternative</button>
+            </div>
+          </div>
+          <div class="toast-dismiss">×</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:280px;">
+      <div class="subsection-label">Positioning rules</div>
+      <div class="toast-position-note">
+        <div><strong>Default (all pages):</strong> bottom-right desktop · bottom-center mobile</div>
+        <div><strong>Deck builder pages:</strong> top-right desktop — avoids overlapping the active decklist</div>
+        <div><strong>Stack limit:</strong> max 3 visible; oldest replaced by newest</div>
+        <div><strong>Auto-dismiss:</strong> success/info → 3s · warning → 5s · error → persistent until dismissed</div>
+        <div><strong>WCAG:</strong> aria-live="polite" on toast container for screen reader announcements (NFR39)</div>
+      </div>
+
+      <div class="subsection-label" style="margin-top:var(--sp-4);">Alert() → sonner migration map</div>
+      <table class="audit-table">
+        <tr>
+          <th>Original</th>
+          <th>Replacement</th>
+        </tr>
+        <tr>
+          <td><code>alert("message")</code></td>
+          <td><code>toast("message")</code></td>
+        </tr>
+        <tr>
+          <td><code>alert("Error: ...")</code></td>
+          <td><code>toast.error("...")</code></td>
+        </tr>
+        <tr>
+          <td><code>confirm("Delete?")</code></td>
+          <td>AlertDialog (shadcn) — see §8</td>
+        </tr>
+        <tr>
+          <td><code>prompt("Enter...")</code></td>
+          <td>Dialog + input or inline form</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="annotation">
+    AC6 implementation note: scan storefront for <code>alert(</code>, <code>confirm(</code>, <code>prompt(</code> — replace all.
+    Count in epics.md (37) was captured at a point in time; verify actual count before implementing.
+    Destructive <code>confirm()</code> calls require AlertDialog (user must explicitly click "Confirm"), not silent toast.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 8 — AlertDialog (replaces destructive confirm())
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">8 — AlertDialog (shadcn) — Destructive Action Confirmation</h2>
+    <p class="section-subtitle">Replaces <code>confirm("Are you sure?")</code> for irreversible actions only</p>
+  </div>
+
+  <div style="max-width:480px;">
+    <div class="subsection-label">Example: Delete deck confirmation</div>
+    <div class="dialog-overlay">
+      <div class="dialog-box">
+        <div class="dialog-title">Delete "My Modern Deck"?</div>
+        <div class="dialog-description">
+          This action cannot be undone. Your deck, all cards, and ownership data will be permanently removed.
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost">Cancel</button>
+          <button class="btn btn-destructive">Delete deck</button>
+        </div>
+      </div>
+    </div>
+    <div class="annotation">
+      Only used for truly destructive irreversible actions (delete deck, remove listing, etc.).<br>
+      Regular confirmations ("Are you sure you want to add this card?") use toast with undo, NOT AlertDialog.<br>
+      Cancel button always present — no trapping the user. Focus trapping within dialog per WCAG 2.1 SC 2.4.3.
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 9 — COMPONENT AUDIT TABLE
+     (Tav's decision: audit existing components before layering tokens)
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">9 — Existing Component Audit (pre-token migration)</h2>
+    <p class="section-subtitle">Inventory of existing storefront components to assess before applying Midnight Forge tokens · Tav confirmed: audit-first approach</p>
+  </div>
+
+  <table class="audit-table">
+    <tr>
+      <th>Component / Pattern</th>
+      <th>Likely location</th>
+      <th>Action</th>
+      <th>Notes</th>
+    </tr>
+    <tr>
+      <td><code>Custom ToastProvider</code></td>
+      <td>21 files</td>
+      <td class="status-replace">Replace → sonner</td>
+      <td>Deferred to separate cleanup story (not Story 2-2 scope)</td>
+    </tr>
+    <tr>
+      <td><code>Custom Modal</code></td>
+      <td>28 files</td>
+      <td class="status-replace">Replace → shadcn Dialog/Sheet</td>
+      <td>Deferred to separate cleanup story (not Story 2-2 scope)</td>
+    </tr>
+    <tr>
+      <td><code>alert() / confirm() / prompt()</code></td>
+      <td>~37 calls, 11 files</td>
+      <td class="status-replace">Replace → sonner / AlertDialog</td>
+      <td>IN SCOPE for Story 2-2 · verify count before implementing</td>
+    </tr>
+    <tr>
+      <td>Hardcoded hex colors</td>
+      <td>Multiple components</td>
+      <td class="status-migrate">Migrate → CSS tokens</td>
+      <td>Audit finds all <code>#hex</code> values; migrate to <code>var(--token)</code></td>
+    </tr>
+    <tr>
+      <td>Hardcoded font-family strings</td>
+      <td>Multiple components</td>
+      <td class="status-migrate">Migrate → var(--font-*)</td>
+      <td>Replace inline font declarations with token references</td>
+    </tr>
+    <tr>
+      <td>Existing card components</td>
+      <td>storefront/components</td>
+      <td class="status-migrate">Audit → standardize</td>
+      <td>Map to CardDisplay props; deprecate non-standard variants</td>
+    </tr>
+    <tr>
+      <td>Existing price displays</td>
+      <td>Multiple</td>
+      <td class="status-replace">Replace → PriceTag</td>
+      <td>Verify all price displays use integer amounts, not floats</td>
+    </tr>
+    <tr>
+      <td>Tailwind config</td>
+      <td>tailwind.config.ts</td>
+      <td class="status-migrate">Extend with Midnight Forge tokens</td>
+      <td>Add theme.extend with all CSS variable references</td>
+    </tr>
+    <tr>
+      <td>shadcn/ui (new install)</td>
+      <td>N/A</td>
+      <td class="status-new">New → install + theme</td>
+      <td>Sheet, Command, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, sonner</td>
+    </tr>
+    <tr>
+      <td>CardDisplay (new)</td>
+      <td>N/A</td>
+      <td class="status-new">New → build</td>
+      <td>Core reusable component — used everywhere cards appear</td>
+    </tr>
+    <tr>
+      <td>PriceTag (new)</td>
+      <td>N/A</td>
+      <td class="status-new">New → build</td>
+      <td>Replaces all inline price formatting</td>
+    </tr>
+    <tr>
+      <td>RarityBadge (new)</td>
+      <td>N/A</td>
+      <td class="status-new">New → build</td>
+      <td>Color + text always, game-aware</td>
+    </tr>
+    <tr>
+      <td>CardSkeleton (new)</td>
+      <td>N/A</td>
+      <td class="status-new">New → build</td>
+      <td>Matches CardDisplay dimensions exactly</td>
+    </tr>
+  </table>
+
+  <div class="annotation">
+    Audit deliverable (Task 1 in implementation plan): produce a mapping of all existing color/font/spacing usages
+    against the Midnight Forge token system. This informs which files need touching in Tasks 2–6.
+    Custom ToastProvider and Custom Modal migrations are OUT OF SCOPE for Story 2-2 — track as separate issues.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 10 — ACCESSIBILITY CHECKLIST
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">10 — Accessibility Requirements (WCAG 2.1 AA)</h2>
+    <p class="section-subtitle">Non-negotiable at the foundation layer — correctness here multiplies across all subsequent stories</p>
+  </div>
+
+  <table class="audit-table">
+    <tr>
+      <th>Requirement</th>
+      <th>NFR / WCAG</th>
+      <th>Implementation</th>
+    </tr>
+    <tr>
+      <td>Minimum 4.5:1 contrast for all text</td>
+      <td>NFR41 / SC 1.4.3</td>
+      <td>Verify all token combinations against background surfaces. Use WebAIM contrast checker at implementation time.</td>
+    </tr>
+    <tr>
+      <td>Focus indicators on all interactive elements</td>
+      <td>NFR42 / SC 2.4.7</td>
+      <td>CardDisplay: 2px gold outline on :focus-visible. All shadcn/ui components must retain visible focus rings.</td>
+    </tr>
+    <tr>
+      <td>Color not used as sole indicator</td>
+      <td>NFR40 / SC 1.4.1</td>
+      <td>RarityBadge: always color dot + text label. No rarity conveyed by color alone.</td>
+    </tr>
+    <tr>
+      <td>Alt text on all card images</td>
+      <td>NFR38 / SC 1.1.1</td>
+      <td>CardDisplay: <code>alt="{cardName}, {setName}, {rarity}"</code>. Placeholder image: descriptive alt.</td>
+    </tr>
+    <tr>
+      <td>Dynamic content announced to screen readers</td>
+      <td>NFR39 / SC 4.1.3</td>
+      <td>Sonner toast container: <code>aria-live="polite"</code>. AlertDialog: <code>role="alertdialog"</code>.</td>
+    </tr>
+    <tr>
+      <td>Keyboard navigation — all interactive elements reachable</td>
+      <td>NFR36 / SC 2.1.1</td>
+      <td>CardDisplay: <code>tabindex="0"</code>. Shadcn/ui Dialog: focus trap. Tab order: logical reading order.</td>
+    </tr>
+    <tr>
+      <td>Reduced motion respected</td>
+      <td>NFR43 / SC 2.3.3</td>
+      <td>CardSkeleton shimmer: opacity-only animation. <code>@media (prefers-reduced-motion)</code> override.</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     SECTION 11 — RARITY BADGE FALLBACK (unknown game/rarity)
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">11 — RarityBadge: Unknown / Fallback State</h2>
+    <p class="section-subtitle">Required when catalog data contains an unrecognized game or rarity value — prevents crash</p>
+  </div>
+  <div class="row">
+    <span class="rarity-badge" style="background:rgba(79,85,104,0.2);color:#8B93A6;">
+      <span class="rarity-dot" style="background:#4F5568;"></span>Unknown
+    </span>
+  </div>
+  <div class="annotation">
+    RarityBadge prop: <code>game: string, rarity: string</code>. If game or rarity is not in the known token map,
+    render the neutral fallback ("Unknown" · grey dot). Never throw — the card still displays.
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 12 — IMPLEMENTATION NOTES (from party mode + elicitation)
+     ============================================================ -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">12 — Implementation Specification Notes</h2>
+    <p class="section-subtitle">Elicitation findings, party mode must-fixes, and technical requirements for the dev implementation plan</p>
+  </div>
+
+  <table class="audit-table">
+    <tr>
+      <th>Item</th>
+      <th>Source</th>
+      <th>Requirement</th>
+    </tr>
+    <tr>
+      <td><strong>CardDisplay hover guard</strong></td>
+      <td>Party mode (Sally) + Elicitation Lens 3</td>
+      <td>Wrap hover styles in <code>@media (pointer: fine)</code>. Without this, hover state sticks on touch devices after tap. ✅ Applied to wireframe CSS.</td>
+    </tr>
+    <tr>
+      <td><strong>min-width on CardDisplay + CardSkeleton</strong></td>
+      <td>Party mode (Winston + Mary)</td>
+      <td><code>min-width: 100px</code> on both components prevents collapse in hidden tabs, 0-width grid cells, or collapsed panels. ✅ Applied to wireframe CSS.</td>
+    </tr>
+    <tr>
+      <td><strong>Tailwind version verification</strong></td>
+      <td>Party mode (Winston)</td>
+      <td>Verify Tailwind v3 vs v4 before implementing tokens. v3: extend in <code>tailwind.config.ts</code>. v4: CSS-first config in <code>globals.css</code>. Token approach differs. Dev must check <code>package.json</code> first.</td>
+    </tr>
+    <tr>
+      <td><strong>Font loading strategy</strong></td>
+      <td>Party mode (Winston)</td>
+      <td>Load Inter via <code>next/font/google</code>. Load Geist Sans + Geist Mono via <code>@vercel/font</code> package or <code>next/font/local</code>. Use <code>display: 'swap'</code>. Apply via CSS variables: <code>--font-body: var(--font-inter)</code>. Critical for LCP (NFR3).</td>
+    </tr>
+    <tr>
+      <td><strong>Toaster placement</strong></td>
+      <td>Elicitation Lens 1</td>
+      <td>Sonner <code>&lt;Toaster&gt;</code> must be added to <code>app/layout.tsx</code> root layout. Without it, <code>toast()</code> calls silently fail. Also configure bottom offset for mobile: <code>offset={{ bottom: '72px' }}</code> to clear the bottom navigation bar.</td>
+    </tr>
+    <tr>
+      <td><strong>Toast + bottom nav offset (mobile)</strong></td>
+      <td>Elicitation Lens 3</td>
+      <td>Bottom nav on mobile is ~64–72px tall. Toasts at <code>bottom-center</code> must be offset to avoid overlap. <code>&lt;Toaster position="bottom-center" offset="72px" /&gt;</code> on mobile breakpoint.</td>
+    </tr>
+    <tr>
+      <td><strong>Image onError handler</strong></td>
+      <td>Elicitation Lens 1</td>
+      <td><code>&lt;img&gt;</code> in CardDisplay must have an <code>onError</code> handler that swaps to the card-image-error fallback. Native broken-image browser icon must never show. Use <code>next/image</code> with <code>onError</code> prop.</td>
+    </tr>
+    <tr>
+      <td><strong>RarityBadge fallback</strong></td>
+      <td>Elicitation Lens 4</td>
+      <td>If game/rarity not in token map, render neutral grey "Unknown" badge. Never throw. Token lookup should be a safe accessor with fallback.</td>
+    </tr>
+    <tr>
+      <td><strong>card-footer overflow on extreme prices</strong></td>
+      <td>Elicitation Lens 4</td>
+      <td><code>$99,999.99</code> can overflow the CardDisplay footer. <code>overflow: hidden; flex-wrap: nowrap</code> applied. PriceTag should also have <code>max-width</code> if truncation is preferred over overflow. ✅ Applied to wireframe CSS.</td>
+    </tr>
+    <tr>
+      <td><strong>AlertDialog focus return</strong></td>
+      <td>Elicitation Lens 2</td>
+      <td>On Dialog close, focus must return to the triggering element (WCAG 2.4.3). Radix UI (used by shadcn/ui) handles this natively — verify in testing that custom close handlers do not break this behavior.</td>
+    </tr>
+    <tr>
+      <td><strong>Contrast verification (tight values)</strong></td>
+      <td>Elicitation Lens 5</td>
+      <td><code>--text-secondary (#8B93A6)</code> on <code>--bg-surface-2 (#1A1C24)</code>: ~4.6:1 — passes AA but tightly. Verify with actual contrast checker at implementation. Flag for QA. MTG uncommon badge color also needs verification.</td>
+    </tr>
+    <tr>
+      <td><strong>CardDisplay Server vs Client designation</strong></td>
+      <td>Party mode (Winston)</td>
+      <td>CardDisplay → <code>'use client'</code> (has :hover/:focus/:active states). CardSkeleton → Server Component if CSS-only animation (preferred). PriceTag → Server Component (pure formatter). RarityBadge → Server Component.</td>
+    </tr>
+    <tr>
+      <td><strong>Alert() scan scope</strong></td>
+      <td>Party mode (Mary) + Elicitation Lens 1</td>
+      <td>Scan storefront only (not customer-backend, vendorpanel). Run: <code>grep -rn "alert(\|confirm(\|prompt(" storefront/src --include="*.tsx" --include="*.ts"</code> to get current count before implementing.</td>
+    </tr>
+  </table>
+</section>
+
+</body>
+</html>
