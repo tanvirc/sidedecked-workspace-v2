@@ -31,12 +31,12 @@ The SideDecked authentication system implements a hybrid architecture that suppo
 ├─────────────────────────────────────┼─────────────────────────────────────┤
 │ • Email/Password Login              │ Business Vendors:                   │
 │ • Google OAuth2                     │ • Email/Password Only               │
-│ • GitHub OAuth2                     │ • Enhanced KYC Verification         │
-│ • Microsoft OAuth2 (future)         │ • Team Management                   │
-│ • Facebook OAuth2 (future)          │ • Role-Based Access                 │
-│ • Apple Sign-In (future)            │                                     │
-│ • Account Linking                   │ Consumer Sellers:                   │
-│ • Social Profile Management         │ • Customer Account Upgrade          │
+│ • Discord OAuth2                    │ • Enhanced KYC Verification         │
+│ • Microsoft OAuth2                  │ • Team Management                   │
+│ • Account Linking                   │ • Role-Based Access                 │
+│ • Social Profile Management         │                                     │
+│                                     │ Consumer Sellers:                   │
+│                                     │ • Customer Account Upgrade          │
 │                                     │ • Existing Auth Method              │
 │                                     │ • Streamlined Verification         │
 │                                     │ • Mobile-First Interface           │
@@ -76,7 +76,7 @@ POST /auth/customer/emailpass
 #### 2. Social OAuth Authentication (Modern)
 
 ```
-1. Customer initiates OAuth flow (/auth/customer/google or /auth/customer/github)
+1. Customer initiates OAuth flow (/auth/customer/google or /auth/customer/discord)
 2. MedusaJS redirects to OAuth provider
 3. User authorizes application with provider
 4. OAuth callback processed (/auth/customer/{provider}/callback)
@@ -97,9 +97,7 @@ POST /auth/customer/emailpass
 // ✅ Google (Active - @medusajs/medusa/auth-google)
 // ✅ Discord (Active - custom module src/modules/discord-auth)
 // ✅ Microsoft (Active - custom module src/modules/microsoft-auth)
-// ⬚ GitHub (Available but not wired in medusa-config.ts)
-// ⬚ Facebook (Plain class provider, not wired)
-// ⬚ Apple (Plain class provider, not wired)
+// ⬚ GitHub, Facebook, Apple — not wired, no plans to wire
 ```
 
 #### 3. Account Linking (Flexible)
@@ -523,7 +521,7 @@ CREATE TABLE social_account_metadata (
   id                   TEXT PRIMARY KEY,           -- sam_xxx
   customer_id         TEXT REFERENCES customer(id),
   provider_identity_id TEXT,                       -- Links to auth_identity
-  provider            social_provider_enum,        -- google, github, etc.
+  provider            social_provider_enum,        -- google, discord, microsoft, etc.
   provider_user_id    TEXT,
   email               TEXT,
   display_name        TEXT, 
@@ -543,7 +541,7 @@ CREATE TABLE social_account_metadata (
 // Customer Authentication
 POST /auth/customer/emailpass/register  // Email/password registration
 POST /auth/customer/emailpass          // Email/password login
-GET  /auth/customer/{provider}         // OAuth initiation (Google, GitHub)
+GET  /auth/customer/{provider}         // OAuth initiation (Google, Discord, Microsoft)
 
 // Social Account Management  
 POST /store/auth/social/link           // Link social account
@@ -604,12 +602,21 @@ modules: [
           }
         },
         {
-          resolve: '@medusajs/medusa/auth-github',
-          id: 'github', 
+          resolve: './src/modules/discord-auth',
+          id: 'discord',
           options: {
-            clientId: process.env.GITHUB_CLIENT_ID,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackUrl: process.env.GITHUB_CALLBACK_URL
+            clientId: process.env.DISCORD_CLIENT_ID,
+            clientSecret: process.env.DISCORD_CLIENT_SECRET,
+            callbackUrl: process.env.DISCORD_CALLBACK_URL
+          }
+        },
+        {
+          resolve: './src/modules/microsoft-auth',
+          id: 'microsoft',
+          options: {
+            clientId: process.env.MICROSOFT_CLIENT_ID,
+            clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+            callbackUrl: process.env.MICROSOFT_CALLBACK_URL
           }
         }
       ]
@@ -626,9 +633,13 @@ GOOGLE_CLIENT_ID="your-google-client-id-here"
 GOOGLE_CLIENT_SECRET="your-google-client-secret-here"
 GOOGLE_CALLBACK_URL="https://your-domain.com/auth/callback/google"
 
-GITHUB_CLIENT_ID="your-github-client-id-here"
-GITHUB_CLIENT_SECRET="your-github-client-secret-here"  
-GITHUB_CALLBACK_URL="https://your-domain.com/auth/callback/github"
+DISCORD_CLIENT_ID="your-discord-client-id-here"
+DISCORD_CLIENT_SECRET="your-discord-client-secret-here"
+DISCORD_CALLBACK_URL="https://your-domain.com/auth/callback/discord"
+
+MICROSOFT_CLIENT_ID="your-microsoft-client-id-here"
+MICROSOFT_CLIENT_SECRET="your-microsoft-client-secret-here"
+MICROSOFT_CALLBACK_URL="https://your-domain.com/auth/callback/microsoft"
 
 # Application URLs
 STOREFRONT_URL=https://sidedecked-storefront-production.up.railway.app
@@ -942,9 +953,13 @@ Google OAuth:
 - Redirect URI: https://your-backend.com/auth/customer/google/callback
 - Scopes: openid, email, profile
 
-GitHub OAuth:
-- Authorization callback URL: https://your-backend.com/auth/customer/github/callback
-- Scopes: read:user, user:email
+Discord OAuth:
+- Redirect URI: https://your-backend.com/auth/customer/discord/callback
+- Scopes: identify, email
+
+Microsoft OAuth:
+- Redirect URI: https://your-backend.com/auth/customer/microsoft/callback
+- Scopes: openid, profile, email, User.Read
 ```
 
 ### Issue 7: CORS and Cookie Issues
@@ -1033,7 +1048,7 @@ SELECT id, email FROM customer WHERE email = 'user-email';
 | id | text | Primary key with 'sam_' prefix |
 | customer_id | text | Reference to customer |
 | provider_identity_id | text | Reference to MedusaJS auth identity |
-| provider | enum | google, microsoft, facebook, apple |
+| provider | enum | google, discord, microsoft |
 | provider_user_id | text | Provider's user ID |
 | email | text | Email from provider |
 | display_name | text | Display name from provider |
@@ -1070,7 +1085,7 @@ Composite index: `(customerId, createdAt DESC)` for efficient per-customer audit
 ### Core Authentication Routes
 - `POST /auth/customer/emailpass/register` - Email/password registration
 - `POST /auth/customer/emailpass` - Email/password login
-- `GET /auth/customer/{provider}` - OAuth initiation (Google, GitHub)
+- `GET /auth/customer/{provider}` - OAuth initiation (Google, Discord, Microsoft)
 - `GET /auth/customer/{provider}/callback` - OAuth callback processing
 
 ### Social Account Management Routes

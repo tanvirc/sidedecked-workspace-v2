@@ -1,4 +1,4 @@
-# Story 1.1: Social OAuth Registration & Login
+# Story 1-1: Social OAuth Registration & Login
 
 Status: in-progress
 
@@ -75,7 +75,7 @@ New module structure:
 
 ### Provider Implementation Pattern
 
-Follows `@medusajs/auth-google` pattern:
+Follows `@medusajs/medusa/auth-google` pattern:
 - Constructor: `({ logger }, options)` — receives container and typed config
 - `authenticate(req, authIdentityService)` — generates auth URL with CSRF state via `authIdentityService.setState()`
 - `validateCallback(req, authIdentityService)` — exchanges code, fetches user, creates/retrieves identity via `authIdentityService.retrieve/create()`

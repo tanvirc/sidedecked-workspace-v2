@@ -1,4 +1,4 @@
-# Test Automation Summary — Story 1.1: Social OAuth Registration & Login
+# Test Automation Summary — Story 1-1: Social OAuth Registration & Login
 
 **QA Engineer:** Quinn | **Date:** 2026-02-22
 
@@ -12,7 +12,7 @@
 | Microsoft Auth Tests | PASS | 17/17 |
 | Full Backend Suite | PASS* | 429 pass, 29 fail (all pre-existing) |
 
-*Pre-existing failures: social-auth.service, account-linking, email-verification, health.spec — none related to Story 1.1 changes.
+*Pre-existing failures: social-auth.service, account-linking, email-verification, health.spec — none related to Story 1-1 changes.
 
 ## Generated / Rewritten Tests
 
