@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Social OAuth Registration & Login (Story 1-1)**: Multi-provider OAuth authentication with email/password registration side effects
+  - Discord OAuth provider as MedusaJS auth module (`src/modules/discord-auth/`) — extends `AbstractAuthModuleProvider`, CSRF state via `authIdentityService.setState()`, avatar URL construction from Discord CDN
+  - Microsoft OAuth provider as MedusaJS auth module (`src/modules/microsoft-auth/`) — follows same pattern as Discord; old plain-class provider superseded
+  - Both providers registered in `medusa-config.ts` auth providers array alongside existing Google and emailpass providers
+  - `discord` added to `social_account_metadata` provider enum with database migration (`Migration20260222_AddDiscordProvider`)
+  - Discord added to storefront `OAUTH_PROVIDERS` config with Discord icon in `SocialLoginButtons` component
+  - `POST /store/auth/emailpass/post-register` — bearer-authenticated endpoint called after emailpass registration: sends verification email, generates refresh token (30-day, SHA-256 hashed), fires `LOGIN` auth event to customer-backend audit log
+  - Storefront `signup()` calls post-register endpoint after successful registration and sets refresh cookie
+  - 17 Discord auth unit tests + 6 post-register integration tests
 - **Create Product Listings (Story 4.5.1)**: TCG card listing wizard for vendor product creation
   - 4-step ProgressTabs wizard in vendorpanel: Select Card → Listing Details → Images → Review
   - Card catalog search via customer-backend API integration (`useCardSearch` hook)

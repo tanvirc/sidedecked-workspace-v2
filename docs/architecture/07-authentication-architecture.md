@@ -1,7 +1,7 @@
 # Authentication Architecture
 
-**Version**: 1.2
-**Last Updated**: 2026-02-20
+**Version**: 1.3
+**Last Updated**: 2026-02-22
 **Author**: SideDecked Architecture Team  
 **Reviewers**: [Development Team, Security Team]  
 **Status**: Approved
@@ -64,13 +64,29 @@ POST /auth/customer/emailpass/register
   "email": "customer@example.com",
   "password": "secure-password"
 }
+// After registration, call the post-register endpoint (see below) to trigger side effects.
 
-// Login Flow  
+// Login Flow
 POST /auth/customer/emailpass
 {
   "email": "customer@example.com",
   "password": "secure-password"
 }
+```
+
+**Post-Registration Side Effects**: After MedusaJS issues the registration JWT, the storefront calls `POST /store/auth/emailpass/post-register` (bearer-authenticated) to trigger:
+1. Verification email sent via `EmailVerificationService.sendVerificationEmail()`
+2. Refresh token generated (30-day TTL, SHA-256 hashed, stored in `refresh_token` table)
+3. `LOGIN` auth event fired to customer-backend audit log (fire-and-forget)
+
+```typescript
+// Post-registration side effects (called by storefront immediately after registration)
+POST /store/auth/emailpass/post-register
+// Authorization: Bearer <registration JWT>
+// No body required
+
+// Response
+{ "success": true, "customerId": "cus_123" }
 ```
 
 #### 2. Social OAuth Authentication (Modern)
@@ -1083,7 +1099,8 @@ Composite index: `(customerId, createdAt DESC)` for efficient per-customer audit
 ## API Routes Reference
 
 ### Core Authentication Routes
-- `POST /auth/customer/emailpass/register` - Email/password registration
+- `POST /auth/customer/emailpass/register` - Email/password registration (returns JWT; call post-register next)
+- `POST /store/auth/emailpass/post-register` - Post-registration side effects (send verification email, issue refresh token, log auth event) — requires bearer JWT from registration step
 - `POST /auth/customer/emailpass` - Email/password login
 - `GET /auth/customer/{provider}` - OAuth initiation (Google, Discord, Microsoft)
 - `GET /auth/customer/{provider}/callback` - OAuth callback processing
@@ -1194,6 +1211,7 @@ The authentication system supports:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3 | 2026-02-22 | Added POST /store/auth/emailpass/post-register endpoint; documented MedusaJS module pattern for Discord and Microsoft OAuth providers; added post-registration side effects flow |
 | 1.2 | 2026-02-20 | Added Session Management: refresh token rotation, immediate session revocation, auth event logging, idle session detection, service-to-service auth |
 | 1.1 | 2026-02-17 | Added Two-Factor Authentication (2FA) section: TOTP, trusted devices, sensitive action gating, rate limiting |
 | 1.0 | 2025-09-12 | Initial authentication architecture documentation with OAuth patterns and troubleshooting guide |
