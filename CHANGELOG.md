@@ -4,6 +4,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Storefront Design Foundation & Card Display (Story 2-2)**: Midnight Forge design system fully wired and TCG card display components production-ready
+  - `colors.css` (`:root` + `.dark`): full Midnight Forge token set — surface palette (`--bg-base` #0C0D12 dark, #F8FAFC light), Arcane Gold CTAs (`--accent-primary` / `--primary` #D4A843 dark), Mystic Blue interactive (`--interactive` #7C8CFF dark), semantic tokens (positive/negative/warning/info), text hierarchy, typography variables, shadows
+  - `tailwind.config.ts`: all Midnight Forge tokens mapped to Tailwind utilities — `bg-bg-base`, `text-foreground`, `border-border`, `text-interactive`, `bg-interactive-subtle`, `text-muted-foreground`, `ring-interactive-subtle`; full rarity token set for MTG/Pokémon/Yu-Gi-Oh/One Piece as `bg-rarity-*`/`text-rarity-*`
+  - `CardDisplay` (`src/components/tcg/CardDisplay.tsx`): four variants (grid, list, compact, gallery); token-disciplined (zero hardcoded hex/colour classes); `@media(pointer:fine)` guards on all hover states — prevents sticky hover on touch devices; gallery overlay always visible on coarse pointer (mobile), hover-only on fine pointer (desktop); `aria-label={card.name}` on all article variants; keyboard accessible (tabIndex + Enter/Space) when `onClick` provided; image retry state machine (normal → small → thumbnail → placeholder on sequential failures)
+  - `PriceTag` (`src/components/tcg/PriceTag.tsx`): three variants (inline/detailed/compact); `Intl.NumberFormat` for locale-correct price formatting; trend indicators (↑/↓) using semantic colour tokens; `role="group"` with descriptive `aria-label`; null price renders "No sellers"
+  - `RarityBadge` (`src/components/tcg/RarityBadge.tsx`): four games (MTG/Pokémon/Yu-Gi-Oh/One Piece); `color-mix(in srgb, ...)` for background and border derivation from single CSS variable; multi-word rarity normalisation ("mythic rare", "illustration_rare", "starlight rare" all resolve correctly via first-word fallback); unknown rarities display capitalised raw value
+  - `CardGridSkeleton` (`src/components/cards/CardGridSkeleton.tsx`): responsive grid skeleton using Midnight Forge tokens (`bg-card`, `bg-muted`, `border-border`); adapts column count via `useGridColumns` hook
+  - shadcn/ui (Radix UI primitives) initialized with Midnight Forge token overrides: Sheet, Command, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, Sonner — all in `src/components/ui/`; `<Toaster>` in `providers.tsx` with `position="bottom-right" richColors`
+  - Zero native `alert()`/`confirm()`/`prompt()` calls in storefront — all replaced with shadcn/ui AlertDialog or sonner toasts
+  - 222 storefront tests passing; `components/tcg` module at 80.95% statement / 86.17% line coverage
 - **Role-Based Access Control (Story 1-3)**: Platform role taxonomy with enforced middleware guards across all three services
   - `platform_role` column (`VARCHAR(50) NULL`) added to `customer_profile` (mercur-db) via `Migration20260222_PlatformRole`
   - `getCustomerPlatformRole(customerId)` added to `SocialAccountManagementService` — reads from DB on every login and refresh, never forwards from old token
