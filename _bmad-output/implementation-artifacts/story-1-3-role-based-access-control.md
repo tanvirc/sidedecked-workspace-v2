@@ -6,7 +6,7 @@ Status: done
 
 As a SideDecked platform operator,
 I want a formal role taxonomy with enforced middleware guards,
-So that platform admins, sellers, and customers each access only what they are authorised for.
+So that platform admins, sellers, and customers each access only what they are authorized for.
 
 ## Acceptance Criteria
 
@@ -151,7 +151,23 @@ All 7 tasks completed. 7 test suites written TDD (red-green cycle observed for e
 
 ## File List
 
-_To be populated during implementation_
+| File | Change |
+|---|---|
+| `backend/apps/backend/src/modules/authentication/models/customer-profile.ts` | Added `platform_role: model.text().nullable()` |
+| `backend/apps/backend/src/modules/authentication/migrations/Migration20260222_PlatformRole.ts` | New — `ADD COLUMN platform_role text NULL` |
+| `backend/apps/backend/src/modules/authentication/services/social-account-management.service.ts` | Added `getCustomerPlatformRole()` |
+| `backend/apps/backend/src/api/auth/customer/[auth_provider]/callback/route.ts` | Added `platform_role` to JWT + `Promise.all` with refresh token |
+| `backend/apps/backend/src/api/auth/refresh/route.ts` | Added `platform_role` DB re-read to JWT |
+| `backend/apps/backend/src/api/utils/require-platform-admin.ts` | New middleware helper |
+| `backend/apps/backend/src/api/utils/require-vendor-permission.ts` | New middleware helper |
+| `backend/apps/backend/src/modules/authentication/tests/platform-role.model.test.ts` | New — 6 tests |
+| `backend/apps/backend/src/modules/authentication/tests/platform-role.service.test.ts` | New — 4 tests |
+| `backend/apps/backend/src/modules/authentication/tests/platform-role.refresh.test.ts` | New — 2 tests |
+| `backend/apps/backend/src/modules/authentication/tests/platform-role.middleware.test.ts` | New — 10 tests |
+| `customer-backend/src/middleware/auth.ts` | Extended types; added `platformRole` extraction; added `requirePlatformAdmin` |
+| `customer-backend/src/tests/middleware/auth-platform-role.test.ts` | New — 11 tests |
+| `storefront/src/middleware.ts` | Added `shouldGuardUserRoute`, `buildLoginRedirect`; SSR auth guard |
+| `storefront/src/test/middleware-auth-guard.test.ts` | New — 8 tests |
 
 ## Change Log
 
