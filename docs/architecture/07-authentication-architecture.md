@@ -12,7 +12,7 @@ The SideDecked authentication system implements a hybrid architecture that suppo
 
 1. **Customer Authentication**: Multiple flexible options for maximum user experience
    - **Email/Password**: Traditional account creation and login
-   - **Social OAuth**: Google, GitHub, Microsoft, Facebook, and Apple OAuth
+   - **Social OAuth**: Google, Discord, and Microsoft OAuth (active); GitHub, Facebook, Apple (not wired)
    - **Account Linking**: Customers can link multiple authentication methods to one profile
 
 2. **Seller Authentication**: Tiered approach supporting both business and individual sellers
@@ -94,11 +94,12 @@ POST /auth/customer/emailpass
 5. JWT token issued, user authenticated
 
 // Supported Providers:
-// ✅ Google (Active)
-// ✅ GitHub (Active)  
-// 🚧 Microsoft (Implemented, awaiting packaging)
-// 🚧 Facebook (Implemented, awaiting packaging)
-// 🚧 Apple (Implemented, awaiting packaging)
+// ✅ Google (Active - @medusajs/medusa/auth-google)
+// ✅ Discord (Active - custom module src/modules/discord-auth)
+// ✅ Microsoft (Active - custom module src/modules/microsoft-auth)
+// ⬚ GitHub (Available but not wired in medusa-config.ts)
+// ⬚ Facebook (Plain class provider, not wired)
+// ⬚ Apple (Plain class provider, not wired)
 ```
 
 #### 3. Account Linking (Flexible)
