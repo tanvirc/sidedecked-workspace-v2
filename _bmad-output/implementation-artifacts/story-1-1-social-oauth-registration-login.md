@@ -1,6 +1,6 @@
 # Story 1-1: Social OAuth Registration & Login
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -18,6 +18,7 @@ so that I can access SideDecked without friction using my preferred authenticati
 6. **Given** I authenticate via OAuth with an email that already exists from a different provider **When** the flow completes **Then** the social account is linked to my existing customer record (email is the identity anchor)
 7. **Given** I am authenticated **When** I close and reopen my browser **Then** my session persists via refresh token rotation and I remain logged in
 8. **Given** I attempt to sign in more than 10 times within a minute from the same IP **When** the rate limit is reached **Then** further attempts are blocked with an appropriate error message
+9. **Given** I am a new user without an existing account **When** I enter first name, last name, email, and password and click "Create Account" **Then** a customer account is created via MedusaJS emailpass provider, a verification email is sent to my email address, a refresh token is issued, and I receive an active session
 
 ## Tasks / Subtasks
 
@@ -53,6 +54,13 @@ so that I can access SideDecked without friction using my preferred authenticati
   - [x] 6.3: All 17 Discord auth tests pass
   - [x] 6.4: No regressions in backend test suite (pre-existing failures only)
   - [x] 6.5: Sprint-status.yaml updated to reflect story in-progress
+
+- [x] Task 7: Implement email/password registration post-registration side effects (AC: 9)
+  - [x] 7.1: Write failing tests for POST /store/auth/emailpass/post-register endpoint
+  - [x] 7.2: Create backend endpoint: sends verification email + generates refresh token + fires auth event
+  - [x] 7.3: Register endpoint in storeAuthMiddlewares requiring bearer authentication
+  - [x] 7.4: Update storefront signup() to call post-register endpoint and set refresh cookie
+  - [x] 7.5: Run full quality gate and confirm all tests pass
 
 ## Dev Notes
 
@@ -118,16 +126,32 @@ Follows `@medusajs/medusa/auth-google` pattern:
 
 ### Agent Model Used
 
-Claude Opus 4.6
+Claude Opus 4.6 / Claude Sonnet 4.6
 
 ### Debug Log References
 
 ### Completion Notes List
 
 - Old plain-class providers (Microsoft, Facebook, Apple) at `src/modules/authentication/providers/` are NOT wired into medusa-config.ts and are effectively dead code. Only the new module-based Microsoft provider is wired.
-- Pre-existing test failures in microsoft-auth.provider.test.ts, social-auth.service.test.ts, account-linking.test.ts, email-verification tests — not related to this story.
+- Pre-existing test failures in social-auth.service.test.ts, account-linking.test.ts, email-verification-routes.integration.test.ts (uses #/ imports in route files), email-verification-token.model.test.ts (references compiled .js files), integration-tests/http/health.spec.ts (requires running server). None related to this story.
 - Rate limiting on /auth/* routes is handled by MedusaJS framework middleware, not custom code.
+- Fixed jest.config.js moduleNameMapper depth from ../../ to ../../../, enabling microsoft-auth.provider.test.ts and the new emailpass-post-register tests to resolve #/ path aliases.
+- New route file backend/src/api/store/auth/emailpass/route.ts uses relative imports instead of #/ aliases for test compatibility.
+- AC9 implementation: POST /store/auth/emailpass/post-register reuses EmailVerificationService.sendVerificationEmail(), SocialAccountManagementService.generateRefreshToken(), and emitAuthEvent() — all pre-existing services from the OAuth flow.
 
 ### File List
 
 See "Files Changed" section above.
+
+**Task 7 additions (AC9 — email/password registration):**
+
+Backend (new):
+- `apps/backend/src/api/store/auth/emailpass/route.ts` — POST /store/auth/emailpass/post-register
+- `apps/backend/src/modules/authentication/tests/emailpass-post-register.integration.test.ts` — 6 tests
+
+Backend (modified):
+- `apps/backend/src/api/store/auth/middlewares.ts` — authenticate middleware for /store/auth/emailpass/post-register
+- `apps/backend/src/modules/authentication/tests/jest.config.js` — fix moduleNameMapper path depth
+
+Storefront (modified):
+- `src/lib/data/customer.ts` — signup() calls post-register endpoint after login

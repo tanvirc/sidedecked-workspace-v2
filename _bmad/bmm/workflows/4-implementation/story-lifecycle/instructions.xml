@@ -1,13 +1,38 @@
 <workflow>
   <critical>
     You are an orchestrator running a full multi-agent story lifecycle for SideDecked.
+
+    SESSION-AWARE EXECUTION:
+    This workflow spans 3 logical sessions. At each session boundary, save artifacts to disk
+    so the next session starts with fresh context. You MAY run all sessions in one conversation
+    if context permits, but MUST save artifacts at each boundary regardless.
+
+    SUPERPOWERS INTEGRATION:
+    This workflow references Obra Superpowers skills for disciplined engineering practices.
+    When a step says "Follow superpowers:X", invoke that skill and follow its protocol exactly.
+    Superpowers iron laws override any conflicting instruction in this workflow.
+
+    EVIDENCE-BASED GATES:
+    Every phase gate requires FRESH command output as evidence. No claims without running
+    verification commands in the current message. Follow superpowers:verification-before-completion.
+
+    FAILURE RECOVERY:
+    When any phase encounters failures (test failures, build errors, deployment issues),
+    follow superpowers:systematic-debugging before attempting fixes. No random fix attempts.
+
+    GENERAL RULES:
     At each phase, load the specified agent file(s) and fully adopt their persona(s).
-    For multi-agent phases, synthesise perspectives from all loaded agents — present
-    their viewpoints distinctly before producing a combined recommendation.
+    For multi-agent phases, synthesise perspectives distinctly before combining.
     STOP at each phase boundary and wait for {user_name} to confirm before continuing.
     NEVER skip phases. NEVER proceed without explicit user confirmation.
     All file paths use {agent_path} = {project-root}/_bmad/bmm/agents.
   </critical>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SESSION 1: DISCOVERY — Phases 1-3
+       Goal: Select story, define requirements, produce implementation plan
+       Artifacts saved: Requirements Brief, Implementation Plan file
+       ═══════════════════════════════════════════════════════════ -->
 
   <!-- ═══════════════════════════════════════════════════════
        PHASE 1: Story Prioritization — SM + PM
@@ -72,7 +97,7 @@
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
-       PHASE 3: Technical Design — Architect
+       PHASE 3: Technical Design + Implementation Plan — Architect
        ═══════════════════════════════════════════════════════ -->
 
   <step n="5" goal="Load Architect persona">
@@ -93,37 +118,99 @@
     <action>Define API contracts for any new or modified endpoints</action>
     <action>Identify integration points with external systems (Stripe, Algolia, Redis, MinIO, Resend)</action>
     <action>Flag architectural risks or decisions requiring {user_name} confirmation</action>
-    <action>Output a Technical Design Note:
+    <action>Determine deployment needs:
+      - Sets {{needs_deploy}} = true if story touches storefront/ or vendorpanel/
+      - Sets {{needs_deploy}} = true if story adds new API endpoints consumers depend on
+      - Sets {{needs_deploy}} = false for backend-only, migration-only, or docs-only changes
+    </action>
+    <action>Output a Technical Design Note covering:
       - Domain classification and routing
-      - Affected files/modules list
+      - Affected files/modules list (with exact paths where possible)
       - New entities/migrations (if any)
       - API contract changes (if any)
       - Integration touchpoints
+      - Deployment classification: {{needs_deploy}} with justification
       - Architectural risks or open decisions
     </action>
     <ask>
-      ## Phase 3 Complete — Technical Design Ready
+      ## Phase 3A Complete — Technical Design Ready
 
       Architect has produced a Technical Design Note (see above).
 
-      Type CONFIRM to proceed to development.
+      Type CONFIRM to proceed to implementation plan.
       Or describe changes needed to the design.
     </ask>
   </step>
 
-  <!-- ═══════════════════════════════════════════════════════
-       PHASE 4: Development — Dev (TDD)
-       ═══════════════════════════════════════════════════════ -->
+  <step n="7" goal="Architect: Write implementation plan to file">
+    <critical>Save the plan as a durable artifact — do not rely on conversation context alone</critical>
+    <action>Convert the Technical Design Note + Requirements Brief into a structured implementation plan</action>
+    <action>Write the plan to: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Plan format:
+      ```
+      # {Story Title} Implementation Plan
 
-  <step n="7" goal="Load Dev persona and execute story">
-    <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona completely</action>
-    <action>Context already contains: story file, Requirements + UX Brief, Technical Design Note</action>
+      > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+      **Goal:** {one sentence from story}
+      **Story:** {story key} — {story file path}
+      **Domain:** {Commerce | Customer Experience | Frontend}
+      **Repos:** {list of affected repos}
+      **Deployment:** {needs_deploy — true/false with reason}
+
+      ## Requirements Brief (from Phase 2)
+      {summarize: clarified ACs, business rules, UX flows}
+
+      ## Technical Design (from Phase 3)
+      {summarize: domain routing, entities, API contracts, integration points}
+
+      ---
+
+      ### Task 1: {first implementation task from story}
+      **Files:** exact paths to create/modify/test
+      **Steps:** TDD cycle — write failing test, verify fail, implement, verify pass, commit
+
+      ### Task 2: ...
+      (one task per story task/subtask, in exact story order)
+      ```
+    </action>
+    <action>Commit the plan file: docs({story-scope}): add implementation plan for {story-title}</action>
+    <ask>
+      ## Phase 3 Complete — Implementation Plan Saved
+
+      Plan written to: docs/plans/{date}-{story-key}-plan.md
+
+      **SESSION BOUNDARY RECOMMENDATION:**
+      Discovery is complete. For best results, start a fresh session for the Build phase.
+      The plan file contains everything the Dev agent needs — no conversation context required.
+
+      To continue in this session: type CONFIRM.
+      To start fresh: open a new session and run `/bmad-agent-bmm-dev` with the plan file path.
+    </ask>
   </step>
 
-  <step n="8" goal="Dev: Create feature branch in root and affected child repos">
+  <!-- ═══════════════════════════════════════════════════════════
+       SESSION 2: BUILD — Phases 4-5
+       Goal: Implement story with TDD, validate with integration tests
+       Input: Implementation plan file from Session 1
+       Artifacts saved: Code on feature branch, QA report
+       ═══════════════════════════════════════════════════════════ -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 4: Development — Dev (TDD via Superpowers)
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="8" goal="Load Dev persona and prepare workspace">
+    <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona completely</action>
+    <action>Load the implementation plan file: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Load the story file from {story_dir} matching the story key</action>
+    <action>If starting a fresh session: load the Requirements Brief and Technical Design from the plan file (they are embedded in it)</action>
+  </step>
+
+  <step n="9" goal="Dev: Create feature branch in root and affected child repos">
     <action>Extract the story key from the confirmed story (e.g., "story-01-1-1" from the story file name)</action>
     <action>Create a feature branch named "feature/{story-key}" from the current branch in the root repo</action>
-    <action>Identify which child repos will be modified based on the Technical Design Note from Phase 3:
+    <action>Identify which child repos will be modified based on the plan's Repos list:
       - backend/ (independent git repo)
       - customer-backend/ (independent git repo)
       - storefront/ (independent git repo)
@@ -142,8 +229,24 @@
     </action>
   </step>
 
-  <step n="9" goal="Dev: Implement story with TDD">
+  <step n="10" goal="Dev: Implement story with TDD">
+    <critical>
+      REQUIRED: Follow superpowers:test-driven-development for EVERY task.
+      Iron law: No production code without a failing test first.
+      Write code before the test? Delete it. Start over. No exceptions.
+    </critical>
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml" />
+
+    <on-failure>
+      Follow superpowers:systematic-debugging:
+      1. Read error messages carefully — don't skip past them
+      2. Reproduce consistently — can you trigger it reliably?
+      3. Check recent changes — what changed that could cause this?
+      4. Trace data flow — where does the bad value originate?
+      5. Form single hypothesis, test minimally, one variable at a time
+      After 3 failed fix attempts: STOP. Question the architecture with {user_name}.
+    </on-failure>
+
     <action>Commit all implementation changes to the feature branch in EACH affected repo:
       - For each repo (root + affected child repos):
         - cd into the repo directory
@@ -153,137 +256,207 @@
         - Confirm commit hash and push status
         - cd back to root
     </action>
+
+    <!-- EVIDENCE-BASED GATE: superpowers:verification-before-completion -->
+    <action>Run verification commands and show FRESH output before claiming completion:
+      - For each affected repo: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - For each affected repo: npm run test:coverage
+      - Count (IMPLEMENTED) tags in story file: grep -c "(IMPLEMENTED)" {story_file}
+      Evidence MUST appear in this message. No claims without fresh output.
+    </action>
     <ask>
       ## Phase 4 Complete — Implementation Done
 
-      Dev has implemented the story and unit tests on feature branch.
+      Dev has implemented the story with TDD on the feature branch.
 
-      Before confirming, verify:
+      **Verification evidence shown above.** Confirm the following:
+      - [ ] All quality gates passed (lint, typecheck, build, test) — output shown
+      - [ ] Test coverage above 80% on changed modules — output shown
       - [ ] All acceptance criteria marked (IMPLEMENTED) in the story file
-      - [ ] Quality gate passed: npm run lint and npm run typecheck and npm run build and npm test
-      - [ ] Test coverage above 80% on changed modules
       - [ ] Changes committed and pushed to feature branch
 
-      Type CONFIRM to proceed to QA.
+      Type CONFIRM to proceed to integration testing.
       Or describe issues to fix first.
     </ask>
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
-       PHASE 5: Quality Assurance — QA
+       PHASE 5: Integration + E2E Testing — QA
+       (Refocused: Phase 4 handles unit TDD. Phase 5 handles
+        cross-service integration and user-flow E2E tests.)
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="10" goal="Load QA persona">
+  <step n="11" goal="Load QA persona">
     <action>Load and read {agent_path}/qa.md — adopt Quinn (QA) persona completely</action>
   </step>
 
-  <step n="11" goal="QA: Validate tests and coverage">
-    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/qa/automate/workflow.yaml" />
-    <action>Verify test coverage is above 80% on all changed modules</action>
-    <action>Confirm all quality gates pass in the affected repo(s)</action>
-    <action>Report any failures with specific file and line references</action>
-    <action>Output a QA Report:
-      - Quality gate results (lint / typecheck / build / test)
-      - Coverage percentage per changed module
-      - Any failures or gaps found
+  <step n="12" goal="QA: Integration and E2E test validation">
+    <critical>
+      Phase 4 already validated unit tests and coverage via TDD.
+      Phase 5 focuses on what unit tests CANNOT cover:
+      - Cross-service API contract validation
+      - Integration tests across repo boundaries
+      - E2E user flow tests for UI-facing stories
+      - Edge cases at system boundaries (auth, payments, external APIs)
+      If the story is purely internal with no cross-service or UI impact,
+      Phase 5 may confirm "no additional integration testing needed" with justification.
+    </critical>
+
+    <action>Review the implementation plan's domain classification and integration touchpoints</action>
+    <action>Identify cross-service boundaries this story touches:
+      - Does backend/ expose APIs that storefront/ or vendorpanel/ consume?
+      - Does customer-backend/ interact with backend/ via API?
+      - Are there external service integrations (Stripe, Algolia, Redis)?
     </action>
+
+    <check if="story has cross-service or UI impact">
+      <action>Write integration tests for cross-service API contracts</action>
+      <action>Write E2E tests for critical user flows (if UI involved)</action>
+      <action>Test edge cases at system boundaries (auth tokens, error responses, timeouts)</action>
+      <action>Run integration/E2E test suite and report results</action>
+    </check>
+
+    <check if="story is internal with no cross-service impact">
+      <action>Document justification: "No additional integration testing needed because {reason}"</action>
+      <action>Verify Phase 4 unit test coverage is comprehensive for this story's scope</action>
+    </check>
+
     <action>Commit any QA-related changes to the feature branch:
       - Stage any new or modified test files and fixes
-      - If there are changes: commit with format test({story-scope}): add QA test coverage for {story-title}
+      - If there are changes: commit with format test({story-scope}): add integration test coverage for {story-title}
       - Push to remote: git push
       - If no changes: skip commit (report "no additional changes from QA")
     </action>
+
+    <!-- EVIDENCE-BASED GATE -->
+    <action>Run full quality gate in each affected repo and show FRESH output:
+      npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+    </action>
+    <action>Output a QA Report:
+      - Integration tests added/verified (or justification for skipping)
+      - E2E tests added/verified (or justification for skipping)
+      - Full quality gate results with output shown
+      - Coverage percentage per changed module
+    </action>
     <ask>
-      ## Phase 5 Complete — QA Validated
+      ## Phase 5 Complete — Integration Testing Done
 
-      Quinn has run tests and produced a QA Report (see above).
+      Quinn has produced a QA Report (see above).
 
-      Type CONFIRM to proceed to deployment.
-      Or describe issues to fix before deploying.
+      **SESSION BOUNDARY RECOMMENDATION:**
+      Build is complete. For best results, start a fresh session for the Ship phase.
+      All code is committed to the feature branch — no conversation context required.
+
+      To continue in this session: type CONFIRM.
+      To start fresh: open a new session and proceed to documentation/deployment.
     </ask>
   </step>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SESSION 3: SHIP — Phases 6-8
+       Goal: Deploy, document, review, merge
+       Input: Feature branch with all code committed
+       ═══════════════════════════════════════════════════════════ -->
 
   <!-- ═══════════════════════════════════════════════════════
-       PHASE 6: Deployment — DevOps (Railway Preview)
+       PHASE 6: Deployment — DevOps (CONDITIONAL)
+       Only runs if {{needs_deploy}} == true
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="12" goal="Load DevOps persona">
-    <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
+  <step n="13" goal="Check if production deployment is needed">
+    <action>Read the implementation plan file to retrieve {{needs_deploy}} value</action>
+    <check if="needs_deploy == false">
+      <action>Output: "Phase 6 SKIPPED — Production deployment not needed for this story.
+        Reason: {justification from plan file}
+        Proceeding directly to documentation."
+      </action>
+      <ask>
+        ## Phase 6 Skipped — No Deployment Needed
+
+        This story does not require a Railway production deployment.
+        Reason: {justification}
+
+        Type CONFIRM to proceed to documentation.
+        Or type DEPLOY to override and deploy anyway.
+      </ask>
+    </check>
   </step>
 
-  <step n="13" goal="DevOps: Deploy feature branch to Railway preview">
-    <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
-    <action>Ensure the feature branch is pushed to remote: git push -u origin feature/{story-key}</action>
-    <action>Identify which services are affected by the story changes (backend, customer-backend, storefront, vendorpanel)</action>
-    <action>Deploy affected services to Railway preview environment using: railway up --detach</action>
-    <action>Monitor deployment logs for errors using: railway logs</action>
-    <action>If deployment fails:
-      - Analyze error messages and logs
-      - Fix configuration issues (environment variables, build settings, etc.)
-      - Fix code issues if deployment reveals runtime errors
-      - Re-deploy and verify
-      - Repeat until deployment succeeds
-    </action>
-    <action>Once deployed successfully:
-      - Get the preview URL using: railway status
-      - Test critical paths to verify the feature works in the preview environment
-      - Document the preview URL
-    </action>
-    <action>Commit any deployment configuration fixes to the feature branch:
-      - Stage any config or code changes made to fix deployment issues
-      - If there are changes: commit with format fix({story-scope}): resolve deployment issues for {story-title}
-      - Push to remote: git push
-      - If no changes: skip commit (report "no deployment fixes needed")
-    </action>
-    <action>Output a Deployment Report:
-      - Railway preview URL
-      - Services deployed
-      - Deployment status (success/failure)
-      - Any issues encountered and how they were resolved
-      - Basic smoke test results
-    </action>
-    <ask>
-      ## Phase 6 Complete — Deployment to Preview Verified
+  <step n="14" goal="DevOps: Deploy to Railway production">
+    <check if="needs_deploy == true OR user typed DEPLOY">
+      <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
+      <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
+      <action>Ensure the feature branch is merged to main and main is pushed to remote before deploying</action>
+      <action>Identify which services are affected by the story changes</action>
+      <action>Deploy affected services to Railway production using: railway up --detach</action>
+      <action>Monitor deployment logs for errors using: railway logs</action>
 
-      Rex (DevOps) has deployed the feature to Railway preview (see above).
+      <on-failure>
+        Follow superpowers:systematic-debugging for deployment failures:
+        1. Read deployment error messages and logs completely
+        2. Check environment variables, build settings, runtime config
+        3. Compare with working deployments — what is different?
+        4. Fix root cause, not symptoms. One change at a time.
+      </on-failure>
 
-      Before confirming, verify:
-      - [ ] Preview environment is accessible
-      - [ ] Feature works as expected in preview
-      - [ ] No critical errors in Railway logs
+      <action>Once deployed successfully:
+        - Get the production URL using: railway status
+        - Test critical paths to verify the feature works in production
+        - Document the production URL
+      </action>
+      <action>Output a Deployment Report:
+        - Railway production URL
+        - Services deployed
+        - Deployment status (success/failure)
+        - Any issues encountered and how they were resolved
+        - Basic smoke test results
+      </action>
+      <ask>
+        ## Phase 6 Complete — Production Deployment Verified
 
-      Type CONFIRM to proceed to documentation.
-      Or describe deployment issues to fix.
-    </ask>
+        Rex (DevOps) has deployed the feature to Railway production (see above).
+
+        Before confirming, verify:
+        - [ ] Production environment is accessible
+        - [ ] Feature works as expected in production
+        - [ ] No critical errors in Railway logs
+
+        Type CONFIRM to proceed to documentation.
+        Or describe deployment issues to fix.
+      </ask>
+    </check>
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
        PHASE 7: Documentation — Tech Writer
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="14" goal="Load Tech Writer persona with full documentation context">
+  <step n="15" goal="Load Tech Writer persona with full documentation context">
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
-    <action>Load and read {project-root}/_bmad/_memory/tech-writer-sidecar/documentation-standards.md — these are the quality rules for ALL documentation output</action>
-    <action>Load and read {project-root}/_bmad/_config/agents/bmm-tech-writer.customize.yaml — SideDecked-specific tech writer rules</action>
-    <action>Summarize the Phase 2 outputs already in context:
-      - Requirements + UX Brief: list the key user-facing features, business rules, and UX flows defined
-      - These inform which user guides and feature docs may need creating
+    <action>Load and read {project-root}/_bmad/_memory/tech-writer-sidecar/documentation-standards.md — quality rules for ALL documentation</action>
+    <action>Load and read {project-root}/_bmad/_config/agents/bmm-tech-writer.customize.yaml — SideDecked-specific rules</action>
+    <action>Load the implementation plan file to recover Phase 2 + Phase 3 context:
+      - Requirements Brief: key user-facing features, business rules, UX flows
+      - Technical Design: domain classification, affected files/modules, new entities, API contracts
     </action>
-    <action>Summarize the Phase 3 outputs already in context:
-      - Technical Design Note: list the domain classification, affected files/modules, new entities, API contracts, integration points
-      - These inform which architecture docs, API docs, and READMEs need updating
-    </action>
-    <action>Confirm: Tech Writer persona loaded, documentation standards primed, Phase 2 + Phase 3 context summarized and ready as primary inputs for documentation work</action>
+    <action>Confirm: Tech Writer persona loaded, documentation standards primed, plan context recovered</action>
   </step>
 
-  <step n="15" goal="Tech Writer: Execute documentation sub-workflow">
+  <step n="16" goal="Tech Writer: Execute documentation sub-workflow">
     <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/story-docs/workflow.yaml" />
+
+    <!-- EVIDENCE-BASED GATE -->
+    <action>Show evidence of documentation updates:
+      - List all doc files changed (git diff --name-only on docs/)
+      - Show CHANGELOG.md entry added
+      - Show story file AC status tags
+    </action>
     <ask>
       ## Phase 7A Complete — Documentation Updated
 
       Tech Writer has executed the documentation workflow (see Documentation Update Report above).
 
-      Before confirming, verify:
+      Before confirming, verify the evidence shown above:
       - [ ] CHANGELOG.md has a substantive entry (what + why)
       - [ ] Architecture docs addressed (updated or justified)
       - [ ] Story acceptance criteria verified and marked (IMPLEMENTED)
@@ -295,9 +468,13 @@
     </ask>
   </step>
 
-  <step n="16" goal="Tech Writer: Create pull requests in ALL repos that received commits">
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 8: Pull Request Creation + Two-Stage Code Review
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="17" goal="Create pull requests in ALL repos with commits">
     <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
-    <action>For EACH repo that received commits during Phase 4 (root + any child repos):
+    <action>For EACH repo that received commits (root + any child repos):
       - cd into the repo directory
       - Check if the feature branch has commits ahead of main: git log main..HEAD --oneline
       - If there ARE commits: create a PR using gh CLI
@@ -305,56 +482,136 @@
         - PR body must include:
           - Story key reference
           - Summary of changes specific to this repo
-          - **Documentation Changes** section listing docs updated or created in this repo (from the Documentation Update Report in Step 15)
-          - Railway preview URL from deployment phase
-          - Testing notes
+          - **Documentation Changes** section listing docs updated or created
+          - Railway production URL (if Phase 6 ran)
+          - Testing notes (unit + integration coverage)
           - Acceptance criteria checklist
         - Do NOT use AI references in PR title or body
-      - If there are NO commits (branch was created but empty): skip — do NOT create an empty PR
+      - If there are NO commits: skip — do NOT create an empty PR
       - cd back to root
     </action>
-    <action>Validate: for each PR created, verify that documentation files from the Documentation Update Report appear in the PR diff. If any doc file is missing, investigate before finalizing the PR.</action>
-    <action>Output a PR Creation Summary table listing all repos:
+    <action>Validate: for each PR created, verify documentation files appear in the PR diff</action>
+    <action>Output a PR Creation Summary table:
       | Repo | Had commits? | PR created? | PR URL | Doc files in diff? |
-      (one row per repo — root + all child repos with feature branches)
     </action>
     <ask>
-      ## Phase 7 Complete — Pull Requests Created
+      ## Phase 8A Complete — Pull Requests Created
 
-      Pull requests have been created for all repos with commits (see table above).
+      PRs have been created for all repos with commits (see table above).
 
-      Type CONFIRM to proceed to code review and PR comment handling.
+      Type CONFIRM to proceed to code review.
       Or describe any changes needed to the PRs.
     </ask>
   </step>
 
-  <!-- ═══════════════════════════════════════════════════════
-       PHASE 8: Code Review + PR Comment Resolution — Code Reviewer
-       ═══════════════════════════════════════════════════════ -->
+  <step n="18" goal="Two-stage code review using fresh subagents">
+    <critical>
+      REPLACED: Single-agent adversarial self-review.
+      NEW: Two-stage subagent review per superpowers:requesting-code-review pattern.
 
-  <step n="17" goal="Load Code Reviewer persona">
-    <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona in adversarial code reviewer mode</action>
-    <action>Context already contains: story file, all phase outputs, PR URLs from Phase 7</action>
-    <action>Confirm: feature branch name is "feature/{{story_key}}" and PRs are open in all affected repos</action>
-  </step>
+      Stage 1 — Spec Compliance Review (fresh subagent):
+        Does the code match the story's acceptance criteria exactly?
+        Nothing extra (YAGNI), nothing missing.
 
-  <step n="18" goal="Code Reviewer: Run adversarial code review then handle all PR comments">
-    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml" />
-    <action>The code-review workflow includes PR comment handling (steps 6–8):
-      - Step 6: Discover and read all PR comments across every repo with an open PR for this story's feature branch
-      - Step 7: For each comment — fix code if needed, run quality gate, commit and push fix, respond to comment, resolve thread
-      - Step 8: Once all threads are resolved on a PR, post a merge summary comment and merge the PR (squash + delete branch)
+      Stage 2 — Code Quality Review (fresh subagent):
+        Clean code, security, performance, architecture compliance, test quality.
+
+      Fresh subagents do not share the implementer's context, so they genuinely
+      find issues the implementer missed. Self-review cannot achieve this.
+
+      For handling human PR comments later, follow superpowers:receiving-code-review:
+        Verify before implementing. Push back with technical reasoning if wrong.
+        No performative agreement.
+    </critical>
+
+    <!-- Stage 1: Spec Compliance -->
+    <action>Dispatch a FRESH subagent for spec compliance review:
+      - Provide: story file path, implementation plan path, list of PRs with URLs
+      - Subagent reads story acceptance criteria and verifies each is implemented
+      - Subagent checks: nothing extra built (YAGNI), nothing missing
+      - Subagent reports: PASS (all ACs met) or FAIL (list gaps)
+    </action>
+
+    <check if="spec compliance fails">
+      <action>Fix the spec gaps identified by the reviewer</action>
+      <action>Run quality gates, commit, push</action>
+      <action>Re-dispatch spec compliance subagent to verify fixes</action>
+      <action>Repeat until spec compliance passes</action>
+    </check>
+
+    <!-- Stage 2: Code Quality -->
+    <action>Dispatch a FRESH subagent for code quality review:
+      - Provide: story file path, PR URLs, base and head SHAs
+      - Subagent reviews: code quality, security, performance, architecture compliance, test quality
+      - Subagent reports: APPROVED or list of issues (Critical/Important/Minor)
+    </action>
+
+    <check if="code quality review has Critical or Important issues">
+      <action>Fix Critical issues immediately</action>
+      <action>Fix Important issues before proceeding</action>
+      <action>Note Minor issues (fix if quick, skip if not)</action>
+      <action>Run quality gates, commit, push</action>
+      <action>Re-dispatch code quality subagent to verify fixes</action>
+    </check>
+
+    <action>Output a combined Code Review Report:
+      - Spec compliance: PASS/FAIL with details
+      - Code quality: APPROVED/ISSUES with severity breakdown
+      - Issues fixed during review
+      - Final quality gate evidence (run and show output)
     </action>
     <ask>
-      ## Phase 8 Complete — Code Review and PR Comment Resolution Done
+      ## Phase 8B Complete — Code Review Done
 
-      The adversarial code review ran and all PR comments have been addressed and resolved.
-      PRs with all threads resolved have been merged.
+      Two-stage code review complete (see report above).
 
-      See the Merge Summary table above for per-repo merge status.
+      Type CONFIRM to proceed to PR handling and merge.
+      Or describe additional review concerns.
+    </ask>
+  </step>
+
+  <step n="19" goal="Handle PR comments and merge">
+    <critical>
+      For human PR comments, follow superpowers:receiving-code-review:
+      - READ complete feedback without reacting
+      - VERIFY against codebase reality before implementing
+      - EVALUATE: technically sound for THIS codebase?
+      - Push back with technical reasoning if suggestion is wrong
+      - No performative agreement ("Great point!", "You're right!")
+      - Fix one item at a time, test each
+    </critical>
+
+    <action>For EACH open PR, check for human reviewer comments:
+      - Run: gh pr view {pr_number} --comments --json comments,reviewComments,reviews
+      - If unresolved comments exist: address them per superpowers:receiving-code-review
+      - For CHANGE_REQUEST: verify suggestion is correct, fix code, run quality gate, commit, push, respond, resolve
+      - For QUESTION: answer factually, resolve
+      - For SUGGESTION: evaluate for scope (YAGNI check), implement or decline with explanation, resolve
+    </action>
+
+    <check if="no human comments or all resolved">
+      <action>For EACH PR with all threads resolved:
+        - Post merge summary comment
+        - Merge PR: gh pr merge {pr_number} --squash --delete-branch
+        - Confirm merge success and record merge commit SHA
+      </action>
+    </check>
+
+    <check if="unresolved threads remain after addressing">
+      <action>Report the specific unresolved threads and which reviewer must take action</action>
+      <action>Do NOT force-merge — surface the blocker to {user_name}</action>
+    </check>
+
+    <action>Output a Merge Summary table:
+      | Repo | PR | Merged? | Merge Commit | Notes |
+    </action>
+    <ask>
+      ## Phase 8 Complete — PRs Merged
+
+      All PR comments addressed and PRs merged (see table above).
 
       Type CONFIRM to finalize the story lifecycle.
-      Or describe any remaining issues or re-review requests to handle.
+      Or describe any remaining issues.
     </ask>
   </step>
 
@@ -362,16 +619,17 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="19" goal="Story lifecycle complete">
+  <step n="20" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
-      - All 8 phases completed with brief status per phase
+      - All phases completed with brief status per phase (note any skipped phases)
       - Feature branch name
-      - Railway preview URL
-      - Pull requests created and merged (one row per repo with commits): repo | PR number | PR URL | Merge status
+      - Railway production URL (if deployed)
+      - Pull requests created and merged: repo | PR number | PR URL | Merge status
       - Total files changed (across all repos)
       - Final test coverage achieved
       - Total PR comments resolved
+      - Plan file location: docs/plans/{date}-{story-key}-plan.md
     </action>
     <action>Remind {user_name}: All PRs have been reviewed, comment-resolved, and merged to main</action>
   </step>
