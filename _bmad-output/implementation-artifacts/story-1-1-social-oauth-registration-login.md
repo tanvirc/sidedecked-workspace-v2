@@ -18,6 +18,7 @@ so that I can access SideDecked without friction using my preferred authenticati
 6. **Given** I authenticate via OAuth with an email that already exists from a different provider **When** the flow completes **Then** the social account is linked to my existing customer record (email is the identity anchor)
 7. **Given** I am authenticated **When** I close and reopen my browser **Then** my session persists via refresh token rotation and I remain logged in
 8. **Given** I attempt to sign in more than 10 times within a minute from the same IP **When** the rate limit is reached **Then** further attempts are blocked with an appropriate error message
+9. **Given** I am a new user without an existing account **When** I enter first name, last name, email, and password and click "Create Account" **Then** a customer account is created via MedusaJS emailpass provider, a verification email is sent to my email address, a refresh token is issued, and I receive an active session
 
 ## Tasks / Subtasks
 
@@ -53,6 +54,13 @@ so that I can access SideDecked without friction using my preferred authenticati
   - [x] 6.3: All 17 Discord auth tests pass
   - [x] 6.4: No regressions in backend test suite (pre-existing failures only)
   - [x] 6.5: Sprint-status.yaml updated to reflect story in-progress
+
+- [ ] Task 7: Implement email/password registration post-registration side effects (AC: 9)
+  - [ ] 7.1: Write failing tests for POST /store/auth/emailpass/post-register endpoint
+  - [ ] 7.2: Create backend endpoint: sends verification email + generates refresh token + fires auth event
+  - [ ] 7.3: Register endpoint in storeAuthMiddlewares requiring bearer authentication
+  - [ ] 7.4: Update storefront signup() to call post-register endpoint and set refresh cookie
+  - [ ] 7.5: Run full quality gate and confirm all tests pass
 
 ## Dev Notes
 
