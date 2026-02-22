@@ -1,6 +1,6 @@
 # Story 1-1: Social OAuth Registration & Login
 
-Status: review
+Status: done
 
 ## Story
 
