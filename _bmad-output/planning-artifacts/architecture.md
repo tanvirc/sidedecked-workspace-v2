@@ -1,5 +1,8 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
+lastStep: 8
+status: 'complete'
+completedAt: '2026-02-22'
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/prd-validation-report.md
@@ -520,3 +523,350 @@ expect(mockCardSearch).toHaveBeenCalled()  // Proves nothing about behavior
 // ❌ WRONG: Importing across service boundaries in tests
 import { CardService } from '../../../customer-backend/src/services'
 ```
+
+## Project Structure & Boundaries
+
+### Complete Project Directory Structure
+
+```
+sidedecked-workspace-v2/                    # Monorepo workspace root
+├── CLAUDE.md                                # AI agent instructions
+├── _bmad/                                   # BMAD workflow engine
+├── _bmad-output/                            # Planning & implementation artifacts
+├── docs/                                    # Architecture, standards, guides
+│   ├── architecture/                        # 01-07 architecture docs
+│   ├── standards/                           # Code, testing, commit, doc standards
+│   ├── epics/                               # Epic definitions
+│   └── stories/                             # Story definitions
+├── scripts/                                 # Workspace-level scripts
+│
+├── backend/                                 # MercurJS (MedusaJS v2) — mercur-db
+├── customer-backend/                        # Node.js + TypeORM — sidedecked-db
+├── storefront/                              # Next.js 14 (App Router)
+└── vendorpanel/                             # React 18 + Vite
+```
+
+#### Backend (MercurJS — Commerce)
+
+```
+backend/apps/backend/
+├── medusa-config.ts                         # MedusaJS v2 configuration
+├── instrumentation.ts                       # OpenTelemetry setup
+├── jest.config.js
+├── Dockerfile
+├── .env.template
+│
+└── src/
+    ├── api/                                 # File-based API routing
+    │   ├── middlewares.ts
+    │   ├── admin/                            # Admin API (/admin/*)
+    │   │   ├── algolia/, attributes/[id]/, commission/
+    │   │   ├── disputes/[id]/, orders/[id]/, products/[id]/
+    │   │   ├── requests/[id]/, reviews/[id]/, sellers/{[id],invite}/
+    │   │   └── stock-locations/
+    │   ├── store/                            # Customer-facing API (/store/*)
+    │   │   ├── auth/{2fa,email,email-verification,profile,social}/
+    │   │   ├── carts/{[id],multi-seller}/
+    │   │   ├── consumer-seller/{dashboard,financial,listings,orders,payouts,...}/
+    │   │   ├── disputes/[id]/, reviews/[id]/
+    │   │   ├── sellers/{[id],validation}/
+    │   │   └── wishlist/[id]/
+    │   └── vendor/                          # Vendor API (/vendor/*)
+    │       ├── products/{[id],export,import}/
+    │       ├── inventory-items/{[id],location-levels}/
+    │       ├── orders/[id]/, payouts/, statistics/
+    │       └── ... (30+ route groups)
+    │
+    ├── modules/                             # Custom MedusaJS modules
+    │   ├── authentication/                  # OAuth2 providers
+    │   ├── email-verification/
+    │   ├── seller-messaging/
+    │   └── two-factor-auth/
+    │
+    ├── workflows/                           # Multi-step business workflows (25+ domains)
+    ├── subscribers/                         # Event handlers (~40 files)
+    ├── services/                            # Business logic
+    ├── jobs/                                # Scheduled cron jobs
+    ├── links/                               # Module link definitions
+    ├── shared/utils/                        # Shared utilities
+    └── admin/                               # Admin panel UI customizations
+        ├── routes/, components/, hooks/, widgets/
+```
+
+#### Customer-Backend (TCG Domain)
+
+```
+customer-backend/src/
+├── config/                                  # Infrastructure config
+│   ├── database.ts, env.ts, infrastructure.ts, logger.ts
+│
+├── entities/                                # TypeORM models (31 entities, flat)
+│   ├── Game.ts, Format.ts                   # Game system
+│   ├── Card.ts, CardSet.ts, Print.ts        # Card catalog
+│   ├── CatalogSKU.ts                        # Universal SKU
+│   ├── Deck.ts, DeckCard.ts                 # Deck building
+│   ├── Collection.ts, CollectionCard.ts     # User collections
+│   ├── MarketPrice.ts, PriceHistory.ts      # Pricing
+│   ├── UserProfile.ts, UserFollow.ts        # Community
+│   ├── SellerRating.ts, SellerReview.ts     # Trust
+│   ├── Forum*.ts, Conversation.ts, Message.ts
+│   └── Activity.ts, AuthEvent.ts, ETLJob.ts
+│
+├── routes/                                  # Express routes (flat)
+│   ├── catalog.ts, decks.ts, collections.ts
+│   ├── customers.ts, sellers.ts, pricing.ts
+│   ├── formats.ts, wishlist.ts
+│   ├── commerce-integration.ts, auth-events.ts
+│   └── errors.ts
+│
+├── services/                                # Business logic (flat)
+│   ├── DeckValidationService.ts, InventorySyncService.ts
+│   ├── MarketDataService.ts, MedusaAuthService.ts
+│   ├── CDNService.ts, CollectibilityService.ts
+│   ├── PriceAlertService.ts, PriceHistoryService.ts
+│   ├── SellerReviewService.ts, TrustScoreService.ts
+│   ├── JobScheduler.ts, ServiceContainer.ts
+│
+├── middleware/                              # Express middleware
+│   ├── auth.ts, service-auth.ts, errorHandler.ts
+│   ├── requestLogger.ts, validation.ts
+│
+├── migrations/                              # TypeORM migrations (15+)
+├── workers/image-worker.ts                  # Background image processing
+├── scripts/                                 # ETL, seeding, diagnostics
+└── tests/{middleware,routes,services}/
+```
+
+#### Storefront (Next.js 14)
+
+```
+storefront/src/
+├── app/                                     # App Router
+│   ├── [locale]/(main)/                     # Main layout
+│   │   ├── cards/[id]/, decks/{builder,[deckId]}/
+│   │   ├── marketplace/, products/, search/
+│   │   ├── sell/{list-card,payouts,reputation,upgrade}/
+│   │   ├── sellers/, cart/, community/, categories/, collections/
+│   │   └── user/{addresses,orders,reviews,wishlist,settings,...}/
+│   ├── [locale]/(checkout)/                 # Checkout flow
+│   ├── auth/{callback,error}/               # OAuth callbacks
+│   └── api/{auth,customer,decks,formats,logout}/
+│
+├── components/                              # Atomic design
+│   ├── atoms/                               # Button, Badge, Input, ...
+│   ├── molecules/                           # LoginForm, RegisterForm, ...
+│   ├── organisms/                           # Header, Footer, ProductCard, ...
+│   ├── sections/                            # Hero, Cart, ProductListing, ...
+│   ├── cells/                               # Navbar, Pagination, ...
+│   ├── cards/, decks/, deck-builder/        # TCG-specific
+│   ├── search/, seller/, pricing/           # Domain-specific
+│   ├── feedback/                            # Toast, Loading providers
+│   ├── ui/                                  # shadcn/ui components
+│   └── common/
+│
+├── contexts/                                # State management
+│   ├── CardSearchContext.tsx, DeckBuilderContext.tsx, ImageContext.tsx
+│
+├── hooks/                                   # Custom hooks
+├── lib/
+│   ├── api/{customer-backend.ts,oauth.ts}   # API clients
+│   ├── data/{cards,cart,customer,orders,products,reviews,...}.ts
+│   ├── actions/, cache/, helpers/, services/, utils/, validation/
+│
+├── types/, const/, styles/
+└── middleware.ts
+```
+
+#### Vendorpanel (React 18 + Vite)
+
+```
+vendorpanel/src/
+├── app.tsx, main.tsx                        # SPA entry points
+│
+├── components/
+│   ├── common/                              # 30+ reusable components
+│   ├── data-grid/, data-table/              # Table systems
+│   ├── filtering/                           # Filter components
+│   ├── forms/, inputs/                      # Form components
+│   ├── layout/{main-layout,shell,pages}/    # Page templates
+│   ├── modals/, search/, table/
+│
+├── routes/                                  # Feature-based (~40 routes)
+│   ├── dashboard/, products/, orders/, inventory/
+│   ├── customers/, customer-groups/, campaigns/, promotions/
+│   ├── price-lists/, categories/, collections/
+│   ├── sales-channels/, shipping-profiles/, locations/
+│   ├── tax-regions/, regions/, reviews/, messages/
+│   ├── stripe-connect/, settings/, profile/
+│   ├── login/, register/, reset-password/, invite/
+│   └── workflow-executions/
+│
+├── hooks/
+│   ├── api/                                 # 50+ TanStack Query hooks
+│   └── table/{columns,filters,query}/
+│
+├── providers/                               # 7 context providers
+│   ├── router-provider/, theme-provider/, search-provider/
+│   ├── sidebar-provider/, keybind-provider/, i18n-provider/
+│   └── talkjs-provider/
+│
+├── lib/{client/,data/,query-client.ts,query-key-factory.ts}
+├── i18n/, types/, utils/
+```
+
+### Architectural Boundaries
+
+**API Boundaries:**
+
+| Boundary | Producer | Consumer | Protocol |
+|---|---|---|---|
+| Commerce API | backend (:9001) | storefront, vendorpanel | REST (MedusaJS) |
+| TCG API | customer-backend (:7000) | storefront | REST (`/api/v1/*`) |
+| Cross-service sync | backend ↔ customer-backend | Each other | Redis pub/sub + REST |
+| Storefront BFF | storefront API routes | storefront client | Next.js API routes |
+| External: Stripe | backend | Stripe API | REST + webhooks |
+| External: Algolia | backend + customer-backend | Algolia API | REST (indexing) |
+| External: MinIO | customer-backend | MinIO S3 API | S3-compatible |
+
+**Database Boundaries (NEVER cross):**
+
+| Database | Service | Contains |
+|---|---|---|
+| **mercur-db** | backend only | Orders, products, vendors, payments, inventory, commissions, disputes |
+| **sidedecked-db** | customer-backend only | Cards, decks, games, prints, pricing, community, collections, trust scores |
+
+### Requirements to Structure Mapping
+
+| FR Domain | Backend | Customer-Backend | Storefront | Vendorpanel |
+|---|---|---|---|---|
+| **Auth & Users** | `modules/authentication/`, `api/store/auth/` | `middleware/auth.ts`, `routes/customers.ts` | `app/auth/`, `components/auth/` | `routes/login/`, `components/authentication/` |
+| **Product Catalog** | `api/vendor/products/` | `routes/catalog.ts`, `entities/Card*.ts` | `app/.../cards/`, `components/cards/` | `routes/products/` |
+| **Deck Building** | — | `routes/decks.ts`, `services/DeckValidationService.ts` | `app/.../decks/`, `contexts/DeckBuilderContext.tsx` | — |
+| **Cart & Checkout** | `api/store/carts/`, `workflows/cart/`, `workflows/checkout/` | — | `app/.../cart/`, `app/(checkout)/` | — |
+| **Vendor Mgmt** | `api/vendor/`, `workflows/seller/` | `routes/sellers.ts` | `app/.../sell/` | All of `routes/` |
+| **Community** | — | `entities/Forum*.ts`, `entities/UserProfile.ts` | `app/.../community/` | — |
+| **Admin** | `api/admin/`, `admin/` | — | — | — |
+
+### Integration Points
+
+**Internal Communication:**
+
+```
+Storefront ──REST──→ Backend (:9001)         [commerce: products, cart, orders]
+Storefront ──REST──→ Customer-Backend (:7000) [TCG: cards, decks, pricing]
+Vendorpanel ──REST──→ Backend (:9001)        [vendor: products, orders, payouts]
+Backend ──Redis pub/sub──→ Customer-Backend   [inventory.updated, product.price.changed]
+Customer-Backend ──Redis pub/sub──→ Backend   [catalog.card.imported, pricing.updated]
+Customer-Backend ──REST──→ Backend            [commerce-integration.ts → Medusa API]
+```
+
+**External Integrations:**
+
+| Service | Integration Point | Direction |
+|---|---|---|
+| Stripe Connect | `backend/src/services/stripe-connect-express.service.ts` | Bidirectional |
+| Algolia | `backend/src/subscribers/algolia-*.ts` | Push (indexing) |
+| MinIO (S3) | `customer-backend/src/services/CDNService.ts` | Read/write |
+| Resend | Backend notification subscribers | Push (email) |
+| Scryfall | `customer-backend/src/scripts/master-etl.ts` | Pull (ETL) |
+
+### Development Workflow
+
+| Service | Command | Port |
+|---|---|---|
+| Backend | `cd backend && npm run dev` | :9001 |
+| Customer-backend | `cd customer-backend && npm run dev` | :7000 |
+| Storefront | `cd storefront && npm run dev` | :3000 |
+| Vendorpanel | `cd vendorpanel && npm run dev` | :5173 |
+| Image worker | `cd customer-backend && npm run worker:images` | — |
+
+## Architecture Validation Results
+
+### Coherence Validation
+
+**Decision Compatibility:** All technology choices verified compatible. No conflicts between frameworks, libraries, or patterns across the 4 services. Split-brain database boundary physically enforced by separate services.
+
+**Pattern Consistency:** Implementation patterns align with technology stack. Each service follows its framework's native conventions while shared concerns (JWT auth, event format, money representation) use consistent cross-service standards.
+
+**Structure Alignment:** Project structure maps directly to architectural decisions. Service boundaries match database boundaries. No shared code between services (correct for split-brain).
+
+### Requirements Coverage Validation
+
+**Functional Requirements:** All 61 FRs across 7 domains have architectural support — mapped to specific services, routes, entities, and components in the Project Structure section.
+
+**Non-Functional Requirements:** All 6 NFRs (API latency, DB performance, TTI, concurrency, test coverage, TypeScript strict) are addressed by specific architectural decisions (caching, SSR, quality gate, etc.).
+
+### Implementation Readiness Validation
+
+**Decision Completeness:** All critical decisions documented with specific technology choices. Versions verified for key dependencies. Rationale provided for each decision.
+
+**Structure Completeness:** Complete project tree documented for all 4 services based on actual codebase inspection. All files, directories, and integration points mapped.
+
+**Pattern Completeness:** 10 enforcement rules, 7 code review checklist items, 9 anti-patterns documented. Naming, structure, format, communication, and process patterns all specified.
+
+### Gap Analysis Results
+
+| Priority | Gap | Resolution |
+|---|---|---|
+| Important | Discord OAuth provider not implemented | Implementation task — add `discord-auth.provider.ts` to backend auth module |
+| Important | Sentry SDK not installed | Implementation task — add `@sentry/*` packages during infrastructure stories |
+| Nice-to-have | OpenAPI docs for customer-backend | Add `swagger-jsdoc` + `swagger-ui-express` when implementing API documentation story |
+| Nice-to-have | Event catalog reference | Generate from implementation — document all Redis pub/sub events with payload types |
+
+### Architecture Completeness Checklist
+
+**Requirements Analysis**
+- [x] Project context thoroughly analyzed (61 FRs, 6 NFRs, 7 domains)
+- [x] Scale and complexity assessed (High — 4 services, 2 DBs, 4 game systems)
+- [x] Technical constraints identified (split-brain, Railway limits, MedusaJS conventions)
+- [x] Cross-cutting concerns mapped (auth, caching, search, events, errors, security)
+
+**Architectural Decisions**
+- [x] Critical decisions documented (OAuth providers, state management, validation)
+- [x] Technology stack fully specified with versions
+- [x] Integration patterns defined (REST, Redis pub/sub, circuit breaker)
+- [x] Performance considerations addressed (multi-layer caching, SSR, connection pooling)
+
+**Implementation Patterns**
+- [x] Naming conventions established (DB, API, code, events, files)
+- [x] Structure patterns defined (per-service organization, test co-location)
+- [x] Communication patterns specified (event format with versioning, response wrappers)
+- [x] Process patterns documented (error handling, loading states, cross-service testing)
+
+**Project Structure**
+- [x] Complete directory structure defined (all 4 services, actual codebase)
+- [x] Component boundaries established (API, database, state management)
+- [x] Integration points mapped (internal + 5 external services)
+- [x] Requirements to structure mapping complete (7 FR domains → specific locations)
+
+### Architecture Readiness Assessment
+
+**Overall Status:** READY FOR IMPLEMENTATION
+
+**Confidence Level:** High
+
+**Key Strengths:**
+- Split-brain architecture is physically enforced — impossible to accidentally cross DB boundaries
+- Existing codebase with established patterns reduces ambiguity for AI agents
+- Comprehensive anti-patterns and enforcement guidelines prevent common mistakes
+- Event versioning and cross-service testing rules prevent integration failures
+
+**Areas for Future Enhancement:**
+- Event catalog reference document (generate after initial events are implemented)
+- OpenAPI documentation for customer-backend
+- Performance benchmarking baseline (establish after core features are built)
+- Chaos engineering patterns (test circuit breaker behavior under load)
+
+### Implementation Handoff
+
+**AI Agent Guidelines:**
+- Follow all architectural decisions exactly as documented
+- Use implementation patterns consistently across all components
+- Respect project structure and database boundaries absolutely
+- Refer to this document for all architectural questions
+- When in doubt, check adjacent files for existing patterns before creating new ones
+
+**First Implementation Priorities:**
+1. Discord OAuth provider (`backend/src/modules/authentication/providers/discord-auth.provider.ts`)
+2. Sentry SDK integration across all 4 services
+3. Feature development per epic/story priority (check `node scripts/next-spec.js`)

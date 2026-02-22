@@ -1,4 +1,4 @@
-# generated: 2026-02-17
+# generated: 2026-02-22
 # project: sidedecked
 # project_key: NOKEY
 # tracking_system: file-system
@@ -12,8 +12,8 @@
 #   - done: All stories in epic completed
 #
 # Epic Status Transitions:
-#   - backlog → in-progress: Automatically when first story is created (via create-story)
-#   - in-progress → done: Manually when all stories reach 'done' status
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
 #
 # Story Status:
 #   - backlog: Story only exists in epic file
@@ -33,186 +33,90 @@
 # - SM typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-02-17
+generated: 2026-02-22
 project: sidedecked
 project_key: NOKEY
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
 
 development_status:
-
-  # ── Epic 1: Authentication & User Management ─────────────────────────────
-  epic-1: in-progress
-  1-1-1-social-login-registration: done
-  1-1-2-account-onboarding: in-progress
-  1-1-3-email-verification: done
-  1-2-1-social-login-authentication: in-progress
-  1-2-2-session-management: in-progress
-  1-2-3-account-security: done
-  1-3-1-profile-information-management: in-progress
-  1-3-2-account-settings: in-progress
-  1-3-3-role-management: in-progress
-  1-4-1-individual-seller-application: in-progress
-  1-4-2-individual-seller-approval: in-progress
+  # Epic 1: Authentication & User Profiles
+  epic-1: backlog
+  1-1-social-oauth-registration-login: backlog
+  1-2-user-profile-management: backlog
+  1-3-role-based-access-control: backlog
+  1-4-unauthenticated-browsing-deferred-auth: backlog
   epic-1-retrospective: optional
 
-  # ── Epic 2: Commerce & Marketplace ───────────────────────────────────────
-  epic-2: in-progress
-  2-1-1-shopping-cart-management: done
-  2-1-2-multi-vendor-checkout-process: in-progress
-  2-1-3-shipping-tax-calculation: in-progress
-  2-2-1-order-creation-notification: in-progress
-  2-2-2-order-tracking-updates: in-progress
-  2-3-1-return-request-process: in-progress
-  2-3-2-dispute-resolution: in-progress
-  2-4-1-customer-reviews: in-progress
-  2-5-1-discover-individual-selling: in-progress
-  2-5-2-consumer-seller-onboarding: in-progress
-  2-5-3-consumer-seller-dashboard: done
-  2-5-4-quick-card-listing: done
-  2-5-5-individual-seller-reputation: done
-  2-5-6-individual-seller-payment-payout: review
-  2-5-7-individual-seller-communication: done
-  2-5-8-individual-seller-growth: deferred
+  # Epic 2: Card Catalog & Discovery
+  epic-2: backlog
+  2-1-tcg-catalog-etl-pipeline-seeding: backlog
+  2-2-storefront-design-foundation-card-display: backlog
+  2-3-algolia-search-index-card-search-with-autocomplete: backlog
+  2-4-faceted-search-filters-sorting: backlog
+  2-5-card-detail-page-bff-endpoint: backlog
+  2-6-card-detail-seo-social-metadata: backlog
+  2-7-recently-viewed-cards: backlog
+  2-8-wishlist-price-tracking-growth: backlog
   epic-2-retrospective: optional
 
-  # ── Epic 3: TCG Catalog & Card Database ──────────────────────────────────
-  epic-3: in-progresse
-  3-1-1-card-information-management: done
-  3-1-2-set-series-organization: in-progress
-  3-1-3-card-identification-sku-system: in-progress
-  3-2-1-automated-data-import: in-progress
-  3-2-2-data-normalization-validation: done
-  3-3-1-card-image-processing: in-progress
-  3-3-2-custom-image-upload: in-progress
-  3-4-1-advanced-card-search: in-progress
+  # Epic 3: Deck Building & Collection
+  epic-3: backlog
+  3-1-deck-creation-management: backlog
+  3-2-deck-builder-card-search-adding: backlog
+  3-3-game-specific-deck-zones: backlog
+  3-4-deck-stats-summary: backlog
+  3-5-public-deck-sharing: backlog
+  3-6-public-deck-discovery: backlog
+  3-7-collection-auto-update-on-purchase: backlog
   epic-3-retrospective: optional
 
-  # ── Epic 4: Vendor Management System ─────────────────────────────────────
-  epic-4: in-progress
-  4-1-1-performance-dashboard: in-progress
-  4-1-2-sales-analytics-insights: in-progress
-  4-1-3-financial-reporting: in-progress
-  4-2-1-bulk-csv-import-system: in-progress
-  4-2-2-inventory-tracking-management: in-progress
-  4-2-3-listing-optimization-tools: ready-for-dev
-  4-3-1-dynamic-pricing-tools: ready-for-dev
-  4-3-2-market-intelligence-dashboard: ready-for-dev
-  4-4-1-listing-automation: ready-for-dev
-  4-4-2-communication-automation: ready-for-dev
-  4-5-1-create-product-listings: done
-  4-5-2-manage-existing-listings: review
-  4-5-3-listing-quality-management: ready-for-dev
-  4-6-1-vendor-order-processing: ready-for-dev
-  4-6-2-shipping-management-optimization: ready-for-dev
-  4-7-1-vendor-return-processing: ready-for-dev
-  4-7-2-customer-service-tools: ready-for-dev
-  4-8-1-vendor-review-response-system: ready-for-dev
-  4-8-2-reputation-management-analytics: ready-for-dev
+  # Epic 4: Seller Listing & Fulfillment
+  epic-4: backlog
+  4-1-individual-seller-upgrade: backlog
+  4-2-guided-card-listing-card-identification: backlog
+  4-3-guided-card-listing-condition-photos: backlog
+  4-4-guided-card-listing-pricing-confirmation: backlog
+  4-5-csv-inventory-import-catalog-matching: backlog
+  4-6-fuzzy-match-review-resolution: backlog
+  4-7-listing-management-pricing: backlog
+  4-8-seller-order-fulfillment-tracking: backlog
   epic-4-retrospective: optional
 
-  # ── Epic 5: Deck Building System ─────────────────────────────────────────
-  epic-5: in-progress
-  5-1-1-multi-game-deck-creation: in-progress
-  5-1-2-format-specific-validation: in-progress
-  5-1-3-deck-zone-management: in-progress
-  5-2-1-drag-drop-deck-editor: done
-  5-2-2-advanced-card-search-integration: done
-  5-2-3-deck-statistics-analysis: in-progress
-  5-3-1-owned-card-tracking: ready-for-dev
-  5-3-2-shopping-integration: ready-for-dev
-  5-4-1-public-deck-sharing: in-progress
-  5-4-2-community-interaction: ready-for-dev
-  5-4-3-collaboration-features: ready-for-dev
-  5-5-1-multi-format-import-export: ready-for-dev
-  5-5-2-tournament-preparation: ready-for-dev
+  # Epic 5: Commerce & Cart Optimization
+  epic-5: backlog
+  5-1-shopping-cart-management: backlog
+  5-2-cart-optimizer-deck-to-cart: backlog
+  5-3-multi-vendor-checkout: backlog
+  5-4-multi-vendor-order-creation-sub-orders: backlog
+  5-5-order-tracking-receipt-confirmation: backlog
+  5-6-toast-notification-system: backlog
   epic-5-retrospective: optional
 
-  # ── Epic 6: Community & Social ────────────────────────────────────────────
+  # Epic 6: Payments & Seller Onboarding
   epic-6: backlog
-  6-1-1-comprehensive-user-profiles: ready-for-dev
-  6-1-2-social-networking-following: ready-for-dev
-  6-1-3-reputation-trust-system: ready-for-dev
-  6-2-1-direct-messaging-system: done
-  6-2-2-group-messaging-communities: ready-for-dev
-  6-2-3-trade-negotiation-integration: ready-for-dev
-  6-3-1-multi-category-forum-structure: ready-for-dev
-  6-3-2-rich-forum-posting-interaction: ready-for-dev
-  6-3-3-community-moderation-safety: ready-for-dev
-  6-4-1-social-trading-features: ready-for-dev
-  6-4-2-community-price-validation: ready-for-dev
-  6-5-1-event-discovery-organization: ready-for-dev
-  6-5-2-local-community-building: ready-for-dev
+  6-1-stripe-connect-seller-onboarding: backlog
+  6-2-commission-collection-automated-payouts: backlog
+  6-3-seller-tax-information-collection: backlog
+  6-4-marketplace-sales-tax-collection: backlog
   epic-6-retrospective: optional
 
-  # ── Epic 7: Pricing Intelligence ──────────────────────────────────────────
-  epic-7: in-progress
-  7-1-1-multi-source-price-aggregation: in-progress
-  7-1-2-advanced-market-analytics: in-progress
-  7-1-3-real-time-price-monitoring: in-progress
-  7-2-1-ml-price-forecasting: ready-for-dev
-  7-2-2-intelligent-market-insights: ready-for-dev
-  7-2-3-predictive-portfolio-management: ready-for-dev
-  7-3-1-comprehensive-portfolio-tracking: ready-for-dev
-  7-3-2-advanced-portfolio-analytics: ready-for-dev
-  7-3-3-investment-goal-management: ready-for-dev
-  7-4-1-comprehensive-market-research: ready-for-dev
-  7-4-2-educational-content-market-commentary: ready-for-dev
-  7-4-3-custom-research-analysis-tools: ready-for-dev
-  7-5-1-intelligent-price-alert-system: ready-for-dev
-  7-5-2-market-opportunity-detection: ready-for-dev
-  7-6-1-professional-market-reports: ready-for-dev
-  7-6-2-performance-benchmarking: ready-for-dev
+  # Epic 7: Marketplace Trust & Safety
+  epic-7: backlog
+  7-1-price-anomaly-detection-flagging: backlog
+  7-2-buyer-dispute-opening: backlog
+  7-3-admin-dispute-resolution: backlog
+  7-4-seller-trust-score: backlog
+  7-5-business-seller-application-review: backlog
+  7-6-automated-seller-enforcement: backlog
   epic-7-retrospective: optional
 
-  # ── Epic 8: Search & Discovery ────────────────────────────────────────────
-  epic-8: in-progress
-  8-1-1-lightning-fast-universal-search: in-progress
-  8-1-2-advanced-card-search-discovery: in-progress
-  8-1-3-intelligent-search-suggestions: in-progress
-  8-2-1-content-recommendations: ready-for-dev
-  8-2-2-smart-collection-integration: ready-for-dev
-  8-2-3-contextual-discovery-browsing: ready-for-dev
-  8-3-1-visual-card-recognition: ready-for-dev
-  8-3-2-semantic-natural-language-search: ready-for-dev
-  8-3-3-search-analytics-optimization: ready-for-dev
-  8-4-1-intelligent-shopping-discovery: ready-for-dev
-  8-4-2-vendor-seller-discovery: ready-for-dev
-  8-5-1-social-discovery-features: ready-for-dev
-  8-5-2-community-content-discovery: ready-for-dev
+  # Epic 8: Platform Administration & Operations
+  epic-8: backlog
+  8-1-flagged-listing-review-queue: backlog
+  8-2-catalog-management-tools: backlog
+  8-3-automated-financial-reconciliation: backlog
+  8-4-cross-backend-referential-integrity: backlog
+  8-5-transactional-email-notifications: backlog
+  8-6-platform-metrics-dashboard-growth: backlog
   epic-8-retrospective: optional
-
-  # ── Epic 9: Inventory Management ──────────────────────────────────────────
-  epic-9: in-progress
-  9-1-1-centralized-inventory-management: in-progress
-  9-1-2-condition-variation-management: in-progress
-  9-1-3-real-time-stock-synchronization: in-progress
-  9-2-1-intelligent-demand-forecasting: ready-for-dev
-  9-2-2-automated-purchase-order-generation: ready-for-dev
-  9-2-3-supplier-management-relationships: ready-for-dev
-  9-3-1-advanced-inventory-analytics: ready-for-dev
-  9-3-2-dynamic-pricing-integration: ready-for-dev
-  9-3-3-performance-benchmarking-kpis: ready-for-dev
-  9-4-1-warehouse-management-system: ready-for-dev
-  9-4-2-third-party-logistics-integration: ready-for-dev
-  9-5-1-erp-accounting-integration: ready-for-dev
-  9-5-2-api-third-party-integrations: ready-for-dev
-  epic-9-retrospective: optional
-
-  # ── Epic 10: Payment Processing ───────────────────────────────────────────
-  epic-10: in-progress
-  10-1-1-stripe-connect-integration: in-progress
-  10-1-2-seller-onboarding-account-management: in-progress
-  10-1-3-commission-fee-management: in-progress
-  10-2-1-automated-escrow-high-value: ready-for-dev
-  10-2-2-authentication-verification-services: ready-for-dev
-  10-2-3-dispute-resolution-mediation: ready-for-dev
-  10-3-1-multi-currency-processing: ready-for-dev
-  10-3-2-regional-compliance-regulations: ready-for-dev
-  10-3-3-cross-border-tax-management: ready-for-dev
-  10-4-1-advanced-fraud-detection: ready-for-dev
-  10-4-2-pci-compliance-data-security: ready-for-dev
-  10-4-3-risk-management-monitoring: ready-for-dev
-  10-5-1-comprehensive-financial-reporting: ready-for-dev
-  10-5-2-automated-reconciliation: ready-for-dev
-  epic-10-retrospective: optional
