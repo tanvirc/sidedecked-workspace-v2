@@ -45,7 +45,7 @@ development_status:
   1-1-social-oauth-registration-login: done
   1-2-user-profile-management: done
   1-3-role-based-access-control: done
-  1-4-unauthenticated-browsing-deferred-auth: review
+  1-4-unauthenticated-browsing-deferred-auth: done
   epic-1-retrospective: optional
 
   # Epic 2: Card Catalog & Discovery
