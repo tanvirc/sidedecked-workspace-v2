@@ -1,5 +1,5 @@
 name: story-lifecycle
-description: "Full multi-agent story lifecycle: SM+PM prioritize → BA+PM+UX define requirements → Architect design → Dev build (feature branch) → QA test → DevOps deploy to Railway → Tech Writer document + Create PR → Code Reviewer review + resolve PR comments + merge"
+description: "Full multi-agent story lifecycle with Superpowers integration: SM+PM prioritize → BA+PM+UX requirements → Architect design + plan file → Dev TDD (superpowers) → QA integration tests → DevOps deploy (conditional) → Tech Writer docs → Two-stage code review (subagents) → PR merge"
 author: "SideDecked"
 
 config_source: "{project-root}/_bmad/bmm/config.yaml"
@@ -21,6 +21,17 @@ variables:
   project_context: "**/project-context.md"
   story_dir: "{implementation_artifacts}"
   agent_path: "{project-root}/_bmad/bmm/agents"
+  plan_dir: "{project-root}/docs/plans"
+
+# Superpowers skill references (for documentation — invoked at runtime)
+superpowers:
+  tdd: "superpowers:test-driven-development"
+  verification: "superpowers:verification-before-completion"
+  debugging: "superpowers:systematic-debugging"
+  requesting_review: "superpowers:requesting-code-review"
+  receiving_review: "superpowers:receiving-code-review"
+  executing_plans: "superpowers:executing-plans"
+  finishing_branch: "superpowers:finishing-a-development-branch"
 
 input_file_patterns:
   epics:
@@ -35,3 +46,18 @@ input_file_patterns:
     description: "Architecture docs for technical design phase"
     whole: "docs/architecture/*.md"
     load_strategy: "FULL_LOAD"
+
+# Session boundaries (guidance for orchestrator)
+sessions:
+  discovery:
+    phases: [1, 2, 3]
+    description: "Select story, define requirements, produce implementation plan"
+    artifacts_saved: ["docs/plans/{date}-{story-key}-plan.md"]
+  build:
+    phases: [4, 5]
+    description: "Implement story with TDD, validate with integration tests"
+    artifacts_saved: ["feature branch with all code committed"]
+  ship:
+    phases: [6, 7, 8]
+    description: "Deploy to production (conditional), document, review, merge"
+    artifacts_saved: ["merged PRs on main", "production deployment"]
