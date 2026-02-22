@@ -1,6 +1,6 @@
 # Authentication Architecture
 
-**Version**: 1.3
+**Version**: 1.4
 **Last Updated**: 2026-02-22
 **Author**: SideDecked Architecture Team  
 **Reviewers**: [Development Team, Security Team]  
@@ -415,9 +415,11 @@ interface OAuthState {
   "actor_type": "customer",
   "auth_identity_id": "authid_01H...",
   "app_metadata": {
-    "seller_id": "sel_01H...",      // If customer is also a seller
-    "seller_tier": "consumer",      // 'business' | 'consumer'
-    "seller_verified": true
+    "customer_id": "cus_01H...",
+    "platform_role": null,          // null = regular customer, 'admin' = platform admin
+    "seller_id": "sel_01H...",      // If customer is also a seller (story 4-1)
+    "seller_tier": "consumer",      // 'business' | 'consumer' (story 4-1)
+    "seller_verified": true         // (story 4-1)
   },
   "iat": 1755070885,
   "exp": 1755071785               // 15 min from iat
@@ -469,6 +471,7 @@ Security event (password change, 2FA toggle) → all refresh tokens revoked
 // Session Features:
 // ✅ JWT integration with MedusaJS auth framework
 // ✅ Session isolation (customer vs seller)
+// ✅ platform_role embedded in every customer JWT (Story 1-3)
 // ✅ Seller tier context in tokens
 // ✅ Single-use refresh token rotation (30-day TTL)
 // ✅ Server-side token revocation (immediate via sessionInvalidatedAt)
@@ -476,6 +479,41 @@ Security event (password change, 2FA toggle) → all refresh tokens revoked
 // ✅ Cross-service auth event logging (fire-and-forget)
 // ✅ Client-side idle session detection (30-day threshold)
 // ✅ Secure logout clears both access and refresh cookies
+```
+
+### 🔐 Role-Based Access Control (RBAC)
+
+**Role Taxonomy** (Story 1-3):
+
+| Role | Where Stored | JWT Claim | Access |
+|---|---|---|---|
+| Regular customer | `customer_profile.platform_role = null` | `app_metadata.platform_role: null` | Standard storefront |
+| Platform admin | `customer_profile.platform_role = 'admin'` | `app_metadata.platform_role: 'admin'` | All routes |
+| Business vendor | `seller.permissions[]` | `app_metadata.permissions: string[]` | Permitted vendor routes |
+
+**Key design decisions:**
+- `platform_role` stored in `customer_profile` (mercur-db) — single source of truth
+- Re-read from DB on every login and token refresh — never forwarded from old JWT
+- No `platform_role` column in sidedecked-db — propagated via JWT claim only
+
+**Middleware guards:**
+
+```typescript
+// backend/ (MedusaJS) — guards platform-admin routes
+import { requirePlatformAdmin } from '#/api/utils/require-platform-admin'
+import { requireVendorPermission } from '#/api/utils/require-vendor-permission'
+
+// Usage in middlewares.ts:
+{ matcher: '/api/admin/*', middlewares: [requirePlatformAdmin()] }
+{ matcher: '/vendor/analytics', middlewares: [requireVendorPermission('analytics')] }
+
+// customer-backend/ (Express) — guards customer-facing authenticated routes
+import { requirePlatformAdmin } from '../middleware/auth'
+
+router.get('/admin/stats', authenticateToken, requirePlatformAdmin, handler)
+
+// storefront/ — SSR guard redirects unauthenticated users away from /{locale}/user/*
+// Implemented in src/middleware.ts: checks _medusa_jwt cookie, redirects to /{locale}/login?redirect=<path>
 ```
 
 ### 🗄️ Database Schema
