@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **User Profile Management (Story 1-2)**: First-login onboarding, profile editing, and TCG preferences
+  - `OnboardingModal` (`storefront/src/components/profile/OnboardingModal.tsx`): post-OAuth single-step modal shown when `display_name` is null; prompts user to pick TCG games and set a display name; "Skip for now" dismisses without saving; saves to customer-backend `/profile` and `/preferences` endpoints
+  - `(main)/layout.tsx` modified to fetch customer profile server-side and conditionally render `OnboardingModal` for authenticated users with no display name
+  - `PublicProfile` component: sonner toast on successful profile save; inline validation error when display name is submitted empty
+  - `UserPreferences` component: sonner toast on successful preferences save
+  - `PUT /api/customers/:id/preferences` (customer-backend): added enum validation — rejects game codes not in `[MTG, POKEMON, YUGIOH, OPTCG]` with 422 response
+  - 14 new storefront tests (OnboardingModal: 8, PublicProfile: 4, UserPreferences: 2); 7 new customer-backend tests (preferences: 4, profile: 3); all 60 storefront + 29 customer-backend tests passing
 - **Social OAuth Registration & Login (Story 1-1)**: Multi-provider OAuth authentication with email/password registration side effects
   - Discord OAuth provider as MedusaJS auth module (`src/modules/discord-auth/`) — extends `AbstractAuthModuleProvider`, CSRF state via `authIdentityService.setState()`, avatar URL construction from Discord CDN
   - Microsoft OAuth provider as MedusaJS auth module (`src/modules/microsoft-auth/`) — follows same pattern as Discord; old plain-class provider superseded
