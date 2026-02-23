@@ -179,7 +179,7 @@ Status is owned by BMAD — not this file. Use these to check or update:
 - `/bmad-bmm-sprint-status` — summarize current status and surface risks
 - `/bmad-agent-bmm-sm` — Scrum Master menu
 
-Epic files: `docs/epics/epic-NN-*.md` | Story files: `docs/stories/story-NN-M-*.md`
+Epic definitions: `_bmad-output/planning-artifacts/epics.md` | Story files: `_bmad-output/implementation-artifacts/story-*.md`
 
 ```bash
 node scripts/check-acceptance-criteria.js --id <epic-id>              # show incomplete criteria
