@@ -12,25 +12,6 @@
   <critical>Do NOT schedule a "next session" or request review pauses unless a HALT condition applies. Only Step 6 decides completion.</critical>
   <critical>User skill level ({user_skill_level}) affects conversation style ONLY, not code updates.</critical>
 
-  <!-- v2: Superpowers integration -->
-  <critical>
-    TDD DISCIPLINE: Follow superpowers:test-driven-development for every task.
-    Iron law: No production code without a failing test first.
-    Write code before the test? Delete it. Start over. No exceptions.
-    "Just this once" is rationalization. "Too simple to test" is rationalization.
-  </critical>
-  <critical>
-    VERIFICATION: Follow superpowers:verification-before-completion at all gates.
-    If you haven't run the verification command in this message, you cannot claim it passes.
-    No "should work", no "probably passes", no expressing satisfaction before evidence.
-  </critical>
-  <critical>
-    FAILURE RECOVERY: When tests fail or implementation breaks, follow
-    superpowers:systematic-debugging before attempting fixes. No random fix attempts.
-    Read errors → reproduce → trace data flow → single hypothesis → minimal test.
-    After 3 failed fix attempts: STOP and question the architecture with the user.
-  </critical>
-
   <step n="1" goal="Find next ready story and load it" tag="sprint-status">
     <check if="{{story_path}} is provided">
       <action>Use {{story_path}} directly</action>
@@ -97,7 +78,7 @@
 
     <!-- Non-sprint story discovery -->
     <check if="{{sprint_status}} file does NOT exist">
-      <action>Search {story_dir} for stories directly</action>
+      <action>Search {implementation_artifacts} for stories directly</action>
       <action>Find stories with "ready-for-dev" status in files</action>
       <action>Look for story files matching pattern: *-*-*.md</action>
       <action>Read each candidate story file to check Status section</action>
@@ -133,7 +114,7 @@
     </check>
 
     <action>Store the found story_key (e.g., "1-2-user-authentication") for later status updates</action>
-    <action>Find matching story file in {story_dir} using story_key pattern: {{story_key}}.md</action>
+    <action>Find matching story file in {implementation_artifacts} using story_key pattern: {{story_key}}.md</action>
     <action>Read COMPLETE story file from discovered path</action>
 
     <anchor id="task_check" />
@@ -240,54 +221,26 @@
     </check>
   </step>
 
-  <step n="5" goal="Implement task with strict TDD discipline">
+  <step n="5" goal="Implement task following red-green-refactor cycle">
     <critical>FOLLOW THE STORY FILE TASKS/SUBTASKS SEQUENCE EXACTLY AS WRITTEN - NO DEVIATION</critical>
-    <critical>
-      REQUIRED: superpowers:test-driven-development governs this step.
-      The iron law: NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.
-      Violating the letter of TDD is violating the spirit. No exceptions.
-    </critical>
 
     <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
+    <action>Plan implementation following red-green-refactor cycle</action>
 
-    <!-- RED PHASE: Write failing test -->
-    <action>Write ONE minimal test showing what the task/subtask should accomplish</action>
-    <action>Run the test. It MUST fail. Confirm the failure message is expected (feature missing, not typo/error)</action>
-    <check if="test passes immediately">
-      <action>STOP — you are testing existing behavior, not new behavior. Fix the test.</action>
-    </check>
-    <check if="test errors instead of failing">
-      <action>Fix the error. Re-run until the test FAILS correctly (assertion failure, not runtime error).</action>
-    </check>
+    <!-- RED PHASE -->
+    <action>Write FAILING tests first for the task/subtask functionality</action>
+    <action>Confirm tests fail before implementation - this validates test correctness</action>
 
-    <!-- GREEN PHASE: Minimal implementation -->
-    <action>Write the SIMPLEST code that makes the failing test pass — nothing more</action>
-    <action>Run ALL tests (new + existing). ALL must pass.</action>
-    <check if="new test fails">
-      <action>Fix implementation code, NOT the test. Re-run until green.</action>
-    </check>
-    <check if="existing tests break">
-      <action>Fix the regression NOW. Do not proceed with broken tests.</action>
-    </check>
+    <!-- GREEN PHASE -->
+    <action>Implement MINIMAL code to make tests pass</action>
+    <action>Run tests to confirm they now pass</action>
+    <action>Handle error conditions and edge cases as specified in task/subtask</action>
 
-    <!-- REFACTOR PHASE: Clean up while green -->
-    <action>Improve code structure: remove duplication, improve names, extract helpers</action>
-    <action>Run ALL tests after refactoring — must stay green</action>
+    <!-- REFACTOR PHASE -->
+    <action>Improve code structure while keeping tests green</action>
     <action>Ensure code follows architecture patterns and coding standards from Dev Notes</action>
 
     <action>Document technical approach and decisions in Dev Agent Record → Implementation Plan</action>
-
-    <!-- Failure recovery: superpowers:systematic-debugging -->
-    <on-failure>
-      STOP random fix attempts. Follow superpowers:systematic-debugging:
-      1. Read error messages carefully and completely
-      2. Reproduce the failure consistently
-      3. Check what recently changed (git diff)
-      4. Trace data flow — where does the bad value originate?
-      5. Form ONE hypothesis. Test it with the SMALLEST possible change.
-      6. Did it work? Continue. Didn't work? New hypothesis (do NOT stack fixes).
-      After 3 failed hypotheses: HALT and discuss architecture with user.
-    </on-failure>
 
     <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
     <action if="3 consecutive implementation failures occur">HALT and request guidance</action>
@@ -306,36 +259,24 @@
     <action>Cover edge cases and error handling scenarios identified in story Dev Notes</action>
   </step>
 
-  <step n="7" goal="Run validations and tests — evidence required">
-    <critical>superpowers:verification-before-completion governs this step.
-      Run commands. Read output. THEN claim results. No shortcuts.</critical>
-
+  <step n="7" goal="Run validations and tests">
     <action>Determine how to run tests for this repo (infer test framework from project structure)</action>
-    <action>Run all existing tests and show FRESH output — count passes and failures</action>
-    <action>Run the new tests and show FRESH output — confirm all pass</action>
-    <action>Run linting and code quality checks and show FRESH output — confirm 0 errors</action>
+    <action>Run all existing tests to ensure no regressions</action>
+    <action>Run the new tests to verify implementation correctness</action>
+    <action>Run linting and code quality checks if configured in project</action>
     <action>Validate implementation meets ALL story acceptance criteria; enforce quantitative thresholds explicitly</action>
-
-    <check if="regression tests fail">
-      <action>STOP — identify breaking changes immediately</action>
-      <action>Follow superpowers:systematic-debugging to find root cause before fixing</action>
-    </check>
-    <check if="new tests fail">
-      <action>STOP — fix implementation, not tests</action>
-      <action>Re-run and show fresh output after fix</action>
-    </check>
+    <action if="regression tests fail">STOP and fix before continuing - identify breaking changes immediately</action>
+    <action if="new tests fail">STOP and fix before continuing - ensure implementation correctness</action>
   </step>
 
   <step n="8" goal="Validate and mark task complete ONLY when fully done">
     <critical>NEVER mark a task complete unless ALL conditions are met - NO LYING OR CHEATING</critical>
-    <critical>superpowers:verification-before-completion — evidence from step 7 MUST exist
-      in this conversation before marking complete. No "should pass" claims.</critical>
 
     <!-- VALIDATION GATES -->
-    <action>Verify ALL tests for this task/subtask ACTUALLY EXIST and PASS 100% — cite step 7 evidence</action>
+    <action>Verify ALL tests for this task/subtask ACTUALLY EXIST and PASS 100%</action>
     <action>Confirm implementation matches EXACTLY what the task/subtask specifies - no extra features</action>
     <action>Validate that ALL acceptance criteria related to this task are satisfied</action>
-    <action>Confirm full test suite has NO regressions — cite step 7 evidence</action>
+    <action>Run full test suite to ensure NO regressions introduced</action>
 
     <!-- REVIEW FOLLOW-UP HANDLING -->
     <check if="task is review follow-up (has [AI-Review] prefix)">
@@ -380,14 +321,8 @@
   </step>
 
   <step n="9" goal="Story completion and mark for review" tag="sprint-status">
-    <critical>superpowers:verification-before-completion — run ALL gates fresh and show output</critical>
-
     <action>Verify ALL tasks and subtasks are marked [x] (re-scan the story document now)</action>
-    <action>Run the full regression suite and show FRESH output (do not skip, do not cite old runs)</action>
-    <action>Run full quality gate and show FRESH output:
-      npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
-    </action>
-    <action>Run coverage check and show FRESH output: npm run test:coverage</action>
+    <action>Run the full regression suite (do not skip)</action>
     <action>Confirm File List includes every changed file</action>
     <action>Execute enhanced definition-of-done validation</action>
     <action>Update the story Status to: "review"</action>
@@ -399,9 +334,8 @@
       - Unit tests for core functionality added/updated
       - Integration tests for component interactions added when required
       - End-to-end tests for critical flows added when story demands them
-      - All tests pass (no regressions, new tests successful) — FRESH OUTPUT SHOWN
-      - Code quality checks pass (linting, static analysis) — FRESH OUTPUT SHOWN
-      - Test coverage above 80% on changed modules — FRESH OUTPUT SHOWN
+      - All tests pass (no regressions, new tests successful)
+      - Code quality checks pass (linting, static analysis if configured)
       - File List includes every new/modified/deleted file (relative paths)
       - Dev Agent Record contains implementation notes
       - Change Log includes summary of changes
@@ -462,11 +396,11 @@
       - Review the implemented story and test the changes
       - Verify all acceptance criteria are met
       - Ensure deployment readiness if applicable
-      - Run `code-review` workflow for two-stage peer review
+      - Run `code-review` workflow for peer review
       - Optional: If Test Architect module installed, run `/bmad:tea:automate` to expand guardrail tests
     </action>
 
-    <output>💡 **Tip:** For best results, run `code-review` in a **fresh session** — a different context than the one that implemented this story catches more issues.</output>
+    <output>💡 **Tip:** For best results, run `code-review` using a **different** LLM than the one that implemented this story.</output>
     <check if="{sprint_status} file exists">
       <action>Suggest checking {sprint_status} to see project progress</action>
     </check>
