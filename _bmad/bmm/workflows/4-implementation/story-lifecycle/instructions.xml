@@ -1,4 +1,4 @@
-<workflow>
+﻿<workflow>
   <critical>
     You are an orchestrator running a full multi-agent story lifecycle for SideDecked.
 
@@ -73,6 +73,7 @@
     <action>Load and read {agent_path}/pm.md — retain John (Product Manager) perspective</action>
     <action>Load and read {agent_path}/ux-designer.md — embody UX Designer perspective</action>
     <action>Load the confirmed story file from {story_dir} matching the confirmed story key</action>
+    <action>Set {{story_file_path}} to the resolved story file path for downstream validation and documentation steps</action>
   </step>
 
   <step n="4" goal="BA+PM+UX: Clarify requirements and define UX">
@@ -273,6 +274,7 @@
     <critical>Save the plan as a durable artifact — do not rely on conversation context alone</critical>
     <action>Convert the Technical Design Note + Requirements Brief into a structured implementation plan</action>
     <action>Write the plan to: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Set {{plan_file_path}} to the exact saved plan path and reuse this variable in all later phases (including fresh sessions)</action>
     <action>Plan format:
       ```
       # {Story Title} Implementation Plan
@@ -306,7 +308,7 @@
     <ask>
       ## Phase 3 Complete — Implementation Plan Saved
 
-      Plan written to: docs/plans/{date}-{story-key}-plan.md
+      Plan written to: {{plan_file_path}}
 
       **SESSION BOUNDARY RECOMMENDATION:**
       Discovery is complete. For best results, start a fresh session for the Build phase.
@@ -330,8 +332,10 @@
 
   <step n="12" goal="Load Dev persona and prepare workspace">
     <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona completely</action>
-    <action>Load the implementation plan file: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Load the implementation plan file from {{plan_file_path}} when available</action>
+    <action>If {{plan_file_path}} is unknown (fresh session), locate the latest matching file in {plan_dir} using pattern *-{story-key}-plan.md, set {{plan_file_path}}, then load it</action>
     <action>Load the story file from {story_dir} matching the story key</action>
+    <action>Set {{story_file_path}} to the resolved story file path for Phase 4/5/7 evidence commands</action>
     <action>If starting a fresh session: load the Requirements Brief and Technical Design from the plan file (they are embedded in it)</action>
     <action>If a UX wireframe path is referenced in the plan: load it for component-level implementation guidance</action>
   </step>
@@ -388,9 +392,13 @@
 
     <!-- EVIDENCE-BASED GATE: superpowers:verification-before-completion -->
     <action>Run verification commands and show FRESH output before claiming completion:
-      - For each affected repo: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
-      - For each affected repo: npm run test:coverage
-      - Count (IMPLEMENTED) tags in story file: grep -c "(IMPLEMENTED)" {story_file}
+      - backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm run test:unit
+      - customer-backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - storefront/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - vendorpanel/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - Run commands only in repos listed as affected by the implementation plan
+      - Run coverage check with the repo-supported command and report changed-area coverage
+      - Count (IMPLEMENTED) tags in {{story_file_path}}
       Evidence MUST appear in this message. No claims without fresh output.
     </action>
     <ask>
@@ -459,7 +467,11 @@
 
     <!-- EVIDENCE-BASED GATE -->
     <action>Run full quality gate in each affected repo and show FRESH output:
-      npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm run test:unit
+      - customer-backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - storefront/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - vendorpanel/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - Run commands only in repos listed as affected by the implementation plan
     </action>
     <action>Output a QA Report:
       - Integration tests added/verified (or justification for skipping)
@@ -493,7 +505,8 @@
        ═══════════════════════════════════════════════════════ -->
 
   <step n="17" goal="Check if production deployment is needed">
-    <action>Read the implementation plan file to retrieve {{needs_deploy}} value</action>
+    <action>Read {{plan_file_path}} to retrieve {{needs_deploy}} value</action>
+    <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before continuing</action>
     <check if="needs_deploy == false">
       <action>Output: "Phase 6 SKIPPED — Production deployment not needed for this story.
         Reason: {justification from plan file}
@@ -515,7 +528,7 @@
     <check if="needs_deploy == true OR user typed DEPLOY">
       <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
       <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
-      <action>Ensure the feature branch is merged to main and main is pushed to remote before deploying</action>
+      <action>Ensure the feature branch is pushed and up to date in every repo selected for deployment</action>
       <action>Identify which services are affected by the story changes</action>
       <action>Deploy affected services to Railway production using: railway up --detach</action>
       <action>Monitor deployment logs for errors using: railway logs</action>
@@ -564,7 +577,8 @@
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
     <action>Load and read {project-root}/_bmad/_memory/tech-writer-sidecar/documentation-standards.md — quality rules for ALL documentation</action>
     <action>Load and read {project-root}/_bmad/_config/agents/bmm-tech-writer.customize.yaml — SideDecked-specific rules</action>
-    <action>Load the implementation plan file to recover Phase 2 + Phase 3 context:
+    <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before loading Tech Writer context</action>
+    <action>Load {{plan_file_path}} to recover Phase 2 + Phase 3 context:
       - Requirements Brief: key user-facing features, business rules, UX flows
       - Technical Design: domain classification, affected files/modules, new entities, API contracts
     </action>
@@ -572,7 +586,16 @@
   </step>
 
   <step n="20" goal="Tech Writer: Execute documentation sub-workflow">
-    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/story-docs/workflow.yaml" />
+    <action>Update CHANGELOG.md with a concise entry for this story (what changed and why)</action>
+    <action>Update architecture docs when architecture, integration contracts, or operational behavior changed; otherwise document why no architecture update was needed</action>
+    <action>Update {{story_file_path}} so implemented acceptance criteria are marked (IMPLEMENTED)</action>
+    <action>Update {sprint_status} so the story status is set to done</action>
+    <action>Commit documentation changes to the feature branch:
+      - Stage docs and tracking updates
+      - If there are changes: commit with format docs({story-scope}): document {story-title} and push
+      - If no changes: explicitly report no-op with rationale
+    </action>
+    <action>Output a Documentation Update Report listing files changed, rationale, and any intentionally skipped docs</action>
 
     <!-- EVIDENCE-BASED GATE -->
     <action>Show evidence of documentation updates:
@@ -583,7 +606,7 @@
     <ask>
       ## Phase 7A Complete — Documentation Updated
 
-      Tech Writer has executed the documentation workflow (see Documentation Update Report above).
+      Tech Writer has applied documentation updates (see Documentation Update Report above).
 
       Before confirming, verify the evidence shown above:
       - [ ] CHANGELOG.md has a substantive entry (what + why)
@@ -760,7 +783,7 @@
       - Total files changed (across all repos)
       - Final test coverage achieved
       - Total PR comments resolved
-      - Plan file location: docs/plans/{date}-{story-key}-plan.md
+      - Plan file location: {{plan_file_path}}
     </action>
     <action>Remind {user_name}: All PRs have been reviewed, comment-resolved, and merged to main</action>
   </step>

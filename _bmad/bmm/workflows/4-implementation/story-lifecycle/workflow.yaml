@@ -1,5 +1,5 @@
 name: story-lifecycle
-description: "Full multi-agent story lifecycle: SM+PM prioritize → BA+PM+UX requirements → UX Designer wireframe + party mode review + advanced elicitation (UI stories) → Architect design + plan file → Dev TDD → QA → DevOps deploy → Tech Writer docs → Two-stage code review → PR merge"
+description: "Full multi-agent story lifecycle: prioritize, clarify requirements, optional UI wireframing, architecture and plan, TDD implementation, QA integration checks, conditional production deploy, documentation, two-stage review, and merge."
 author: "SideDecked"
 
 config_source: "{project-root}/_bmad/bmm/config.yaml"
@@ -23,8 +23,10 @@ variables:
   agent_path: "{project-root}/_bmad/bmm/agents"
   plan_dir: "{project-root}/docs/plans"
   ux_wireframe_dir: "{planning_artifacts}"
+  story_file_path: ""
+  plan_file_path: ""
 
-# Superpowers skill references (for documentation — invoked at runtime)
+# Superpowers skill references (for documentation - invoked at runtime)
 superpowers:
   tdd: "superpowers:test-driven-development"
   verification: "superpowers:verification-before-completion"
@@ -51,20 +53,24 @@ input_file_patterns:
     description: "UX design specification for wireframe alignment"
     whole: "_bmad-output/planning-artifacts/ux-design-specification.md"
     load_strategy: "FULL_LOAD"
+  ux_design_directions:
+    description: "UX HTML wireframe conventions"
+    whole: "_bmad-output/planning-artifacts/ux-design-directions.html"
+    load_strategy: "FULL_LOAD"
 
 # Session boundaries (guidance for orchestrator)
 sessions:
   discovery:
     phases: [1, 2, "2B", 3]
-    description: "Select story, define requirements, produce UX wireframe (UI stories), produce implementation plan"
+    description: "Select story, define requirements, produce UX wireframe (UI stories), and produce implementation plan"
     artifacts_saved:
       - "docs/plans/{date}-{story-key}-plan.md"
       - "_bmad-output/planning-artifacts/ux-{story-key}-wireframe.html (UI stories only)"
   build:
     phases: [4, 5]
-    description: "Implement story with TDD, validate with integration tests"
+    description: "Implement story with TDD and validate with integration tests"
     artifacts_saved: ["feature branch with all code committed"]
   ship:
     phases: [6, 7, 8]
-    description: "Deploy to production (conditional), document, review, merge"
-    artifacts_saved: ["merged PRs on main", "production deployment"]
+    description: "Conditional production deployment, documentation, review, and merge"
+    artifacts_saved: ["merged PRs on main", "production deployment report when applicable"]
