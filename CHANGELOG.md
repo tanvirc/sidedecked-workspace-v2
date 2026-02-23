@@ -1,22 +1,28 @@
-# Changelog
+﻿# Changelog
 All notable changes to the SideDecked project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **TCG Catalog ETL Pipeline Seeding (Story 2-1)**: Hardened multi-game ETL seeding and ongoing sync reliability so discovery runs on consistent real catalog data
+  - Canonical game-code normalization routes One Piece aliases (ONEPIECE, ONE-PIECE, ONE_PIECE) to OPTCG in ETL service and CLI entrypoints
+  - SKU normalization now enforces uppercase ASCII kebab tokens with UNK fallback for missing components
+  - Duplicate resolution is deterministic via completeness score, then source updated_at, then stable source identifier
+  - Weekly weekly-catalog-etl-sync job now runs incremental ETL for MTG, POKEMON, YUGIOH, and OPTCG with per-game failure isolation and structured logging
+  - Added QA test coverage for scheduler orchestration, game-code canonicalization, duplicate tie-break behavior, and SKU normalization
 - **Storefront Design Foundation & Card Display (Story 2-2)**: Midnight Forge design system fully wired and TCG card display components production-ready
-  - `colors.css` (`:root` + `.dark`): full Midnight Forge token set — surface palette (`--bg-base` #0C0D12 dark, #F8FAFC light), Arcane Gold CTAs (`--accent-primary` / `--primary` #D4A843 dark), Mystic Blue interactive (`--interactive` #7C8CFF dark), semantic tokens (positive/negative/warning/info), text hierarchy, typography variables, shadows
-  - `tailwind.config.ts`: all Midnight Forge tokens mapped to Tailwind utilities — `bg-bg-base`, `text-foreground`, `border-border`, `text-interactive`, `bg-interactive-subtle`, `text-muted-foreground`, `ring-interactive-subtle`; full rarity token set for MTG/Pokémon/Yu-Gi-Oh/One Piece as `bg-rarity-*`/`text-rarity-*`
-  - `CardDisplay` (`src/components/tcg/CardDisplay.tsx`): four variants (grid, list, compact, gallery); token-disciplined (zero hardcoded hex/colour classes); `@media(pointer:fine)` guards on all hover states — prevents sticky hover on touch devices; gallery overlay always visible on coarse pointer (mobile), hover-only on fine pointer (desktop); `aria-label={card.name}` on all article variants; keyboard accessible (tabIndex + Enter/Space) when `onClick` provided; image retry state machine (normal → small → thumbnail → placeholder on sequential failures)
-  - `PriceTag` (`src/components/tcg/PriceTag.tsx`): three variants (inline/detailed/compact); `Intl.NumberFormat` for locale-correct price formatting; trend indicators (↑/↓) using semantic colour tokens; `role="group"` with descriptive `aria-label`; null price renders "No sellers"
-  - `RarityBadge` (`src/components/tcg/RarityBadge.tsx`): four games (MTG/Pokémon/Yu-Gi-Oh/One Piece); `color-mix(in srgb, ...)` for background and border derivation from single CSS variable; multi-word rarity normalisation ("mythic rare", "illustration_rare", "starlight rare" all resolve correctly via first-word fallback); unknown rarities display capitalised raw value
+  - `colors.css` (`:root` + `.dark`): full Midnight Forge token set â€” surface palette (`--bg-base` #0C0D12 dark, #F8FAFC light), Arcane Gold CTAs (`--accent-primary` / `--primary` #D4A843 dark), Mystic Blue interactive (`--interactive` #7C8CFF dark), semantic tokens (positive/negative/warning/info), text hierarchy, typography variables, shadows
+  - `tailwind.config.ts`: all Midnight Forge tokens mapped to Tailwind utilities â€” `bg-bg-base`, `text-foreground`, `border-border`, `text-interactive`, `bg-interactive-subtle`, `text-muted-foreground`, `ring-interactive-subtle`; full rarity token set for MTG/PokÃ©mon/Yu-Gi-Oh/One Piece as `bg-rarity-*`/`text-rarity-*`
+  - `CardDisplay` (`src/components/tcg/CardDisplay.tsx`): four variants (grid, list, compact, gallery); token-disciplined (zero hardcoded hex/colour classes); `@media(pointer:fine)` guards on all hover states â€” prevents sticky hover on touch devices; gallery overlay always visible on coarse pointer (mobile), hover-only on fine pointer (desktop); `aria-label={card.name}` on all article variants; keyboard accessible (tabIndex + Enter/Space) when `onClick` provided; image retry state machine (normal â†’ small â†’ thumbnail â†’ placeholder on sequential failures)
+  - `PriceTag` (`src/components/tcg/PriceTag.tsx`): three variants (inline/detailed/compact); `Intl.NumberFormat` for locale-correct price formatting; trend indicators (â†‘/â†“) using semantic colour tokens; `role="group"` with descriptive `aria-label`; null price renders "No sellers"
+  - `RarityBadge` (`src/components/tcg/RarityBadge.tsx`): four games (MTG/PokÃ©mon/Yu-Gi-Oh/One Piece); `color-mix(in srgb, ...)` for background and border derivation from single CSS variable; multi-word rarity normalisation ("mythic rare", "illustration_rare", "starlight rare" all resolve correctly via first-word fallback); unknown rarities display capitalised raw value
   - `CardGridSkeleton` (`src/components/cards/CardGridSkeleton.tsx`): responsive grid skeleton using Midnight Forge tokens (`bg-card`, `bg-muted`, `border-border`); adapts column count via `useGridColumns` hook
-  - shadcn/ui (Radix UI primitives) initialized with Midnight Forge token overrides: Sheet, Command, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, Sonner — all in `src/components/ui/`; `<Toaster>` in `providers.tsx` with `position="bottom-right" richColors`
-  - Zero native `alert()`/`confirm()`/`prompt()` calls in storefront — all replaced with shadcn/ui AlertDialog or sonner toasts
+  - shadcn/ui (Radix UI primitives) initialized with Midnight Forge token overrides: Sheet, Command, Dialog, AlertDialog, Tooltip, Popover, DropdownMenu, Sonner â€” all in `src/components/ui/`; `<Toaster>` in `providers.tsx` with `position="bottom-right" richColors`
+  - Zero native `alert()`/`confirm()`/`prompt()` calls in storefront â€” all replaced with shadcn/ui AlertDialog or sonner toasts
   - 222 storefront tests passing; `components/tcg` module at 80.95% statement / 86.17% line coverage
 - **Role-Based Access Control (Story 1-3)**: Platform role taxonomy with enforced middleware guards across all three services
   - `platform_role` column (`VARCHAR(50) NULL`) added to `customer_profile` (mercur-db) via `Migration20260222_PlatformRole`
-  - `getCustomerPlatformRole(customerId)` added to `SocialAccountManagementService` — reads from DB on every login and refresh, never forwards from old token
+  - `getCustomerPlatformRole(customerId)` added to `SocialAccountManagementService` â€” reads from DB on every login and refresh, never forwards from old token
   - `app_metadata.platform_role` embedded in every customer JWT at login (OAuth callback) and token refresh
   - `requirePlatformAdmin()` middleware helper (backend/): returns 403 `{ error: 'insufficient_permissions' }` when `auth_context.app_metadata.platform_role !== 'admin'`
   - `requireVendorPermission(permission)` middleware helper (backend/): returns 403 when vendor JWT `permissions` array lacks the required permission
@@ -29,19 +35,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `(main)/layout.tsx` modified to fetch customer profile server-side and conditionally render `OnboardingModal` for authenticated users with no display name
   - `PublicProfile` component: sonner toast on successful profile save; inline validation error when display name is submitted empty
   - `UserPreferences` component: sonner toast on successful preferences save
-  - `PUT /api/customers/:id/preferences` (customer-backend): added enum validation — rejects game codes not in `[MTG, POKEMON, YUGIOH, OPTCG]` with 422 response
+  - `PUT /api/customers/:id/preferences` (customer-backend): added enum validation â€” rejects game codes not in `[MTG, POKEMON, YUGIOH, OPTCG]` with 422 response
   - 14 new storefront tests (OnboardingModal: 8, PublicProfile: 4, UserPreferences: 2); 7 new customer-backend tests (preferences: 4, profile: 3); all 60 storefront + 29 customer-backend tests passing
 - **Social OAuth Registration & Login (Story 1-1)**: Multi-provider OAuth authentication with email/password registration side effects
-  - Discord OAuth provider as MedusaJS auth module (`src/modules/discord-auth/`) — extends `AbstractAuthModuleProvider`, CSRF state via `authIdentityService.setState()`, avatar URL construction from Discord CDN
-  - Microsoft OAuth provider as MedusaJS auth module (`src/modules/microsoft-auth/`) — follows same pattern as Discord; old plain-class provider superseded
+  - Discord OAuth provider as MedusaJS auth module (`src/modules/discord-auth/`) â€” extends `AbstractAuthModuleProvider`, CSRF state via `authIdentityService.setState()`, avatar URL construction from Discord CDN
+  - Microsoft OAuth provider as MedusaJS auth module (`src/modules/microsoft-auth/`) â€” follows same pattern as Discord; old plain-class provider superseded
   - Both providers registered in `medusa-config.ts` auth providers array alongside existing Google and emailpass providers
   - `discord` added to `social_account_metadata` provider enum with database migration (`Migration20260222_AddDiscordProvider`)
   - Discord added to storefront `OAUTH_PROVIDERS` config with Discord icon in `SocialLoginButtons` component
-  - `POST /store/auth/emailpass/post-register` — bearer-authenticated endpoint called after emailpass registration: sends verification email, generates refresh token (30-day, SHA-256 hashed), fires `LOGIN` auth event to customer-backend audit log
+  - `POST /store/auth/emailpass/post-register` â€” bearer-authenticated endpoint called after emailpass registration: sends verification email, generates refresh token (30-day, SHA-256 hashed), fires `LOGIN` auth event to customer-backend audit log
   - Storefront `signup()` calls post-register endpoint after successful registration and sets refresh cookie
   - 17 Discord auth unit tests + 6 post-register integration tests
 - **Create Product Listings (Story 4.5.1)**: TCG card listing wizard for vendor product creation
-  - 4-step ProgressTabs wizard in vendorpanel: Select Card → Listing Details → Images → Review
+  - 4-step ProgressTabs wizard in vendorpanel: Select Card â†’ Listing Details â†’ Images â†’ Review
   - Card catalog search via customer-backend API integration (`useCardSearch` hook)
   - Auto-populate card details (name, set, rarity, game, collector number, catalog image)
   - Condition grading (NM/LP/MP/HP/DMG), price with market price comparison, quantity, seller notes
@@ -56,11 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 65 unit/component tests (vendorpanel: 41, backend: 24)
 - **Individual Seller Communication (Story 2.5.7)**: Seller-buyer messaging tools and response time tracking
   - `seller-messaging` backend module with `SellerMessageTemplate` and `SellerResponseMetric` entities
-  - `GET /vendor/message-templates` — 5 default template categories (shipping, thanks, condition, delay, return), auto-seeded on first access
-  - `GET /vendor/response-metrics` — seller badge tier and avg response time
-  - `GET /store/sellers/:id/response-metrics` — public badge display for storefront
-  - `POST /vendor/orders/:id/escalate` — create TalkJS escalation conversation with platform support
-  - Nightly cron job `compute-response-metrics` — computes avg first-reply time and badge tier (Lightning <1h, Fast <4h, Responsive <24h)
+  - `GET /vendor/message-templates` â€” 5 default template categories (shipping, thanks, condition, delay, return), auto-seeded on first access
+  - `GET /vendor/response-metrics` â€” seller badge tier and avg response time
+  - `GET /store/sellers/:id/response-metrics` â€” public badge display for storefront
+  - `POST /vendor/orders/:id/escalate` â€” create TalkJS escalation conversation with platform support
+  - Nightly cron job `compute-response-metrics` â€” computes avg first-reply time and badge tier (Lightning <1h, Fast <4h, Responsive <24h)
   - Vendorpanel: "Message Buyer" button on order detail, order-scoped chat drawer with TalkJS, quick response chips, escalation to support
   - Vendorpanel: Message templates sidebar on Messages page, response metrics badge, communication guidelines onboarding banner
   - Storefront: `SellerResponseBadge` component on seller profile pages and order parcels
@@ -74,13 +80,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Webhook endpoint for GitHub Actions to report completion status back to Discord
   - 12 unit tests covering GitHub issue creation and webhook handler
 - **Individual Seller Payment & Payout (Story 2.5.6)**: Stripe Connect Express payment processing and payout management for individual sellers
-  - `GET/POST /store/consumer-seller/payout-account` — create and retrieve Stripe Connect Express payout accounts
-  - `POST /store/consumer-seller/payout-account/onboarding` — initiate Stripe hosted onboarding redirect flow
-  - `POST /store/consumer-seller/payout-account/sync` — sync Stripe account status
-  - `GET /store/consumer-seller/financial/summary` — balance overview (available, pending, reserve, lifetime, qualification progress)
-  - `GET /store/consumer-seller/financial/fees` — fee structure display (10% platform + Stripe processing fees)
-  - `GET /store/consumer-seller/payouts` — paginated payout history with status filtering
-  - `PATCH /store/consumer-seller/payouts/settings` — payout schedule preference (weekly default, daily for qualified sellers)
+  - `GET/POST /store/consumer-seller/payout-account` â€” create and retrieve Stripe Connect Express payout accounts
+  - `POST /store/consumer-seller/payout-account/onboarding` â€” initiate Stripe hosted onboarding redirect flow
+  - `POST /store/consumer-seller/payout-account/sync` â€” sync Stripe account status
+  - `GET /store/consumer-seller/financial/summary` â€” balance overview (available, pending, reserve, lifetime, qualification progress)
+  - `GET /store/consumer-seller/financial/fees` â€” fee structure display (10% platform + Stripe processing fees)
+  - `GET /store/consumer-seller/payouts` â€” paginated payout history with status filtering
+  - `PATCH /store/consumer-seller/payouts/settings` â€” payout schedule preference (weekly default, daily for qualified sellers)
   - `fetchConsumerSellerByCustomerId()` utility for customer-authenticated seller lookup
   - Storefront `/sell/payouts` dashboard with balance cards, payout history, and setup banner
   - Storefront `/sell/payouts/settings` page with schedule selector, reserve policy info, and fee calculator
@@ -100,16 +106,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `createSellerListing()` and `saveListingDraft()` server actions
   - 5 Jest tests for catalog SKU endpoints
 - **Consumer Seller Onboarding (Story 2.5.2)**: Simplified upgrade flow for collectors to become individual sellers
-  - 5-step storefront wizard (Profile → Seller Type → Preferences → Terms → Activate)
-  - `POST /api/customers/:id/upgrade-to-seller` in customer-backend — creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
-  - `GET /api/customers/:id/seller-status` — returns current seller status
-  - `POST /store/consumer-seller/upgrade` in commerce backend — simplified storefront-facing path that registers seller in MercurJS with immediate activation; architecture defines `/vendor/consumer-seller/upgrade` with identity document collection and `verification_status=pending` (deferred to Story 2.5.3)
+  - 5-step storefront wizard (Profile â†’ Seller Type â†’ Preferences â†’ Terms â†’ Activate)
+  - `POST /api/customers/:id/upgrade-to-seller` in customer-backend â€” creates SellerRating with trust_score=60, BRONZE tier, UNVERIFIED status
+  - `GET /api/customers/:id/seller-status` â€” returns current seller status
+  - `POST /store/consumer-seller/upgrade` in commerce backend â€” simplified storefront-facing path that registers seller in MercurJS with immediate activation; architecture defines `/vendor/consumer-seller/upgrade` with identity document collection and `verification_status=pending` (deferred to Story 2.5.3)
   - Individual sellers bypass complex business verification (self-certification flow)
   - Proper error state in UI replaces alert(); auto-redirect to `/sell` on success
   - 15 Jest unit tests covering all happy paths and error cases
 - **Dispute Resolution System (Story 2.3.2)**: Backend infrastructure for marketplace dispute mediation
   - `@mercurjs/dispute` module with Dispute, DisputeEvidence, DisputeMessage, DisputeTimeline entities
-  - 7 dispute workflow statuses: open → awaiting_vendor → under_review → decided → appealed / stripe_hold → closed
+  - 7 dispute workflow statuses: open â†’ awaiting_vendor â†’ under_review â†’ decided â†’ appealed / stripe_hold â†’ closed
   - Store API routes: initiate dispute, list/view disputes, send messages, submit appeals
   - Vendor API routes: list/view disputes, submit response, send messages
   - Admin API routes: list/view all disputes, assign mediator, render decision
@@ -117,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Stripe chargeback integration: `stripe.charge.dispute.created` subscriber pauses internal disputes
   - 30-day eligibility window enforced at workflow layer; vendor_id resolved via seller-order link
   - 7-day appeal window; 1 appeal per dispute; appeal assigned to different mediator
-  - Initial DB migration — 4 tables with FK constraints, enum checks, performance indexes
+  - Initial DB migration â€” 4 tables with FK constraints, enum checks, performance indexes
   - 24 unit tests (100% branch coverage, 82.6% statement coverage)
 - **Two-Factor Authentication (2FA)**: Opt-in TOTP-based account security
   - Authenticator app setup with QR code and manual key entry
@@ -315,3 +321,6 @@ For support and questions:
  Email: support@sidedecked.com
  Issues: [GitHub Issues](https://github.com/sidedecked/sidedecked-workspace/issues)
  Documentation: [Project Docs](docs/)
+
+
+

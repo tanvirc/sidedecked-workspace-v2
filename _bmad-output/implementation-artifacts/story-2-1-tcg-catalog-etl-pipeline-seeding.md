@@ -1,7 +1,7 @@
 # Story 2-1: TCG Catalog ETL Pipeline Seeding
 
 **Epic:** Epic 2 - Card Catalog & Discovery
-**Status:** review
+**Status:** done
 **Story Key:** story-2-1-tcg-catalog-etl-pipeline-seeding
 
 ---

@@ -1,4 +1,4 @@
-# SideDecked Data Architecture
+﻿# SideDecked Data Architecture
 
 **Version**: 3.0  
 **Last Updated**: 2025-09-12  
@@ -8,9 +8,9 @@
 
 ## Overview
 
-This document defines the comprehensive data architecture for the SideDecked platform, including split-brain database design, universal TCG data models, performance optimization strategies, and implementation patterns. The architecture supports a community-driven trading card marketplace for Magic: The Gathering, Pokémon, Yu-Gi-Oh!, and One Piece cards.
+This document defines the comprehensive data architecture for the SideDecked platform, including split-brain database design, universal TCG data models, performance optimization strategies, and implementation patterns. The architecture supports a community-driven trading card marketplace for Magic: The Gathering, PokÃ©mon, Yu-Gi-Oh!, and One Piece cards.
 
-## 🏗️ Split-Brain Architecture Overview
+## ðŸ—ï¸ Split-Brain Architecture Overview
 
 SideDecked implements a **split-brain architecture** that strictly separates commerce operations from customer experience features across multiple specialized repositories and databases.
 
@@ -18,30 +18,30 @@ SideDecked implements a **split-brain architecture** that strictly separates com
 
 ```
 sidedecked/                           # Main project folder (NOT a git repo)
-├── backend/                          # 🏪 COMMERCE - MercurJS Backend
-│   ├── .git/                         # Independent git repository
-│   ├── database: mercur-db           # Commerce operations only
-│   └── purpose: Orders, payments, vendors, marketplace transactions
-│
-├── customer-backend/                 # 🎮 CUSTOMER - Data & APIs Monorepo
-│   ├── .git/                         # Independent git repository  
-│   ├── database: sidedecked-db       # Customer experience data
-│   ├── packages/                     # Modular customer feature packages
-│   ├── apps/api/                     # Customer backend API server
-│   └── purpose: TCG catalog, decks, community, pricing intelligence
-│
-├── storefront/                       # 🌐 UI - Customer Frontend
-│   ├── .git/                         # Independent git repository
-│   ├── consumes: backend + customer-backend APIs
-│   └── purpose: Complete customer UI experience
-│
-└── vendorpanel/                      # 👥 UI - Vendor Frontend  
-    ├── .git/                         # Independent git repository
-    ├── consumes: backend API only
-    └── purpose: Vendor management and operations
+â”œâ”€â”€ backend/                          # ðŸª COMMERCE - MercurJS Backend
+â”‚   â”œâ”€â”€ .git/                         # Independent git repository
+â”‚   â”œâ”€â”€ database: mercur-db           # Commerce operations only
+â”‚   â””â”€â”€ purpose: Orders, payments, vendors, marketplace transactions
+â”‚
+â”œâ”€â”€ customer-backend/                 # ðŸŽ® CUSTOMER - Data & APIs Monorepo
+â”‚   â”œâ”€â”€ .git/                         # Independent git repository  
+â”‚   â”œâ”€â”€ database: sidedecked-db       # Customer experience data
+â”‚   â”œâ”€â”€ packages/                     # Modular customer feature packages
+â”‚   â”œâ”€â”€ apps/api/                     # Customer backend API server
+â”‚   â””â”€â”€ purpose: TCG catalog, decks, community, pricing intelligence
+â”‚
+â”œâ”€â”€ storefront/                       # ðŸŒ UI - Customer Frontend
+â”‚   â”œâ”€â”€ .git/                         # Independent git repository
+â”‚   â”œâ”€â”€ consumes: backend + customer-backend APIs
+â”‚   â””â”€â”€ purpose: Complete customer UI experience
+â”‚
+â””â”€â”€ vendorpanel/                      # ðŸ‘¥ UI - Vendor Frontend  
+    â”œâ”€â”€ .git/                         # Independent git repository
+    â”œâ”€â”€ consumes: backend API only
+    â””â”€â”€ purpose: Vendor management and operations
 ```
 
-## 🗄️ Database Split-Brain Design
+## ðŸ—„ï¸ Database Split-Brain Design
 
 ### Core Design Principles
 
@@ -58,7 +58,7 @@ sidedecked/                           # Main project folder (NOT a git repo)
 
 #### mercur-db (Commerce Backend)
 ```sql
--- 🏪 COMMERCE OPERATIONS ONLY
+-- ðŸª COMMERCE OPERATIONS ONLY
 orders, order_items, payments, carts
 customers, customer_auth, addresses  
 vendors, vendor_verification, vendor_products
@@ -70,7 +70,7 @@ product_catalog_matches  -- Links to sidedecked-db SKUs
 
 #### sidedecked-db (Customer Backend)  
 ```sql
--- 🎮 CUSTOMER EXPERIENCE ONLY
+-- ðŸŽ® CUSTOMER EXPERIENCE ONLY
 -- TCG Catalog System
 games, cards, prints, card_sets, catalog_skus, etl_jobs
 
@@ -87,12 +87,12 @@ portfolios, portfolio_holdings, portfolio_transactions
 ```
 
 ### Data Flow Rules
-- ❌ **NEVER**: Direct database connections between domains
-- ✅ **ALWAYS**: Cross-domain communication via APIs
-- ✅ **REQUIRED**: Data synchronization through event-driven patterns
-- ✅ **ENFORCE**: Single source of truth per data entity
+- âŒ **NEVER**: Direct database connections between domains
+- âœ… **ALWAYS**: Cross-domain communication via APIs
+- âœ… **REQUIRED**: Data synchronization through event-driven patterns
+- âœ… **ENFORCE**: Single source of truth per data entity
 
-## 📦 Universal TCG Data Model
+## ðŸ“¦ Universal TCG Data Model
 
 ### Games Table
 Defines the four supported TCGs with their unique mechanics:
@@ -128,7 +128,7 @@ CREATE TABLE games (
 -- Insert supported games
 INSERT INTO games (code, name, display_name, has_colors, has_power_toughness, etl_enabled, etl_source) VALUES
 ('MTG', 'Magic: The Gathering', 'Magic', true, true, true, 'scryfall'),
-('POKEMON', 'Pokémon Trading Card Game', 'Pokémon', false, false, true, 'pokemon-tcg-api'),
+('POKEMON', 'PokÃ©mon Trading Card Game', 'PokÃ©mon', false, false, true, 'pokemon-tcg-api'),
 ('YUGIOH', 'Yu-Gi-Oh! Trading Card Game', 'Yu-Gi-Oh!', false, true, true, 'ygoprodeck'),
 ('OPTCG', 'One Piece Card Game', 'One Piece', false, true, true, 'one-piece-api');
 ```
@@ -246,10 +246,10 @@ CREATE INDEX idx_cards_popularity_score ON cards(popularity_score DESC);
       "name": "Fire Blast", 
       "cost": ["Fire", "Fire"],
       "damage": 90,
-      "text": "Discard an Energy card attached to this Pokémon."
+      "text": "Discard an Energy card attached to this PokÃ©mon."
     }
   ],
-  "weaknesses": [{"type": "Water", "value": "×2"}],
+  "weaknesses": [{"type": "Water", "value": "Ã—2"}],
   "resistances": [{"type": "Fighting", "value": "-30"}]
 }
 
@@ -447,7 +447,7 @@ CREATE INDEX idx_catalog_skus_availability ON catalog_skus(is_available_b2c, is_
 CREATE INDEX idx_catalog_skus_popularity ON catalog_skus(view_count DESC, deck_usage_count DESC);
 ```
 
-## 🔗 Cross-Database Integration
+## ðŸ”— Cross-Database Integration
 
 Since databases are separate, integration happens through:
 
@@ -516,80 +516,80 @@ ALTER TABLE sellers ADD COLUMN total_sales INTEGER DEFAULT 0;
 -- Sales count for reputation building
 ```
 
-## 📦 Customer-Backend Monorepo Structure
+## ðŸ“¦ Customer-Backend Monorepo Structure
 
 ### Package Architecture
 
 ```
 customer-backend/
-├── packages/                         # Shared packages
-│   ├── types/                        # TypeScript definitions
-│   │   ├── src/common.ts             # Shared types
-│   │   ├── src/tcg.ts                # TCG-specific types
-│   │   ├── src/deck.ts               # Deck builder types
-│   │   ├── src/community.ts          # Social feature types
-│   │   └── src/pricing.ts            # Pricing intelligence types
-│   │
-│   ├── tcg-catalog/                  # Universal TCG card database
-│   │   ├── src/entities/             # Card, Print, Set entities
-│   │   ├── src/services/             # ETL, search, catalog services
-│   │   ├── src/etl/                  # ETL pipelines for each game
-│   │   └── src/search/               # Search optimization
-│   │
-│   ├── deck-builder/                 # Deck management and validation
-│   │   ├── src/entities/             # Deck, DeckCard entities
-│   │   ├── src/validators/           # Format-specific validation
-│   │   ├── src/services/             # Deck operations
-│   │   └── src/formats/              # Game format definitions
-│   │
-│   ├── community/                    # Social features and forums
-│   │   ├── src/entities/             # UserProfile, Activity entities
-│   │   ├── src/services/             # Social interaction services
-│   │   ├── src/messaging/            # Real-time messaging
-│   │   └── src/forums/               # Forum functionality
-│   │
-│   ├── pricing/                      # Price intelligence
-│   │   ├── src/entities/             # Price history, alerts
-│   │   ├── src/services/             # Price tracking, predictions
-│   │   ├── src/scrapers/             # External price sources
-│   │   └── src/analytics/            # Market analysis
-│   │
-│   └── shared/                       # Common utilities
-│       ├── src/utils/                # Helper functions
-│       ├── src/middleware/           # Express middleware
-│       ├── src/validators/           # Data validation
-│       └── src/cache/                # Caching utilities
-│
-├── apps/
-│   └── api/                          # Customer backend API server
-│       ├── src/entities/             # TypeORM entities
-│       ├── src/services/             # Business logic
-│       ├── src/controllers/          # API endpoints
-│       ├── src/migrations/           # Database migrations
-│       ├── src/config/               # Configuration
-│       └── src/index.ts              # Main server entry point
-│
-├── lerna.json                        # Monorepo configuration
-├── package.json                      # Workspace management
-└── tsconfig.json                     # Shared TypeScript config
+â”œâ”€â”€ packages/                         # Shared packages
+â”‚   â”œâ”€â”€ types/                        # TypeScript definitions
+â”‚   â”‚   â”œâ”€â”€ src/common.ts             # Shared types
+â”‚   â”‚   â”œâ”€â”€ src/tcg.ts                # TCG-specific types
+â”‚   â”‚   â”œâ”€â”€ src/deck.ts               # Deck builder types
+â”‚   â”‚   â”œâ”€â”€ src/community.ts          # Social feature types
+â”‚   â”‚   â””â”€â”€ src/pricing.ts            # Pricing intelligence types
+â”‚   â”‚
+â”‚   â”œâ”€â”€ tcg-catalog/                  # Universal TCG card database
+â”‚   â”‚   â”œâ”€â”€ src/entities/             # Card, Print, Set entities
+â”‚   â”‚   â”œâ”€â”€ src/services/             # ETL, search, catalog services
+â”‚   â”‚   â”œâ”€â”€ src/etl/                  # ETL pipelines for each game
+â”‚   â”‚   â””â”€â”€ src/search/               # Search optimization
+â”‚   â”‚
+â”‚   â”œâ”€â”€ deck-builder/                 # Deck management and validation
+â”‚   â”‚   â”œâ”€â”€ src/entities/             # Deck, DeckCard entities
+â”‚   â”‚   â”œâ”€â”€ src/validators/           # Format-specific validation
+â”‚   â”‚   â”œâ”€â”€ src/services/             # Deck operations
+â”‚   â”‚   â””â”€â”€ src/formats/              # Game format definitions
+â”‚   â”‚
+â”‚   â”œâ”€â”€ community/                    # Social features and forums
+â”‚   â”‚   â”œâ”€â”€ src/entities/             # UserProfile, Activity entities
+â”‚   â”‚   â”œâ”€â”€ src/services/             # Social interaction services
+â”‚   â”‚   â”œâ”€â”€ src/messaging/            # Real-time messaging
+â”‚   â”‚   â””â”€â”€ src/forums/               # Forum functionality
+â”‚   â”‚
+â”‚   â”œâ”€â”€ pricing/                      # Price intelligence
+â”‚   â”‚   â”œâ”€â”€ src/entities/             # Price history, alerts
+â”‚   â”‚   â”œâ”€â”€ src/services/             # Price tracking, predictions
+â”‚   â”‚   â”œâ”€â”€ src/scrapers/             # External price sources
+â”‚   â”‚   â””â”€â”€ src/analytics/            # Market analysis
+â”‚   â”‚
+â”‚   â””â”€â”€ shared/                       # Common utilities
+â”‚       â”œâ”€â”€ src/utils/                # Helper functions
+â”‚       â”œâ”€â”€ src/middleware/           # Express middleware
+â”‚       â”œâ”€â”€ src/validators/           # Data validation
+â”‚       â””â”€â”€ src/cache/                # Caching utilities
+â”‚
+â”œâ”€â”€ apps/
+â”‚   â””â”€â”€ api/                          # Customer backend API server
+â”‚       â”œâ”€â”€ src/entities/             # TypeORM entities
+â”‚       â”œâ”€â”€ src/services/             # Business logic
+â”‚       â”œâ”€â”€ src/controllers/          # API endpoints
+â”‚       â”œâ”€â”€ src/migrations/           # Database migrations
+â”‚       â”œâ”€â”€ src/config/               # Configuration
+â”‚       â””â”€â”€ src/index.ts              # Main server entry point
+â”‚
+â”œâ”€â”€ lerna.json                        # Monorepo configuration
+â”œâ”€â”€ package.json                      # Workspace management
+â””â”€â”€ tsconfig.json                     # Shared TypeScript config
 ```
 
 ### Package Dependencies
 
 ```typescript
 // Internal package dependencies
-@sidedecked/types         → Base types for all packages
-@sidedecked/tcg-catalog   → Depends on @sidedecked/types
-@sidedecked/deck-builder  → Depends on @sidedecked/types, @sidedecked/tcg-catalog
-@sidedecked/community     → Depends on @sidedecked/types
-@sidedecked/pricing       → Depends on @sidedecked/types, @sidedecked/tcg-catalog
-@sidedecked/shared        → Utility functions, shared across all packages
+@sidedecked/types         â†’ Base types for all packages
+@sidedecked/tcg-catalog   â†’ Depends on @sidedecked/types
+@sidedecked/deck-builder  â†’ Depends on @sidedecked/types, @sidedecked/tcg-catalog
+@sidedecked/community     â†’ Depends on @sidedecked/types
+@sidedecked/pricing       â†’ Depends on @sidedecked/types, @sidedecked/tcg-catalog
+@sidedecked/shared        â†’ Utility functions, shared across all packages
 
 // API Server Dependencies
-apps/api                  → Uses ALL packages for complete functionality
+apps/api                  â†’ Uses ALL packages for complete functionality
 ```
 
-## 🔗 API Integration Patterns
+## ðŸ”— API Integration Patterns
 
 ### Storefront Data Flow
 
@@ -815,7 +815,7 @@ export class CustomerEventHandler {
 }
 ```
 
-## 🛡️ Data Integrity and Consistency
+## ðŸ›¡ï¸ Data Integrity and Consistency
 
 ### Reference Management
 
@@ -915,7 +915,7 @@ export class UserProfileSyncService {
 3. **Graceful Degradation**: Handle service unavailability gracefully
 4. **Compensating Transactions**: Implement rollback strategies for failures
 
-## 📊 Performance Optimizations
+## ðŸ“Š Performance Optimizations
 
 ### Query Performance Targets
 
@@ -1111,7 +1111,7 @@ export class ProductEnrichmentService {
 }
 ```
 
-## 🔄 Data Migration Patterns
+## ðŸ”„ Data Migration Patterns
 
 ### Schema Evolution Strategy
 
@@ -1184,7 +1184,7 @@ export class DataMigrationJob {
 }
 ```
 
-## 🛡️ Data Quality and Monitoring
+## ðŸ›¡ï¸ Data Quality and Monitoring
 
 ### Entity-Level Validation
 
@@ -1306,7 +1306,7 @@ export class DatabaseHealthService {
 }
 ```
 
-## 💾 Backup and Recovery
+## ðŸ’¾ Backup and Recovery
 
 ### Automated Backup Strategy
 
@@ -1358,10 +1358,17 @@ export class BackupService {
 }
 ```
 
-## 🔄 ETL Pipeline Implementation
+## ðŸ”„ ETL Pipeline Implementation
 
 ### Card Data ETL Pipeline
 
+### ETL Operational Guarantees (Story 2-1)
+
+- OPTCG is the canonical One Piece game code across ETL orchestration and CLI invocations; alias inputs are normalized before job execution.
+- ETL runs are transactional per game so one game failure does not corrupt already-committed data for other games.
+- Duplicate card conflicts resolve deterministically in this order: higher completeness score, newer source updated_at, then smallest stable source identifier.
+- Catalog SKU tokens are normalized to uppercase ASCII kebab format with UNK fallback for missing tokens.
+- Weekly incremental ETL sync is scheduled for MTG, POKEMON, YUGIOH, and OPTCG with per-game failure isolation and structured logging.
 ```typescript
 export class UniversalETLService {
   private readonly scrapers = {
@@ -1487,8 +1494,8 @@ export class ScryfallETLService {
       name: scryfallCard.name,
       normalized_name: scryfallCard.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
       primary_type: scryfallCard.type_line.split(' ')[0],
-      subtypes: scryfallCard.type_line.includes('—') 
-        ? scryfallCard.type_line.split('—')[1].trim().split(' ')
+      subtypes: scryfallCard.type_line.includes('â€”') 
+        ? scryfallCard.type_line.split('â€”')[1].trim().split(' ')
         : [],
       oracle_text: scryfallCard.oracle_text,
       flavor_text: scryfallCard.flavor_text,
@@ -1510,7 +1517,7 @@ export class ScryfallETLService {
 }
 ```
 
-## 🚀 Deployment Architecture
+## ðŸš€ Deployment Architecture
 
 ### Service Deployment
 
@@ -1581,7 +1588,7 @@ databases:
     extensions: [uuid-ossp, pg_trgm, unaccent]
 ```
 
-## 🔍 Monitoring and Observability
+## ðŸ” Monitoring and Observability
 
 ### Cross-Service Tracing
 
@@ -1613,7 +1620,7 @@ export const healthCheck = async () => {
 }
 ```
 
-## 🛠️ Development Workflow
+## ðŸ› ï¸ Development Workflow
 
 ### Repository Management
 
@@ -1648,7 +1655,7 @@ describe('Product Enrichment Integration', () => {
 })
 ```
 
-## 📋 Migration and Rollback Strategy
+## ðŸ“‹ Migration and Rollback Strategy
 
 ### From Monolithic to Split-Brain
 
@@ -1665,7 +1672,7 @@ describe('Product Enrichment Integration', () => {
 3. **Graceful Degradation**: Fall back to single-service mode if needed
 4. **Data Reconciliation**: Tools to merge data if rollback required
 
-## 🚀 Future Enhancements
+## ðŸš€ Future Enhancements
 
 1. **ML-Based Matching**: Train models on verified matches
 2. **Real-time Price Feeds**: WebSocket price updates
@@ -1673,7 +1680,7 @@ describe('Product Enrichment Integration', () => {
 4. **Multi-language Search**: Full-text search in all languages
 5. **Blockchain Integration**: NFT card ownership tracking
 
-## 📚 References
+## ðŸ“š References
 
 - [System Overview](./01-system-overview.md)
 - [Domain Models](./03-domain-models.md)
@@ -1681,10 +1688,11 @@ describe('Product Enrichment Integration', () => {
 - [Testing Standards](../standards/testing-standards.md)
 - [Code Standards](../standards/code-standards.md)
 
-## 📝 Changelog
+## ðŸ“ Changelog
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.1 | 2026-02-23 | Documented story 2-1 ETL operational guarantees (canonical game-code mapping, deterministic duplicate resolution, per-game transaction boundaries, weekly scheduler sync) |
 | 3.0 | 2025-09-12 | Complete unified data architecture document with comprehensive patterns, schemas, and implementation details |
 | 2.1 | 2025-09-11 | Added comprehensive data patterns and ETL pipeline documentation |
 | 2.0 | 2025-01-15 | Enhanced caching and performance patterns |
@@ -1694,11 +1702,11 @@ describe('Product Enrichment Integration', () => {
 ---
 
 This split-brain architecture provides:
-- ✅ **Separation of Concerns**: Commerce vs. customer experience
-- ✅ **Independent Scaling**: Scale each service based on load patterns  
-- ✅ **Team Autonomy**: Teams can work on different aspects independently
-- ✅ **Technology Flexibility**: Choose optimal tech for each domain
-- ✅ **Fault Isolation**: Issues in one domain don't affect the other
-- ✅ **Universal TCG Support**: Comprehensive data model for all card games
-- ✅ **Performance Optimized**: Sub-100ms search with materialized views
-- ✅ **Production Ready**: Complete monitoring, caching, and deployment strategies
+- âœ… **Separation of Concerns**: Commerce vs. customer experience
+- âœ… **Independent Scaling**: Scale each service based on load patterns  
+- âœ… **Team Autonomy**: Teams can work on different aspects independently
+- âœ… **Technology Flexibility**: Choose optimal tech for each domain
+- âœ… **Fault Isolation**: Issues in one domain don't affect the other
+- âœ… **Universal TCG Support**: Comprehensive data model for all card games
+- âœ… **Performance Optimized**: Sub-100ms search with materialized views
+- âœ… **Production Ready**: Complete monitoring, caching, and deployment strategies
