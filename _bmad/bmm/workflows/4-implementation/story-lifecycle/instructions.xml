@@ -22,6 +22,8 @@
 
     GENERAL RULES:
     At each phase, load the specified agent file(s) and fully adopt their persona(s).
+    In this orchestrated workflow, apply each loaded agent's domain expertise, principles, and quality rules.
+    Do NOT run standalone menu/greeting/wait loops from individual agent files - this workflow controls interaction flow.
     For multi-agent phases, synthesise perspectives distinctly before combining.
     STOP at each phase boundary and wait for {user_name} to confirm before continuing.
     NEVER skip phases. NEVER proceed without explicit user confirmation.
@@ -78,14 +80,17 @@
 
   <step n="4" goal="BA+PM+UX: Clarify requirements and define UX">
     <action>As BA: Analyse the story's acceptance criteria — identify gaps, ambiguities, missing business rules, and edge cases</action>
+    <action>As BA: Produce an AC traceability view (Original AC → Clarified AC → status: clarified/needs-decision) and call out any unresolved requirement conflicts</action>
     <action>As PM: Verify scope is aligned with the parent epic's goals and user personas; flag any scope creep risks</action>
-    <action>As UX Designer: For any UI-facing criteria, propose UX flows, interaction patterns, component suggestions, and accessibility considerations</action>
+    <action>As UX Designer: For UI-facing criteria only, propose UX flows, interaction patterns, component suggestions, and accessibility considerations</action>
     <action>Output a consolidated Requirements + UX Brief:
       - Clarified acceptance criteria (with any additions or corrections)
+      - BA AC traceability and requirement conflict status
       - Business rules and edge cases identified by BA
       - PM scope confirmation or adjustments
       - UX flow notes and interaction patterns (if UI involved)
       - Open questions requiring {user_name} decision (if any)
+      - BA sign-off recommendation: READY / BLOCKED with explicit blockers
     </action>
     <ask>
       ## Phase 2 Complete — Requirements and UX Defined
@@ -164,32 +169,35 @@
 
   <step n="7" goal="Party Mode: Wireframe review — UX Designer + PM + BA + Architect">
     <critical>
-      This is a focused party mode with exactly 4 agents. Do NOT expand to additional agents.
+      This is a focused party mode with exactly 5 agents. Do NOT expand to additional agents.
       Each agent reviews the wireframe strictly from their domain perspective.
       The orchestrator synthesises a single Consolidated Wireframe Feedback summary.
     </critical>
     <action>Invoke party mode with the wireframe as the discussion seed.
-      Load all four agent perspectives by reading their agent files:
+      Load all five agent perspectives by reading their agent files:
       - {agent_path}/ux-designer.md — Sally (UX Designer)
       - {agent_path}/pm.md — John (Product Manager)
       - {agent_path}/analyst.md — Mary (Business Analyst)
       - {agent_path}/architect.md — Winston (Architect)
+      - {agent_path}/dev.md — Amelia (Developer)
     </action>
     <action>As Sally (UX Designer): Review for design system alignment, interaction patterns, accessibility compliance, visual hierarchy, and component reuse</action>
     <action>As John (PM): Review for scope alignment with the epic's goals and user personas; flag any scope creep or missing user journeys</action>
     <action>As Mary (BA): Review for acceptance criteria coverage — does every AC have a corresponding UI element? Are business rules reflected? Any missing edge case screens?</action>
     <action>As Winston (Architect): Review for technical feasibility, component reuse opportunities, data-fetching implications, performance considerations (rendering strategy, lazy loading), and any patterns that would be costly to implement</action>
+    <action>As Amelia (Dev): Review implementation feasibility in current codebases (storefront/vendorpanel), likely component breakdown, testing implications, and high-risk UI interactions</action>
     <action>Synthesise a Consolidated Wireframe Feedback summary:
       - Design system alignment: PASS / issues list
       - Scope alignment: PASS / issues list
       - AC coverage: PASS / gaps list
       - Technical feasibility: PASS / concerns list
+      - Implementation feasibility: PASS / concerns list
       - Priority of changes: must-fix before architecture / nice-to-have
     </action>
     <ask>
       ## Phase 2B Step 7 — Party Mode Wireframe Review Complete
 
-      UX Designer, PM, BA, and Architect have reviewed the wireframe (see Consolidated Feedback above).
+      UX Designer, PM, BA, Architect, and Dev have reviewed the wireframe (see Consolidated Feedback above).
 
       Type CONFIRM to proceed to advanced elicitation refinement.
       Or describe specific changes you want incorporated before continuing.
@@ -227,6 +235,7 @@
 
   <step n="9" goal="Load Architect persona">
     <action>Load and read {agent_path}/architect.md — adopt Winston (Architect) persona completely</action>
+    <action>Load and read {agent_path}/analyst.md — load Mary (BA) perspective for AC traceability co-review</action>
     <action>Architecture docs are already in context via input_file_patterns</action>
     <action>If Phase 2B produced a wireframe: load _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html as additional context for the technical design</action>
   </step>
@@ -244,6 +253,7 @@
     <action>Specify any new database entities, migrations, or schema changes needed</action>
     <action>Define API contracts for any new or modified endpoints</action>
     <action>Identify integration points with external systems (Stripe, Algolia, Redis, MinIO, Resend)</action>
+    <action>As BA (traceability pass): validate the design against every clarified AC and business rule from Phase 2; list any unmapped or partially-mapped ACs as blockers</action>
     <action>Flag architectural risks or decisions requiring {user_name} confirmation</action>
     <action>Determine deployment needs:
       - Sets {{needs_deploy}} = true if story touches storefront/ or vendorpanel/
@@ -256,6 +266,7 @@
       - New entities/migrations (if any)
       - API contract changes (if any)
       - Integration touchpoints
+      - BA traceability status: mapped ACs, unmapped ACs, and required follow-ups
       - Deployment classification: {{needs_deploy}} with justification
       - Wireframe implementation notes (if Phase 2B ran): component strategy, rendering approach
       - Architectural risks or open decisions
@@ -439,6 +450,12 @@
       Phase 5 may confirm "no additional integration testing needed" with justification.
     </critical>
 
+    <action>Invoke BMM QA skill bmad-bmm-qa-generate-e2e-tests to generate/extend E2E test candidates for this story before finalizing test scope</action>
+    <action>For high-risk cross-service or auth/payment flows, invoke TEA skills for deeper rigor:
+      - bmad-tea-testarch-test-design
+      - bmad-tea-testarch-automate
+      - bmad-tea-testarch-trace
+    </action>
     <action>Review the implementation plan's domain classification and integration touchpoints</action>
     <action>Identify cross-service boundaries this story touches:
       - Does backend/ expose APIs that storefront/ or vendorpanel/ consume?
@@ -506,6 +523,7 @@
 
   <step n="17" goal="Check if production deployment is needed">
     <action>Read {{plan_file_path}} to retrieve {{needs_deploy}} value</action>
+    <action>Re-validate {{needs_deploy}} using actual changed repos/files on the feature branch; if actual changes contradict the plan classification, update the effective deployment decision and explain why</action>
     <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before continuing</action>
     <check if="needs_deploy == false">
       <action>Output: "Phase 6 SKIPPED — Production deployment not needed for this story.
@@ -530,8 +548,12 @@
       <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
       <action>Ensure the feature branch is pushed and up to date in every repo selected for deployment</action>
       <action>Identify which services are affected by the story changes</action>
-      <action>Deploy affected services to Railway production using: railway up --detach</action>
-      <action>Monitor deployment logs for errors using: railway logs</action>
+      <action>For EACH affected deployable child repo (backend/, customer-backend/, storefront/, vendorpanel/):
+        - cd into that repo
+        - Deploy using: railway up --detach
+        - Monitor logs using: railway logs
+        - cd back to root
+      </action>
 
       <on-failure>
         Follow superpowers:systematic-debugging for deployment failures:
@@ -542,9 +564,9 @@
       </on-failure>
 
       <action>Once deployed successfully:
-        - Get the production URL using: railway status
+        - For EACH deployed child repo, get service URL/status using: railway status (from inside that repo)
         - Test critical paths to verify the feature works in production
-        - Document the production URL
+        - Document production URLs per deployed service
       </action>
       <action>Output a Deployment Report:
         - Railway production URL
@@ -586,6 +608,7 @@
   </step>
 
   <step n="20" goal="Tech Writer: Execute documentation sub-workflow">
+    <action>Load and read {agent_path}/analyst.md and use BA perspective to verify business-rule and acceptance-criteria wording consistency in docs</action>
     <action>Update CHANGELOG.md with a concise entry for this story (what changed and why)</action>
     <action>Update architecture docs when architecture, integration contracts, or operational behavior changed; otherwise document why no architecture update was needed</action>
     <action>Update {{story_file_path}} so implemented acceptance criteria are marked (IMPLEMENTED)</action>
@@ -657,20 +680,20 @@
     </ask>
   </step>
 
-  <step n="22" goal="Two-stage code review using fresh subagents">
+  <step n="22" goal="Two-stage code review using explicit BMM review skills">
     <critical>
       REPLACED: Single-agent adversarial self-review.
-      NEW: Two-stage subagent review per superpowers:requesting-code-review pattern.
+      NEW: Two-stage review using bmad-bmm-code-review skill with two explicit passes.
 
-      Stage 1 — Spec Compliance Review (fresh subagent):
+      Stage 1 — Spec Compliance Review (bmad-bmm-code-review):
         Does the code match the story's acceptance criteria exactly?
         Nothing extra (YAGNI), nothing missing.
+        BA perspective is mandatory for AC interpretation disputes.
 
-      Stage 2 — Code Quality Review (fresh subagent):
+      Stage 2 — Code Quality Review (bmad-bmm-code-review):
         Clean code, security, performance, architecture compliance, test quality.
 
-      Fresh subagents do not share the implementer's context, so they genuinely
-      find issues the implementer missed. Self-review cannot achieve this.
+      Use a fresh reviewer context for each pass to avoid implementer bias.
 
       For handling human PR comments later, follow superpowers:receiving-code-review:
         Verify before implementing. Push back with technical reasoning if wrong.
@@ -678,25 +701,25 @@
     </critical>
 
     <!-- Stage 1: Spec Compliance -->
-    <action>Dispatch a FRESH subagent for spec compliance review:
+    <action>Invoke bmad-bmm-code-review for spec compliance review:
       - Provide: story file path, implementation plan path, list of PRs with URLs
-      - Subagent reads story acceptance criteria and verifies each is implemented
-      - Subagent checks: nothing extra built (YAGNI), nothing missing
-      - Subagent reports: PASS (all ACs met) or FAIL (list gaps)
+      - Review focus: acceptance-criteria traceability and YAGNI compliance
+      - Include BA perspective to adjudicate requirement interpretation
+      - Output: PASS (all ACs met) or FAIL (list exact gaps with file:line evidence)
     </action>
 
     <check if="spec compliance fails">
       <action>Fix the spec gaps identified by the reviewer</action>
       <action>Run quality gates, commit, push</action>
-      <action>Re-dispatch spec compliance subagent to verify fixes</action>
+      <action>Re-run bmad-bmm-code-review spec compliance pass to verify fixes</action>
       <action>Repeat until spec compliance passes</action>
     </check>
 
     <!-- Stage 2: Code Quality -->
-    <action>Dispatch a FRESH subagent for code quality review:
+    <action>Invoke bmad-bmm-code-review for code quality review in a fresh reviewer context:
       - Provide: story file path, PR URLs, base and head SHAs
-      - Subagent reviews: code quality, security, performance, architecture compliance, test quality
-      - Subagent reports: APPROVED or list of issues (Critical/Important/Minor)
+      - Review focus: code quality, security, performance, architecture compliance, test quality
+      - Output: APPROVED or list of issues (Critical/Important/Minor) with file:line evidence
     </action>
 
     <check if="code quality review has Critical or Important issues">
@@ -704,7 +727,7 @@
       <action>Fix Important issues before proceeding</action>
       <action>Note Minor issues (fix if quick, skip if not)</action>
       <action>Run quality gates, commit, push</action>
-      <action>Re-dispatch code quality subagent to verify fixes</action>
+      <action>Re-run bmad-bmm-code-review code quality pass to verify fixes</action>
     </check>
 
     <action>Output a combined Code Review Report:
