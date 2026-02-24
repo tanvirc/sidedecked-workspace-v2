@@ -1,6 +1,6 @@
 ---
 name: 'story-lifecycle'
-description: 'Full multi-agent story lifecycle: SM+PM prioritize → BA+PM+UX define → Architect design → Dev build (feature branch) → QA test → DevOps deploy to Railway → Tech Writer document + Create PR → Code Reviewer review + resolve PR comments + merge'
+description: 'Full multi-agent story lifecycle: SM+PM prioritize -> BA+PM+UX define -> optional UX wireframe review -> Architect design and plan -> Dev TDD build -> QA integration checks -> optional Railway production deploy -> Tech Writer docs -> two-stage review -> PR merge'
 disable-model-invocation: true
 ---
 

@@ -1,4 +1,4 @@
-<workflow>
+﻿<workflow>
   <critical>
     You are an orchestrator running a full multi-agent story lifecycle for SideDecked.
 
@@ -22,6 +22,8 @@
 
     GENERAL RULES:
     At each phase, load the specified agent file(s) and fully adopt their persona(s).
+    In this orchestrated workflow, apply each loaded agent's domain expertise, principles, and quality rules.
+    Do NOT run standalone menu/greeting/wait loops from individual agent files - this workflow controls interaction flow.
     For multi-agent phases, synthesise perspectives distinctly before combining.
     STOP at each phase boundary and wait for {user_name} to confirm before continuing.
     NEVER skip phases. NEVER proceed without explicit user confirmation.
@@ -29,9 +31,9 @@
   </critical>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SESSION 1: DISCOVERY — Phases 1-3
-       Goal: Select story, define requirements, produce implementation plan
-       Artifacts saved: Requirements Brief, Implementation Plan file
+       SESSION 1: DISCOVERY — Phases 1, 2, 2B, 3
+       Goal: Select story, define requirements, produce UX wireframe (UI stories), produce implementation plan
+       Artifacts saved: Requirements Brief, UX wireframe HTML (UI stories), Implementation Plan file
        ═══════════════════════════════════════════════════════════ -->
 
   <!-- ═══════════════════════════════════════════════════════
@@ -73,18 +75,22 @@
     <action>Load and read {agent_path}/pm.md — retain John (Product Manager) perspective</action>
     <action>Load and read {agent_path}/ux-designer.md — embody UX Designer perspective</action>
     <action>Load the confirmed story file from {story_dir} matching the confirmed story key</action>
+    <action>Set {{story_file_path}} to the resolved story file path for downstream validation and documentation steps</action>
   </step>
 
   <step n="4" goal="BA+PM+UX: Clarify requirements and define UX">
     <action>As BA: Analyse the story's acceptance criteria — identify gaps, ambiguities, missing business rules, and edge cases</action>
+    <action>As BA: Produce an AC traceability view (Original AC → Clarified AC → status: clarified/needs-decision) and call out any unresolved requirement conflicts</action>
     <action>As PM: Verify scope is aligned with the parent epic's goals and user personas; flag any scope creep risks</action>
-    <action>As UX Designer: For any UI-facing criteria, propose UX flows, interaction patterns, component suggestions, and accessibility considerations</action>
+    <action>As UX Designer: For UI-facing criteria only, propose UX flows, interaction patterns, component suggestions, and accessibility considerations</action>
     <action>Output a consolidated Requirements + UX Brief:
       - Clarified acceptance criteria (with any additions or corrections)
+      - BA AC traceability and requirement conflict status
       - Business rules and edge cases identified by BA
       - PM scope confirmation or adjustments
       - UX flow notes and interaction patterns (if UI involved)
       - Open questions requiring {user_name} decision (if any)
+      - BA sign-off recommendation: READY / BLOCKED with explicit blockers
     </action>
     <ask>
       ## Phase 2 Complete — Requirements and UX Defined
@@ -97,16 +103,146 @@
   </step>
 
   <!-- ═══════════════════════════════════════════════════════
+       PHASE 2B: UX Wireframe & Validation — UX Designer + Party Mode + Advanced Elicitation
+       TRIGGER: Only when story touches storefront/ or vendorpanel/
+       Non-UI stories skip Phase 2B and proceed directly to Phase 3.
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="5" goal="UX Designer: Assess UI scope">
+    <action>Load and read {agent_path}/ux-designer.md — adopt Sally (UX Designer) persona completely</action>
+    <action>Review the confirmed story file and Requirements Brief from Phase 2</action>
+    <action>The ux-design-specification.md is already in context via input_file_patterns</action>
+    <action>Determine: does this story affect storefront/ or vendorpanel/ UI?
+      - Examine the story's acceptance criteria, task list, and affected files for any reference to:
+        storefront/, vendorpanel/, pages, components, layouts, screens, user-facing flows, or UI
+    </action>
+    <check if="story does NOT affect storefront/ or vendorpanel/">
+      <action>Output: "No UI scope detected — skipping Phase 2B. Proceeding directly to Phase 3 (Architecture)."</action>
+      <action>List the signals that confirmed no UI scope (e.g., story tasks reference only backend/ or customer-backend/)</action>
+    </check>
+    <check if="story DOES affect storefront/ or vendorpanel/">
+      <action>Output the specific screens, flows, and components this story requires:
+        - Screen names and their purpose
+        - Navigation flows between screens
+        - Key components needed (forms, cards, modals, lists, etc.)
+        - Interaction patterns (clicks, submissions, state changes)
+        - Responsive behavior requirements
+      </action>
+    </check>
+    <ask>
+      ## Phase 2B Step 5 — UI Scope Assessment
+
+      UX Designer has assessed the story's UI scope (see above).
+
+      If NO UI scope: type SKIP to bypass Phase 2B and proceed to Phase 3.
+      If UI scope confirmed: type CONFIRM to proceed to wireframe generation.
+    </ask>
+  </step>
+
+  <step n="6" goal="UX Designer: Produce HTML wireframe">
+    <action>As UX Designer (Sally):
+      - Reference _bmad-output/planning-artifacts/ux-design-directions.html for styling and format conventions
+      - Reference ux-design-specification.md for design system, patterns, and interaction principles
+      - Produce an HTML wireframe covering:
+        * Screen layouts with annotated sections
+        * Component hierarchy and nesting
+        * Interaction flows between screens (with navigation labels)
+        * Responsive behavior notes (mobile vs desktop breakpoints)
+        * Hover, focus, and active state annotations
+        * Empty states and loading states where relevant
+      - The wireframe MUST align with the design system documented in ux-design-specification.md
+        (typography, color palette, spacing, component variants, accessibility standards)
+    </action>
+    <action>Save the wireframe to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html</action>
+    <ask>
+      ## Phase 2B Step 6 — HTML Wireframe Produced
+
+      UX Designer has produced the HTML wireframe and saved it to:
+      _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html
+
+      Open the file in a browser to review it.
+
+      Type CONFIRM to proceed to party mode review.
+      Or describe wireframe changes needed before the review.
+    </ask>
+  </step>
+
+  <step n="7" goal="Party Mode: Wireframe review — UX Designer + PM + BA + Architect">
+    <critical>
+      This is a focused party mode with exactly 5 agents. Do NOT expand to additional agents.
+      Each agent reviews the wireframe strictly from their domain perspective.
+      The orchestrator synthesises a single Consolidated Wireframe Feedback summary.
+    </critical>
+    <action>Invoke party mode with the wireframe as the discussion seed.
+      Load all five agent perspectives by reading their agent files:
+      - {agent_path}/ux-designer.md — Sally (UX Designer)
+      - {agent_path}/pm.md — John (Product Manager)
+      - {agent_path}/analyst.md — Mary (Business Analyst)
+      - {agent_path}/architect.md — Winston (Architect)
+      - {agent_path}/dev.md — Amelia (Developer)
+    </action>
+    <action>As Sally (UX Designer): Review for design system alignment, interaction patterns, accessibility compliance, visual hierarchy, and component reuse</action>
+    <action>As John (PM): Review for scope alignment with the epic's goals and user personas; flag any scope creep or missing user journeys</action>
+    <action>As Mary (BA): Review for acceptance criteria coverage — does every AC have a corresponding UI element? Are business rules reflected? Any missing edge case screens?</action>
+    <action>As Winston (Architect): Review for technical feasibility, component reuse opportunities, data-fetching implications, performance considerations (rendering strategy, lazy loading), and any patterns that would be costly to implement</action>
+    <action>As Amelia (Dev): Review implementation feasibility in current codebases (storefront/vendorpanel), likely component breakdown, testing implications, and high-risk UI interactions</action>
+    <action>Synthesise a Consolidated Wireframe Feedback summary:
+      - Design system alignment: PASS / issues list
+      - Scope alignment: PASS / issues list
+      - AC coverage: PASS / gaps list
+      - Technical feasibility: PASS / concerns list
+      - Implementation feasibility: PASS / concerns list
+      - Priority of changes: must-fix before architecture / nice-to-have
+    </action>
+    <ask>
+      ## Phase 2B Step 7 — Party Mode Wireframe Review Complete
+
+      UX Designer, PM, BA, Architect, and Dev have reviewed the wireframe (see Consolidated Feedback above).
+
+      Type CONFIRM to proceed to advanced elicitation refinement.
+      Or describe specific changes you want incorporated before continuing.
+    </ask>
+  </step>
+
+  <step n="8" goal="Advanced Elicitation: Refine wireframe">
+    <action>Invoke advanced elicitation against the wireframe to surface edge cases, unclear states, and missing flows:
+      Apply at minimum the following elicitation angles:
+      - "What happens when...?" — error states, timeouts, empty data, permission denied
+      - "What does the user expect after...?" — post-action feedback, confirmation messages
+      - "What if the user is on mobile?" — touch targets, scroll behaviour, collapsed navigation
+      - "What if the data is extreme?" — very long text, zero items, 1000+ items
+      - "What are the accessibility requirements?" — keyboard nav, screen reader labels, contrast
+    </action>
+    <action>As UX Designer (Sally): Incorporate approved changes from party mode feedback and elicitation findings into the wireframe HTML file</action>
+    <action>Save the refined wireframe back to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html</action>
+    <action>Output: final confirmed wireframe path and a summary of all changes made</action>
+    <ask>
+      ## Phase 2B Complete — UX Wireframe Validated
+
+      Wireframe saved to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html
+
+      The wireframe has been reviewed by UX Designer, PM, BA, and Architect via party mode,
+      and refined through advanced elicitation.
+
+      Type CONFIRM to proceed to architecture design.
+      Or describe further changes needed.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
        PHASE 3: Technical Design + Implementation Plan — Architect
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="5" goal="Load Architect persona">
+  <step n="9" goal="Load Architect persona">
     <action>Load and read {agent_path}/architect.md — adopt Winston (Architect) persona completely</action>
+    <action>Load and read {agent_path}/analyst.md — load Mary (BA) perspective for AC traceability co-review</action>
     <action>Architecture docs are already in context via input_file_patterns</action>
+    <action>If Phase 2B produced a wireframe: load _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html as additional context for the technical design</action>
   </step>
 
-  <step n="6" goal="Architect: Design the technical solution">
+  <step n="10" goal="Architect: Design the technical solution">
     <action>As Architect: Review the story, Requirements + UX Brief from Phase 2, and all architecture docs</action>
+    <action>If a UX wireframe exists from Phase 2B: incorporate its component hierarchy, interaction flows, and responsive requirements into the technical design</action>
     <action>Enforce split-brain rule — classify this story's domain:
       - Commerce (orders, payments, vendors) → backend/ (mercur-db)
       - Customer Experience (cards, decks, community, pricing) → customer-backend/ (sidedecked-db)
@@ -117,6 +253,7 @@
     <action>Specify any new database entities, migrations, or schema changes needed</action>
     <action>Define API contracts for any new or modified endpoints</action>
     <action>Identify integration points with external systems (Stripe, Algolia, Redis, MinIO, Resend)</action>
+    <action>As BA (traceability pass): validate the design against every clarified AC and business rule from Phase 2; list any unmapped or partially-mapped ACs as blockers</action>
     <action>Flag architectural risks or decisions requiring {user_name} confirmation</action>
     <action>Determine deployment needs:
       - Sets {{needs_deploy}} = true if story touches storefront/ or vendorpanel/
@@ -129,7 +266,9 @@
       - New entities/migrations (if any)
       - API contract changes (if any)
       - Integration touchpoints
+      - BA traceability status: mapped ACs, unmapped ACs, and required follow-ups
       - Deployment classification: {{needs_deploy}} with justification
+      - Wireframe implementation notes (if Phase 2B ran): component strategy, rendering approach
       - Architectural risks or open decisions
     </action>
     <ask>
@@ -142,10 +281,11 @@
     </ask>
   </step>
 
-  <step n="7" goal="Architect: Write implementation plan to file">
+  <step n="11" goal="Architect: Write implementation plan to file">
     <critical>Save the plan as a durable artifact — do not rely on conversation context alone</critical>
     <action>Convert the Technical Design Note + Requirements Brief into a structured implementation plan</action>
     <action>Write the plan to: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Set {{plan_file_path}} to the exact saved plan path and reuse this variable in all later phases (including fresh sessions)</action>
     <action>Plan format:
       ```
       # {Story Title} Implementation Plan
@@ -157,6 +297,7 @@
       **Domain:** {Commerce | Customer Experience | Frontend}
       **Repos:** {list of affected repos}
       **Deployment:** {needs_deploy — true/false with reason}
+      **UX Wireframe:** {path to wireframe HTML if Phase 2B ran, otherwise "N/A"}
 
       ## Requirements Brief (from Phase 2)
       {summarize: clarified ACs, business rules, UX flows}
@@ -178,7 +319,7 @@
     <ask>
       ## Phase 3 Complete — Implementation Plan Saved
 
-      Plan written to: docs/plans/{date}-{story-key}-plan.md
+      Plan written to: {{plan_file_path}}
 
       **SESSION BOUNDARY RECOMMENDATION:**
       Discovery is complete. For best results, start a fresh session for the Build phase.
@@ -200,14 +341,17 @@
        PHASE 4: Development — Dev (TDD via Superpowers)
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="8" goal="Load Dev persona and prepare workspace">
+  <step n="12" goal="Load Dev persona and prepare workspace">
     <action>Load and read {agent_path}/dev.md — adopt Amelia (Developer) persona completely</action>
-    <action>Load the implementation plan file: docs/plans/{date}-{story-key}-plan.md</action>
+    <action>Load the implementation plan file from {{plan_file_path}} when available</action>
+    <action>If {{plan_file_path}} is unknown (fresh session), locate the latest matching file in {plan_dir} using pattern *-{story-key}-plan.md, set {{plan_file_path}}, then load it</action>
     <action>Load the story file from {story_dir} matching the story key</action>
+    <action>Set {{story_file_path}} to the resolved story file path for Phase 4/5/7 evidence commands</action>
     <action>If starting a fresh session: load the Requirements Brief and Technical Design from the plan file (they are embedded in it)</action>
+    <action>If a UX wireframe path is referenced in the plan: load it for component-level implementation guidance</action>
   </step>
 
-  <step n="9" goal="Dev: Create feature branch in root and affected child repos">
+  <step n="13" goal="Dev: Create feature branch in root and affected child repos">
     <action>Extract the story key from the confirmed story (e.g., "story-01-1-1" from the story file name)</action>
     <action>Create a feature branch named "feature/{story-key}" from the current branch in the root repo</action>
     <action>Identify which child repos will be modified based on the plan's Repos list:
@@ -229,7 +373,7 @@
     </action>
   </step>
 
-  <step n="10" goal="Dev: Implement story with TDD">
+  <step n="14" goal="Dev: Implement story with TDD">
     <critical>
       REQUIRED: Follow superpowers:test-driven-development for EVERY task.
       Iron law: No production code without a failing test first.
@@ -259,9 +403,13 @@
 
     <!-- EVIDENCE-BASED GATE: superpowers:verification-before-completion -->
     <action>Run verification commands and show FRESH output before claiming completion:
-      - For each affected repo: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
-      - For each affected repo: npm run test:coverage
-      - Count (IMPLEMENTED) tags in story file: grep -c "(IMPLEMENTED)" {story_file}
+      - backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm run test:unit
+      - customer-backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - storefront/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - vendorpanel/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - Run commands only in repos listed as affected by the implementation plan
+      - Run coverage check with the repo-supported command and report changed-area coverage
+      - Count (IMPLEMENTED) tags in {{story_file_path}}
       Evidence MUST appear in this message. No claims without fresh output.
     </action>
     <ask>
@@ -286,11 +434,11 @@
         cross-service integration and user-flow E2E tests.)
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="11" goal="Load QA persona">
+  <step n="15" goal="Load QA persona">
     <action>Load and read {agent_path}/qa.md — adopt Quinn (QA) persona completely</action>
   </step>
 
-  <step n="12" goal="QA: Integration and E2E test validation">
+  <step n="16" goal="QA: Integration and E2E test validation">
     <critical>
       Phase 4 already validated unit tests and coverage via TDD.
       Phase 5 focuses on what unit tests CANNOT cover:
@@ -302,6 +450,12 @@
       Phase 5 may confirm "no additional integration testing needed" with justification.
     </critical>
 
+    <action>Invoke BMM QA skill bmad-bmm-qa-generate-e2e-tests to generate/extend E2E test candidates for this story before finalizing test scope</action>
+    <action>For high-risk cross-service or auth/payment flows, invoke TEA skills for deeper rigor:
+      - bmad-tea-testarch-test-design
+      - bmad-tea-testarch-automate
+      - bmad-tea-testarch-trace
+    </action>
     <action>Review the implementation plan's domain classification and integration touchpoints</action>
     <action>Identify cross-service boundaries this story touches:
       - Does backend/ expose APIs that storefront/ or vendorpanel/ consume?
@@ -330,7 +484,11 @@
 
     <!-- EVIDENCE-BASED GATE -->
     <action>Run full quality gate in each affected repo and show FRESH output:
-      npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm run test:unit
+      - customer-backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - storefront/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - vendorpanel/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
+      - Run commands only in repos listed as affected by the implementation plan
     </action>
     <action>Output a QA Report:
       - Integration tests added/verified (or justification for skipping)
@@ -363,8 +521,10 @@
        Only runs if {{needs_deploy}} == true
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="13" goal="Check if production deployment is needed">
-    <action>Read the implementation plan file to retrieve {{needs_deploy}} value</action>
+  <step n="17" goal="Check if production deployment is needed">
+    <action>Read {{plan_file_path}} to retrieve {{needs_deploy}} value</action>
+    <action>Re-validate {{needs_deploy}} using actual changed repos/files on the feature branch; if actual changes contradict the plan classification, update the effective deployment decision and explain why</action>
+    <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before continuing</action>
     <check if="needs_deploy == false">
       <action>Output: "Phase 6 SKIPPED — Production deployment not needed for this story.
         Reason: {justification from plan file}
@@ -382,14 +542,18 @@
     </check>
   </step>
 
-  <step n="14" goal="DevOps: Deploy to Railway production">
+  <step n="18" goal="DevOps: Deploy to Railway production">
     <check if="needs_deploy == true OR user typed DEPLOY">
       <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
       <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
-      <action>Ensure the feature branch is merged to main and main is pushed to remote before deploying</action>
+      <action>Ensure the feature branch is pushed and up to date in every repo selected for deployment</action>
       <action>Identify which services are affected by the story changes</action>
-      <action>Deploy affected services to Railway production using: railway up --detach</action>
-      <action>Monitor deployment logs for errors using: railway logs</action>
+      <action>For EACH affected deployable child repo (backend/, customer-backend/, storefront/, vendorpanel/):
+        - cd into that repo
+        - Deploy using: railway up --detach
+        - Monitor logs using: railway logs
+        - cd back to root
+      </action>
 
       <on-failure>
         Follow superpowers:systematic-debugging for deployment failures:
@@ -400,9 +564,9 @@
       </on-failure>
 
       <action>Once deployed successfully:
-        - Get the production URL using: railway status
+        - For EACH deployed child repo, get service URL/status using: railway status (from inside that repo)
         - Test critical paths to verify the feature works in production
-        - Document the production URL
+        - Document production URLs per deployed service
       </action>
       <action>Output a Deployment Report:
         - Railway production URL
@@ -431,19 +595,30 @@
        PHASE 7: Documentation — Tech Writer
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="15" goal="Load Tech Writer persona with full documentation context">
+  <step n="19" goal="Load Tech Writer persona with full documentation context">
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
     <action>Load and read {project-root}/_bmad/_memory/tech-writer-sidecar/documentation-standards.md — quality rules for ALL documentation</action>
     <action>Load and read {project-root}/_bmad/_config/agents/bmm-tech-writer.customize.yaml — SideDecked-specific rules</action>
-    <action>Load the implementation plan file to recover Phase 2 + Phase 3 context:
+    <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before loading Tech Writer context</action>
+    <action>Load {{plan_file_path}} to recover Phase 2 + Phase 3 context:
       - Requirements Brief: key user-facing features, business rules, UX flows
       - Technical Design: domain classification, affected files/modules, new entities, API contracts
     </action>
     <action>Confirm: Tech Writer persona loaded, documentation standards primed, plan context recovered</action>
   </step>
 
-  <step n="16" goal="Tech Writer: Execute documentation sub-workflow">
-    <invoke-workflow config="{project-root}/_bmad/bmm/workflows/4-implementation/story-docs/workflow.yaml" />
+  <step n="20" goal="Tech Writer: Execute documentation sub-workflow">
+    <action>Load and read {agent_path}/analyst.md and use BA perspective to verify business-rule and acceptance-criteria wording consistency in docs</action>
+    <action>Update CHANGELOG.md with a concise entry for this story (what changed and why)</action>
+    <action>Update architecture docs when architecture, integration contracts, or operational behavior changed; otherwise document why no architecture update was needed</action>
+    <action>Update {{story_file_path}} so implemented acceptance criteria are marked (IMPLEMENTED)</action>
+    <action>Update {sprint_status} so the story status is set to done</action>
+    <action>Commit documentation changes to the feature branch:
+      - Stage docs and tracking updates
+      - If there are changes: commit with format docs({story-scope}): document {story-title} and push
+      - If no changes: explicitly report no-op with rationale
+    </action>
+    <action>Output a Documentation Update Report listing files changed, rationale, and any intentionally skipped docs</action>
 
     <!-- EVIDENCE-BASED GATE -->
     <action>Show evidence of documentation updates:
@@ -454,7 +629,7 @@
     <ask>
       ## Phase 7A Complete — Documentation Updated
 
-      Tech Writer has executed the documentation workflow (see Documentation Update Report above).
+      Tech Writer has applied documentation updates (see Documentation Update Report above).
 
       Before confirming, verify the evidence shown above:
       - [ ] CHANGELOG.md has a substantive entry (what + why)
@@ -472,7 +647,7 @@
        PHASE 8: Pull Request Creation + Two-Stage Code Review
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="17" goal="Create pull requests in ALL repos with commits">
+  <step n="21" goal="Create pull requests in ALL repos with commits">
     <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
     <action>For EACH repo that received commits (root + any child repos):
       - cd into the repo directory
@@ -483,6 +658,7 @@
           - Story key reference
           - Summary of changes specific to this repo
           - **Documentation Changes** section listing docs updated or created
+          - **UX Wireframe** reference (if Phase 2B ran): _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html
           - Railway production URL (if Phase 6 ran)
           - Testing notes (unit + integration coverage)
           - Acceptance criteria checklist
@@ -504,20 +680,20 @@
     </ask>
   </step>
 
-  <step n="18" goal="Two-stage code review using fresh subagents">
+  <step n="22" goal="Two-stage code review using explicit BMM review skills">
     <critical>
       REPLACED: Single-agent adversarial self-review.
-      NEW: Two-stage subagent review per superpowers:requesting-code-review pattern.
+      NEW: Two-stage review using bmad-bmm-code-review skill with two explicit passes.
 
-      Stage 1 — Spec Compliance Review (fresh subagent):
+      Stage 1 — Spec Compliance Review (bmad-bmm-code-review):
         Does the code match the story's acceptance criteria exactly?
         Nothing extra (YAGNI), nothing missing.
+        BA perspective is mandatory for AC interpretation disputes.
 
-      Stage 2 — Code Quality Review (fresh subagent):
+      Stage 2 — Code Quality Review (bmad-bmm-code-review):
         Clean code, security, performance, architecture compliance, test quality.
 
-      Fresh subagents do not share the implementer's context, so they genuinely
-      find issues the implementer missed. Self-review cannot achieve this.
+      Use a fresh reviewer context for each pass to avoid implementer bias.
 
       For handling human PR comments later, follow superpowers:receiving-code-review:
         Verify before implementing. Push back with technical reasoning if wrong.
@@ -525,25 +701,25 @@
     </critical>
 
     <!-- Stage 1: Spec Compliance -->
-    <action>Dispatch a FRESH subagent for spec compliance review:
+    <action>Invoke bmad-bmm-code-review for spec compliance review:
       - Provide: story file path, implementation plan path, list of PRs with URLs
-      - Subagent reads story acceptance criteria and verifies each is implemented
-      - Subagent checks: nothing extra built (YAGNI), nothing missing
-      - Subagent reports: PASS (all ACs met) or FAIL (list gaps)
+      - Review focus: acceptance-criteria traceability and YAGNI compliance
+      - Include BA perspective to adjudicate requirement interpretation
+      - Output: PASS (all ACs met) or FAIL (list exact gaps with file:line evidence)
     </action>
 
     <check if="spec compliance fails">
       <action>Fix the spec gaps identified by the reviewer</action>
       <action>Run quality gates, commit, push</action>
-      <action>Re-dispatch spec compliance subagent to verify fixes</action>
+      <action>Re-run bmad-bmm-code-review spec compliance pass to verify fixes</action>
       <action>Repeat until spec compliance passes</action>
     </check>
 
     <!-- Stage 2: Code Quality -->
-    <action>Dispatch a FRESH subagent for code quality review:
+    <action>Invoke bmad-bmm-code-review for code quality review in a fresh reviewer context:
       - Provide: story file path, PR URLs, base and head SHAs
-      - Subagent reviews: code quality, security, performance, architecture compliance, test quality
-      - Subagent reports: APPROVED or list of issues (Critical/Important/Minor)
+      - Review focus: code quality, security, performance, architecture compliance, test quality
+      - Output: APPROVED or list of issues (Critical/Important/Minor) with file:line evidence
     </action>
 
     <check if="code quality review has Critical or Important issues">
@@ -551,7 +727,7 @@
       <action>Fix Important issues before proceeding</action>
       <action>Note Minor issues (fix if quick, skip if not)</action>
       <action>Run quality gates, commit, push</action>
-      <action>Re-dispatch code quality subagent to verify fixes</action>
+      <action>Re-run bmad-bmm-code-review code quality pass to verify fixes</action>
     </check>
 
     <action>Output a combined Code Review Report:
@@ -570,7 +746,7 @@
     </ask>
   </step>
 
-  <step n="19" goal="Handle PR comments and merge">
+  <step n="23" goal="Handle PR comments and merge">
     <critical>
       For human PR comments, follow superpowers:receiving-code-review:
       - READ complete feedback without reacting
@@ -619,17 +795,18 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="20" goal="Story lifecycle complete">
+  <step n="24" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
       - All phases completed with brief status per phase (note any skipped phases)
+      - Phase 2B: wireframe path (or "skipped — no UI scope")
       - Feature branch name
       - Railway production URL (if deployed)
       - Pull requests created and merged: repo | PR number | PR URL | Merge status
       - Total files changed (across all repos)
       - Final test coverage achieved
       - Total PR comments resolved
-      - Plan file location: docs/plans/{date}-{story-key}-plan.md
+      - Plan file location: {{plan_file_path}}
     </action>
     <action>Remind {user_name}: All PRs have been reviewed, comment-resolved, and merged to main</action>
   </step>

@@ -2,12 +2,15 @@
 /*
   Check acceptance criteria completion for a BMAD epic or story.
 
-  When given an epic ID, reads all matching story files from docs/stories/.
+  When given an epic ID, reads all matching story files from:
+    1) _bmad-output/implementation-artifacts/
+    2) docs/stories/ (legacy fallback)
   When given a file, reads that single file.
 
   Usage:
+    node scripts/check-acceptance-criteria.js --id epic-4 [--next-story]
     node scripts/check-acceptance-criteria.js --id epic-04-vendor-management [--next-story]
-    node scripts/check-acceptance-criteria.js --file docs/stories/story-04-1-1-vendor-dashboard.md [--next-story]
+    node scripts/check-acceptance-criteria.js --file _bmad-output/implementation-artifacts/story-2-2-storefront-design-foundation-card-display.md [--next-story]
 
   Exit codes:
     0 = all acceptance criteria implemented
@@ -52,18 +55,31 @@ function resolveFiles({ id, file }) {
   };
   const epicId = legacyMap[id] || id;
 
-  // Derive epic number prefix from ID (e.g. "epic-04-..." → "story-04-")
   const epicNumMatch = epicId.match(/^epic-(\d+)/);
   if (!epicNumMatch) return [];
-  const epicNum = epicNumMatch[1];
 
-  const storiesDir = path.join('docs', 'stories');
-  if (!fs.existsSync(storiesDir)) return [];
+  const epicNum = Number.parseInt(epicNumMatch[1], 10);
+  if (Number.isNaN(epicNum)) return [];
 
-  const files = fs.readdirSync(storiesDir)
-    .filter(f => f.startsWith(`story-${epicNum}-`) && f.endsWith('.md'))
-    .sort()
-    .map(f => path.join(storiesDir, f));
+  const storyFileRegex = new RegExp(`^story-0*${epicNum}-.*\\.md$`, 'i');
+  const storyDirs = [
+    path.join('_bmad-output', 'implementation-artifacts'),
+    path.join('docs', 'stories'),
+  ];
+
+  const files = [];
+  for (const storiesDir of storyDirs) {
+    if (!fs.existsSync(storiesDir)) continue;
+
+    const matched = fs.readdirSync(storiesDir)
+      .filter((f) => storyFileRegex.test(f))
+      .map((f) => path.join(storiesDir, f))
+      .sort();
+
+    if (matched.length > 0) {
+      return matched;
+    }
+  }
 
   return files;
 }
@@ -107,9 +123,11 @@ function parseMarkdown(markdown, filePath) {
     }
 
     if (inCriteria) {
-      if (/^\s*[-*+]|^\s*\d+\./.test(line)) {
-        const m = line.match(statusRegex);
-        if (!m) continue;
+      // Support list-style criteria and BMAD AC headings like "**AC1** (IMPLEMENTED)".
+      const isListItem = /^\s*[-*+]|^\s*\d+\./.test(line);
+      const isAcHeading = /^\s*\*\*AC\d+\*\*/i.test(line);
+      const m = line.match(statusRegex);
+      if ((isListItem || isAcHeading) && m) {
         const status = mapStatus(m[1]);
         results.push({ story: currentStory, file: filePath, line: i + 1, text: line.trim(), status });
       }
@@ -129,7 +147,7 @@ function parseMarkdown(markdown, filePath) {
       process.exit(1);
     }
 
-    const missing = files.filter(f => !fs.existsSync(f));
+    const missing = files.filter((f) => !fs.existsSync(f));
     if (missing.length > 0) {
       console.error(`ERROR: Files not found: ${missing.join(', ')}`);
       process.exit(1);
@@ -149,7 +167,7 @@ function parseMarkdown(markdown, filePath) {
 
     if (args.nextStory) {
       for (const [storyKey, { items }] of byStory.entries()) {
-        if (items.some(i => i.status !== 'completed')) {
+        if (items.some((i) => i.status !== 'completed')) {
           console.log(storyKey);
           process.exit(0);
         }
@@ -170,11 +188,11 @@ function parseMarkdown(markdown, filePath) {
     if ((totals.in_progress || 0) > 0 || (totals.not_started || 0) > 0 || (totals.unknown || 0) > 0) {
       console.log('\nIncomplete items:');
       for (const [storyKey, { items }] of byStory.entries()) {
-        const incomplete = items.filter(i => i.status !== 'completed');
+        const incomplete = items.filter((i) => i.status !== 'completed');
         if (incomplete.length) {
           console.log(`- ${storyKey}`);
           for (const it of incomplete) {
-            console.log(`  • L${it.line}: ${it.text}`);
+            console.log(`  - L${it.line}: ${it.text}`);
           }
         }
       }

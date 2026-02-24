@@ -4,41 +4,16 @@
   <critical>Communicate all responses in {communication_language} and language MUST be tailored to {user_skill_level}</critical>
   <critical>Generate all documents in {document_output_language}</critical>
 
-  <!-- v2: Two-stage subagent review replaces single-agent adversarial self-review -->
-  <critical>
-    TWO-STAGE CODE REVIEW — Per superpowers:requesting-code-review pattern.
+  <critical>🔥 YOU ARE AN ADVERSARIAL CODE REVIEWER - Find what's wrong or missing! 🔥</critical>
+  <critical>Your purpose: Validate story file claims against actual implementation</critical>
+  <critical>Challenge everything: Are tasks marked [x] actually done? Are ACs really implemented?</critical>
+  <critical>Find 3-10 specific issues in every review minimum - no lazy "looks good" reviews - YOU are so much better than the dev agent
+    that wrote this slop</critical>
+  <critical>Read EVERY file in the File List - verify implementation against story requirements</critical>
+  <critical>Tasks marked complete but not done = CRITICAL finding</critical>
+  <critical>Acceptance Criteria not implemented = HIGH severity finding</critical>
+  <critical>Do not review files that are not part of the application's source code. Always exclude the _bmad/ and _bmad-output/ folders from the review. Always exclude IDE and CLI configuration folders like .cursor/ and .windsurf/ and .claude/</critical>
 
-    STAGE 1 (Spec Compliance): Does the code match the story exactly?
-      - Each AC is actually implemented (not just marked)
-      - Each task marked [x] is actually done
-      - Nothing extra built (YAGNI) — no features beyond what the story requires
-      - Nothing missing — all story requirements satisfied
-      This stage is PASS/FAIL. Loop until PASS.
-
-    STAGE 2 (Code Quality): Is the code well-built?
-      - Security: injection risks, missing validation, auth issues
-      - Performance: N+1 queries, inefficient loops, missing caching
-      - Architecture: split-brain compliance, pattern adherence
-      - Test quality: real assertions vs placeholder tests
-      - Maintainability: complexity, naming, duplication
-      This stage reports issues by severity. Loop until Critical/Important fixed.
-
-    SUBAGENT ISOLATION: Each review stage should run with FRESH context — not the same
-    context that implemented the code. In Claude Code, dispatch via the Task tool.
-    In other environments, use the equivalent isolation mechanism.
-    Self-review (same context reviewing its own code) is insufficient and biased.
-  </critical>
-  <critical>
-    PR COMMENT HANDLING: Follow superpowers:receiving-code-review for human feedback.
-    Verify before implementing. Push back with technical reasoning if wrong.
-    No performative agreement ("Great point!", "You're absolutely right!").
-  </critical>
-  <critical>Do not review files that are not part of the application's source code. Always exclude
-    _bmad/, _bmad-output/, .cursor/, .windsurf/, .claude/ folders from review.</critical>
-
-  <!-- ═══════════════════════════════════════════════════════
-       STEP 1: Load story and discover changes
-       ═══════════════════════════════════════════════════════ -->
 
   <step n="1" goal="Load story and discover changes">
     <action>Use provided {{story_path}} or ask user which story file to review</action>
@@ -53,234 +28,153 @@
       <action>Run `git status --porcelain` to find uncommitted changes</action>
       <action>Run `git diff --name-only` to see modified files</action>
       <action>Run `git diff --cached --name-only` to see staged files</action>
-      <action>Run `git diff main..HEAD --name-only` to see all changes on feature branch</action>
       <action>Compile list of actually changed files from git output</action>
-      <action>Record BASE_SHA (merge-base with main) and HEAD_SHA for review context</action>
     </check>
 
     <!-- Cross-reference story File List vs git reality -->
     <action>Compare story's Dev Agent Record → File List with actual git changes</action>
     <action>Note discrepancies:
-      - Files in git but not in story File List → flag for review
-      - Files in story File List but no git changes → flag as potential false claim
+      - Files in git but not in story File List
+      - Files in story File List but no git changes
       - Missing documentation of what was actually changed
     </action>
 
     <invoke-protocol name="discover_inputs" />
     <action>Load {project_context} for coding standards (if exists)</action>
+  </step>
 
-    <action>Prepare review context package (to be provided to review subagents):
-      - Story file path and content
-      - Acceptance Criteria (full text)
-      - Tasks/Subtasks with completion status
-      - File List (story-claimed + git-discovered)
-      - Git discrepancies found
-      - BASE_SHA and HEAD_SHA
-      - Project coding standards
+  <step n="2" goal="Build review attack plan">
+    <action>Extract ALL Acceptance Criteria from story</action>
+    <action>Extract ALL Tasks/Subtasks with completion status ([x] vs [ ])</action>
+    <action>From Dev Agent Record → File List, compile list of claimed changes</action>
+
+    <action>Create review plan:
+      1. **AC Validation**: Verify each AC is actually implemented
+      2. **Task Audit**: Verify each [x] task is really done
+      3. **Code Quality**: Security, performance, maintainability
+      4. **Test Quality**: Real tests vs placeholder bullshit
     </action>
   </step>
 
-  <!-- ═══════════════════════════════════════════════════════
-       STEP 2: Stage 1 — Spec Compliance Review
-       ═══════════════════════════════════════════════════════ -->
+  <step n="3" goal="Execute adversarial review">
+    <critical>VALIDATE EVERY CLAIM - Check git reality vs story claims</critical>
 
-  <step n="2" goal="Dispatch spec compliance review (fresh context)">
-    <critical>
-      This review MUST run in isolated/fresh context — not the same context that
-      implemented the code. The reviewer should have NO memory of implementation
-      decisions, only the story requirements and the actual code.
-    </critical>
-
-    <action>Dispatch a fresh review agent with the following context and directive:
-
-      CONTEXT PROVIDED:
-      - Story file (full content, especially Acceptance Criteria and Tasks/Subtasks)
-      - Implementation plan file (if exists at docs/plans/*-{story-key}-plan.md)
-      - File List: all files claimed changed (story + git-discovered)
-      - Git diff summary: BASE_SHA..HEAD_SHA
-      - Project coding standards
-
-      DIRECTIVE:
-      You are a Spec Compliance Reviewer. Your ONLY job is to verify the implementation
-      matches the story specification exactly. You are not reviewing code quality.
-
-      For EACH Acceptance Criterion:
-        1. Read the AC requirement word by word
-        2. Search implementation files for evidence it is satisfied
-        3. Rate: IMPLEMENTED, PARTIAL, or MISSING
-        4. If PARTIAL or MISSING: cite what is missing and where
-
-      For EACH Task marked [x]:
-        1. Read the task description
-        2. Find evidence in the code that it was actually done
-        3. If marked [x] but NOT done: CRITICAL finding — cite file:line
-
-      YAGNI Check:
-        1. Identify any code that does NOT map to a story task or AC
-        2. Flag as YAGNI violation — code should be removed
-
-      Git vs Story Check:
-        1. Files in git but not in story File List → incomplete documentation
-        2. Files in story File List but not in git → false claim
-
-      OUTPUT FORMAT:
-      - Overall: PASS or FAIL
-      - AC Status: table of each AC with IMPLEMENTED/PARTIAL/MISSING
-      - Task Audit: table of each [x] task with VERIFIED/NOT_DONE
-      - YAGNI Violations: list (if any)
-      - Git Discrepancies: list (if any)
-      - Issues found: list with severity (CRITICAL/HIGH/MEDIUM)
+    <!-- Git vs Story Discrepancies -->
+    <action>Review git vs story File List discrepancies:
+      1. **Files changed but not in story File List** → MEDIUM finding (incomplete documentation)
+      2. **Story lists files but no git changes** → HIGH finding (false claims)
+      3. **Uncommitted changes not documented** → MEDIUM finding (transparency issue)
     </action>
-  </step>
 
-  <step n="3" goal="Handle spec compliance results">
-    <check if="spec compliance PASS">
-      <output>**Stage 1: Spec Compliance — PASS**
-        All acceptance criteria verified. All tasks confirmed done. No YAGNI violations.
-      </output>
-      <action>Proceed to Stage 2 (code quality review)</action>
-    </check>
+    <!-- Use combined file list: story File List + git discovered files -->
+    <action>Create comprehensive review file list from story File List and git changes</action>
 
-    <check if="spec compliance FAIL">
-      <output>**Stage 1: Spec Compliance — FAIL**
-        {{spec_issues_summary}}
-      </output>
-
-      <ask>Spec compliance issues found (see above).
-
-        1. **Fix them now** — I'll address each gap and re-run spec review
-        2. **Create action items** — Add to story as review follow-ups
-        3. **Show details** — Deep dive into specific issues
-
-        Choose [1], [2], or [3]:</ask>
-
-      <check if="user chooses 1">
-        <action>For each CRITICAL and HIGH spec issue:
-          - Fix the implementation gap
-          - Run quality gate: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
-          - Update story File List if files changed
-          - Commit: fix({{story_key}}): address spec compliance gap — {description}
-          - Push: git push
-        </action>
-        <action>Re-dispatch spec compliance review (return to step 2)</action>
-      </check>
-
-      <check if="user chooses 2">
-        <action>Add "Review Follow-ups (AI)" subsection to Tasks/Subtasks</action>
-        <action>For each issue: `- [ ] [AI-Review][Severity] Description [file:line]`</action>
-        <action>Proceed to Stage 2 despite spec gaps (user accepted risk)</action>
-      </check>
-    </check>
-  </step>
-
-  <!-- ═══════════════════════════════════════════════════════
-       STEP 4: Stage 2 — Code Quality Review
-       ═══════════════════════════════════════════════════════ -->
-
-  <step n="4" goal="Dispatch code quality review (fresh context)">
-    <critical>
-      This review MUST run in isolated/fresh context — separate from both the
-      implementer AND the spec reviewer. Fresh perspective catches different issues.
-    </critical>
-
-    <action>Dispatch a fresh review agent with the following context and directive:
-
-      CONTEXT PROVIDED:
-      - Story file (for understanding intent)
-      - Spec compliance results from Stage 1
-      - File List: all changed files
-      - Git diff: BASE_SHA..HEAD_SHA (full diff content)
-      - Project coding standards
-      - Architecture docs (relevant sections)
-
-      DIRECTIVE:
-      You are a Code Quality Reviewer. Spec compliance has already been verified.
-      Your job is to assess whether the code is well-built. Find real problems.
-
-      Review EACH changed file for:
-        1. **Security**: Injection risks, missing input validation, auth bypass, OWASP top 10
-        2. **Performance**: N+1 queries, O(n^2) where O(n) is possible, missing caching, unnecessary DB calls
-        3. **Architecture**: Split-brain rule violations (mercur-db vs sidedecked-db), pattern adherence, coupling
-        4. **Test Quality**: Real behavior tests vs mock-heavy placeholders, edge case coverage, assertion quality
-        5. **Maintainability**: Complexity, naming, duplication, magic numbers, overly long functions
-        6. **Error Handling**: Missing try/catch at boundaries, poor error messages, swallowed errors
-
-      SEVERITY LEVELS:
-        - CRITICAL: Security vulnerability, data corruption risk, crash in production
-        - IMPORTANT: Performance problem, architecture violation, missing error handling
-        - MINOR: Style, naming, small improvements
-
-      OUTPUT FORMAT:
-      - Overall: APPROVED, CHANGES_NEEDED, or BLOCKED
-      - Strengths: 2-3 things done well (be specific, cite files)
-      - Issues: list with severity, file:line, description, suggested fix
-      - Issue count: {{critical}} Critical, {{important}} Important, {{minor}} Minor
+    <!-- AC Validation -->
+    <action>For EACH Acceptance Criterion:
+      1. Read the AC requirement
+      2. Search implementation files for evidence
+      3. Determine: IMPLEMENTED, PARTIAL, or MISSING
+      4. If MISSING/PARTIAL → HIGH SEVERITY finding
     </action>
+
+    <!-- Task Completion Audit -->
+    <action>For EACH task marked [x]:
+      1. Read the task description
+      2. Search files for evidence it was actually done
+      3. **CRITICAL**: If marked [x] but NOT DONE → CRITICAL finding
+      4. Record specific proof (file:line)
+    </action>
+
+    <!-- Code Quality Deep Dive -->
+    <action>For EACH file in comprehensive review list:
+      1. **Security**: Look for injection risks, missing validation, auth issues
+      2. **Performance**: N+1 queries, inefficient loops, missing caching
+      3. **Error Handling**: Missing try/catch, poor error messages
+      4. **Code Quality**: Complex functions, magic numbers, poor naming
+      5. **Test Quality**: Are tests real assertions or placeholders?
+    </action>
+
+    <check if="total_issues_found lt 3">
+      <critical>NOT LOOKING HARD ENOUGH - Find more problems!</critical>
+      <action>Re-examine code for:
+        - Edge cases and null handling
+        - Architecture violations
+        - Documentation gaps
+        - Integration issues
+        - Dependency problems
+        - Git commit message quality (if applicable)
+      </action>
+      <action>Find at least 3 more specific, actionable issues</action>
+    </check>
   </step>
 
-  <step n="5" goal="Handle code quality results and present combined report">
-    <check if="code quality APPROVED">
-      <output>**Stage 2: Code Quality — APPROVED**
-        {{strengths_summary}}
-        {{minor_issues_if_any}}
-      </output>
-    </check>
+  <step n="4" goal="Present findings and fix them">
+    <action>Categorize findings: HIGH (must fix), MEDIUM (should fix), LOW (nice to fix)</action>
+    <action>Set {{fixed_count}} = 0</action>
+    <action>Set {{action_count}} = 0</action>
 
-    <check if="code quality CHANGES_NEEDED or BLOCKED">
-      <output>**Stage 2: Code Quality — {{quality_verdict}}**
-        {{quality_issues_summary}}
-      </output>
-
-      <ask>Code quality issues found (see above).
-
-        1. **Fix Critical + Important now** — I'll fix and re-run quality review
-        2. **Create action items** — Add to story as review follow-ups
-        3. **Show details** — Deep dive into specific issues
-
-        Choose [1], [2], or [3]:</ask>
-
-      <check if="user chooses 1">
-        <action>Fix all CRITICAL issues immediately</action>
-        <action>Fix all IMPORTANT issues</action>
-        <action>Note MINOR issues (fix if quick, skip if not)</action>
-        <action>Run quality gate: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test</action>
-        <action>Commit: fix({{story_key}}): address code quality findings — {description}</action>
-        <action>Push: git push</action>
-        <action>Re-dispatch code quality review (return to step 4)</action>
-      </check>
-
-      <check if="user chooses 2">
-        <action>Add issues to "Review Follow-ups (AI)" subsection</action>
-        <action>For each issue: `- [ ] [AI-Review][Severity] Description [file:line]`</action>
-      </check>
-    </check>
-
-    <!-- Combined report -->
-    <action>Set {{fixed_count}} = total issues fixed across both stages</action>
-    <action>Set {{action_count}} = total action items created</action>
-
-    <output>**Combined Code Review Report**
+    <output>**🔥 CODE REVIEW FINDINGS, {user_name}!**
 
       **Story:** {{story_file}}
-      **Spec Compliance:** {{spec_verdict}} (Stage 1)
-      **Code Quality:** {{quality_verdict}} (Stage 2)
-      **Issues Found:** {{critical_count}} Critical, {{important_count}} Important, {{minor_count}} Minor
-      **Issues Fixed:** {{fixed_count}}
-      **Action Items Created:** {{action_count}}
+      **Git vs Story Discrepancies:** {{git_discrepancy_count}} found
+      **Issues Found:** {{high_count}} High, {{medium_count}} Medium, {{low_count}} Low
+
+      ## 🔴 CRITICAL ISSUES
+      - Tasks marked [x] but not actually implemented
+      - Acceptance Criteria not implemented
+      - Story claims files changed but no git evidence
+      - Security vulnerabilities
+
+      ## 🟡 MEDIUM ISSUES
+      - Files changed but not documented in story File List
+      - Uncommitted changes not tracked
+      - Performance problems
+      - Poor test coverage/quality
+      - Code maintainability issues
+
+      ## 🟢 LOW ISSUES
+      - Code style improvements
+      - Documentation gaps
+      - Git commit message quality
     </output>
+
+    <ask>What should I do with these issues?
+
+      1. **Fix them automatically** - I'll update the code and tests
+      2. **Create action items** - Add to story Tasks/Subtasks for later
+      3. **Show me details** - Deep dive into specific issues
+
+      Choose [1], [2], or specify which issue to examine:</ask>
+
+    <check if="user chooses 1">
+      <action>Fix all HIGH and MEDIUM issues in the code</action>
+      <action>Add/update tests as needed</action>
+      <action>Update File List in story if files changed</action>
+      <action>Update story Dev Agent Record with fixes applied</action>
+      <action>Set {{fixed_count}} = number of HIGH and MEDIUM issues fixed</action>
+      <action>Set {{action_count}} = 0</action>
+    </check>
+
+    <check if="user chooses 2">
+      <action>Add "Review Follow-ups (AI)" subsection to Tasks/Subtasks</action>
+      <action>For each issue: `- [ ] [AI-Review][Severity] Description [file:line]`</action>
+      <action>Set {{action_count}} = number of action items created</action>
+      <action>Set {{fixed_count}} = 0</action>
+    </check>
+
+    <check if="user chooses 3">
+      <action>Show detailed explanation with code examples</action>
+      <action>Return to fix decision</action>
+    </check>
   </step>
 
-  <!-- ═══════════════════════════════════════════════════════
-       STEP 6: Update story status and sync sprint tracking
-       ═══════════════════════════════════════════════════════ -->
-
-  <step n="6" goal="Update story status and sync sprint tracking">
+  <step n="5" goal="Update story status and sync sprint tracking">
     <!-- Determine new status based on review outcome -->
-    <check if="spec compliance PASS AND quality APPROVED AND all issues fixed">
+    <check if="all HIGH and MEDIUM issues fixed AND all ACs implemented">
       <action>Set {{new_status}} = "done"</action>
       <action>Update story Status field to "done"</action>
     </check>
-    <check if="issues remain unfixed (action items created)">
+    <check if="HIGH or MEDIUM issues remain OR ACs not fully implemented">
       <action>Set {{new_status}} = "in-progress"</action>
       <action>Update story Status field to "in-progress"</action>
     </check>
@@ -294,7 +188,7 @@
       <action>Set {{current_sprint_status}} = "no-sprint-tracking"</action>
     </check>
 
-    <!-- Sync sprint-status.yaml -->
+    <!-- Sync sprint-status.yaml when story status changes (only if sprint tracking enabled) -->
     <check if="{{current_sprint_status}} != 'no-sprint-tracking'">
       <action>Load the FULL file: {sprint_status}</action>
       <action>Find development_status key matching {{story_key}}</action>
@@ -320,145 +214,13 @@
       <output>ℹ️ Story status updated (no sprint tracking configured)</output>
     </check>
 
-    <output>**✅ Code Review Complete!**
+    <output>**✅ Review Complete!**
 
       **Story Status:** {{new_status}}
-      **Spec Compliance:** {{spec_verdict}}
-      **Code Quality:** {{quality_verdict}}
       **Issues Fixed:** {{fixed_count}}
       **Action Items Created:** {{action_count}}
 
-      {{#if new_status == "done"}}Both review stages passed. Story is done.{{else}}Address the action items and re-run code review.{{/if}}
-    </output>
-  </step>
-
-  <!-- ═══════════════════════════════════════════════════════
-       PR COMMENT HANDLING — Read, Fix, Respond, Resolve, Merge
-       Per superpowers:receiving-code-review
-       ═══════════════════════════════════════════════════════ -->
-
-  <step n="7" goal="Discover and read PR comments across all story repos">
-    <action>Derive the feature branch name for this story: "feature/{{story_key}}"</action>
-    <action>Identify all repos that may have PRs for this branch (root repo + child repos: backend/, customer-backend/, storefront/, vendorpanel/)</action>
-    <action>For EACH repo, check if a PR exists for the feature branch:
-      - cd into the repo directory
-      - Run: gh pr list --head feature/{{story_key}} --json number,title,url,state
-      - Record: repo path, PR number, PR URL, PR state
-      - cd back to root
-    </action>
-    <check if="no PRs found in any repo">
-      <output>No open PRs found for feature/{{story_key}} in any repo — skipping PR comment handling.</output>
-      <action>Exit this step and proceed to final summary</action>
-    </check>
-    <action>For EACH open PR found, read all comments:
-      - Run: gh pr view {pr_number} --comments --json comments,reviewComments,reviews
-      - Collect all review comments (inline code comments) and general PR comments
-      - For each comment record: comment_id, file, line (if inline), author, body, resolved status
-    </action>
-    <action>Categorize each unresolved comment:
-      - CHANGE_REQUEST: requires code or test modification
-      - QUESTION: requires a written response only
-      - SUGGESTION: optional improvement (accept or decline)
-      - Already resolved: skip entirely
-    </action>
-    <action>Set {{total_pr_comments}} = total unresolved comments across all PRs</action>
-    <output>**PR Comment Triage**
-
-      | Repo | PR | URL | CHANGE_REQUEST | QUESTION | SUGGESTION |
-      |---|---|---|---|---|---|
-      (one row per repo with an open PR)
-
-      Total unresolved comments: {{total_pr_comments}}
-    </output>
-  </step>
-
-  <step n="8" goal="Address PR comments per superpowers:receiving-code-review">
-    <critical>
-      Follow superpowers:receiving-code-review for ALL human feedback:
-      1. READ complete feedback without reacting
-      2. UNDERSTAND: Restate the requirement in own words (or ask for clarification)
-      3. VERIFY: Check against codebase reality — is the suggestion technically correct?
-      4. EVALUATE: Technically sound for THIS codebase? Breaks existing functionality?
-      5. RESPOND: Technical acknowledgment or reasoned pushback
-      6. IMPLEMENT: One item at a time, test each
-
-      FORBIDDEN responses: "You're absolutely right!", "Great point!", "Thanks for catching that!"
-      Instead: state the fix, or push back with technical reasoning.
-
-      If suggestion seems wrong: push back. Reference working tests/code. Involve user if architectural.
-      If can't verify: say so — "I can't verify this without [X]. Should I investigate?"
-      If conflicts with prior architectural decisions: STOP and discuss with {user_name}.
-    </critical>
-
-    <action>Address comments IN ORDER per PR: CHANGE_REQUEST first, then QUESTION, then SUGGESTION</action>
-
-    <action>For EACH CHANGE_REQUEST comment:
-      1. Read the full comment — understand exactly what is requested
-      2. VERIFY: Is this technically correct for this codebase? Check against actual code.
-      3. If CORRECT: make the change, run quality gate, commit, push, respond with what changed, resolve
-      4. If INCORRECT: push back with technical reasoning citing specific code/tests, resolve with explanation
-      5. If UNCLEAR: ask for clarification before implementing anything
-      6. Quality gate after each fix: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test
-      7. Commit: fix({{story_key}}): address review comment — {brief description}
-      8. Push: git push
-      9. Reply in thread: gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="{response}"
-    </action>
-
-    <action>For EACH QUESTION comment:
-      1. Read the question carefully
-      2. Formulate a clear, factual answer based on actual implementation
-      3. Reply in thread
-      4. Resolve
-    </action>
-
-    <action>For EACH SUGGESTION comment:
-      1. YAGNI check: grep codebase for actual usage — is this feature needed?
-      2. If ACCEPTING: implement, commit, push, reply stating what changed, resolve
-      3. If DECLINING: reply with specific technical reason (out of scope, YAGNI, conflicts with X), resolve
-    </action>
-
-    <action>After all comments for a given PR are addressed:
-      - Run: gh pr view {pr_number} --json reviewDecision,reviewRequests
-      - Note if re-review was requested
-    </action>
-
-    <output>**PR Comment Resolution Summary**
-
-      | Repo | PR | Resolved | Commits Made | Pushbacks | Re-review Requested? |
-      |---|---|---|---|---|---|
-      (one row per PR)
-    </output>
-  </step>
-
-  <step n="9" goal="Merge PRs once all comments are resolved">
-    <critical>Only merge a PR when ALL comment threads are resolved and no CHANGES_REQUESTED review blocks it</critical>
-
-    <action>For EACH PR in order:
-      1. Verify no remaining unresolved threads:
-         gh pr view {pr_number} --json reviewThreads
-      2. Verify no blocking CHANGES_REQUESTED reviews:
-         gh pr view {pr_number} --json reviews
-      3. If all clear:
-         a. Post a merge summary comment:
-            gh pr comment {pr_number} -b "All review comments addressed. Merging."
-         b. Merge the PR with squash:
-            gh pr merge {pr_number} --squash --delete-branch
-         c. Confirm merge success and record the merge commit SHA
-      4. If unresolved threads or blocking reviews remain:
-         a. List the outstanding threads
-         b. Return to step 8 to address the new or remaining comments before retrying merge
-    </action>
-
-    <check if="any PR still has unresolved threads after retry">
-      <action>Report the specific unresolved threads and which reviewer must take action</action>
-      <action>Do NOT force-merge — stop and surface the blocker to the user</action>
-    </check>
-
-    <output>**Merge Summary**
-
-      | Repo | PR | Merged? | Merge Commit | Notes |
-      |---|---|---|---|---|
-      (one row per PR)
+      {{#if new_status == "done"}}Code review complete!{{else}}Address the action items and continue development.{{/if}}
     </output>
   </step>
 

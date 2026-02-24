@@ -21,11 +21,14 @@ SideDecked is a split-brain TCG marketplace — **two databases, never directly 
 sidedecked/
 ├── backend/           # MedusaJS v2 (MercurJS)   →  mercur-db      (orders, payments, vendors)
 ├── customer-backend/  # Node.js + TypeORM         →  sidedecked-db  (cards, decks, community, pricing)
-├── storefront/        # Next.js 14                →  API consumer
-└── vendorpanel/       # React 18 + Vite           →  API consumer
+├── storefront/        # Next.js 15                →  API consumer
+├── vendorpanel/       # React 18 + Vite           →  API consumer
+└── discord-bot/       # discord.js 14             →  API consumer
 ```
 
 Cross-database communication happens **only via APIs** — never direct DB connections.
+
+**Full project context for AI agents:** `_bmad-output/project-context.md`
 
 ---
 
@@ -37,11 +40,11 @@ Cross-database communication happens **only via APIs** — never direct DB conne
 - Search the codebase for similar implementations before starting
 - Write complete implementations — no `// TODO`, no stub `return null`
 - Update README.md, CHANGELOG.md, and relevant architecture docs when completing a spec
-- Run `npm run lint && npm run typecheck && npm run build && npm test` before every commit
+- Run the quality gate before every commit (in each affected sub-repo)
 
 **Never:**
 - Mix mercur-db and sidedecked-db data or create direct connections between them
-- Add AI references in code, docs, or commits ("Claude", "Co-Authored-By: Claude", 🤖)
+- Add AI references in code, docs, or commits ("Claude", "Co-Authored-By: Claude")
 - Leave TODO comments — convert to GitHub issues
 - Use mock/stub data in production code
 - Skip the quality gate: lint + typecheck + build + test must all pass
@@ -55,7 +58,7 @@ Cross-database communication happens **only via APIs** — never direct DB conne
 | Commerce backend | MedusaJS v2 (MercurJS) | Custom commerce |
 | Customer backend | Node.js + TypeORM | Prisma, custom ORM |
 | Database | PostgreSQL | MongoDB, SQLite |
-| Frontend | Next.js 14 + React | Vue, Angular |
+| Frontend | Next.js 15 + React | Vue, Angular |
 | Auth | OAuth2 + JWT | Sessions, custom auth |
 | Payments | Stripe Connect | Custom payment |
 | Search | Algolia | Elasticsearch |
@@ -69,7 +72,7 @@ Cross-database communication happens **only via APIs** — never direct DB conne
 ## MedusaJS v2 Patterns
 
 ```typescript
-// ✅ CORRECT
+// CORRECT
 import { MedusaStoreRequest, MedusaResponse } from '@medusajs/framework/http'
 updateEntity({ id: 'entity_id' }, updateData, context)  // object ID
 export default ServiceClass                              // default export
@@ -77,7 +80,7 @@ model.text().default('literal_value')                   // literal default
 { resolve: './src/modules/auth' }                       // object format
 { success: true, authIdentity: undefined }              // undefined not null
 
-// ❌ FORBIDDEN
+// FORBIDDEN
 MedusaRequest                  // use MedusaStoreRequest
 './modules/auth'               // use { resolve: }
 () => new Date()               // use literal values
@@ -91,14 +94,14 @@ created_at, updated_at        // implicit fields, don't declare
 ## Quality Gates
 
 ```bash
-# Before every commit (run in each affected repo)
+# Before every commit (run in each affected sub-repo)
 npm run lint && npm run typecheck && npm run build && npm test
 
 # Coverage check (must be >80%)
 npm run test:coverage
 ```
 
-Performance targets: API < 100ms p95 · DB queries < 50ms · TypeScript strict · ESLint 0 errors
+Performance targets: API < 100ms p95 | DB queries < 50ms | TypeScript strict | ESLint 0 errors
 
 ---
 
@@ -108,8 +111,23 @@ Format: `type(scope): description` — conventional commits, present tense, no p
 
 **Forbidden everywhere (code, docs, commits):**
 - AI references: "Claude", "Co-Authored-By: Claude", "Generated with"
-- Robot emojis 🤖
 - TODO comments (open a GitHub issue instead)
+
+---
+
+## Development Setup
+
+```bash
+# Start all services
+cd backend && npm run dev            # :9000
+cd customer-backend && npm run dev   # :7000
+cd vendorpanel && npm run dev        # :5173
+cd storefront && npm run dev         # :3000
+
+# Run migrations
+cd backend && npm run db:migrate --workspace=apps/backend
+cd customer-backend && npm run migration:run
+```
 
 ---
 
@@ -125,19 +143,17 @@ Invoke any agent as a slash command (e.g., `/bmad-agent-bmm-dev`).
 | `/bmad-agent-bmm-sm` | Bob — Scrum Master | Story creation, sprint planning, epic orchestration |
 | `/bmad-agent-bmm-dev` | Amelia — Developer | TDD implementation, story execution, code review |
 | `/bmad-agent-bmm-qa` | Quinn — QA | Test automation, quality gates, coverage analysis |
-| `/bmad-agent-bmm-devops` | Rex — DevOps | Railway deployment, CI/CD, infrastructure automation |
-| `/bmad-agent-bmm-ux-designer` | UX Expert | Storefront/vendorpanel UX, wireframes |
-| `/bmad-agent-bmm-tech-writer` | Tech Writer | Docs, CHANGELOG, architecture updates |
+| `/bmad-agent-bmm-ux-designer` | Sally — UX Designer | Storefront/vendorpanel UX, wireframes |
+| `/bmad-agent-bmm-tech-writer` | Paige — Tech Writer | Docs, CHANGELOG, architecture updates |
 | `/bmad-agent-bmad-master` | BMad Master | Cross-agent orchestration, workflow execution |
 
 Agent customizations (SideDecked context): `_bmad/_config/agents/`
 
 ---
 
-## BMAD Full Planning Path
+## BMAD Workflows
 
-For new epics or complex features, follow this path in order:
-
+**Full Planning Path** (new epics or complex features):
 ```
 1. /bmad-bmm-create-product-brief    → define problem + MVP scope
 2. /bmad-bmm-create-prd              → full requirements + personas
@@ -147,28 +163,27 @@ For new epics or complex features, follow this path in order:
 6. Per story: /bmad-bmm-dev-story → /bmad-bmm-code-review
 ```
 
-For a single story end-to-end (all agents, approval gates between phases): `/bmad-bmm-story-lifecycle`
+**Quick Flow** (bug fixes, small features): `/bmad-bmm-quick-spec` → `/bmad-bmm-quick-dev`
 
-For bug fixes and small features: `/bmad-bmm-quick-spec` → `/bmad-bmm-dev-story` → `/bmad-bmm-code-review`
+**Story Lifecycle** (single story end-to-end): `/bmad-bmm-create-story` → `/bmad-bmm-dev-story` → `/bmad-bmm-code-review`
 
-BMAD outputs: `_bmad-output/planning-artifacts/` (PRDs, architecture) · `_bmad-output/implementation-artifacts/` (stories, QA)
+**Get Help:** `/bmad-help` — shows what workflow step comes next
 
 ---
 
-## Epic Status
+## Epic & Story Status
 
-Status is owned by BMAD — not this file. Use these to check or update it:
+Status is owned by BMAD — not this file. Use these to check or update:
 
-- `/bmad-bmm-sprint-planning` — generate/refresh `_bmad-output/implementation-artifacts/sprint-status.yaml` from epic files
-- `/bmad-bmm-sprint-status` — summarize current epic/story status and surface risks
-- `/bmad-agent-bmm-sm` — Scrum Master menu (create stories, track progress, plan sprints)
+- `/bmad-bmm-sprint-planning` — generate/refresh sprint-status.yaml
+- `/bmad-bmm-sprint-status` — summarize current status and surface risks
+- `/bmad-agent-bmm-sm` — Scrum Master menu
 
-Epic source files: `docs/epics/epic-NN-*.md` (each has a `**Status**:` header field)
-Story source files: `docs/stories/story-NN-M-*.md` (acceptance criteria tagged with `(NOT BUILT)` / `(IN PROGRESS)` / `(IMPLEMENTED)`)
+Epic definitions: `_bmad-output/planning-artifacts/epics.md` | Story files: `_bmad-output/implementation-artifacts/story-*.md`
 
 ```bash
-node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management           # show incomplete criteria
-node scripts/check-acceptance-criteria.js --id epic-01-authentication-user-management --next-story  # first incomplete story
+node scripts/check-acceptance-criteria.js --id <epic-id>              # show incomplete criteria
+node scripts/check-acceptance-criteria.js --id <epic-id> --next-story # first incomplete story
 ```
 
 ---
@@ -187,16 +202,6 @@ Read the relevant doc **before** starting. All in `docs/architecture/`.
 
 ---
 
-## Development Setup
+## Sub-Repo CLAUDE.md Files
 
-```bash
-# Start all services
-cd backend && npm run dev            # :9000
-cd customer-backend && npm run dev   # :7000
-cd vendorpanel && npm run dev        # :5173
-cd storefront && npm run dev         # :3000
-
-# Run migrations
-cd backend && npm run db:migrate --workspace=apps/backend
-cd customer-backend && npm run migration:run
-```
+Each sub-repo has its own `CLAUDE.md` with repo-specific rules (code style, testing, patterns). When working in a sub-repo, follow both this root file AND the sub-repo's file.
