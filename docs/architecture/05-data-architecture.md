@@ -1362,15 +1362,45 @@ export class BackupService {
 
 ### Card Data ETL Pipeline
 
-### ETL Operational Guarantees (Story 2-1)
+**Implementation:** `packages/tcg-catalog/src/services/ETLService.ts`
+**Admin API:** `POST /api/admin/etl/trigger`, `GET /api/admin/etl/jobs` (platform admin only)
 
-- `OPTCG` is the canonical One Piece game code across ETL orchestration and CLI invocations; alias inputs are normalized before job execution.
+`ETLService` is a single service that routes per-game via a provider-specific transformer:
+
+| Game    | API Provider  | Transformer class     |
+|---------|---------------|-----------------------|
+| MTG     | Scryfall      | `ScryfallTransformer` |
+| POKEMON | Pokémon TCG   | `PokemonTransformer`  |
+| YUGIOH  | YGOProDeck    | `YugiohTransformer`   |
+| OPTCG   | One Piece TCG | `OnePieceTransformer` |
+
+Each transformer implements `fetchCards()` and returns a normalized card list. `ETLService` then upserts cards, prints, and SKUs in batches via atomic TypeORM transactions.
+
+Circuit breaker is per-game (`Map<gameCode, CircuitBreakerState>`); opens after `circuitBreakerThreshold` consecutive failures and resets after `circuitBreakerResetTimeout` ms.
+
+### ETL Operational Guarantees
+
+- `OPTCG` is the canonical One Piece game code; alias inputs are normalized before job execution.
 - ETL runs are transactional per game so one game failure does not corrupt already-committed data for other games.
-- Duplicate card conflicts resolve deterministically in this order: higher completeness score, newer source `updated_at`, then smallest stable source identifier.
+- Duplicate card conflicts resolve deterministically: higher completeness score → newer source `updated_at` → smallest stable source identifier.
 - Catalog SKU tokens are normalized to uppercase ASCII kebab format with `UNK` fallback for missing tokens.
-- Weekly incremental ETL sync is scheduled for `MTG`, `POKEMON`, `YUGIOH`, and `OPTCG` with per-game failure isolation and structured logging.
+- Per-game circuit breaker prevents cascading failures; isolated by `gameCode` key.
 
 ```typescript
+// Real API (packages/tcg-catalog/src/services/ETLService.ts)
+const etl = new ETLService({ batchSize: 100, circuitBreakerThreshold: 3 })
+const result = await etl.startETLJob('MTG', ETLJobType.FULL_SYNC, 'admin')
+// result: { success, gameCode, totalProcessed, cardsCreated, cardsUpdated,
+//           printsCreated, skusGenerated, errors[] }
+```
+
+Job lifecycle is tracked in the `etl_jobs` table:
+`PENDING → RUNNING → COMPLETED | FAILED | PARTIAL | CANCELLED`
+
+#### Pre-implementation pseudocode (historical reference)
+
+```typescript
+// NOTE: The classes below are design-phase pseudocode, not the real implementation.
 export class UniversalETLService {
   private readonly scrapers = {
     MTG: new ScryfallETLService(),
@@ -1495,7 +1525,7 @@ export class ScryfallETLService {
       name: scryfallCard.name,
       normalized_name: scryfallCard.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
       primary_type: scryfallCard.type_line.split(' ')[0],
-      subtypes: scryfallCard.type_line.includes('—') 
+      subtypes: scryfallCard.type_line.includes('—')
         ? scryfallCard.type_line.split('—')[1].trim().split(' ')
         : [],
       oracle_text: scryfallCard.oracle_text,
@@ -1516,6 +1546,7 @@ export class ScryfallETLService {
     }
   }
 }
+// END pseudocode — see real implementation in packages/tcg-catalog/src/
 ```
 
 ## 🚀 Deployment Architecture
