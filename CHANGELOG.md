@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **TCG Catalog ETL Pipeline Seeding (Story 2-1)**: Hardened multi-game ETL seeding and ongoing sync reliability so discovery runs on consistent real catalog data
+  - Canonical game-code normalization routes One Piece aliases (`ONEPIECE`, `ONE-PIECE`, `ONE_PIECE`) to `OPTCG` in ETL service and CLI entrypoints
+  - SKU normalization now enforces uppercase ASCII kebab tokens with `UNK` fallback for missing components
+  - Duplicate resolution is deterministic via completeness score, then source `updated_at`, then stable source identifier
+  - Weekly `weekly-catalog-etl-sync` job now runs incremental ETL for `MTG`, `POKEMON`, `YUGIOH`, and `OPTCG` with per-game failure isolation and structured logging
+  - Added QA test coverage for scheduler orchestration, game-code canonicalization, duplicate tie-break behavior, and SKU normalization
 - **Storefront Design Foundation & Card Display (Story 2-2)**: Midnight Forge design system fully wired and TCG card display components production-ready
   - `colors.css` (`:root` + `.dark`): full Midnight Forge token set — surface palette (`--bg-base` #0C0D12 dark, #F8FAFC light), Arcane Gold CTAs (`--accent-primary` / `--primary` #D4A843 dark), Mystic Blue interactive (`--interactive` #7C8CFF dark), semantic tokens (positive/negative/warning/info), text hierarchy, typography variables, shadows
   - `tailwind.config.ts`: all Midnight Forge tokens mapped to Tailwind utilities — `bg-bg-base`, `text-foreground`, `border-border`, `text-interactive`, `bg-interactive-subtle`, `text-muted-foreground`, `ring-interactive-subtle`; full rarity token set for MTG/Pokémon/Yu-Gi-Oh/One Piece as `bg-rarity-*`/`text-rarity-*`

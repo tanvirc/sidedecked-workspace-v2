@@ -1053,6 +1053,25 @@ export class JWTValidationMiddleware {
 }
 ```
 
+## Admin ETL API
+
+Platform admins trigger and monitor ETL jobs via:
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `POST` | `/api/admin/etl/trigger` | JWT + platform admin | Trigger an ETL sync job |
+| `GET`  | `/api/admin/etl/jobs`    | JWT + platform admin | List recent ETL jobs (100 max, newest first) |
+
+**POST /api/admin/etl/trigger** body:
+```json
+{ "gameCode": "MTG", "jobType": "full_sync", "triggeredBy": "admin" }
+```
+`jobType` must be one of: `full_sync`, `incremental_sync`, `price_update`, `image_sync`, `banlist_update`, `metadata_update`
+
+**GET /api/admin/etl/jobs** query params: `?gameCode=MTG` (optional filter)
+
+Both endpoints are protected by `authenticateToken` + `requirePlatformAdmin` middleware.
+
 ## References
 
 - [System Overview](./01-system-overview.md)
