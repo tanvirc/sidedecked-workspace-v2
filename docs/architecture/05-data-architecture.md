@@ -1362,7 +1362,45 @@ export class BackupService {
 
 ### Card Data ETL Pipeline
 
+**Implementation:** `packages/tcg-catalog/src/services/ETLService.ts`
+**Admin API:** `POST /api/admin/etl/trigger`, `GET /api/admin/etl/jobs` (platform admin only)
+
+`ETLService` is a single service that routes per-game via a provider-specific transformer:
+
+| Game    | API Provider  | Transformer class     |
+|---------|---------------|-----------------------|
+| MTG     | Scryfall      | `ScryfallTransformer` |
+| POKEMON | Pokémon TCG   | `PokemonTransformer`  |
+| YUGIOH  | YGOProDeck    | `YugiohTransformer`   |
+| OPTCG   | One Piece TCG | `OnePieceTransformer` |
+
+Each transformer implements `fetchCards()` and returns a normalized card list. `ETLService` then upserts cards, prints, and SKUs in batches via atomic TypeORM transactions.
+
+Circuit breaker is per-game (`Map<gameCode, CircuitBreakerState>`); opens after `circuitBreakerThreshold` consecutive failures and resets after `circuitBreakerResetTimeout` ms.
+
+### ETL Operational Guarantees
+
+- `OPTCG` is the canonical One Piece game code; alias inputs are normalized before job execution.
+- ETL runs are transactional per game so one game failure does not corrupt already-committed data for other games.
+- Duplicate card conflicts resolve deterministically: higher completeness score → newer source `updated_at` → smallest stable source identifier.
+- Catalog SKU tokens are normalized to uppercase ASCII kebab format with `UNK` fallback for missing tokens.
+- Per-game circuit breaker prevents cascading failures; isolated by `gameCode` key.
+
 ```typescript
+// Real API (packages/tcg-catalog/src/services/ETLService.ts)
+const etl = new ETLService({ batchSize: 100, circuitBreakerThreshold: 3 })
+const result = await etl.startETLJob('MTG', ETLJobType.FULL_SYNC, 'admin')
+// result: { success, gameCode, totalProcessed, cardsCreated, cardsUpdated,
+//           printsCreated, skusGenerated, errors[] }
+```
+
+Job lifecycle is tracked in the `etl_jobs` table:
+`PENDING → RUNNING → COMPLETED | FAILED | PARTIAL | CANCELLED`
+
+#### Pre-implementation pseudocode (historical reference)
+
+```typescript
+// NOTE: The classes below are design-phase pseudocode, not the real implementation.
 export class UniversalETLService {
   private readonly scrapers = {
     MTG: new ScryfallETLService(),
@@ -1487,7 +1525,7 @@ export class ScryfallETLService {
       name: scryfallCard.name,
       normalized_name: scryfallCard.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
       primary_type: scryfallCard.type_line.split(' ')[0],
-      subtypes: scryfallCard.type_line.includes('—') 
+      subtypes: scryfallCard.type_line.includes('—')
         ? scryfallCard.type_line.split('—')[1].trim().split(' ')
         : [],
       oracle_text: scryfallCard.oracle_text,
@@ -1508,6 +1546,7 @@ export class ScryfallETLService {
     }
   }
 }
+// END pseudocode — see real implementation in packages/tcg-catalog/src/
 ```
 
 ## 🚀 Deployment Architecture
@@ -1685,6 +1724,7 @@ describe('Product Enrichment Integration', () => {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.1 | 2026-02-23 | Documented story 2-1 ETL operational guarantees (canonical game-code mapping, deterministic duplicate resolution, per-game transaction boundaries, weekly scheduler sync) |
 | 3.0 | 2025-09-12 | Complete unified data architecture document with comprehensive patterns, schemas, and implementation details |
 | 2.1 | 2025-09-11 | Added comprehensive data patterns and ETL pipeline documentation |
 | 2.0 | 2025-01-15 | Enhanced caching and performance patterns |
