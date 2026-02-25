@@ -52,7 +52,7 @@ development_status:
   epic-2: in-progress
   2-1-tcg-catalog-etl-pipeline-seeding: done
   2-2-storefront-design-foundation-card-display: done
-  2-3-algolia-search-index-card-search-with-autocomplete: backlog
+  2-3-algolia-search-index-card-search-with-autocomplete: done
   2-4-faceted-search-filters-sorting: backlog
   2-5-card-detail-page-bff-endpoint: backlog
   2-6-card-detail-seo-social-metadata: backlog
