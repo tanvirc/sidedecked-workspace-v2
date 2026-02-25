@@ -1,7 +1,7 @@
 # Story 2-3: Algolia Search Index & Card Search with Autocomplete
 
 **Epic:** Epic 2 — Card Catalog & Discovery
-**Status:** ready-for-dev
+**Status:** review
 **Story Key:** story-2-3-algolia-search-index-card-search-with-autocomplete
 **Plan:** docs/plans/2026-02-26-2-3-algolia-search-plan.md
 
