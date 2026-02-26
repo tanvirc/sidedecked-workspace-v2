@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
+- **Card Detail Page BFF Endpoint (Story 2-5)**: Aggregating BFF endpoint that serves the card detail page with catalog data, marketplace listings, and seller trust signals from both backends in a single API call
+  - `GET /api/cards/[id]` (storefront BFF): fetches catalog details from customer-backend, live listings from backend, and seller trust scores via batch lookup; returns unified `CardDetailBFFResponse` with graceful degradation — listings section shows a warning banner if the listings service is unreachable rather than failing the whole page
+  - `cardDetailBFF.ts` service layer: circuit-breaker–style error isolation per data source; `CONDITION_ORDER` for canonical sort (NM > LP > MP > HP > DMG); `revalidate = 30` cache policy on the Next.js page
+  - `BackendListing` type (`src/types/bff.ts`): canonical interface for listings data flowing from backend through BFF to UI components
+  - `MarketplaceListingsTable` now accepts `listings?: BackendListing[]` prop — renders real BFF data with seller trust signal ("X% positive · N sales"), accessible ARIA labels on Add to Cart / Notify buttons, and `PAGE_SIZE = 20` pagination with "Show more" button
+  - `MarketplaceListingsSection` accepts `listings` and `listingsUnavailable` props; renders `role="alert"` degradation banner when listings service is down
+  - `POST /api/sellers/trust/batch` (customer-backend): bulk trust-score lookup by seller IDs — returns per-seller rating percentage, review count, seller type, and verification status
+  - `GET /store/cards/listings?catalog_sku=` (backend): maps Medusa product variant inventory to `BackendListing` shape; filters to `in_stock` variants only
+  - 39 tests across 5 suites covering BFF service circuit breaker, API route 200/404/500 paths, component degradation banner, listings prop forwarding, trust signal rendering, ARIA labels, and pagination; BFF route at 100% coverage
 - **TCG Catalog ETL Pipeline Seeding (Story 2-1)**: Hardened multi-game ETL seeding and ongoing sync reliability so discovery runs on consistent real catalog data
   - Canonical game-code normalization routes One Piece aliases (`ONEPIECE`, `ONE-PIECE`, `ONE_PIECE`) to `OPTCG` in ETL service and CLI entrypoints
   - SKU normalization now enforces uppercase ASCII kebab tokens with `UNK` fallback for missing components

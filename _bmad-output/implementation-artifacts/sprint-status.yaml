@@ -54,7 +54,7 @@ development_status:
   2-2-storefront-design-foundation-card-display: done
   2-3-algolia-search-index-card-search-with-autocomplete: done
   2-4-faceted-search-filters-sorting: done
-  2-5-card-detail-page-bff-endpoint: ready-for-dev
+  2-5-card-detail-page-bff-endpoint: backlog
   2-6-card-detail-seo-social-metadata: backlog
   2-7-recently-viewed-cards: backlog
   2-8-wishlist-price-tracking-growth: backlog
