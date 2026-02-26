@@ -72,9 +72,11 @@ Generate authentic responses for each selected agent:
 **Response Structure:**
 [For each selected agent]:
 
-"[Icon Emoji] **[Agent Name]**: [Authentic in-character response]
+"[Icon Emoji] **[Agent Name]**: [Authentic in-character response]"
 
-[Bash: .claude/hooks/bmad-speak.sh \"[Agent Name]\" \"[Their response]\"]"
+Display each agent response directly in the visible chat output.
+If hook execution is available (for example, Claude hook integrations), it may be used as an optional side effect only.
+Never replace visible agent dialogue with hook/tool summaries.
 
 ### 4. Natural Cross-Talk Integration
 
