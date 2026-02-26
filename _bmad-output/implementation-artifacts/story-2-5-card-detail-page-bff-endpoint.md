@@ -1,7 +1,7 @@
 # Story 2.5: Card Detail Page (BFF Endpoint)
 
 **Epic:** Epic 2 — Card Catalog & Discovery
-**Status:** ready-for-dev
+**Status:** done
 **Story Key:** story-2-5-card-detail-page-bff-endpoint
 
 ---
@@ -16,27 +16,27 @@ So that I can make an informed purchase decision from a single page.
 
 ## Acceptance Criteria
 
-**AC1**
+**AC1** ✅ IMPLEMENTED
 **Given** I navigate to a card detail page
 **When** the BFF endpoint responds
 **Then** data is aggregated from both customer-backend (catalog, pricing) and backend (active listings, seller info) into a single response
 
-**AC2**
+**AC2** ✅ IMPLEMENTED
 **Given** the card detail page renders
 **When** I view the page
 **Then** I see card image (full-bleed), game-specific attributes, set info, format legality, and all active listings sorted by price + condition
 
-**AC3**
+**AC3** ✅ IMPLEMENTED
 **Given** listings are displayed
 **When** I view seller rows
 **Then** each shows seller name, trust signal ("99.2% positive · 412 sales"), condition, price, shipping estimate, and "Add to Cart" button
 
-**AC4**
+**AC4** ✅ IMPLEMENTED
 **Given** the backend (listings) is temporarily unavailable
 **When** the BFF endpoint degrades
 **Then** catalog data still renders with a notice: "Seller listings temporarily unavailable" (circuit breaker graceful degradation)
 
-**AC5**
+**AC5** ✅ IMPLEMENTED
 **Given** the card has multiple printings
 **When** I view the card detail page
 **Then** other printings are shown with links to their respective detail pages
