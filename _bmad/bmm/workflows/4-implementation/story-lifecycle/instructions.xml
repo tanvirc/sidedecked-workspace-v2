@@ -167,25 +167,33 @@
     </ask>
   </step>
 
-  <step n="7" goal="Party Mode: Wireframe review — UX Designer + PM + BA + Architect">
+  <step n="7" goal="Party Mode: Wireframe review - UX Designer + PM + BA + Architect">
     <critical>
       This is a focused party mode with exactly 5 agents. Do NOT expand to additional agents.
       Each agent reviews the wireframe strictly from their domain perspective.
-      The orchestrator synthesises a single Consolidated Wireframe Feedback summary.
+      The orchestrator MUST output the full 5-agent party mode transcript in this chat window before the consolidated summary.
+      Do NOT collapse the review to summary-only output.
+      If runtime behavior hides nested workflow conversation output (for example in Codex surfaces),
+      do NOT rely on hidden sub-workflow output. Render each agent turn inline in this step.
     </critical>
-    <action>Invoke party mode with the wireframe as the discussion seed.
+    <action>Run a focused party mode review with the wireframe as the discussion seed.
       Load all five agent perspectives by reading their agent files:
-      - {agent_path}/ux-designer.md — Sally (UX Designer)
-      - {agent_path}/pm.md — John (Product Manager)
+      - {agent_path}/ux-designer.md - Sally (UX Designer)
+      - {agent_path}/pm.md - John (Product Manager)
       - {agent_path}/analyst.md — Mary (Business Analyst)
       - {agent_path}/architect.md — Winston (Architect)
       - {agent_path}/dev.md — Amelia (Developer)
     </action>
     <action>As Sally (UX Designer): Review for design system alignment, interaction patterns, accessibility compliance, visual hierarchy, and component reuse</action>
     <action>As John (PM): Review for scope alignment with the epic's goals and user personas; flag any scope creep or missing user journeys</action>
-    <action>As Mary (BA): Review for acceptance criteria coverage — does every AC have a corresponding UI element? Are business rules reflected? Any missing edge case screens?</action>
+    <action>As Mary (BA): Review for acceptance criteria coverage - does every AC have a corresponding UI element? Are business rules reflected? Any missing edge case screens?</action>
     <action>As Winston (Architect): Review for technical feasibility, component reuse opportunities, data-fetching implications, performance considerations (rendering strategy, lazy loading), and any patterns that would be costly to implement</action>
     <action>As Amelia (Dev): Review implementation feasibility in current codebases (storefront/vendorpanel), likely component breakdown, testing implications, and high-risk UI interactions</action>
+    <action>Output a Party Mode Transcript section:
+      - Show one clearly labelled response for each agent in this order: Sally (UX), John (PM), Mary (BA), Winston (Architect), Amelia (Dev)
+      - Keep each agent in character and focused on their domain review criteria
+      - Include any inter-agent cross-talk explicitly as quoted follow-up lines
+    </action>
     <action>Synthesise a Consolidated Wireframe Feedback summary:
       - Design system alignment: PASS / issues list
       - Scope alignment: PASS / issues list
@@ -195,9 +203,9 @@
       - Priority of changes: must-fix before architecture / nice-to-have
     </action>
     <ask>
-      ## Phase 2B Step 7 — Party Mode Wireframe Review Complete
+      ## Phase 2B Step 7 - Party Mode Wireframe Review Complete
 
-      UX Designer, PM, BA, Architect, and Dev have reviewed the wireframe (see Consolidated Feedback above).
+      UX Designer, PM, BA, Architect, and Dev have reviewed the wireframe (see transcript + Consolidated Feedback above).
 
       Type CONFIRM to proceed to advanced elicitation refinement.
       Or describe specific changes you want incorporated before continuing.
