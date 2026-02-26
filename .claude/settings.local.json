@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Edit",
       "Bash(cat:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
@@ -138,7 +139,22 @@
       "Bash(cd /c/Code/GitHub/tanvirc/sidedecked/backend/apps/backend && NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --forceExit --testPathPattern=\"oauth-auto-verify|email-verification.service\" 2>&1)",
       "Bash(cd /c/Code/GitHub/tanvirc/sidedecked && git add _bmad-output/implementation-artifacts/sprint-status.yaml && git commit -m \"docs\\(sprint\\): story 1-4 done\" && git push && git branch -d feature/story-1-4-unauthenticated-browsing-deferred-auth 2>&1)",
       "Bash(cd /c/Code/GitHub/tanvirc/sidedecked && gh api repos/tanvirc/sidedecked-workspace-v2/pulls/43/comments 2>&1 | python -c \"import sys,json; comments=json.load\\(sys.stdin\\); [print\\(f'File: {c[\\\\\"path\\\\\"]}\\\\nLine: {c[\\\\\"line\\\\\"]}\\\\nAuthor: {c[\\\\\"user\\\\\"][\\\\\"login\\\\\"]}\\\\nBody: {c[\\\\\"body\\\\\"]}\\\\n---'\\) for c in comments]\" 2>&1)",
-      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked/storefront && gh api repos/tanvirc/sidedecked-storefront/pulls/24/comments 2>&1 | python -c \"import sys,json; comments=json.load\\(sys.stdin\\); [print\\(f'File: {c[\\\\\"path\\\\\"]}\\\\nLine: {c[\\\\\"line\\\\\"]}\\\\nAuthor: {c[\\\\\"user\\\\\"][\\\\\"login\\\\\"]}\\\\nBody: {c[\\\\\"body\\\\\"]}\\\\n---'\\) for c in comments]\" 2>&1)"
+      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked/storefront && gh api repos/tanvirc/sidedecked-storefront/pulls/24/comments 2>&1 | python -c \"import sys,json; comments=json.load\\(sys.stdin\\); [print\\(f'File: {c[\\\\\"path\\\\\"]}\\\\nLine: {c[\\\\\"line\\\\\"]}\\\\nAuthor: {c[\\\\\"user\\\\\"][\\\\\"login\\\\\"]}\\\\nBody: {c[\\\\\"body\\\\\"]}\\\\n---'\\) for c in comments]\" 2>&1)",
+      "Bash(tee:*)",
+      "WebFetch(domain:scrydex.com)",
+      "WebFetch(domain:api.scrydex.com)",
+      "WebFetch(domain:pokemontcg.io)",
+      "WebFetch(domain:api.pokemontcg.io)",
+      "WebFetch(domain:tcgdex.dev)",
+      "WebFetch(domain:docs.pokemontcg.io)",
+      "WebFetch(domain:www.pokewallet.io)",
+      "WebFetch(domain:www.tcgdex.dev)",
+      "WebFetch(domain:api.tcgdex.net)",
+      "WebFetch(domain:api.pokewallet.io)",
+      "WebFetch(domain:justtcg.com)",
+      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2/customer-backend && rm -rf dist packages/tcg-catalog/dist packages/types/dist packages/shared/dist && npm run build 2>&1)",
+      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2 && git worktree add .worktrees/story-2-3 -b feature/story-2-3 2>&1)",
+      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2 && git worktree remove .worktrees/story-2-3 2>&1)"
     ],
     "deny": [],
     "ask": []

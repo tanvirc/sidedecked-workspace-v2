@@ -53,7 +53,7 @@ development_status:
   2-1-tcg-catalog-etl-pipeline-seeding: done
   2-2-storefront-design-foundation-card-display: done
   2-3-algolia-search-index-card-search-with-autocomplete: done
-  2-4-faceted-search-filters-sorting: ready-for-dev
+  2-4-faceted-search-filters-sorting: done
   2-5-card-detail-page-bff-endpoint: backlog
   2-6-card-detail-seo-social-metadata: backlog
   2-7-recently-viewed-cards: backlog
