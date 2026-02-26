@@ -36,6 +36,16 @@ so that {{benefit}}.
 
 - Cite all technical details with source paths and sections, e.g. [Source: docs/<file>.md#Section]
 
+## UX Design Reference
+
+<!-- Populated automatically by create-story when UX artifacts exist -->
+
+- **Wireframe:** `_bmad-output/planning-artifacts/ux-{{story_key}}-wireframe.html`
+- **UX Spec:** `_bmad-output/planning-artifacts/ux-design-specification.md`
+- **Key design decisions:** [Extracted from UX artifacts]
+- **Design tokens/patterns to use:** [Extracted from wireframe]
+- **Anti-patterns to avoid:** [From UX spec]
+
 ## Dev Agent Record
 
 ### Agent Model Used

@@ -54,6 +54,14 @@
       3. **Code Quality**: Security, performance, maintainability
       4. **Test Quality**: Real tests vs placeholder bullshit
     </action>
+
+    <action>Check story file for "## UX Design Reference" section</action>
+    <check if="UX Design Reference section exists AND wireframe path is specified">
+      <action>Load wireframe file</action>
+      <action>Add to review plan:
+        5. **Wireframe Compliance**: Verify UI components match wireframe layout, design tokens, and interaction patterns
+      </action>
+    </check>
   </step>
 
   <step n="3" goal="Execute adversarial review">
@@ -93,6 +101,16 @@
       4. **Code Quality**: Complex functions, magic numbers, poor naming
       5. **Test Quality**: Are tests real assertions or placeholders?
     </action>
+
+    <!-- Wireframe Compliance Audit (UI stories only) -->
+    <check if="wireframe loaded">
+      <action>For EACH UI component in File List:
+        1. **Token Usage**: Grep for hardcoded Tailwind colors (bg-gray-*, text-gray-*, bg-blue-*, etc.) → MEDIUM finding
+        2. **Layout Match**: Compare component JSX structure against wireframe HTML structure → HIGH if mismatched
+        3. **Interaction States**: Verify hover/focus/active states use wireframe's specified patterns → MEDIUM finding
+        4. **Mobile Patterns**: Verify mobile-specific behavior (bottom sheets, responsive columns) matches wireframe → HIGH if missing
+      </action>
+    </check>
 
     <check if="total_issues_found lt 3">
       <critical>NOT LOOKING HARD ENOUGH - Find more problems!</critical>
