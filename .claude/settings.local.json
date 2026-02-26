@@ -154,7 +154,14 @@
       "WebFetch(domain:justtcg.com)",
       "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2/customer-backend && rm -rf dist packages/tcg-catalog/dist packages/types/dist packages/shared/dist && npm run build 2>&1)",
       "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2 && git worktree add .worktrees/story-2-3 -b feature/story-2-3 2>&1)",
-      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2 && git worktree remove .worktrees/story-2-3 2>&1)"
+      "Bash(cd /c/Code/GitHub/tanvirc/sidedecked-workspace-v2 && git worktree remove .worktrees/story-2-3 2>&1)",
+      "WebFetch(domain:www.sidedecked.com)",
+      "Bash(do echo:*)",
+      "Bash(python:*)",
+      "Bash(git:*)",
+      "Bash(pip install:*)",
+      "Bash(touch:*)",
+      "Bash(PGPASSWORD=kKUTGmwrbOqEaiutaUlKUrQnbADenCuN psql:*)"
     ],
     "deny": [],
     "ask": []
