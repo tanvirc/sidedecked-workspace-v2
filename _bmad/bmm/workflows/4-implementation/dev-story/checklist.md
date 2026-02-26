@@ -37,6 +37,14 @@ validation-rules:
 - [ ] **Edge Cases Handled:** Error conditions and edge cases appropriately addressed
 - [ ] **Dependencies Within Scope:** Only uses dependencies specified in story or project-context.md
 
+## 🎨 UX Wireframe Compliance (when applicable)
+
+- [ ] **Design Tokens Used:** All colors, spacing, borders use project design tokens (CSS variables), NOT hardcoded Tailwind color classes
+- [ ] **Layout Matches Wireframe:** Component hierarchy, grid structure, and responsive breakpoints match the wireframe HTML
+- [ ] **Interaction States Match:** Hover, focus, active, loading, empty, and error states match wireframe specifications
+- [ ] **Mobile Patterns Match:** Mobile-specific patterns (bottom sheets, touch targets, responsive columns) match wireframe
+- [ ] **No Anti-Patterns:** No alert(), no hover-gated functionality, no hardcoded colors bypassing design system
+
 ## 🧪 Testing & Quality Assurance
 
 - [ ] **Unit Tests:** Unit tests added/updated for ALL core functionality introduced/changed by this story

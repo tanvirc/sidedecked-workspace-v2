@@ -279,6 +279,36 @@
     file_structure_requirements</template-output>
     <template-output file="{default_output_file}">testing_requirements</template-output>
 
+    <!-- UX Design Reference - CRITICAL for UI stories -->
+    <check if="ux_content available AND story has UI/frontend scope">
+      <action>Search {planning_artifacts} for wireframe files matching story key patterns:
+        - ux-{{story_key}}-wireframe.html
+        - ux-{{epic_num}}-{{story_num}}-wireframe.html
+        - ux-story-{{epic_num}}-{{story_num}}-wireframe.html
+      </action>
+      <check if="no wireframe file found matching any pattern">
+        <action>Update the existing "## UX Design Reference" section with wireframe path "none found" and note that only UX spec was available</action>
+        <action>Skip wireframe extraction steps below — proceed to UX spec extraction only if ux-design-specification.md exists</action>
+      </check>
+      <action>Store the discovered wireframe file path as {{wireframe_path}}</action>
+      <action>Extract from wireframe HTML:
+        - Component hierarchy and naming (CSS class names map to React components)
+        - Layout patterns (grid columns, spacing, responsive breakpoints)
+        - Design token usage (CSS variables like --bg-surface-1, --accent-gold, --interactive)
+        - Interaction patterns (hover states, transitions, keyboard navigation)
+        - Mobile-specific patterns (bottom sheets, touch targets)
+      </action>
+      <action>Extract from UX spec (ux-design-specification.md):
+        - Anti-patterns to avoid (alert(), hover-gated, mock data, database jargon)
+        - Design system rules (Midnight Forge tokens, shadcn/ui components)
+        - Performance targets for this component area
+      </action>
+      <template-output file="{default_output_file}">ux_design_reference</template-output>
+    </check>
+    <check if="ux_content NOT available OR story has NO UI scope">
+      <action>Update the existing "## UX Design Reference" section body to: "N/A — no UI scope for this story" (do not add a new header)</action>
+    </check>
+
     <!-- Previous story intelligence -->
     <check
       if="previous story learnings available">

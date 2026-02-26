@@ -119,7 +119,7 @@
 
     <anchor id="task_check" />
 
-    <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, Dev Agent Record, File List, Change Log, Status</action>
+    <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, UX Design Reference, Dev Agent Record, File List, Change Log, Status</action>
 
     <action>Load comprehensive context from story file's Dev Notes section</action>
     <action>Extract developer guidance from Dev Notes: architecture requirements, previous learnings, technical specifications</action>
@@ -138,10 +138,31 @@
     <critical>Load all available context to inform implementation</critical>
 
     <action>Load {project_context} for coding standards and project-wide patterns (if exists)</action>
-    <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, Dev Agent Record, File List, Change Log, Status</action>
+    <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Notes, UX Design Reference, Dev Agent Record, File List, Change Log, Status</action>
     <action>Load comprehensive context from story file's Dev Notes section</action>
     <action>Extract developer guidance from Dev Notes: architecture requirements, previous learnings, technical specifications</action>
     <action>Use enhanced story context to inform implementation decisions and approaches</action>
+
+    <!-- Load UX wireframe if story has UI scope -->
+    <action>Check story file for "## UX Design Reference" section</action>
+    <check if="UX Design Reference section exists AND wireframe path is specified AND wireframe path is not 'none found'">
+      <action>Verify wireframe file exists at the specified path before loading</action>
+      <check if="wireframe file does NOT exist">
+        <output>⚠️ Wireframe path in story does not exist: {{wireframe_path}} — skipping wireframe context</output>
+        <action>Set {{ux_wireframe_context}} = not loaded</action>
+      </check>
+      <action>Load wireframe file from path specified in UX Design Reference</action>
+      <action>Parse wireframe HTML to extract:
+        - Component CSS class names → map to React component names
+        - Layout structure (grid templates, flex containers)
+        - Design token variables used (--bg-*, --text-*, --accent-*, --interactive-*)
+        - Responsive breakpoints and column counts
+        - Interaction states (hover, focus, active, loading, empty, error)
+      </action>
+      <action>Store wireframe context as {{ux_wireframe_context}} for implementation reference</action>
+      <output>🎨 **UX Wireframe Loaded** — Implementation must match wireframe layout, tokens, and interactions</output>
+    </check>
+
     <output>✅ **Context Loaded**
       Story and project context available for implementation
     </output>
@@ -242,6 +263,15 @@
 
     <action>Document technical approach and decisions in Dev Agent Record → Implementation Plan</action>
 
+    <!-- UX WIREFRAME COMPLIANCE -->
+    <check if="{{ux_wireframe_context}} is loaded AND current task involves UI components">
+      <critical>WIREFRAME COMPLIANCE: UI implementation MUST use design tokens from wireframe, NOT hardcoded Tailwind colors</critical>
+      <action>Before writing component code: review relevant wireframe section for this task</action>
+      <action>Use design-token-based Tailwind utilities (e.g., bg-card, text-foreground, border-border), or the corresponding CSS variables (e.g., var(--bg-card)), NOT generic Tailwind colors (e.g., bg-gray-800, text-gray-100)</action>
+      <action>Match wireframe's component structure, layout patterns, and interaction states</action>
+      <action>Verify responsive breakpoint behavior matches wireframe specifications</action>
+    </check>
+
     <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
     <action if="3 consecutive implementation failures occur">HALT and request guidance</action>
     <action if="required configuration is missing">HALT: "Cannot proceed without necessary configuration files"</action>
@@ -291,6 +321,14 @@
       <action>Mark that action item checkbox [x] as resolved</action>
 
       <action>Add to Dev Agent Record → Completion Notes: "✅ Resolved review finding [{{severity}}]: {{description}}"</action>
+    </check>
+
+    <!-- UX WIREFRAME VALIDATION -->
+    <check if="{{ux_wireframe_context}} is loaded AND task involves UI components">
+      <action>Verify implemented components use design tokens from wireframe, not hardcoded colors</action>
+      <action>Verify layout structure matches wireframe (grid columns, spacing, nesting)</action>
+      <action>Verify interaction patterns match wireframe (hover states, transitions, mobile behavior)</action>
+      <action if="wireframe deviations found">DO NOT mark task complete - fix wireframe compliance first</action>
     </check>
 
     <!-- ONLY MARK COMPLETE IF ALL VALIDATION PASS -->
