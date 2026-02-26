@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Story 2-4: Faceted Search Filters & Sorting Wireframe</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Midnight Forge
+   ============================================================ */
+:root {
+  --bg-base: #0C0D12;
+  --bg-surface-1: #13141A;
+  --bg-surface-2: #1A1C24;
+  --bg-surface-3: #22242E;
+  --bg-surface-4: #2A2D38;
+  --accent-primary: #D4A843;
+  --accent-primary-hover: #E0B94F;
+  --interactive: #7C8CFF;
+  --interactive-hover: #9BA6FF;
+  --positive: #4ADE80;
+  --negative: #EF5350;
+  --warning: #FBBF24;
+  --text-primary: #E8ECF1;
+  --text-secondary: #8B93A6;
+  --text-tertiary: #4F5568;
+  --text-price: #D4A843;
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-default: rgba(255,255,255,0.10);
+  --border-active: rgba(124,140,255,0.5);
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+  --game-mtg: #A855F7;
+  --game-pokemon: #FBBF24;
+  --game-yugioh: #60A5FA;
+  --game-optcg: #34D399;
+  --rarity-common: #6B6B6B;
+  --rarity-uncommon: #A8B4C0;
+  --rarity-rare: #D4A843;
+  --rarity-mythic: #E85D26;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px; line-height: 1.5;
+  color: var(--text-primary); background: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+}
+body { min-height: 100vh; }
+
+/* ============================================================
+   SHOWCASE HEADER
+   ============================================================ */
+.showcase-header {
+  text-align: center;
+  padding: var(--sp-7) var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
+}
+.showcase-header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.showcase-header h1 span { color: var(--accent-primary); }
+.showcase-header p { margin-top: var(--sp-2); font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+.story-meta { display: flex; justify-content: center; gap: var(--sp-3); margin-top: var(--sp-4); flex-wrap: wrap; }
+.meta-chip { padding: var(--sp-1) var(--sp-3); border: 1px solid var(--border-default); border-radius: var(--radius-xl); font-size: 12px; color: var(--text-secondary); }
+.meta-chip.active { border-color: rgba(74,222,128,0.3); color: var(--positive); background: rgba(74,222,128,0.06); }
+
+/* ============================================================
+   TAB NAVIGATION
+   ============================================================ */
+.tab-nav {
+  display: flex; justify-content: center; gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5); background: var(--bg-surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap; position: sticky; top: 0; z-index: 100;
+}
+.tab-btn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4); border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl); background: transparent;
+  color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tab-btn:hover { color: var(--text-primary); border-color: var(--border-active); }
+.tab-btn.active { background: var(--interactive); border-color: var(--interactive); color: white; }
+.tab-icon { font-size: 14px; }
+
+/* ============================================================
+   SCREEN WRAPPER
+   ============================================================ */
+.screens { max-width: 1200px; margin: 0 auto; padding: var(--sp-6) var(--sp-5); }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ============================================================
+   SECTION LABEL
+   ============================================================ */
+.section-label {
+  display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4);
+}
+.section-label h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.section-label .badge {
+  padding: 2px 10px; border-radius: var(--radius-xl); font-size: 11px; font-weight: 600;
+  background: rgba(124,140,255,0.15); color: var(--interactive); border: 1px solid rgba(124,140,255,0.25);
+}
+.section-label .badge.mobile { background: rgba(212,168,67,0.12); color: var(--accent-primary); border-color: rgba(212,168,67,0.25); }
+.annotation {
+  font-size: 12px; color: var(--text-secondary); margin-bottom: var(--sp-5);
+  border-left: 2px solid var(--interactive); padding-left: var(--sp-3);
+  background: rgba(124,140,255,0.04); padding: var(--sp-3) var(--sp-4);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* ============================================================
+   APP CHROME (nav + search bar)
+   ============================================================ */
+.app-nav {
+  background: var(--bg-surface-1); border-bottom: 1px solid var(--border-subtle);
+  padding: var(--sp-3) var(--sp-5); display: flex; align-items: center; gap: var(--sp-4);
+}
+.app-logo { font-size: 15px; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.02em; white-space: nowrap; }
+.search-bar-chrome {
+  flex: 1; display: flex; align-items: center; gap: var(--sp-2);
+  background: var(--bg-surface-2); border: 1px solid var(--border-default);
+  border-radius: var(--radius-md); padding: var(--sp-2) var(--sp-3);
+  min-width: 0;
+}
+.search-icon { font-size: 14px; color: var(--text-tertiary); flex-shrink: 0; }
+.search-input-mock {
+  flex: 1; font-size: 13px; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.search-input-mock.has-value { color: var(--text-primary); }
+.kbd-hint { font-size: 11px; color: var(--text-tertiary); border: 1px solid var(--border-default); border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
+
+/* ============================================================
+   ACTIVE FILTER CHIPS ROW
+   ============================================================ */
+.filter-chips-row {
+  padding: var(--sp-3) var(--sp-5); background: var(--bg-surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; min-height: 44px;
+}
+.filter-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: var(--radius-xl);
+  background: rgba(124,140,255,0.12); border: 1px solid rgba(124,140,255,0.3);
+  color: var(--interactive); font-size: 12px; font-weight: 500;
+}
+.filter-chip .chip-remove {
+  color: var(--interactive); font-size: 14px; line-height: 1; cursor: pointer;
+  opacity: 0.7;
+}
+.filter-chip .chip-remove:hover { opacity: 1; }
+.clear-all-btn {
+  padding: 4px 12px; border-radius: var(--radius-xl);
+  background: transparent; border: 1px solid rgba(239,83,80,0.3);
+  color: var(--negative); font-size: 12px; font-weight: 500; cursor: pointer;
+  margin-left: auto;
+}
+.chips-empty { font-size: 12px; color: var(--text-tertiary); font-style: italic; }
+
+/* ============================================================
+   SEARCH LAYOUT — DESKTOP (sidebar + grid)
+   ============================================================ */
+.search-layout {
+  display: grid; grid-template-columns: 240px 1fr; gap: var(--sp-5);
+  padding: var(--sp-5); align-items: start;
+}
+
+/* ============================================================
+   FILTER SIDEBAR
+   ============================================================ */
+.filter-sidebar {
+  background: var(--bg-surface-1); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); overflow: hidden; position: sticky; top: 110px;
+}
+.sidebar-header {
+  padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-header h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.sidebar-clear-btn {
+  font-size: 11px; color: var(--negative); background: transparent; border: none;
+  cursor: pointer; padding: 0; font-weight: 500;
+}
+
+/* Facet group */
+.facet-group { border-bottom: 1px solid var(--border-subtle); }
+.facet-group:last-child { border-bottom: none; }
+.facet-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4); cursor: pointer;
+  transition: background 0.1s;
+}
+.facet-header:hover { background: var(--bg-surface-2); }
+.facet-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+.facet-active-count {
+  font-size: 11px; background: var(--interactive); color: white;
+  border-radius: 999px; padding: 1px 7px; font-weight: 600;
+}
+.facet-chevron { font-size: 10px; color: var(--text-tertiary); transition: transform 0.2s; }
+.facet-header.open .facet-chevron { transform: rotate(180deg); }
+.facet-body { padding: var(--sp-2) var(--sp-4) var(--sp-3); }
+.facet-option {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: 5px 0; cursor: pointer;
+}
+.facet-option:hover .facet-label { color: var(--text-primary); }
+.facet-checkbox {
+  width: 14px; height: 14px; border: 1.5px solid var(--border-default);
+  border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.facet-checkbox.checked { background: var(--interactive); border-color: var(--interactive); }
+.facet-checkbox.checked::after { content: '✓'; font-size: 9px; color: white; font-weight: 700; }
+.facet-label { font-size: 12px; color: var(--text-secondary); flex: 1; }
+.facet-count { font-size: 11px; color: var(--text-tertiary); }
+
+/* Price preset buttons */
+.price-presets { display: flex; flex-direction: column; gap: var(--sp-1); }
+.price-preset-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px var(--sp-3); border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm); background: transparent;
+  color: var(--text-secondary); font-size: 12px; cursor: pointer;
+  transition: all 0.1s;
+}
+.price-preset-btn:hover { border-color: var(--interactive); color: var(--text-primary); }
+.price-preset-btn.selected { background: rgba(124,140,255,0.1); border-color: var(--interactive); color: var(--interactive); }
+.price-preset-count { font-size: 11px; color: var(--text-tertiary); }
+.price-preset-btn.selected .price-preset-count { color: rgba(124,140,255,0.7); }
+
+/* Game color dots */
+.game-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.game-dot.mtg { background: var(--game-mtg); }
+.game-dot.pokemon { background: var(--game-pokemon); }
+.game-dot.yugioh { background: var(--game-yugioh); }
+.game-dot.optcg { background: var(--game-optcg); }
+
+/* Condition badge */
+.condition-badge {
+  font-size: 10px; font-weight: 700; padding: 1px 5px;
+  border-radius: 3px; letter-spacing: 0.04em;
+}
+.nm { background: rgba(74,222,128,0.15); color: var(--positive); }
+.lp { background: rgba(74,222,128,0.08); color: rgba(74,222,128,0.7); }
+.mp { background: rgba(251,191,36,0.12); color: var(--warning); }
+.hp { background: rgba(239,83,80,0.12); color: var(--negative); }
+.dmg { background: rgba(239,83,80,0.08); color: rgba(239,83,80,0.6); }
+
+/* ============================================================
+   RESULTS AREA
+   ============================================================ */
+.results-area { min-width: 0; }
+
+.results-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-4); flex-wrap: wrap; gap: var(--sp-2);
+}
+.results-count { font-size: 13px; color: var(--text-secondary); }
+.results-count strong { color: var(--text-primary); }
+
+/* Sort dropdown */
+.sort-control { display: flex; align-items: center; gap: var(--sp-2); }
+.sort-label { font-size: 12px; color: var(--text-tertiary); }
+.sort-select {
+  appearance: none; background: var(--bg-surface-2); border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm); padding: var(--sp-1) var(--sp-5) var(--sp-1) var(--sp-3);
+  color: var(--text-primary); font-size: 12px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B93A6' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+.sort-active-indicator {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: var(--radius-xl);
+  background: var(--bg-surface-2); border: 1px solid var(--border-default);
+  color: var(--text-primary); font-size: 12px; font-weight: 500;
+}
+.sort-active-indicator .sort-icon { color: var(--accent-primary); }
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+.card-item {
+  background: var(--bg-surface-1); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); overflow: hidden;
+  transition: border-color 0.15s;
+}
+.card-item:hover { border-color: var(--border-active); }
+.card-image {
+  aspect-ratio: 5/7; background: var(--bg-surface-3);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.card-image img { width: 100%; height: 100%; object-fit: cover; }
+.card-image-placeholder { color: var(--text-tertiary); font-size: 24px; }
+.card-info { padding: var(--sp-2); }
+.card-name { font-size: 11px; font-weight: 600; color: var(--text-primary); line-height: 1.3; margin-bottom: 2px; }
+.card-set { font-size: 10px; color: var(--text-tertiary); margin-bottom: var(--sp-1); }
+.card-price { font-size: 12px; font-weight: 600; color: var(--text-price); font-variant-numeric: tabular-nums; }
+.card-sellers { font-size: 10px; color: var(--text-tertiary); }
+
+/* Game badge mini */
+.game-badge {
+  display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 5px;
+  border-radius: 3px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.game-badge.mtg { background: rgba(168,85,247,0.15); color: var(--game-mtg); }
+.game-badge.pokemon { background: rgba(251,191,36,0.12); color: var(--game-pokemon); }
+
+/* ============================================================
+   MOBILE TOOLBAR
+   ============================================================ */
+.mobile-toolbar {
+  background: var(--bg-surface-1); border-bottom: 1px solid var(--border-subtle);
+  padding: var(--sp-2) var(--sp-4); display: flex; align-items: center; gap: var(--sp-2);
+}
+.filter-trigger-btn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border-default);
+  border-radius: var(--radius-md); background: var(--bg-surface-2);
+  color: var(--text-primary); font-size: 13px; font-weight: 500; cursor: pointer;
+  white-space: nowrap;
+}
+.filter-trigger-btn .filter-count-badge {
+  background: var(--interactive); color: white;
+  font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 6px; min-width: 18px; text-align: center;
+}
+.sort-trigger-btn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border-default);
+  border-radius: var(--radius-md); background: var(--bg-surface-2);
+  color: var(--text-secondary); font-size: 12px; cursor: pointer;
+  white-space: nowrap;
+}
+.sort-trigger-btn.active { color: var(--accent-primary); border-color: rgba(212,168,67,0.35); }
+.mobile-results-info { flex: 1; text-align: right; font-size: 12px; color: var(--text-tertiary); }
+
+/* Mobile card grid (2 col) */
+.card-grid-mobile {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2); padding: var(--sp-3) var(--sp-4);
+}
+
+/* ============================================================
+   BOTTOM SHEET (filter modal on mobile)
+   ============================================================ */
+.bottom-sheet-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
+  display: flex; align-items: flex-end;
+}
+.bottom-sheet {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  background: var(--bg-surface-1); border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  border: 1px solid var(--border-default); border-bottom: none;
+  display: flex; flex-direction: column; max-height: 85vh;
+}
+.sheet-handle {
+  width: 36px; height: 4px; background: var(--bg-surface-4); border-radius: 2px;
+  margin: var(--sp-3) auto var(--sp-1);
+}
+.sheet-header {
+  padding: var(--sp-2) var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sheet-title { font-size: 15px; font-weight: 600; }
+.sheet-active-count { font-size: 12px; color: var(--interactive); }
+.sheet-close { background: var(--bg-surface-3); border: none; color: var(--text-secondary); border-radius: 50%; width: 28px; height: 28px; font-size: 14px; cursor: pointer; }
+.sheet-body { overflow-y: auto; flex: 1; padding: 0; }
+.sheet-footer {
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; gap: var(--sp-3);
+}
+.sheet-apply-btn {
+  flex: 1; padding: var(--sp-3); border-radius: var(--radius-md);
+  background: var(--interactive); color: white; font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer;
+}
+.sheet-clear-btn {
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-md);
+  background: transparent; border: 1px solid var(--border-default);
+  color: var(--text-secondary); font-size: 14px; cursor: pointer;
+}
+
+/* Sheet facet groups */
+.sheet-facet-group { border-bottom: 1px solid var(--border-subtle); }
+.sheet-facet-header {
+  padding: var(--sp-3) var(--sp-5); display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+}
+.sheet-facet-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.sheet-facet-body { padding: 0 var(--sp-5) var(--sp-3); }
+.sheet-facet-option {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-2) 0; cursor: pointer;
+}
+.sheet-checkbox {
+  width: 18px; height: 18px; border: 2px solid var(--border-default);
+  border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.sheet-checkbox.checked { background: var(--interactive); border-color: var(--interactive); }
+.sheet-checkbox.checked::after { content: '✓'; font-size: 11px; color: white; font-weight: 700; }
+.sheet-facet-label { font-size: 14px; color: var(--text-secondary); flex: 1; }
+.sheet-facet-count { font-size: 12px; color: var(--text-tertiary); }
+.sheet-price-presets { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+.sheet-price-btn {
+  padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border-default); border-radius: var(--radius-sm);
+  background: transparent; color: var(--text-secondary); font-size: 13px; cursor: pointer; text-align: center;
+}
+.sheet-price-btn.selected { border-color: var(--interactive); color: var(--interactive); background: rgba(124,140,255,0.08); }
+
+/* ============================================================
+   EMPTY / NO FILTER STATE annotations
+   ============================================================ */
+.callout {
+  background: var(--bg-surface-2); border: 1px solid var(--border-default);
+  border-radius: var(--radius-md); padding: var(--sp-3) var(--sp-4);
+  font-size: 12px; color: var(--text-secondary); margin-top: var(--sp-4);
+}
+.callout strong { color: var(--accent-primary); display: block; margin-bottom: var(--sp-1); }
+.callout ul { padding-left: var(--sp-4); margin-top: var(--sp-1); line-height: 1.8; }
+
+/* ============================================================
+   URL ANNOTATION STRIP
+   ============================================================ */
+.url-bar {
+  background: var(--bg-surface-2); border-bottom: 1px solid var(--border-subtle);
+  padding: var(--sp-2) var(--sp-4); font-size: 11px; color: var(--text-tertiary);
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+.url-bar .url-path { color: var(--text-secondary); }
+.url-bar .url-params { color: var(--interactive); }
+
+/* ============================================================
+   SCREEN DIVIDER
+   ============================================================ */
+.screen-section { margin-bottom: var(--sp-7); }
+.screen-section + .screen-section { padding-top: var(--sp-6); border-top: 1px solid var(--border-subtle); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="showcase-header">
+  <h1>SideDecked — <span>Story 2-4</span></h1>
+  <p>Faceted Search Filters & Sorting — UX Wireframe</p>
+  <div class="story-meta">
+    <span class="meta-chip">Epic 2: Card Catalog & Discovery</span>
+    <span class="meta-chip active">Storefront /search</span>
+    <span class="meta-chip">react-instantsearch · Algolia</span>
+    <span class="meta-chip">Midnight Forge Design System</span>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('desktop-no-filter')">
+    <span class="tab-icon">🖥️</span> Desktop — No Filters
+  </button>
+  <button class="tab-btn" onclick="switchTab('desktop-filtered')">
+    <span class="tab-icon">🔍</span> Desktop — Filters Active
+  </button>
+  <button class="tab-btn" onclick="switchTab('mobile-default')">
+    <span class="tab-icon">📱</span> Mobile — Default
+  </button>
+  <button class="tab-btn" onclick="switchTab('mobile-sheet')">
+    <span class="tab-icon">📋</span> Mobile — Filter Sheet Open
+  </button>
+  <button class="tab-btn" onclick="switchTab('empty-state')">
+    <span class="tab-icon">🚫</span> Empty State
+  </button>
+</div>
+
+<div class="screens">
+
+  <!-- ============================================================
+       SCREEN 1: Desktop — No active filters, fresh search
+       ============================================================ -->
+  <div id="screen-desktop-no-filter" class="screen active">
+    <div class="section-label">
+      <h2>Desktop — Search Results (No Active Filters)</h2>
+      <span class="badge">1440px</span>
+    </div>
+    <div class="annotation">
+      The left filter sidebar is always visible on desktop (sticky, scrolls with page).
+      Facets display live Algolia counts. No filters active = all results shown.
+      Sort control in results toolbar defaults to "Relevance".
+    </div>
+
+    <!-- URL bar -->
+    <div class="url-bar">
+      <span>🔗</span>
+      <span class="url-path">/search</span>
+      <span class="url-params">?q=charizard</span>
+    </div>
+
+    <!-- App chrome -->
+    <div class="app-nav">
+      <div class="app-logo">SideDecked</div>
+      <div class="search-bar-chrome">
+        <span class="search-icon">🔍</span>
+        <span class="search-input-mock has-value">charizard</span>
+        <span class="kbd-hint">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Filter chips row (empty state) -->
+    <div class="filter-chips-row">
+      <span class="chips-empty">No filters active — showing all results</span>
+    </div>
+
+    <!-- Layout: sidebar + grid -->
+    <div class="search-layout">
+
+      <!-- LEFT: Filter sidebar -->
+      <div class="filter-sidebar">
+        <div class="sidebar-header">
+          <h3>Filters</h3>
+        </div>
+
+        <!-- Game facet -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Game</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot mtg"></span>
+              <span class="facet-label">MTG</span>
+              <span class="facet-count">2,340</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot pokemon"></span>
+              <span class="facet-label">Pokémon</span>
+              <span class="facet-count">890</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot yugioh"></span>
+              <span class="facet-label">Yu-Gi-Oh!</span>
+              <span class="facet-count">412</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot optcg"></span>
+              <span class="facet-label">One Piece</span>
+              <span class="facet-count">156</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Set facet (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Set</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+
+        <!-- Rarity facet (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Rarity</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+
+        <!-- Condition facet (open) -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Condition</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge nm">NM</span>
+              <span class="facet-label">Near Mint</span>
+              <span class="facet-count">1,204</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge lp">LP</span>
+              <span class="facet-label">Lightly Played</span>
+              <span class="facet-count">743</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge mp">MP</span>
+              <span class="facet-label">Moderately Played</span>
+              <span class="facet-count">389</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge hp">HP</span>
+              <span class="facet-label">Heavily Played</span>
+              <span class="facet-count">102</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge dmg">DMG</span>
+              <span class="facet-label">Damaged</span>
+              <span class="facet-count">34</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price preset facet -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Price Range</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="price-presets">
+              <button class="price-preset-btn">
+                <span>Under £5</span>
+                <span class="price-preset-count">821</span>
+              </button>
+              <button class="price-preset-btn">
+                <span>£5 – £20</span>
+                <span class="price-preset-count">1,047</span>
+              </button>
+              <button class="price-preset-btn">
+                <span>£20 – £50</span>
+                <span class="price-preset-count">394</span>
+              </button>
+              <button class="price-preset-btn">
+                <span>£50+</span>
+                <span class="price-preset-count">136</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Format legality (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Format Legality</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Results area -->
+      <div class="results-area">
+        <div class="results-toolbar">
+          <span class="results-count"><strong>3,798</strong> results for "charizard"</span>
+          <div class="sort-control">
+            <span class="sort-label">Sort:</span>
+            <select class="sort-select">
+              <option selected>Relevance</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard ex (Special Illustration)</div>
+              <div class="card-set">Obsidian Flames</div>
+              <div class="card-price">£84.99</div>
+              <div class="card-sellers">6 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard V (Full Art)</div>
+              <div class="card-set">Brilliant Stars</div>
+              <div class="card-price">£22.50</div>
+              <div class="card-sellers">11 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge mtg">MTG</span>
+              <div class="card-name">Shivan Dragon</div>
+              <div class="card-set">Dominaria</div>
+              <div class="card-price">£3.20</div>
+              <div class="card-sellers">4 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard (Base Set Holo)</div>
+              <div class="card-set">Base Set</div>
+              <div class="card-price">£280.00</div>
+              <div class="card-sellers">3 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard & Braixen-GX</div>
+              <div class="card-set">Cosmic Eclipse</div>
+              <div class="card-price">£14.75</div>
+              <div class="card-sellers">8 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard VMAX (Rainbow)</div>
+              <div class="card-set">Darkness Ablaze</div>
+              <div class="card-price">£39.99</div>
+              <div class="card-sellers">5 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard ex (SAR)</div>
+              <div class="card-set">Scarlet & Violet 151</div>
+              <div class="card-price">£129.00</div>
+              <div class="card-sellers">2 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image">
+              <div class="card-image-placeholder">🃏</div>
+            </div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard (Holo Rare)</div>
+              <div class="card-set">XY Evolutions</div>
+              <div class="card-price">£9.50</div>
+              <div class="card-sellers">17 sellers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>AC1 — Facet counts</strong>
+      <ul>
+        <li>Counts shown next to each facet option reflect Algolia's live result count for that refinement</li>
+        <li>Counts cascade — selecting "Pokémon" updates all other facets to show only Pokémon-relevant values</li>
+        <li>Uses <code>useRefinementList</code> from react-instantsearch — each facet is a separate hook</li>
+        <li><strong>Accessibility:</strong> accordion headers need <code>role="button"</code>, <code>aria-expanded</code>, <code>aria-controls</code>; checkboxes need <code>aria-checked</code> + visible focus ring (<code>ring-2 ring-interactive</code>)</li>
+        <li><strong>Set facet (deep list):</strong> max-height 200px + overflow-y scroll on accordion body; "Show all N sets" toggle link at bottom when list &gt; 8 items</li>
+        <li><strong>Sidebar overflow:</strong> when multiple accordions open, sidebar scrolls independently with a bottom fade gradient to signal more content below</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 2: Desktop — Active filters applied
+       ============================================================ -->
+  <div id="screen-desktop-filtered" class="screen">
+    <div class="section-label">
+      <h2>Desktop — Active Filters + Price Sort Applied</h2>
+      <span class="badge">1440px</span>
+    </div>
+    <div class="annotation">
+      Active filters shown as removable chips below the search bar.
+      Each facet option with a check shows selected state (blue checkbox).
+      Results count updates to reflect combined filter scope.
+      Sort is set to "Price: Low to High" — toolbar indicator updated.
+    </div>
+
+    <div class="url-bar">
+      <span>🔗</span>
+      <span class="url-path">/search</span>
+      <span class="url-params">?q=charizard&game=pokemon&condition=NM&condition=LP&price=5-20&sort=price-asc</span>
+    </div>
+
+    <div class="app-nav">
+      <div class="app-logo">SideDecked</div>
+      <div class="search-bar-chrome">
+        <span class="search-icon">🔍</span>
+        <span class="search-input-mock has-value">charizard</span>
+        <span class="kbd-hint">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Active filter chips row -->
+    <div class="filter-chips-row">
+      <div class="filter-chip">
+        <span>Pokémon</span>
+        <span class="chip-remove">×</span>
+      </div>
+      <div class="filter-chip">
+        <span>Near Mint</span>
+        <span class="chip-remove">×</span>
+      </div>
+      <div class="filter-chip">
+        <span>Lightly Played</span>
+        <span class="chip-remove">×</span>
+      </div>
+      <div class="filter-chip">
+        <span>£5 – £20</span>
+        <span class="chip-remove">×</span>
+      </div>
+      <button class="clear-all-btn">Clear All</button>
+    </div>
+
+    <div class="search-layout">
+      <div class="filter-sidebar">
+        <div class="sidebar-header">
+          <h3>Filters</h3>
+          <button class="sidebar-clear-btn">Clear All</button>
+        </div>
+
+        <!-- Game — Pokémon selected -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Game</span>
+            <span class="facet-active-count">1</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot mtg"></span>
+              <span class="facet-label">MTG</span>
+              <span class="facet-count">0</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox checked"></div>
+              <span class="game-dot pokemon"></span>
+              <span class="facet-label">Pokémon</span>
+              <span class="facet-count">527</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot yugioh"></span>
+              <span class="facet-label">Yu-Gi-Oh!</span>
+              <span class="facet-count">0</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot optcg"></span>
+              <span class="facet-label">One Piece</span>
+              <span class="facet-count">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Set (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Set</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+
+        <!-- Rarity (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Rarity</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+
+        <!-- Condition — NM + LP selected -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Condition</span>
+            <span class="facet-active-count">2</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="facet-option">
+              <div class="facet-checkbox checked"></div>
+              <span class="condition-badge nm">NM</span>
+              <span class="facet-label">Near Mint</span>
+              <span class="facet-count">312</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox checked"></div>
+              <span class="condition-badge lp">LP</span>
+              <span class="facet-label">Lightly Played</span>
+              <span class="facet-count">215</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge mp">MP</span>
+              <span class="facet-label">Moderately Played</span>
+              <span class="facet-count">89</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge hp">HP</span>
+              <span class="facet-label">Heavily Played</span>
+              <span class="facet-count">21</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="condition-badge dmg">DMG</span>
+              <span class="facet-label">Damaged</span>
+              <span class="facet-count">7</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price — £5–20 selected -->
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Price Range</span>
+            <span class="facet-active-count">1</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="price-presets">
+              <button class="price-preset-btn"><span>Under £5</span><span class="price-preset-count">0</span></button>
+              <button class="price-preset-btn selected"><span>£5 – £20</span><span class="price-preset-count">144</span></button>
+              <button class="price-preset-btn"><span>£20 – £50</span><span class="price-preset-count">—</span></button>
+              <button class="price-preset-btn"><span>£50+</span><span class="price-preset-count">—</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Format legality (collapsed) -->
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Format Legality</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results area — filtered + sorted -->
+      <div class="results-area">
+        <div class="results-toolbar">
+          <span class="results-count"><strong>144</strong> results · Pokémon, NM or LP, £5–20</span>
+          <div class="sort-control">
+            <span class="sort-label">Sort:</span>
+            <div class="sort-active-indicator">
+              <span class="sort-icon">↑</span>
+              Price: Low to High
+            </div>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <div class="card-item">
+            <div class="card-image"><div class="card-image-placeholder">🃏</div></div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard (Holo Rare)</div>
+              <div class="card-set">XY Evolutions</div>
+              <div class="card-price">£9.50</div>
+              <div class="card-sellers">17 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image"><div class="card-image-placeholder">🃏</div></div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard & Braixen-GX</div>
+              <div class="card-set">Cosmic Eclipse</div>
+              <div class="card-price">£14.75</div>
+              <div class="card-sellers">8 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image"><div class="card-image-placeholder">🃏</div></div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard V</div>
+              <div class="card-set">Fusion Strike</div>
+              <div class="card-price">£18.20</div>
+              <div class="card-sellers">5 sellers</div>
+            </div>
+          </div>
+          <div class="card-item">
+            <div class="card-image"><div class="card-image-placeholder">🃏</div></div>
+            <div class="card-info">
+              <span class="game-badge pokemon">Pokémon</span>
+              <div class="card-name">Charizard V (Full Art)</div>
+              <div class="card-set">Brilliant Stars</div>
+              <div class="card-price">£19.99</div>
+              <div class="card-sellers">11 sellers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>AC2 + AC3 — Multi-filter behaviour</strong>
+      <ul>
+        <li>OR logic within facet: NM + LP = show cards in either condition</li>
+        <li>AND logic across facets: Pokémon AND (NM OR LP) AND £5–20</li>
+        <li>Active filter chips match the selected refinements; each × removes one refinement</li>
+        <li>Re-clicking a checked sidebar checkbox also deselects it (same effect as chip ×)</li>
+        <li>Chip row is <code>overflow-x: auto; scrollbar-width: none</code> — scrollable on narrow mobile, no visible scrollbar</li>
+        <li>Each chip × button: <code>aria-label="Remove [filter name] filter"</code></li>
+        <li>Counts cascade: selecting Pokémon collapses other-game counts to 0</li>
+        <li><strong>AC4 — MUST-FIX:</strong> Sort requires Algolia replica indices <code>cards_price_asc</code> + <code>cards_price_desc</code> — must be created in Algolia dashboard as part of implementation Task 1. <code>useSortBy</code> hook needs <code>CARDS_INDEX_PRICE_ASC</code> / <code>CARDS_INDEX_PRICE_DESC</code> constants in <code>lib/algolia.ts</code></li>
+        <li><strong>AC3 — MUST-FIX:</strong> URL state persistence requires <code>routing</code> prop on <code>InstantSearchNext</code> with custom <code>stateMapping</code> for clean URL params (<code>?game=pokemon&condition=NM</code>) — not Algolia's verbose default format</li>
+        <li>Price presets are mutually exclusive (radio-like): selecting a second preset deselects the first. Uses <code>useNumericMenu</code> not <code>useRefinementList</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 3: Mobile — Default (no sheet open)
+       ============================================================ -->
+  <div id="screen-mobile-default" class="screen">
+    <div class="section-label">
+      <h2>Mobile — Search Results (Filter Toolbar)</h2>
+      <span class="badge mobile">375px</span>
+    </div>
+    <div class="annotation">
+      On mobile the sidebar is hidden. Instead a sticky toolbar row shows:
+      "Filters (N)" button (with count badge when active) + "Sort: ↑ Price" button.
+      Results grid is 2 columns. Active filter chips row still appears below toolbar.
+    </div>
+
+    <div style="max-width: 390px; margin: 0 auto; border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden;">
+      <!-- URL bar -->
+      <div class="url-bar" style="font-size:10px;">
+        <span>🔗</span>
+        <span class="url-path">/search</span>
+        <span class="url-params">?q=charizard&game=pokemon&condition=NM&price=5-20</span>
+      </div>
+
+      <!-- App nav -->
+      <div class="app-nav" style="padding: 10px 12px;">
+        <div class="app-logo" style="font-size:14px;">SideDecked</div>
+        <div class="search-bar-chrome" style="padding: 6px 10px;">
+          <span class="search-icon">🔍</span>
+          <span class="search-input-mock has-value" style="font-size:12px;">charizard</span>
+        </div>
+      </div>
+
+      <!-- Mobile toolbar -->
+      <div class="mobile-toolbar">
+        <button class="filter-trigger-btn" style="font-size:12px; padding: 6px 10px;">
+          ⚙ Filters <span class="filter-count-badge">3</span>
+        </button>
+        <button class="sort-trigger-btn active" style="font-size:11px; padding: 6px 10px;">
+          ↑ Price: Low
+        </button>
+        <div class="mobile-results-info">312 results</div>
+      </div>
+
+      <!-- Filter chips row (mobile) -->
+      <div class="filter-chips-row" style="padding: 8px 12px;">
+        <div class="filter-chip" style="font-size:11px; padding: 3px 8px;">
+          <span>Pokémon</span><span class="chip-remove">×</span>
+        </div>
+        <div class="filter-chip" style="font-size:11px; padding: 3px 8px;">
+          <span>NM</span><span class="chip-remove">×</span>
+        </div>
+        <div class="filter-chip" style="font-size:11px; padding: 3px 8px;">
+          <span>£5–20</span><span class="chip-remove">×</span>
+        </div>
+      </div>
+
+      <!-- 2-column card grid -->
+      <div class="card-grid-mobile">
+        <div class="card-item">
+          <div class="card-image" style="aspect-ratio:5/7;"><div class="card-image-placeholder">🃏</div></div>
+          <div class="card-info" style="padding:8px;">
+            <span class="game-badge pokemon">Pokémon</span>
+            <div class="card-name" style="font-size:10px;">Charizard (Holo)</div>
+            <div class="card-set" style="font-size:9px;">XY Evolutions</div>
+            <div class="card-price" style="font-size:11px;">£9.50</div>
+            <div class="card-sellers" style="font-size:9px;">17 sellers</div>
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-image" style="aspect-ratio:5/7;"><div class="card-image-placeholder">🃏</div></div>
+          <div class="card-info" style="padding:8px;">
+            <span class="game-badge pokemon">Pokémon</span>
+            <div class="card-name" style="font-size:10px;">Charizard & Braixen-GX</div>
+            <div class="card-set" style="font-size:9px;">Cosmic Eclipse</div>
+            <div class="card-price" style="font-size:11px;">£14.75</div>
+            <div class="card-sellers" style="font-size:9px;">8 sellers</div>
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-image" style="aspect-ratio:5/7;"><div class="card-image-placeholder">🃏</div></div>
+          <div class="card-info" style="padding:8px;">
+            <span class="game-badge pokemon">Pokémon</span>
+            <div class="card-name" style="font-size:10px;">Charizard V</div>
+            <div class="card-set" style="font-size:9px;">Fusion Strike</div>
+            <div class="card-price" style="font-size:11px;">£18.20</div>
+            <div class="card-sellers" style="font-size:9px;">5 sellers</div>
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-image" style="aspect-ratio:5/7;"><div class="card-image-placeholder">🃏</div></div>
+          <div class="card-info" style="padding:8px;">
+            <span class="game-badge pokemon">Pokémon</span>
+            <div class="card-name" style="font-size:10px;">Charizard V (Full Art)</div>
+            <div class="card-set" style="font-size:9px;">Brilliant Stars</div>
+            <div class="card-price" style="font-size:11px;">£19.99</div>
+            <div class="card-sellers" style="font-size:9px;">11 sellers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="max-width:390px;margin:16px auto 0;">
+      <strong>AC5 — Mobile filter trigger</strong>
+      <ul>
+        <li>Filter count badge (3) shows number of active refinements — appears when &gt;0 filters active</li>
+        <li>Tapping "Filters" opens the bottom sheet (Screen 4)</li>
+        <li>Filter chip row is <code>overflow-x: auto; scrollbar-width: none</code> — scrollable, no visible scrollbar</li>
+        <li>Sort button shows active sort label; tapping opens sort options list within the sheet</li>
+        <li><strong>Touch targets:</strong> all toolbar buttons min 44×44px tap target (padding ensures this)</li>
+        <li><strong>Narrow screens (320px):</strong> price presets collapse to single column</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 4: Mobile — Filter Bottom Sheet Open
+       ============================================================ -->
+  <div id="screen-mobile-sheet" class="screen">
+    <div class="section-label">
+      <h2>Mobile — Filter Bottom Sheet Open</h2>
+      <span class="badge mobile">375px</span>
+    </div>
+    <div class="annotation">
+      Tapping "Filters" on mobile opens a full-height bottom sheet using shadcn/ui Sheet.
+      Facets are listed top-to-bottom with checkboxes. Price presets use a 2×2 grid.
+      Sticky "Apply Filters (N)" + "Clear All" buttons at bottom of sheet.
+      Sheet dismisses on Escape, backdrop tap, or swipe-down gesture.
+    </div>
+
+    <div style="max-width:390px; margin:0 auto; position:relative; height:680px; overflow:hidden; border:1px solid var(--border-default); border-radius:var(--radius-lg);">
+      <!-- Dimmed page behind sheet -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:1;border-radius:var(--radius-lg);"></div>
+
+      <!-- App nav (dimmed) -->
+      <div class="app-nav" style="padding:10px 12px;opacity:0.4;">
+        <div class="app-logo" style="font-size:14px;">SideDecked</div>
+        <div class="search-bar-chrome" style="padding:6px 10px;">
+          <span class="search-icon">🔍</span>
+          <span class="search-input-mock has-value" style="font-size:12px;">charizard</span>
+        </div>
+      </div>
+
+      <!-- Bottom sheet -->
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:2;background:var(--bg-surface-1);border-radius:var(--radius-xl) var(--radius-xl) 0 0;border:1px solid var(--border-default);border-bottom:none;max-height:580px;display:flex;flex-direction:column;">
+        <div class="sheet-handle"></div>
+
+        <div class="sheet-header">
+          <span class="sheet-title">Filters</span>
+          <span class="sheet-active-count">3 active</span>
+          <button class="sheet-close">✕</button>
+        </div>
+
+        <div class="sheet-body">
+          <!-- Game facet -->
+          <div class="sheet-facet-group">
+            <div class="sheet-facet-header">
+              <span class="sheet-facet-title">Game</span>
+              <span class="facet-active-count">1</span>
+            </div>
+            <div class="sheet-facet-body">
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="game-dot mtg" style="margin:0 4px;"></span>
+                <span class="sheet-facet-label">MTG</span>
+                <span class="sheet-facet-count">0</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox checked"></div>
+                <span class="game-dot pokemon" style="margin:0 4px;"></span>
+                <span class="sheet-facet-label">Pokémon</span>
+                <span class="sheet-facet-count">527</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="game-dot yugioh" style="margin:0 4px;"></span>
+                <span class="sheet-facet-label">Yu-Gi-Oh!</span>
+                <span class="sheet-facet-count">0</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="game-dot optcg" style="margin:0 4px;"></span>
+                <span class="sheet-facet-label">One Piece</span>
+                <span class="sheet-facet-count">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Condition facet -->
+          <div class="sheet-facet-group">
+            <div class="sheet-facet-header">
+              <span class="sheet-facet-title">Condition</span>
+              <span class="facet-active-count">1</span>
+            </div>
+            <div class="sheet-facet-body">
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox checked"></div>
+                <span class="condition-badge nm" style="margin:0 4px;">NM</span>
+                <span class="sheet-facet-label">Near Mint</span>
+                <span class="sheet-facet-count">312</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="condition-badge lp" style="margin:0 4px;">LP</span>
+                <span class="sheet-facet-label">Lightly Played</span>
+                <span class="sheet-facet-count">215</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="condition-badge mp" style="margin:0 4px;">MP</span>
+                <span class="sheet-facet-label">Moderately Played</span>
+                <span class="sheet-facet-count">89</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="condition-badge hp" style="margin:0 4px;">HP</span>
+                <span class="sheet-facet-label">Heavily Played</span>
+                <span class="sheet-facet-count">21</span>
+              </div>
+              <div class="sheet-facet-option">
+                <div class="sheet-checkbox"></div>
+                <span class="condition-badge dmg" style="margin:0 4px;">DMG</span>
+                <span class="sheet-facet-label">Damaged</span>
+                <span class="sheet-facet-count">7</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price presets -->
+          <div class="sheet-facet-group">
+            <div class="sheet-facet-header">
+              <span class="sheet-facet-title">Price Range</span>
+              <span class="facet-active-count">1</span>
+            </div>
+            <div class="sheet-facet-body">
+              <div class="sheet-price-presets">
+                <button class="sheet-price-btn">Under £5</button>
+                <button class="sheet-price-btn selected">£5 – £20</button>
+                <button class="sheet-price-btn">£20 – £50</button>
+                <button class="sheet-price-btn">£50+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rarity (collapsed) -->
+          <div class="sheet-facet-group">
+            <div class="sheet-facet-header">
+              <span class="sheet-facet-title">Rarity</span>
+              <span style="font-size:12px;color:var(--text-tertiary);">▼</span>
+            </div>
+          </div>
+
+          <!-- Format legality (collapsed) -->
+          <div class="sheet-facet-group">
+            <div class="sheet-facet-header">
+              <span class="sheet-facet-title">Format Legality</span>
+              <span style="font-size:12px;color:var(--text-tertiary);">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sheet-footer">
+          <button class="sheet-clear-btn">Clear All</button>
+          <button class="sheet-apply-btn">Apply Filters (3)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="max-width:390px;margin:16px auto 0;">
+      <strong>AC5 — Bottom sheet behaviour</strong>
+      <ul>
+        <li>Sheet component from shadcn/ui (already in 2-2 component library)</li>
+        <li>Apply button label shows count of currently-pending selections</li>
+        <li>Backdrop tap / swipe-down / Escape → dismiss without applying</li>
+        <li>Scroll within sheet body when content exceeds viewport height</li>
+        <li>Empty state (no results for combined filters): shown inside results area, not inside sheet (see Screen 5)</li>
+        <li><strong>Accessibility:</strong> <code>role="dialog"</code>, <code>aria-label="Search Filters"</code>, focus trap inside sheet</li>
+        <li><strong>Screen reader:</strong> on Apply, announce "Showing N results" via aria-live region</li>
+        <li><strong>Full-width sheet rows:</strong> each facet option row is <code>padding: 12px 20px</code> to ensure 44px tap target height</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 5: Empty state — zero results after filtering
+       ============================================================ -->
+  <div id="screen-empty-state" class="screen">
+    <div class="section-label">
+      <h2>Empty State — Zero Results After Filtering</h2>
+      <span class="badge">Desktop + Mobile pattern</span>
+    </div>
+    <div class="annotation">
+      When combined filters return zero results, the card grid is replaced with a focused empty state.
+      The filter sidebar / toolbar remains visible so the user can adjust without navigating away.
+      This is a DIFFERENT component from <code>SearchNoResults</code> (which handles no search query hits).
+      This is <code>SearchFilteredNoResults</code> — always shows active filters and a clear CTA.
+    </div>
+
+    <div class="url-bar">
+      <span>🔗</span>
+      <span class="url-path">/search</span>
+      <span class="url-params">?q=charizard&game=yugioh&condition=NM&price=under-5</span>
+    </div>
+
+    <div class="app-nav">
+      <div class="app-logo">SideDecked</div>
+      <div class="search-bar-chrome">
+        <span class="search-icon">🔍</span>
+        <span class="search-input-mock has-value">charizard</span>
+        <span class="kbd-hint">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Active filter chips — still shown so user can remove them -->
+    <div class="filter-chips-row">
+      <div class="filter-chip">
+        <span>Yu-Gi-Oh!</span><span class="chip-remove">×</span>
+      </div>
+      <div class="filter-chip">
+        <span>Near Mint</span><span class="chip-remove">×</span>
+      </div>
+      <div class="filter-chip">
+        <span>Under £5</span><span class="chip-remove">×</span>
+      </div>
+      <button class="clear-all-btn">Clear All</button>
+    </div>
+
+    <div class="search-layout">
+
+      <!-- Sidebar still visible — counts all show 0 for current combo -->
+      <div class="filter-sidebar">
+        <div class="sidebar-header">
+          <h3>Filters</h3>
+          <button class="sidebar-clear-btn">Clear All</button>
+        </div>
+        <div class="facet-group">
+          <div class="facet-header open">
+            <span class="facet-title">Game</span>
+            <span class="facet-active-count">1</span>
+            <span class="facet-chevron">▲</span>
+          </div>
+          <div class="facet-body">
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot mtg"></span>
+              <span class="facet-label">MTG</span>
+              <span class="facet-count">0</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot pokemon"></span>
+              <span class="facet-label">Pokémon</span>
+              <span class="facet-count">0</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox checked"></div>
+              <span class="game-dot yugioh"></span>
+              <span class="facet-label">Yu-Gi-Oh!</span>
+              <span class="facet-count">0</span>
+            </div>
+            <div class="facet-option">
+              <div class="facet-checkbox"></div>
+              <span class="game-dot optcg"></span>
+              <span class="facet-label">One Piece</span>
+              <span class="facet-count">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Condition</span>
+            <span class="facet-active-count">1</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+        <div class="facet-group">
+          <div class="facet-header">
+            <span class="facet-title">Price Range</span>
+            <span class="facet-active-count">1</span>
+            <span class="facet-chevron">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state in results area -->
+      <div class="results-area">
+        <div class="results-toolbar">
+          <span class="results-count"><strong>0</strong> results · Yu-Gi-Oh!, NM, Under £5</span>
+          <div class="sort-control">
+            <span class="sort-label">Sort:</span>
+            <select class="sort-select" disabled style="opacity:0.4;">
+              <option>Relevance</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Empty state card -->
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 64px 32px; background: var(--bg-surface-1); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); text-align:center; gap: 16px;">
+          <div style="font-size:48px; opacity:0.4;">🔍</div>
+          <div>
+            <p style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:8px;">No cards match these filters</p>
+            <p style="font-size:13px; color:var(--text-secondary); max-width:300px; line-height:1.6;">
+              Try removing a filter — "charizard" appears in 412 Yu-Gi-Oh! cards,
+              but none meet both NM condition and Under £5 price.
+            </p>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button style="padding:10px 20px; background:var(--interactive); color:white; border:none; border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer;">
+              Clear All Filters
+            </button>
+            <button style="padding:10px 20px; background:transparent; border:1px solid var(--border-default); color:var(--text-secondary); border-radius:var(--radius-md); font-size:13px; cursor:pointer;">
+              Remove Price Filter
+            </button>
+          </div>
+          <p style="font-size:12px; color:var(--text-tertiary);">
+            Tip: try "LP" condition — 47 Yu-Gi-Oh! "charizard" cards available under £5
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Empty state — design decisions</strong>
+      <ul>
+        <li>Component: <code>SearchFilteredNoResults</code> (distinct from <code>SearchNoResults</code> which handles zero-query hits)</li>
+        <li>Smart suggestion: "Remove Price Filter" button targets the most restrictive filter (heuristic: fewest results). Powered by Algolia's <code>useCurrentRefinements</code> + individual count per filter</li>
+        <li>Helpful context sentence tells user WHICH filter is causing the zero — not just "no results found"</li>
+        <li>Sort control disabled (no results to sort)</li>
+        <li>Filter sidebar stays fully interactive — user can uncheck directly without the CTA</li>
+        <li><strong>Error state (Algolia unavailable):</strong> different from empty state — show last cached grid with a banner "Filters temporarily unavailable — showing all results". Never blank grid.</li>
+        <li><strong>Accessibility:</strong> empty state container <code>role="status"</code>, <code>aria-live="polite"</code> so screen readers announce "No cards match these filters"</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /screens -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
