@@ -286,6 +286,11 @@
         - ux-{{epic_num}}-{{story_num}}-wireframe.html
         - ux-story-{{epic_num}}-{{story_num}}-wireframe.html
       </action>
+      <check if="no wireframe file found matching any pattern">
+        <action>Update the existing "## UX Design Reference" section with wireframe path "none found" and note that only UX spec was available</action>
+        <action>Skip wireframe extraction steps below — proceed to UX spec extraction only if ux-design-specification.md exists</action>
+      </check>
+      <action>Store the discovered wireframe file path as {{wireframe_path}}</action>
       <action>Extract from wireframe HTML:
         - Component hierarchy and naming (CSS class names map to React components)
         - Layout patterns (grid columns, spacing, responsive breakpoints)
@@ -301,7 +306,7 @@
       <template-output file="{default_output_file}">ux_design_reference</template-output>
     </check>
     <check if="ux_content NOT available OR story has NO UI scope">
-      <action>Write "## UX Design Reference\n\nN/A — no UI scope for this story" to story file</action>
+      <action>Update the existing "## UX Design Reference" section body to: "N/A — no UI scope for this story" (do not add a new header)</action>
     </check>
 
     <!-- Previous story intelligence -->

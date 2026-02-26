@@ -40,7 +40,7 @@ so that {{benefit}}.
 
 <!-- Populated automatically by create-story when UX artifacts exist -->
 
-- **Wireframe:** `_bmad-output/planning-artifacts/ux-{{story_key}}-wireframe.html`
+- **Wireframe:** [Discovered path written by create-story, or "none found"]
 - **UX Spec:** `_bmad-output/planning-artifacts/ux-design-specification.md`
 - **Key design decisions:** [Extracted from UX artifacts]
 - **Design tokens/patterns to use:** [Extracted from wireframe]
