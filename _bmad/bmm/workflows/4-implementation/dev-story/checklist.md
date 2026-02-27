@@ -49,7 +49,7 @@ validation-rules:
 
 - [ ] **Unit Tests:** Unit tests added/updated for ALL core functionality introduced/changed by this story
 - [ ] **Integration Tests:** Integration tests added/updated for component interactions when story requirements demand them
-- [ ] **End-to-End Tests:** End-to-end tests created for critical user flows when story requirements specify them
+- [ ] **End-to-End Tests:** For any story touching UI/UX: Playwright tests created in `storefront/e2e/` covering the story's critical user flows. Run `npm run test:e2e` and confirm all pass.
 - [ ] **Test Coverage:** Tests cover acceptance criteria and edge cases from story Dev Notes
 - [ ] **Regression Prevention:** ALL existing tests pass (no regressions introduced)
 - [ ] **Code Quality:** Linting and static checks pass when configured in project

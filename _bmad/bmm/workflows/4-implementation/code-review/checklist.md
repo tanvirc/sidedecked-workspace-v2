@@ -11,6 +11,8 @@
 - [ ] Acceptance Criteria cross-checked against implementation
 - [ ] File List reviewed and validated for completeness
 - [ ] Tests identified and mapped to ACs; gaps noted
+- [ ] E2E tests present and passing (`npm run test:e2e`) for any UI story
+- [ ] E2E tests cover the UX wireframe acceptance criteria flows
 - [ ] Code quality review performed on changed files
 - [ ] Security review performed on changed files and dependencies
 - [ ] Outcome decided (Approve/Changes Requested/Blocked)
