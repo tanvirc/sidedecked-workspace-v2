@@ -2,7 +2,7 @@
 
 **Epic:** Epic 9 — Storefront Homepage Redesign
 **Story key:** 9-1-anonymous-homepage-hero-trust-foundation
-**Status:** ready-for-dev
+**Status:** implemented
 
 ## User Story
 
@@ -26,13 +26,13 @@ So that I can evaluate SideDecked and begin searching within 10 seconds without 
 
 ## Tasks
 
-- [ ] Task 1: Replace full homepage — remove GamesBentoGrid, HomeClient, HomeProductSection, community section; implement server-rendered RSC with H1 orientation sentence and search bar above fold [AC1]
-- [ ] Task 2: Create `lib/site-config.ts` with trust strip constants; implement A-static trust strip component [AC2]
-- [ ] Task 3: Implement auth-aware seller signal link — server-side auth check via cookies, degrade to showing link on auth error [AC3]
-- [ ] Task 4: Implement mobile layout — single-column, 44x44px touch targets, thumb-reachable search bar [AC4]
-- [ ] Task 5: Implement desktop two-column hero layout (left: H1+search+trust+signal; right: static stats card + seller opportunity card) [AC5]
-- [ ] Task 6: Performance validation — LCP <= 2.5s, CLS < 0.1; reserved height on right column [AC6]
-- [ ] Task 7: Tests (unit + integration) and quality gate [All ACs]
+- [x] Task 1: Replace full homepage — remove GamesBentoGrid, HomeClient, HomeProductSection, community section; implement server-rendered RSC with H1 orientation sentence and search bar above fold [AC1]
+- [x] Task 2: Create `lib/site-config.ts` with trust strip constants; implement A-static trust strip component [AC2]
+- [x] Task 3: Implement auth-aware seller signal link — server-side auth check via cookies, degrade to showing link on auth error [AC3]
+- [x] Task 4: Implement mobile layout — single-column, 44x44px touch targets, thumb-reachable search bar [AC4]
+- [x] Task 5: Implement desktop two-column hero layout (left: H1+search+trust+signal; right: static stats card + seller opportunity card) [AC5]
+- [x] Task 6: Performance validation — LCP <= 2.5s, CLS < 0.1; reserved height on right column [AC6]
+- [x] Task 7: Tests (unit + integration) and quality gate [All ACs]
 
 ## UX Design Reference
 
