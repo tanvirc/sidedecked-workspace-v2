@@ -120,3 +120,13 @@ development_status:
   8-5-transactional-email-notifications: backlog
   8-6-platform-metrics-dashboard-growth: backlog
   epic-8-retrospective: optional
+
+  # Epic 9: Storefront Homepage Redesign
+  epic-9: in-progress
+  9-1-anonymous-homepage-hero-trust-foundation: ready-for-dev
+  9-2-game-selector-grid: backlog
+  9-3-homepage-context-bff-endpoint: backlog
+  9-4-authenticated-personalised-strip: backlog
+  9-5-newcomer-orientation-banner: backlog
+  9-6-serendipity-layer-trending-now-deck-of-the-day: backlog
+  epic-9-retrospective: optional
