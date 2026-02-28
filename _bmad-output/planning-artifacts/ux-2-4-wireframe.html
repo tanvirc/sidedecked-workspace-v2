@@ -488,9 +488,11 @@ body { min-height: 100vh; }
       <span class="badge">1440px</span>
     </div>
     <div class="annotation">
+      An inline SearchBox spans the full width above the filter chips + sort row and card grid — real-time search as you type.
       The left filter sidebar is always visible on desktop (sticky, scrolls with page).
       Facets display live Algolia counts. No filters active = all results shown.
-      Sort control in results toolbar defaults to "Relevance".
+      Sort control sits in the same row as active filter chips (chips flex-1, sort right-aligned via ml-auto), always visible on desktop.
+      "Load More" button replaces numbered pagination — appears below the grid when more results exist; hidden when all results are loaded.
     </div>
 
     <!-- URL bar -->
@@ -788,10 +790,12 @@ body { min-height: 100vh; }
       <span class="badge">1440px</span>
     </div>
     <div class="annotation">
-      Active filters shown as removable chips below the search bar.
+      Active filter chips and the Sort control share the same full-width flex row (chips flex-1, sort right-aligned via ml-auto) — co-located above the sidebar+grid.
       Each facet option with a check shows selected state (blue checkbox).
-      Results count updates to reflect combined filter scope.
-      Sort is set to "Price: Low to High" — toolbar indicator updated.
+      Results count appears above the chips+sort row when a query is active, not inside the content column toolbar.
+      Sort is set to "Price: Low to High" — sort button right-aligned even when no filter chips are present.
+      Price presets are locale-aware: /au routes show AUD amounts (Under $10 / $10–$40 / $40–$100 / $100+); /gb and default show GBP (Under £5 / £5–£20 / £20–£50 / £50+).
+      Condition facet shows "No options available" when the attribute is not in Algolia's attributesForFaceting, instead of leaving an empty accordion body.
     </div>
 
     <div class="url-bar">
@@ -1039,9 +1043,11 @@ body { min-height: 100vh; }
       <span class="badge mobile">375px</span>
     </div>
     <div class="annotation">
+      An inline SearchBox appears at the top of the page (full width) above the mobile toolbar.
       On mobile the sidebar is hidden. Instead a sticky toolbar row shows:
       "Filters (N)" button (with count badge when active) + "Sort: ↑ Price" button.
       Results grid is 2 columns. Active filter chips row still appears below toolbar.
+      "Load More" button appears below the grid when more pages exist (replacing numbered pagination on all viewports).
     </div>
 
     <div style="max-width: 390px; margin: 0 auto; border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden;">
@@ -1154,6 +1160,7 @@ body { min-height: 100vh; }
     <div class="annotation">
       Tapping "Filters" on mobile opens a full-height bottom sheet using shadcn/ui Sheet.
       Facets are listed top-to-bottom with checkboxes. Price presets use a 2×2 grid.
+      Price preset labels are locale-aware: /au shows AUD (Under $10 / $10–$40 / $40–$100 / $100+); default shows GBP (Under £5 / £5–£20 / £20–£50 / £50+).
       Sticky "Apply Filters (N)" + "Clear All" buttons at bottom of sheet.
       Sheet dismisses on Escape, backdrop tap, or swipe-down gesture.
     </div>
