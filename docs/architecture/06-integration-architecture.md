@@ -71,6 +71,40 @@ graph TB
 
 ## API Integration Patterns
 
+### 11. Backend-for-Frontend (BFF) Pattern — Card Detail Page
+
+The storefront uses a Next.js API route as a BFF aggregator for the card detail page, combining data from both backends in a single SSR-friendly call.
+
+**Route:** `GET /api/cards/[id]?catalogSku={sku}` (storefront, `src/app/api/cards/[id]/route.ts`)
+
+**Data sources aggregated:**
+
+| Source | Endpoint | Failure mode |
+|--------|----------|-------------|
+| customer-backend | `GET /api/cards/{id}` | Hard fail → 404 to client |
+| backend | `GET /store/cards/listings?catalog_sku=` | Soft fail → `listingsUnavailable: true` |
+| backend | `POST /api/sellers/trust/batch` | Soft fail → listings returned without trust fields |
+
+**Response shape:** `CardDetailBFFResponse` (`src/types/bff.ts`)
+
+```typescript
+{
+  card: Card               // from customer-backend (catalog, prints, legality)
+  listings: BackendListing[] // from backend (price-sorted, trust-enriched)
+  listingsUnavailable: boolean // true when backend listings call fails
+}
+```
+
+**Circuit breaker behaviour:**
+
+- Listings timeout or 5xx → `listingsUnavailable: true`; catalog data still renders
+- Trust batch failure → listings returned without `sellerRating`/`sellerReviewCount`
+- Catalog 404 → `CardNotFoundError` thrown → route returns 404
+
+**Print-switching (AC6):** When the user selects a different print, `CardDetailPage` issues a new `fetch` to this endpoint with `?catalogSku={print-sku}`. An `AbortController` cancels any prior in-flight request; the last-settled response wins.
+
+**Listing sort order:** Price ascending, then `CONDITION_ORDER` (NM > LP > MP > HP > DMG) at equal price.
+
 ### 3. Commerce to Customer Domain Integration
 
 #### Authentication Flow
@@ -1083,6 +1117,7 @@ Both endpoints are protected by `authenticateToken` + `requirePlatformAdmin` mid
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1 | 2026-02-28 | Added §11 BFF pattern for card detail page (Story 2-5) |
 | 2.0 | 2025-09-11 | Complete rewrite with comprehensive integration patterns |
 | 1.1 | 2025-01-15 | Added event-driven patterns and circuit breakers |
 | 1.0 | 2024-12-01 | Initial integration architecture |

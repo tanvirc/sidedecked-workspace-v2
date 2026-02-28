@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `POST /api/sellers/trust/batch` (customer-backend): bulk trust-score lookup by seller IDs — returns per-seller rating percentage, review count, seller type, and verification status
   - `GET /store/cards/listings?catalog_sku=` (backend): maps Medusa product variant inventory to `BackendListing` shape; filters to `in_stock` variants only
   - 39 tests across 5 suites covering BFF service circuit breaker, API route 200/404/500 paths, component degradation banner, listings prop forwarding, trust signal rendering, ARIA labels, and pagination; BFF route at 100% coverage
+  - **v5.1 Card Detail Page layout (redo from architecture phase)**: Replaces the v4 two-column layout with a v5.1 persona-segmented three-column desktop grid (`260px 1fr 268px`)
+    - `QuickBuyPanel`: right-column action panel driven by real `BackendListing[]`; per-condition chips with stock counts; `disabled` attribute on zero-stock chips (not just visual dimming, per AC6a); quantity stepper capped at `listing.quantity` with "Only N left" label; `isRefetching` skeleton state during print re-fetches; auth-aware "Notify me" stub for zero-stock prints; Add to Cart with sonner toast
+    - `SaveSection`: "Add to Deck" and "Add to Collection" stub buttons with "Soon" badge; displays selected condition
+    - `PriceInsightsSection`: computes Low/Mid/High from live listings; "No price data yet" for empty state; trend placeholder
+    - `RulingsAccordion`: `<details>/<summary>` accordion; renders null when card has no rulings
+    - `CompactPrintingsTable` (enhanced): filter strip (All/Foil/Non-foil + Price↑/Year↓ sort toggles); artist name sub-row; keyboard navigation (↑/↓/Enter); overflow show/hide at 5 items default
+    - `MarketplaceListingsTable` (enhanced): null-first sort order (BFF order by default); sortable Condition/Rating/Price column headers with ARIA `columnheader` roles; "Best price" badge on cheapest listing row; condition sort uses `CONDITION_ORDER` (NM first ascending)
+    - `CardDetailPage` (refactored): AbortController fetch on print selection cancels prior in-flight request (race-condition safe); mobile tab chips (`role="tab"`, `aria-selected`) switching between oracle text and legality views; mobile fixed bottom action bar with 44px min touch targets; `BuySection` removed
+    - 500 tests (499 pass; 1 pre-existing failure on `main` unrelated to this story)
 - **TCG Catalog ETL Pipeline Seeding (Story 2-1)**: Hardened multi-game ETL seeding and ongoing sync reliability so discovery runs on consistent real catalog data
   - Canonical game-code normalization routes One Piece aliases (`ONEPIECE`, `ONE-PIECE`, `ONE_PIECE`) to `OPTCG` in ETL service and CLI entrypoints
   - SKU normalization now enforces uppercase ASCII kebab tokens with `UNK` fallback for missing components
