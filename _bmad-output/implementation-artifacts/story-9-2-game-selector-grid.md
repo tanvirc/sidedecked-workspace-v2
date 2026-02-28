@@ -2,7 +2,7 @@
 
 **Epic:** Epic 9 — Storefront Homepage Redesign
 **Story key:** 9-2-game-selector-grid
-**Status:** ready-for-dev
+**Status:** implemented
 
 ## User Story
 
@@ -37,14 +37,14 @@ So that I don't have to re-select my game on every visit.
 
 ## Tasks
 
-- [ ] Task 1: Add `/public/images/card-backs/` assets for MTG, Pokemon, YGO, and One Piece (or verify they exist) [AC1]
-- [ ] Task 2: Create `GameSelectorGrid` server component — 2x2 mobile / 4-col desktop grid with card-back image tiles, game-colour overlays, Rajdhani game name, DM Mono listing count, 5:7 aspect ratio [AC1]
-- [ ] Task 3: Add game-scoped listing count API route to customer-backend (GET /api/listings/counts?games=mtg,pokemon,ygo,onepiece) with Redis 30s TTL [AC2]
-- [ ] Task 4: Wire listing count fetch in GameSelectorGrid — graceful omission when endpoint unavailable or returns error [AC3]
-- [ ] Task 5: Implement game tile interaction — set sd_game_pref cookie (SameSite=Lax, 30-day expiry) and navigate to /cards with game filter pre-selected; no selected state on tile [AC4]
-- [ ] Task 6: Wire /cards page to read sd_game_pref cookie and pass game code as initialGame to Algolia initialUiState [AC5]
-- [ ] Task 7: Implement keyboard accessibility — Tab focus, Enter identical to tap (cookie + navigate) [AC6]
-- [ ] Task 8: Tests (unit + integration) and quality gate [All ACs]
+- [x] Task 1: Add `/public/images/card-backs/` assets for MTG, Pokemon, YGO, and One Piece (or verify they exist) [AC1]
+- [x] Task 2: Create `GameSelectorGrid` server component — 2x2 mobile / 4-col desktop grid with card-back image tiles, game-colour overlays, Rajdhani game name, DM Mono listing count, 5:7 aspect ratio [AC1]
+- [x] Task 3: Add game-scoped listing count API route to customer-backend (GET /api/catalog/listing-counts) with Redis 30s TTL [AC2]
+- [x] Task 4: Wire listing count fetch in GameSelectorGrid — graceful omission when endpoint unavailable or returns error [AC3]
+- [x] Task 5: Implement game tile interaction — set sd_game_pref cookie (SameSite=Lax, 30-day expiry) and navigate to /cards with game filter pre-selected; no selected state on tile [AC4]
+- [x] Task 6: Wire /cards page to read sd_game_pref cookie and pass game code as initialGame to Algolia initialUiState [AC5]
+- [x] Task 7: Implement keyboard accessibility — Tab focus, Enter identical to tap (cookie + navigate) [AC6]
+- [x] Task 8: Tests (unit + integration) and quality gate [All ACs]
 
 ## UX Design Reference
 
