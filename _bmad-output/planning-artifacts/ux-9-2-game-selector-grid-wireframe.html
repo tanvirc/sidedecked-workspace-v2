@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Story 9.2 Wireframe: Game Selector Grid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS — Midnight Forge
+═══════════════════════════════════════════ */
+:root {
+  --bg-base:#0C0D12; --bg-s1:#13141A; --bg-s2:#1A1C24; --bg-s3:#22242E; --bg-s4:#2A2D38;
+  --accent:#D4A843; --accent-hover:#E0B94F; --accent-dim:rgba(212,168,67,0.10); --accent-border:rgba(212,168,67,0.30);
+  --blue:#7C8CFF; --blue-dim:rgba(124,140,255,0.10); --blue-border:rgba(124,140,255,0.30);
+  --green:#4ADE80; --green-dim:rgba(74,222,128,0.08); --green-border:rgba(74,222,128,0.25);
+  --red:#EF5350; --red-dim:rgba(239,83,80,0.08); --red-border:rgba(239,83,80,0.25);
+  --warn:#FBBF24; --warn-dim:rgba(251,191,36,0.08); --warn-border:rgba(251,191,36,0.25);
+  --text-1:#E8ECF1; --text-2:#8B93A6; --text-3:#4F5568;
+  --border-s:rgba(255,255,255,0.06); --border-d:rgba(255,255,255,0.10);
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-full:999px;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp5:24px; --sp6:32px; --sp7:48px;
+  --font-d:'Rajdhani',system-ui,sans-serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --font-m:'DM Mono',monospace;
+  /* Game overlays */
+  --game-mtg: rgba(139,92,246,0.58);
+  --game-mtg-sel: rgba(139,92,246,0.75);
+  --game-pokemon: rgba(251,191,36,0.52);
+  --game-pokemon-sel: rgba(251,191,36,0.70);
+  --game-ygo: rgba(212,168,67,0.58);
+  --game-ygo-sel: rgba(212,168,67,0.75);
+  --game-onepiece: rgba(239,83,80,0.58);
+  --game-onepiece-sel: rgba(239,83,80,0.75);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-family:var(--font-b);font-size:14px;line-height:1.5;color:var(--text-1);background:var(--bg-base);-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+a{text-decoration:none;color:inherit;}
+
+/* ═══ WIREFRAME CHROME ═══ */
+.wf-header{text-align:center;padding:var(--sp7) var(--sp5) var(--sp6);border-bottom:1px solid var(--border-s);background:var(--bg-s1);position:relative;overflow:hidden;}
+.wf-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% -20%,rgba(212,168,67,0.08) 0%,transparent 70%);pointer-events:none;}
+.wf-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);margin-bottom:var(--sp2);}
+.wf-header h1{font-family:var(--font-d);font-size:28px;font-weight:700;letter-spacing:0.02em;margin-bottom:var(--sp2);}
+.wf-header h1 .brand{color:var(--accent);}
+.wf-header p{font-size:13px;color:var(--text-2);max-width:620px;margin:0 auto var(--sp3);}
+.badge-row{display:flex;gap:var(--sp2);justify-content:center;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:var(--r-full);font-size:11px;font-weight:600;}
+.badge-story{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border);}
+.badge-scope{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border);}
+.badge-rsc{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border);}
+
+/* ═══ TABS ═══ */
+.tab-nav{display:flex;justify-content:center;gap:var(--sp2);padding:var(--sp3) var(--sp5);background:var(--bg-s1);border-bottom:1px solid var(--border-s);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.tab-btn{display:inline-flex;align-items:center;gap:var(--sp2);padding:var(--sp2) var(--sp4);border:1px solid var(--border-d);border-radius:var(--r-full);color:var(--text-2);font-size:12px;font-weight:500;transition:all 0.18s;background:none;cursor:pointer;}
+.tab-btn:hover{color:var(--text-1);border-color:var(--blue);background:var(--blue-dim);}
+.tab-btn.active{color:var(--bg-base);background:var(--accent);border-color:var(--accent);}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot-mobile{background:var(--green);} .dot-desktop{background:#C084FC;} .dot-sel{background:var(--accent);} .dot-nocount{background:var(--text-3);} .dot-impl{background:var(--blue);}
+
+/* ═══ PANELS ═══ */
+.panels{padding:var(--sp6) var(--sp5);}
+.panel{display:none;animation:fadeIn 0.2s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.panel-meta{max-width:900px;margin:0 auto var(--sp5);}
+.panel-eyebrow{display:inline-block;padding:2px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;background:var(--blue-dim);color:var(--blue);margin-bottom:var(--sp2);}
+.panel-title{font-family:var(--font-d);font-size:20px;font-weight:700;margin-bottom:var(--sp2);}
+.panel-desc{font-size:13px;color:var(--text-2);line-height:1.7;}
+
+/* ═══ ANNOTATIONS ═══ */
+.note     {background:var(--accent-dim);border:1px dashed var(--accent-border);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;color:var(--accent);margin-bottom:var(--sp3);line-height:1.65;}
+.note-blue{background:var(--blue-dim);border:1px dashed var(--blue-border);color:var(--blue);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note-green{background:var(--green-dim);border:1px dashed var(--green-border);color:var(--green);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note-warn{background:var(--warn-dim);border:1px dashed var(--warn-border);color:var(--warn);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note-red{background:var(--red-dim);border:1px dashed var(--red-border);color:var(--red);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note strong{font-weight:700;}
+.atag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:var(--blue-dim);color:var(--blue);margin-left:6px;vertical-align:middle;}
+
+/* ═══ PROTO LAYOUT ═══ */
+.proto-layout{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:var(--sp6);align-items:start;}
+.annotations{position:sticky;top:80px;}
+.phone-wrap{display:flex;justify-content:center;}
+.phone-frame{width:390px;background:var(--bg-s1);border-radius:32px;border:1.5px solid var(--border-d);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.6);}
+.desktop-frame{width:100%;background:var(--bg-s1);border-radius:16px;border:1.5px solid var(--border-d);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.6);}
+
+/* ═══ STATUS BAR ═══ */
+.status-bar{background:var(--bg-s2);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;}
+.status-time{font-size:12px;font-weight:700;color:var(--text-1);}
+.status-icons{display:flex;gap:6px;align-items:center;}
+.status-icons span{font-size:11px;color:var(--text-2);}
+
+/* ═══ NAV BAR ═══ */
+.nav-bar{background:var(--bg-s2);border-bottom:1px solid var(--border-s);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--accent);letter-spacing:0.05em;}
+.nav-actions{display:flex;gap:8px;align-items:center;}
+.nav-icon{width:32px;height:32px;border-radius:var(--r-md);border:1px solid var(--border-d);display:flex;align-items:center;justify-content:center;color:var(--text-2);font-size:14px;}
+
+/* ═══ HERO (abbreviated from 9-1) ═══ */
+.hero-abbreviated{padding:16px;border-bottom:1px solid var(--border-s);}
+.hero-h1{font-family:var(--font-d);font-size:18px;font-weight:700;line-height:1.3;margin-bottom:8px;}
+.hero-h1 .accent{color:var(--accent);}
+.hero-p{font-size:11px;color:var(--text-2);margin-bottom:10px;}
+.search-bar{background:var(--bg-s3);border:1px solid var(--border-d);border-radius:var(--r-md);padding:8px 12px;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.search-icon{color:var(--text-3);font-size:13px;}
+.search-placeholder{color:var(--text-3);font-size:12px;flex:1;}
+.search-kbd{background:var(--bg-s4);border:1px solid var(--border-d);border-radius:4px;padding:1px 5px;font-family:var(--font-m);font-size:9px;color:var(--text-3);}
+.trust-strip{display:flex;gap:8px;align-items:center;font-family:var(--font-m);font-size:10px;color:var(--text-2);}
+.trust-sep{color:var(--text-3);}
+.seller-signal{font-size:11px;color:var(--accent);margin-top:6px;display:flex;align-items:center;gap:4px;}
+
+/* ═══ GAME GRID SECTION ═══ */
+.game-grid-section{padding:20px 16px;}
+.section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin-bottom:12px;}
+
+/* 2×2 mobile grid */
+.game-grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* 4-col desktop row */
+.game-grid-4col{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* ═══ GAME TILE ═══ */
+.game-tile{
+  position:relative;
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  cursor:pointer;
+  border:1.5px solid var(--border-d);
+  transition:border-color 0.18s, transform 0.12s, box-shadow 0.18s;
+  /* 5:7 aspect ratio → padding-bottom = 140% */
+  aspect-ratio: 5 / 7;
+}
+.game-tile:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+  border-color:rgba(255,255,255,0.20);
+}
+.game-tile:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+/* Active state — touch feedback before navigation */
+.game-tile:active{
+  transform:scale(0.97);
+  border-color:rgba(255,255,255,0.20);
+}
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .game-tile, .game-tile:hover, .game-tile:active { transform:none; transition:none; }
+}
+/* No selected state — tiles are pure navigation links */
+
+/* card-back image (use CSS background, simulated with a gradient placeholder in wireframe) */
+.tile-bg{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+/* game-colour overlay */
+.tile-overlay{
+  position:absolute;
+  inset:0;
+}
+/* content positioned at bottom */
+.tile-content{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:10px;
+  background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.40) 60%, transparent 100%);
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.tile-game-name{
+  font-family:var(--font-d);
+  font-size:15px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:#fff;
+  line-height:1.1;
+}
+.tile-listing-count{
+  font-family:var(--font-m);
+  font-size:9px;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:0.02em;
+}
+/* Selected checkmark */
+.tile-selected-badge{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  color:var(--bg-base);
+  font-weight:700;
+}
+
+/* Card-back placeholder images (colored fills representing actual images).
+   These background-colors ALSO serve as the image-load-failure fallback in production:
+   background-color is rendered before background-image loads; if image fails, colour shows. */
+.bg-mtg{background-color:#2d1a54;background-image:linear-gradient(135deg, #2d1a54 0%, #1a0d33 40%, #3d2570 100%);}
+.bg-pokemon{background-color:#1a3a6b;background-image:linear-gradient(135deg, #1a3a6b 0%, #0f2244 40%, #2a5499 100%);}
+.bg-ygo{background-color:#1a3054;background-image:linear-gradient(135deg, #1a3054 0%, #0d1e33 40%, #263d6e 100%);}
+.bg-onepiece{background-color:#1a1a2e;background-image:linear-gradient(135deg, #1a1a2e 0%, #0d0d1e 40%, #1a1a3e 100%);}
+
+/* overlay colors */
+.ov-mtg{background:var(--game-mtg);}
+.ov-pokemon{background:var(--game-pokemon);}
+.ov-ygo{background:var(--game-ygo);}
+.ov-onepiece{background:var(--game-onepiece);}
+
+/* Desktop tile game name larger */
+.game-grid-4col .tile-game-name{font-size:18px;}
+.game-grid-4col .tile-listing-count{font-size:10px;}
+.game-grid-4col .tile-content{padding:14px;}
+
+/* ═══ SECTION LABEL ROW ═══ */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-header-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-2);} /* text-2 per Sally party-mode note */
+
+/* ═══ IMPL TABLE ═══ */
+.impl-table{width:100%;border-collapse:collapse;font-size:12px;}
+.impl-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);border-bottom:1px solid var(--border-s);}
+.impl-table td{padding:8px 10px;border-bottom:1px solid var(--border-s);vertical-align:top;line-height:1.5;}
+.impl-table tr:last-child td{border-bottom:none;}
+.impl-table .file{font-family:var(--font-m);font-size:10px;color:var(--blue);}
+.impl-table .strategy{display:inline-flex;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.s-new{background:var(--warn-dim);color:var(--warn);}
+.s-keep{background:var(--green-dim);color:var(--green);}
+.s-refactor{background:var(--blue-dim);color:var(--blue);}
+
+/* ═══ DESKTOP LAYOUT ═══ */
+.desktop-hero{padding:32px 40px;display:grid;grid-template-columns:1fr 320px;gap:32px;border-bottom:1px solid var(--border-s);}
+.desktop-hero-left{display:flex;flex-direction:column;gap:14px;}
+.desktop-hero-h1{font-family:var(--font-d);font-size:28px;font-weight:700;line-height:1.3;}
+.desktop-hero-h1 .accent{color:var(--accent);}
+.desktop-search-bar{background:var(--bg-s3);border:1px solid var(--border-d);border-radius:var(--r-md);padding:10px 16px;display:flex;align-items:center;gap:10px;}
+.desktop-trust-strip{display:flex;gap:12px;font-family:var(--font-m);font-size:12px;color:var(--text-2);align-items:center;}
+.desktop-hero-right{background:var(--bg-s2);border-radius:var(--r-lg);border:1px solid var(--border-d);padding:20px;display:flex;flex-direction:column;gap:12px;}
+.desktop-hero-right-title{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--text-1);}
+.stat-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);}
+.stat-val{font-family:var(--font-m);color:var(--text-1);}
+.cta-btn{background:var(--accent);color:var(--bg-base);border-radius:var(--r-md);padding:8px 16px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;}
+.desktop-game-section{padding:28px 40px;}
+.desktop-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);margin-bottom:14px;}
+
+/* ═══ SELECTED STATE IN GAME NAME ═══ */
+.tile-game-name-row{display:flex;align-items:center;gap:6px;}
+</style>
+</head>
+<body>
+
+<!-- WIREFRAME HEADER -->
+<header class="wf-header">
+  <div class="wf-eyebrow">Wireframe · Story 9.2</div>
+  <h1><span class="brand">SideDecked</span> — Game Selector Grid</h1>
+  <p>Game tiles below the trust strip. Tap to navigate to /cards with game filter pre-selected. Cookie persists preference for return-visit pre-highlight.</p>
+  <div class="badge-row">
+    <span class="badge badge-story">Story 9-2</span>
+    <span class="badge badge-scope">storefront/ only</span>
+    <span class="badge badge-rsc">RSC + Client islands</span>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('mobile')"><span class="dot dot-mobile"></span> Mobile 390px</button>
+  <button class="tab-btn" onclick="showTab('desktop')"><span class="dot dot-desktop"></span> Desktop 1280px</button>
+  <button class="tab-btn" onclick="showTab('selected')"><span class="dot dot-sel"></span> Hover State</button>
+  <button class="tab-btn" onclick="showTab('nocount')"><span class="dot dot-nocount"></span> No Count (AC3)</button>
+  <button class="tab-btn" onclick="showTab('impl')"><span class="dot dot-impl"></span> Implementation</button>
+</nav>
+
+<div class="panels">
+
+  <!-- ══════════════════════════════════
+       TAB 1: MOBILE 2×2
+  ══════════════════════════════════ -->
+  <div id="tab-mobile" class="panel active">
+    <div class="proto-layout">
+
+      <!-- LEFT: phone frame -->
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <!-- Status bar -->
+          <div class="status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-icons"><span>●●●</span><span>WiFi</span><span>⬡ 100%</span></div>
+          </div>
+          <!-- Nav -->
+          <div class="nav-bar">
+            <span class="nav-logo">SIDEDECKED</span>
+            <div class="nav-actions">
+              <div class="nav-icon">⌕</div>
+              <div class="nav-icon">☰</div>
+            </div>
+          </div>
+
+          <!-- Hero (abbreviated from 9-1) -->
+          <div class="hero-abbreviated">
+            <h1 class="hero-h1">The marketplace for <span class="accent">MTG, Pokémon, Yu-Gi-Oh!</span> and <span class="accent">One Piece</span> singles.</h1>
+            <p class="hero-p">Buy individual cards from verified sellers — no booster packs required.</p>
+            <div class="search-bar">
+              <span class="search-icon">⌕</span>
+              <span class="search-placeholder">Search cards, sets, sellers...</span>
+              <span class="search-kbd">⌘K</span>
+            </div>
+            <div class="trust-strip">
+              <span>2.1M cards</span>
+              <span class="trust-sep">·</span>
+              <span>1,240 verified sellers</span>
+              <span class="trust-sep">·</span>
+              <span>Buyers protected</span>
+            </div>
+            <div class="seller-signal">Got cards to sell? <span>→</span></div>
+          </div>
+
+          <!-- GAME GRID SECTION -->
+          <div class="game-grid-section">
+            <div class="section-header">
+              <span class="section-header-label">Shop by game</span>
+            </div>
+
+            <div class="game-grid-2x2" role="radiogroup" aria-label="Choose a game">
+
+              <!-- MTG tile -->
+              <div class="game-tile" role="radio" aria-checked="false" aria-label="Magic: The Gathering — 387,420 listings" tabindex="0">
+                <div class="tile-bg bg-mtg"></div>
+                <div class="tile-overlay ov-mtg"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">MTG</div>
+                  <div class="tile-listing-count">387,420 listings</div>
+                </div>
+              </div>
+
+              <!-- Pokemon tile -->
+              <div class="game-tile" role="radio" aria-checked="false" aria-label="Pokémon — 214,850 listings" tabindex="0">
+                <div class="tile-bg bg-pokemon"></div>
+                <div class="tile-overlay ov-pokemon"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">POKÉMON</div>
+                  <div class="tile-listing-count">214,850 listings</div>
+                </div>
+              </div>
+
+              <!-- YGO tile -->
+              <div class="game-tile" role="radio" aria-checked="false" aria-label="Yu-Gi-Oh! — 156,290 listings" tabindex="0">
+                <div class="tile-bg bg-ygo"></div>
+                <div class="tile-overlay ov-ygo"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">YU-GI-OH!</div>
+                  <div class="tile-listing-count">156,290 listings</div>
+                </div>
+              </div>
+
+              <!-- One Piece tile -->
+              <div class="game-tile" role="radio" aria-checked="false" aria-label="One Piece — 42,180 listings" tabindex="0">
+                <div class="tile-bg bg-onepiece"></div>
+                <div class="tile-overlay ov-onepiece"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">ONE PIECE</div>
+                  <div class="tile-listing-count">42,180 listings</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: annotations -->
+      <div class="annotations">
+        <div class="note"><strong>AC1:</strong> 2×2 grid on mobile (< 640px). Tiles fill column width equally. Gap: 10px.</div>
+        <div class="note-blue"><strong>Aspect ratio:</strong> 5:7 enforced via <code>aspect-ratio: 5 / 7</code> CSS property. No padding-bottom hack.</div>
+        <div class="note"><strong>Card-back images:</strong> CSS <code>background-image: url('/images/card-backs/Back_of_MTG_card.webp')</code> etc. All 4 files already in <code>/public/images/card-backs/</code>.</div>
+        <div class="note-blue"><strong>Game-colour overlay:</strong> Absolute <code>inset:0</code> div on top of card-back image with semi-transparent game colour. Opacity levels: MTG purple 58%, Pokémon yellow 52%, YGO gold 58%, One Piece red 58%.</div>
+        <div class="note"><strong>Typography:</strong> Game name = Rajdhani 700, uppercase, 15px, #fff. Count = DM Mono 400, 9px, rgba(255,255,255,0.65). Bottom-anchored inside gradient scrim.</div>
+        <div class="note-green"><strong>Accessibility:</strong> <code>role="radiogroup"</code> on grid, <code>role="radio" aria-checked="false"</code> on each tile (no true state — tiles always navigate). Tab navigable. Enter fires same as click. <code>aria-label</code>: "{Game Name} — {count} listings" when count available; "{Game Name}" when count omitted.</div>
+        <div class="note-warn"><strong>On tap:</strong> Set <code>sd_game_pref</code> cookie → navigate to <code>/cards?game={code}</code>. Cookie: SameSite=Lax, 30-day expiry. Cookie write is best-effort — navigation fires regardless of cookie success.</div>
+        <div class="note-blue"><strong>Active state (touch feedback):</strong> <code>transform: scale(0.97)</code> on <code>:active</code>. Suppressed by <code>prefers-reduced-motion</code>.</div>
+        <div class="note"><strong>Image fallback:</strong> Each <code>.tile-bg</code> has a matching <code>background-color</code> (game's dominant colour) that renders if the card-back webp fails to load.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 2: DESKTOP 4-COL
+  ══════════════════════════════════ -->
+  <div id="tab-desktop" class="panel">
+    <div class="panel-meta">
+      <div class="panel-eyebrow">Desktop — 1280px</div>
+      <div class="panel-title">4-Column Row Layout</div>
+      <div class="panel-desc">On desktop (≥ 640px), the 4 game tiles form a single horizontal row at equal widths. Tiles are taller due to the 5:7 aspect ratio. Desktop game name is 18px Rajdhani.</div>
+    </div>
+
+    <div class="desktop-frame" style="max-width:960px;margin:0 auto;">
+      <!-- Nav bar -->
+      <div style="background:var(--bg-s2);border-bottom:1px solid var(--border-s);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--accent);">SIDEDECKED</span>
+        <div style="display:flex;gap:12px;align-items:center;font-size:12px;color:var(--text-2);">
+          <span>Browse</span><span>Sell</span><span>Decks</span><span>|</span>
+          <div style="background:var(--bg-s3);border:1px solid var(--border-d);border-radius:var(--r-full);padding:6px 16px;display:flex;gap:8px;align-items:center;width:240px;">
+            <span style="color:var(--text-3);font-size:13px;">⌕</span>
+            <span style="color:var(--text-3);font-size:12px;">Search cards, sets, sellers...</span>
+          </div>
+          <div style="background:var(--accent);color:var(--bg-base);border-radius:var(--r-md);padding:6px 14px;font-size:12px;font-weight:700;">Sign in</div>
+        </div>
+      </div>
+
+      <!-- Desktop hero (abbreviated) -->
+      <div class="desktop-hero">
+        <div class="desktop-hero-left">
+          <h1 class="desktop-hero-h1">The marketplace for <span class="accent">MTG, Pokémon, Yu-Gi-Oh!</span> and <span class="accent">One Piece</span> singles.</h1>
+          <p style="font-size:13px;color:var(--text-2);">Buy individual cards from verified sellers — no booster packs required.</p>
+          <div class="desktop-search-bar">
+            <span style="color:var(--text-3);">⌕</span>
+            <span style="color:var(--text-3);font-size:13px;flex:1;">Search cards, sets, sellers...</span>
+            <span style="background:var(--bg-s4);border:1px solid var(--border-d);border-radius:4px;padding:2px 7px;font-family:var(--font-m);font-size:11px;color:var(--text-3);">⌘K</span>
+          </div>
+          <div class="desktop-trust-strip">
+            <span>2.1M cards</span>
+            <span style="color:var(--text-3)">·</span>
+            <span>1,240 verified sellers</span>
+            <span style="color:var(--text-3)">·</span>
+            <span>Buyers protected</span>
+          </div>
+          <div style="font-size:12px;color:var(--accent);">Got cards to sell? →</div>
+        </div>
+        <div class="desktop-hero-right">
+          <div class="desktop-hero-right-title">Why SideDecked?</div>
+          <div class="stat-row"><span>Verified sellers</span><span class="stat-val">1,240</span></div>
+          <div class="stat-row"><span>Cards listed</span><span class="stat-val">2.1M</span></div>
+          <div class="stat-row"><span>Avg. seller rating</span><span class="stat-val">4.8 ★</span></div>
+          <div class="cta-btn" style="margin-top:4px;">Start selling →</div>
+        </div>
+      </div>
+
+      <!-- Desktop game grid -->
+      <div class="desktop-game-section">
+        <div class="desktop-section-label">Shop by game</div>
+        <div class="game-grid-4col" role="radiogroup" aria-label="Choose a game">
+
+          <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+            <div class="tile-bg bg-mtg"></div>
+            <div class="tile-overlay ov-mtg"></div>
+            <div class="tile-content">
+              <div class="tile-game-name">MTG</div>
+              <div class="tile-listing-count">387,420 listings</div>
+            </div>
+          </div>
+
+          <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+            <div class="tile-bg bg-pokemon"></div>
+            <div class="tile-overlay ov-pokemon"></div>
+            <div class="tile-content">
+              <div class="tile-game-name">POKÉMON</div>
+              <div class="tile-listing-count">214,850 listings</div>
+            </div>
+          </div>
+
+          <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+            <div class="tile-bg bg-ygo"></div>
+            <div class="tile-overlay ov-ygo"></div>
+            <div class="tile-content">
+              <div class="tile-game-name">YU-GI-OH!</div>
+              <div class="tile-listing-count">156,290 listings</div>
+            </div>
+          </div>
+
+          <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+            <div class="tile-bg bg-onepiece"></div>
+            <div class="tile-overlay ov-onepiece"></div>
+            <div class="tile-content">
+              <div class="tile-game-name">ONE PIECE</div>
+              <div class="tile-listing-count">42,180 listings</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:960px;margin:var(--sp5) auto 0;">
+      <div class="note"><strong>Desktop breakpoint:</strong> 4-column row activates at ≥ 640px (Tailwind <code>sm:</code> breakpoint). Grid: <code>sm:grid-cols-4</code>. Tile max-width is unconstrained; tiles fill the grid column.</div>
+      <div class="note-blue"><strong>Tile height:</strong> 5:7 ratio means tiles are ~56% taller than wide. On a 4-col grid at 960px wide (with 40px padding each side and 12px gaps), each tile is ~196px wide → ~274px tall. This is intentional — mirrors a card's proportions.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 3: HOVER STATE
+  ══════════════════════════════════ -->
+  <div id="tab-selected" class="panel">
+    <div class="proto-layout">
+
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-icons"><span>●●●</span><span>WiFi</span><span>⬡ 100%</span></div>
+          </div>
+          <div class="nav-bar">
+            <span class="nav-logo">SIDEDECKED</span>
+            <div class="nav-actions">
+              <div class="nav-icon">⌕</div>
+              <div class="nav-icon">☰</div>
+            </div>
+          </div>
+          <div class="hero-abbreviated">
+            <h1 class="hero-h1">The marketplace for <span class="accent">MTG, Pokémon, Yu-Gi-Oh!</span> and <span class="accent">One Piece</span> singles.</h1>
+            <p class="hero-p">Buy individual cards from verified sellers — no booster packs required.</p>
+            <div class="search-bar">
+              <span class="search-icon">⌕</span>
+              <span class="search-placeholder">Search cards, sets, sellers...</span>
+              <span class="search-kbd">⌘K</span>
+            </div>
+            <div class="trust-strip">
+              <span>2.1M cards</span>
+              <span class="trust-sep">·</span>
+              <span>1,240 verified sellers</span>
+              <span class="trust-sep">·</span>
+              <span>Buyers protected</span>
+            </div>
+            <div class="seller-signal">Got cards to sell? <span>→</span></div>
+          </div>
+
+          <!-- Game Grid — MTG tile in hover state -->
+          <div class="game-grid-section">
+            <div class="section-header">
+              <span class="section-header-label">Shop by game</span>
+            </div>
+            <div class="game-grid-2x2" role="radiogroup" aria-label="Choose a game">
+
+              <!-- MTG — HOVERED (simulated) -->
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0"
+                   style="transform:translateY(-2px);border-color:rgba(255,255,255,0.20);box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+                <div class="tile-bg bg-mtg"></div>
+                <div class="tile-overlay ov-mtg"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">MTG</div>
+                  <div class="tile-listing-count">387,420 listings</div>
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+                <div class="tile-bg bg-pokemon"></div>
+                <div class="tile-overlay ov-pokemon"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">POKÉMON</div>
+                  <div class="tile-listing-count">214,850 listings</div>
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+                <div class="tile-bg bg-ygo"></div>
+                <div class="tile-overlay ov-ygo"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">YU-GI-OH!</div>
+                  <div class="tile-listing-count">156,290 listings</div>
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0">
+                <div class="tile-bg bg-onepiece"></div>
+                <div class="tile-overlay ov-onepiece"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">ONE PIECE</div>
+                  <div class="tile-listing-count">42,180 listings</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: annotations -->
+      <div class="annotations">
+        <div class="note-red"><strong>No selected state:</strong> Tiles are pure navigation links. Click/tap immediately navigates to <code>/cards?game={code}</code>. There is no visual selection state on the homepage tile — not on click, not on return visits.</div>
+        <div class="note-green"><strong>Hover state spec (MTG tile shown above):</strong>
+          <br>• <code>transform: translateY(-2px)</code>
+          <br>• <code>border-color: rgba(255,255,255,0.20)</code>
+          <br>• <code>box-shadow: 0 8px 24px rgba(0,0,0,0.5)</code>
+          <br>• Transition: all 0.18s ease
+        </div>
+        <div class="note-blue"><strong>Focus-visible state (keyboard):</strong>
+          <br>• <code>outline: 2px solid var(--accent)</code>
+          <br>• <code>outline-offset: 2px</code>
+          <br>Enter key fires identical action to tap.
+        </div>
+        <div class="note-warn"><strong>AC4 — On tap:</strong> Cookie set → <code>router.push("/cards?game={code}")</code>. Navigation is synchronous from the user's perspective — no intermediate state.</div>
+        <div class="note"><strong>AC5 revised:</strong> <code>sd_game_pref</code> cookie is read by <code>/cards</code> page.tsx on the subsequent visit to pre-filter Algolia results. The homepage tiles do not reflect preference state.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 4: NO COUNT STATE (AC3)
+  ══════════════════════════════════ -->
+  <div id="tab-nocount" class="panel">
+    <div class="proto-layout">
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-icons"><span>●●●</span><span>WiFi</span><span>⬡ 100%</span></div>
+          </div>
+          <div class="nav-bar">
+            <span class="nav-logo">SIDEDECKED</span>
+            <div class="nav-actions">
+              <div class="nav-icon">⌕</div>
+              <div class="nav-icon">☰</div>
+            </div>
+          </div>
+          <div class="hero-abbreviated">
+            <h1 class="hero-h1">The marketplace for <span class="accent">MTG, Pokémon, Yu-Gi-Oh!</span> and <span class="accent">One Piece</span> singles.</h1>
+            <p class="hero-p">Buy individual cards from verified sellers — no booster packs required.</p>
+            <div class="search-bar">
+              <span class="search-icon">⌕</span>
+              <span class="search-placeholder">Search cards, sets, sellers...</span>
+              <span class="search-kbd">⌘K</span>
+            </div>
+            <div class="trust-strip">
+              <span>2.1M cards</span>
+              <span class="trust-sep">·</span>
+              <span>1,240 verified sellers</span>
+              <span class="trust-sep">·</span>
+              <span>Buyers protected</span>
+            </div>
+          </div>
+
+          <!-- Game Grid — NO COUNTS (listing count service unavailable) -->
+          <div class="game-grid-section">
+            <div class="section-header">
+              <span class="section-header-label">Shop by game</span>
+            </div>
+            <div class="game-grid-2x2" role="radiogroup" aria-label="Choose a game">
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0" aria-label="Magic: The Gathering">
+                <div class="tile-bg bg-mtg"></div>
+                <div class="tile-overlay ov-mtg"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">MTG</div>
+                  <!-- count row absent — no placeholder, no "--", no spinner -->
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0" aria-label="Pokémon">
+                <div class="tile-bg bg-pokemon"></div>
+                <div class="tile-overlay ov-pokemon"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">POKÉMON</div>
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0" aria-label="Yu-Gi-Oh!">
+                <div class="tile-bg bg-ygo"></div>
+                <div class="tile-overlay ov-ygo"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">YU-GI-OH!</div>
+                </div>
+              </div>
+
+              <div class="game-tile" role="radio" aria-checked="false" tabindex="0" aria-label="One Piece">
+                <div class="tile-bg bg-onepiece"></div>
+                <div class="tile-overlay ov-onepiece"></div>
+                <div class="tile-content">
+                  <div class="tile-game-name">ONE PIECE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations">
+        <div class="note-warn"><strong>AC3 — Service unavailable:</strong> When the customer-backend listing count endpoint returns an error or times out, the listing count row is simply omitted. No "—", no spinner, no "unavailable" text.</div>
+        <div class="note-blue"><strong>Implementation:</strong> Count fetch is a non-critical background operation. Page renders immediately with <code>counts = undefined</code>. Each tile conditionally renders the count row: <code>{count !== undefined &amp;&amp; &lt;div className="tile-listing-count"&gt;...&lt;/div&gt;}</code>.</div>
+        <div class="note"><strong>No layout shift:</strong> The tile content is bottom-anchored in a gradient scrim. Presence or absence of the count row only adds/removes ~14px of height from the content block — this is acceptable since tiles are image-backed and the layout doesn't reflow.</div>
+        <div class="note-green"><strong>Aria label without count:</strong> <code>aria-label</code> is the game name only when count is absent (no "undefined listings" in the label).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 5: IMPLEMENTATION NOTES
+  ══════════════════════════════════ -->
+  <div id="tab-impl" class="panel">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="panel-eyebrow">Implementation</div>
+      <div class="panel-title" style="margin-bottom:var(--sp3);">Component Strategy &amp; File Map</div>
+      <div class="panel-desc" style="margin-bottom:var(--sp5);">All changes to storefront/ only. No vendorpanel/ changes. customer-backend gets one new route.</div>
+
+      <div class="note-blue" style="margin-bottom:var(--sp4);"><strong>Architecture decision:</strong> GameSelectorGrid is a React Server Component (RSC) that reads the <code>sd_game_pref</code> cookie server-side to pass <code>initialGamePref</code> prop. Each individual GameTile is a Client Component island (<code>"use client"</code>) that handles the click → cookie write → router.push navigation. No shared Context required since click immediately navigates away.</div>
+
+      <table class="impl-table">
+        <thead>
+          <tr>
+            <th>Wireframe Element</th>
+            <th>Code Component / File</th>
+            <th>Strategy</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GameSelectorGrid section wrapper</td>
+            <td class="file">storefront/src/components/homepage/GameSelectorGrid.tsx</td>
+            <td><span class="strategy s-new">BUILD-NEW</span></td>
+            <td>RSC. Reads cookie, fetches listing counts (with fallback), renders grid shell + 4 GameTile islands.</td>
+          </tr>
+          <tr>
+            <td>Individual game tile (click, cookie, nav)</td>
+            <td class="file">storefront/src/components/homepage/GameTile.tsx</td>
+            <td><span class="strategy s-new">BUILD-NEW</span></td>
+            <td>"use client". Accepts game props + selected state. On click: js-cookie write + router.push("/cards?game=…").</td>
+          </tr>
+          <tr>
+            <td>Homepage page.tsx (slot)</td>
+            <td class="file">storefront/src/app/[locale]/(main)/page.tsx</td>
+            <td><span class="strategy s-refactor">REFACTOR</span></td>
+            <td>Uncomment GameSelectorGrid slot. No cookie read needed here. Existing HeroSection untouched.</td>
+          </tr>
+          <tr>
+            <td>Listing count API</td>
+            <td class="file">customer-backend/src/routes/catalog.ts (new route)</td>
+            <td><span class="strategy s-new">BUILD-NEW</span></td>
+            <td>GET /api/catalog/listing-counts. Returns per-game counts from sidedecked-db. Redis 30s TTL. No auth required.</td>
+          </tr>
+          <tr>
+            <td>Customer backend API client</td>
+            <td class="file">storefront/src/lib/api/customer-backend.ts</td>
+            <td><span class="strategy s-refactor">REFACTOR</span></td>
+            <td>Add fetchGameListingCounts() function. Called server-side in GameSelectorGrid. Try/catch → returns undefined on error.</td>
+          </tr>
+          <tr>
+            <td>Card-back images</td>
+            <td class="file">storefront/public/images/card-backs/*.webp</td>
+            <td><span class="strategy s-keep">KEEP</span></td>
+            <td>All 4 images already present. No changes needed.</td>
+          </tr>
+          <tr>
+            <td>Algolia game filter routing</td>
+            <td class="file">storefront/src/components/search/AlgoliaSearchResults.tsx</td>
+            <td><span class="strategy s-keep">KEEP</span></td>
+            <td>URL ?game=pokemon already handled by existing stateMapping. GameTile navigates to /cards?game={code}. No changes needed.</td>
+          </tr>
+          <tr>
+            <td>/cards page searchParams + cookie read (AC5)</td>
+            <td class="file">storefront/src/app/[locale]/(main)/cards/page.tsx</td>
+            <td><span class="strategy s-refactor">REFACTOR</span></td>
+            <td>Add {game} to searchParams. Read sd_game_pref cookie as fallback when ?game= is absent. Pass game code to AlgoliaSearchResults initialUiState.refinementList.game.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:var(--sp5);">
+        <div class="panel-eyebrow" style="margin-bottom:var(--sp3);">Cookie &amp; Navigation Flow</div>
+        <div class="note" style="font-size:12px;line-height:1.8;">
+          <strong>AC4 sequence (client-side):</strong><br>
+          1. User taps game tile<br>
+          2. <code>document.cookie = "sd_game_pref=pokemon; max-age=2592000; path=/; SameSite=Lax"</code><br>
+          3. <code>router.push("/cards?game=pokemon")</code> (Next.js App Router)<br>
+          4. /cards page loads with Algolia <code>initialUiState.refinementList.game = ["pokemon"]</code><br>
+          5. Algolia renders results pre-filtered to Pokémon cards
+        </div>
+        <div class="note-blue" style="font-size:12px;line-height:1.8;margin-top:var(--sp3);">
+          <strong>AC5 sequence (server-side, /cards pre-filter):</strong><br>
+          1. /cards page.tsx: <code>const gamePref = (await cookies()).get("sd_game_pref")?.value ?? null</code><br>
+          2. Pass to <code>AlgoliaSearchResults initialUiState={{ [CARDS_INDEX]: { refinementList: { game: gamePref ? [gamePref] : [] } } }}</code><br>
+          3. Cards page loads pre-filtered to user's preferred game<br>
+          <strong>Note:</strong> Homepage tiles have no visual preference state — cookie is for /cards only.
+        </div>
+        <div class="note-warn" style="font-size:12px;line-height:1.8;margin-top:var(--sp3);">
+          <strong>Game code mapping (cookie ↔ URL ↔ Algolia):</strong><br>
+          Cookie value → URL param → Algolia refinement value must be consistent.<br>
+          Architecture phase to confirm exact Algolia game refinement values (likely: "MTG", "Pokemon", "Yu-Gi-Oh!", "One Piece" or lowercase variants).
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  document.getElementById('tab-' + name).classList.add('active')
+  event.currentTarget.classList.add('active')
+}
+</script>
+</body>
+</html>

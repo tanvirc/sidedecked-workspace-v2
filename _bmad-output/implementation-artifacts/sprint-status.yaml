@@ -124,7 +124,7 @@ development_status:
   # Epic 9: Storefront Homepage Redesign
   epic-9: in-progress
   9-1-anonymous-homepage-hero-trust-foundation: done
-  9-2-game-selector-grid: backlog
+  9-2-game-selector-grid: ready-for-dev
   9-3-homepage-context-bff-endpoint: backlog
   9-4-authenticated-personalised-strip: backlog
   9-5-newcomer-orientation-banner: backlog
