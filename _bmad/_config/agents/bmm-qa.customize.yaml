@@ -4,6 +4,10 @@
 critical_actions:
   - "Quality gate MUST pass before any story is marked complete: npm run lint && npm run typecheck && npm run build && npm test"
   - "Coverage must be > 80% on changed modules. Run: npm run test:coverage"
+  - "Phase 5B UX Compliance Tests: Generate Playwright computed-style assertion tests (NOT visual snapshot comparison). Test file location: storefront/e2e/{story-key}-ux-compliance.spec.ts"
+  - "Phase 5B viewports: { width: 375, height: 812 } (mobile) and { width: 1280, height: 900 } (desktop)"
+  - "Phase 5B screenshots: Save to _bmad-output/ux-validation/{story-key}/. Capture accessibility tree via page.accessibility.snapshot() and save as accessibility-tree.json."
+  - "Playwright command: npx playwright test (create test:e2e script in storefront/package.json if missing)"
 
 memories:
   - "Testing frameworks: Vitest + Jest (NEVER Mocha). Tests co-located with source or in __tests__/ directories."

@@ -8,7 +8,7 @@ This document summarizes the current `story-lifecycle` workflow implemented in:
 ## Sessions
 
 1. Discovery: Phases 1, 2, 2B, 3
-2. Build: Phases 4, 5
+2. Build: Phases 4, 5, 5B
 3. Ship: Phases 6, 7, 8
 
 ## Phase Map
@@ -74,6 +74,20 @@ This document summarizes the current `story-lifecycle` workflow implemented in:
   - Boundary edge cases (auth, timeouts, external integrations)
 - Output: QA report and updated branch commits (if needed).
 
+### Phase 5B - Post-Build UX Validation (Conditional)
+
+- Trigger: Story has a "## UX Design Reference" section with a wireframe path (same gate as Phase 2B)
+- Leads: `ux-designer` (Sally) + `qa` (Quinn)
+- Step 17: Check for UX Design Reference / wireframe in story file — skip if absent
+- Step 18: Four-audit validation:
+  1. **CSS Token Compliance** (Sally): Grep components for hardcoded colors/spacing vs. design tokens
+  2. **Structural Hierarchy** (Sally): Compare JSX component hierarchy against wireframe HTML structure
+  3. **Playwright Computed-Style + Accessibility Tree** (Quinn): Generate `storefront/e2e/{story-key}-ux-compliance.spec.ts` with viewport tests (375px mobile, 1280px desktop), screenshots, and accessibility tree snapshots
+  4. **Sally's Verdict**: UX Validation Report — APPROVED or BLOCKED
+- If BLOCKED: Dev fixes issues, re-runs quality gate, Sally re-evaluates
+- Output: `_bmad-output/ux-validation/{story-key}/ux-validation-report.md`
+- Session boundary recommendation appears after Phase 5B (not after Phase 5)
+
 ### Phase 6 - Deployment (Conditional)
 
 - Agent: `devops`
@@ -98,11 +112,11 @@ This document summarizes the current `story-lifecycle` workflow implemented in:
 
 ### Phase 8 - PR Creation, Review, and Merge
 
-- Step 21: Create PRs for repos with commits
-- Step 22: Two-stage review with explicit BMM review skill usage
+- Step 23: Create PRs for repos with commits
+- Step 24: Two-stage review with explicit BMM review skill usage
   - Stage 1 (spec compliance): `bmad-bmm-code-review` with BA interpretation support
   - Stage 2 (code quality): `bmad-bmm-code-review` in fresh reviewer context
-- Step 23: Handle human PR comments and merge resolved PRs
+- Step 25: Handle human PR comments and merge resolved PRs
 - Output: PR summary, review report, merge summary.
 
 ## Global Guardrails

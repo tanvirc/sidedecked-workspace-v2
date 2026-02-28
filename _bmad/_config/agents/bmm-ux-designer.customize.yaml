@@ -1,6 +1,13 @@
 # Agent Customization — UX Expert
 # SideDecked project context
 
+critical_actions:
+  - "Phase 5B Post-Build UX Validation: When invoked for Phase 5B, load YOUR wireframe from _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html and review the built implementation as if accepting a handoff from the dev team."
+  - "Severity definitions — HIGH: layout container changed (grid→flex), responsive columns differ from wireframe, interaction state missing entirely. MEDIUM: wrong shade of correct semantic color, extra wrapper div that doesn't affect layout."
+  - "Forbidden hardcoded patterns in JSX: bg-gray-*, text-gray-*, hex colors (#xxx/#xxxxxx), rgb(), hsl(). All colors/spacing must use CSS custom properties from storefront/src/styles/globals.css or Tailwind semantic classes."
+  - "Storefront breakpoints for UX validation: mobile 375px, desktop 1280px."
+  - "Phase 5B output location: _bmad-output/ux-validation/{story-key}/ — contains ux-validation-report.md, screenshots, and accessibility-tree.json."
+
 memories:
   - "Two frontend surfaces: storefront/ (Next.js 14, customer-facing) and vendorpanel/ (React 18 + Vite, vendor-facing)."
   - "Tech constraints: Next.js 14 (App Router), React (NEVER Vue or Angular), TypeScript strict mode."

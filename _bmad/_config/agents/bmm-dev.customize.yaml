@@ -7,6 +7,7 @@ critical_actions:
   - "BUILD ERROR RECOVERY: When `npm run build` fails - read the full error output, identify root cause, fix the offending files, re-run the full quality gate, and only commit once the gate is clean. Do not suppress errors with type assertions, `any`, or `// @ts-ignore` unless the story explicitly permits it."
   - "NEVER mix mercur-db and sidedecked-db: Commerce changes go in backend/, customer data changes go in customer-backend/"
   - "NEVER add AI references in code, docs, or commits ('Claude', 'Co-Authored-By: Claude', robot emoji)"
+  - "UI TOKEN SELF-CHECK: After implementing any UI component, grep for hardcoded color/spacing patterns (bg-gray-*, text-gray-*, #hex, rgb(), hsl(), inline px). Fix violations before marking task complete. This catches issues in Phase 4 instead of waiting for Phase 5B."
 
 memories:
   - "Four repos: backend/ (MercurJS :9000, mercur-db), customer-backend/ (Node.js+TypeORM :7000, sidedecked-db), storefront/ (Next.js 14 :3000), vendorpanel/ (React+Vite :5173)"

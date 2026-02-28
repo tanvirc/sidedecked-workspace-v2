@@ -339,8 +339,8 @@
   </step>
 
   <!-- ═══════════════════════════════════════════════════════════
-       SESSION 2: BUILD — Phases 4-5
-       Goal: Implement story with TDD, validate with integration tests
+       SESSION 2: BUILD — Phases 4, 5, 5B
+       Goal: Implement story with TDD, validate with integration tests, post-build UX validation
        Input: Implementation plan file from Session 1
        Artifacts saved: Code on feature branch, QA report
        ═══════════════════════════════════════════════════════════ -->
@@ -514,6 +514,101 @@
       All code is committed to the feature branch — no conversation context required.
 
       To continue in this session: type CONFIRM.
+      To start fresh: open a new session and proceed to UX validation / documentation / deployment.
+    </ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PHASE 5B: Post-Build UX Validation — UX Designer + QA (CONDITIONAL)
+       TRIGGER: Only when story has a "## UX Design Reference" section with a wireframe path
+       Non-UI stories skip Phase 5B and proceed directly to Phase 6.
+       ═══════════════════════════════════════════════════════ -->
+
+  <step n="17" goal="Check if post-build UX validation is needed">
+    <action>Read {{story_file_path}} and search for a "## UX Design Reference" section containing a wireframe path</action>
+    <check if="no UX Design Reference section OR no wireframe path">
+      <action>Output: "No UX wireframe reference detected — skipping Phase 5B. Proceeding directly to Phase 6 (Deployment Check)."</action>
+      <action>List the signals that confirmed no UX scope (e.g., story has no UX Design Reference section)</action>
+    </check>
+    <check if="UX Design Reference section exists with wireframe path">
+      <action>Set {{wireframe_path}} to the wireframe file path extracted from the story</action>
+      <action>Output: "UX wireframe found at {{wireframe_path}} — proceeding to Post-Build UX Validation."</action>
+    </check>
+    <ask>
+      ## Phase 5B Step 17 — UX Validation Scope Check
+
+      If NO wireframe reference: type SKIP to bypass Phase 5B and proceed to Phase 6.
+      If wireframe reference found: type CONFIRM to proceed to post-build UX validation.
+    </ask>
+  </step>
+
+  <step n="18" goal="Sally + Quinn: Post-build UX validation">
+    <action>Load and read {agent_path}/ux-designer.md — adopt Sally (UX Designer) persona completely</action>
+    <action>Load and read {agent_path}/qa.md — also embody Quinn (QA) perspective for Playwright assertions</action>
+    <action>Load the wireframe file at {{wireframe_path}}</action>
+    <action>Load all implemented UI component files from the story's File List</action>
+
+    <critical>
+      Four audits must be performed. Sally leads audits 1-2 and 4. Quinn leads audit 3.
+    </critical>
+
+    <!-- Audit 1: CSS Token Compliance -->
+    <action>As Sally: Grep each implemented component for hardcoded colors and spacing:
+      - Forbidden patterns: bg-gray-*, text-gray-*, #hex colors, rgb(), hsl(), inline px values
+      - Expected: CSS custom properties from storefront/src/styles/globals.css, Tailwind semantic classes
+      - Severity: HIGH if hardcoded color bypasses design system entirely, MEDIUM if wrong shade of correct semantic color
+    </action>
+
+    <!-- Audit 2: Structural Hierarchy -->
+    <action>As Sally: Compare JSX component hierarchy against wireframe HTML structure:
+      - HIGH if layout container differs (e.g., grid changed to flex, responsive columns differ)
+      - MEDIUM if extra wrapper nesting that doesn't affect layout
+      - Verify interaction states (hover, focus, active, loading, empty, error) match wireframe specifications
+    </action>
+
+    <!-- Audit 3: Playwright Computed-Style + Accessibility Tree -->
+    <action>As Quinn: Generate a Playwright UX compliance test at storefront/e2e/{{story_key}}-ux-compliance.spec.ts:
+      - getComputedStyle assertions on key elements (background-color, color resolve to correct CSS variable chain)
+      - Viewport tests at { width: 375, height: 812 } (mobile) and { width: 1280, height: 900 } (desktop)
+      - Screenshots saved to _bmad-output/ux-validation/{{story_key}}/
+      - Accessibility tree snapshot (page.accessibility.snapshot()) saved as JSON to _bmad-output/ux-validation/{{story_key}}/accessibility-tree.json
+      - Sally reads the accessibility tree JSON as a text-based rendered DOM structure for audit 4
+    </action>
+
+    <!-- Audit 4: Sally's Verdict -->
+    <action>As Sally: Produce a UX Validation Report:
+      - CSS Token Compliance: PASS / list of violations with file:line
+      - Structural Hierarchy: PASS / list of deviations with severity
+      - Accessibility Tree Review: PASS / issues found in tree structure
+      - Playwright Test Results: PASS / failures (if tests were run)
+      - Overall Verdict: APPROVED or BLOCKED with specific items to fix
+      - Save report to: _bmad-output/ux-validation/{{story_key}}/ux-validation-report.md
+    </action>
+
+    <check if="verdict is BLOCKED">
+      <action>As Amelia (Dev): Fix the issues identified by Sally</action>
+      <action>Run quality gate in affected repos: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm test</action>
+      <action>As Sally: Re-evaluate fixed components and update the UX Validation Report</action>
+      <action>Repeat until verdict is APPROVED</action>
+    </check>
+
+    <action>Commit any UX validation artifacts and fixes to the feature branch:
+      - Stage test files, screenshots, report, and any code fixes
+      - If there are changes: commit with format test({story-scope}): add UX compliance validation for {story-title}
+      - Push to remote: git push
+    </action>
+
+    <ask>
+      ## Phase 5B Complete — Post-Build UX Validation
+
+      Sally has produced a UX Validation Report (see above).
+      Report saved to: _bmad-output/ux-validation/{{story_key}}/ux-validation-report.md
+
+      **SESSION BOUNDARY RECOMMENDATION:**
+      Build is complete. For best results, start a fresh session for the Ship phase.
+      All code is committed to the feature branch — no conversation context required.
+
+      To continue in this session: type CONFIRM.
       To start fresh: open a new session and proceed to documentation/deployment.
     </ask>
   </step>
@@ -529,7 +624,7 @@
        Only runs if {{needs_deploy}} == true
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="17" goal="Check if production deployment is needed">
+  <step n="19" goal="Check if production deployment is needed">
     <action>Read {{plan_file_path}} to retrieve {{needs_deploy}} value</action>
     <action>Re-validate {{needs_deploy}} using actual changed repos/files on the feature branch; if actual changes contradict the plan classification, update the effective deployment decision and explain why</action>
     <action>If {{plan_file_path}} is unknown, ask {user_name} for the exact path before continuing</action>
@@ -550,7 +645,7 @@
     </check>
   </step>
 
-  <step n="18" goal="DevOps: Deploy to Railway production">
+  <step n="20" goal="DevOps: Deploy to Railway production">
     <check if="needs_deploy == true OR user typed DEPLOY">
       <action>Load and read {agent_path}/devops.md — adopt Rex (DevOps Automation Engineer) persona completely</action>
       <action>Verify Railway CLI is installed (railway --version); if not, instruct {user_name} to install it</action>
@@ -603,7 +698,7 @@
        PHASE 7: Documentation — Tech Writer
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="19" goal="Load Tech Writer persona with full documentation context">
+  <step n="21" goal="Load Tech Writer persona with full documentation context">
     <action>Load and read {agent_path}/tech-writer/tech-writer.md — adopt Tech Writer persona completely</action>
     <action>Load and read {project-root}/_bmad/_memory/tech-writer-sidecar/documentation-standards.md — quality rules for ALL documentation</action>
     <action>Load and read {project-root}/_bmad/_config/agents/bmm-tech-writer.customize.yaml — SideDecked-specific rules</action>
@@ -615,7 +710,7 @@
     <action>Confirm: Tech Writer persona loaded, documentation standards primed, plan context recovered</action>
   </step>
 
-  <step n="20" goal="Tech Writer: Execute documentation sub-workflow">
+  <step n="22" goal="Tech Writer: Execute documentation sub-workflow">
     <action>Load and read {agent_path}/analyst.md and use BA perspective to verify business-rule and acceptance-criteria wording consistency in docs</action>
     <action>Update CHANGELOG.md with a concise entry for this story (what changed and why)</action>
     <action>Update architecture docs when architecture, integration contracts, or operational behavior changed; otherwise document why no architecture update was needed</action>
@@ -655,7 +750,7 @@
        PHASE 8: Pull Request Creation + Two-Stage Code Review
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="21" goal="Create pull requests in ALL repos with commits">
+  <step n="23" goal="Create pull requests in ALL repos with commits">
     <action>Ensure all changes are committed and pushed to the feature branch in every affected repo</action>
     <action>For EACH repo that received commits (root + any child repos):
       - cd into the repo directory
@@ -688,7 +783,7 @@
     </ask>
   </step>
 
-  <step n="22" goal="Two-stage code review using explicit BMM review skills">
+  <step n="24" goal="Two-stage code review using explicit BMM review skills">
     <critical>
       REPLACED: Single-agent adversarial self-review.
       NEW: Two-stage review using bmad-bmm-code-review skill with two explicit passes.
@@ -754,7 +849,7 @@
     </ask>
   </step>
 
-  <step n="23" goal="Handle PR comments and merge">
+  <step n="25" goal="Handle PR comments and merge">
     <critical>
       For human PR comments, follow superpowers:receiving-code-review:
       - READ complete feedback without reacting
@@ -803,7 +898,7 @@
        COMPLETE
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="24" goal="Story lifecycle complete">
+  <step n="26" goal="Story lifecycle complete">
     <action>Output a final Lifecycle Summary:
       - Story key and title
       - All phases completed with brief status per phase (note any skipped phases)

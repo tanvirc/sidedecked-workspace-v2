@@ -58,9 +58,18 @@
     <action>Check story file for "## UX Design Reference" section</action>
     <check if="UX Design Reference section exists AND wireframe path is specified">
       <action>Load wireframe file</action>
-      <action>Add to review plan:
-        5. **Wireframe Compliance**: Verify UI components match wireframe layout, design tokens, and interaction patterns
-      </action>
+      <action>Check for Phase 5B UX Validation Report at _bmad-output/ux-validation/{{story_key}}/ux-validation-report.md</action>
+      <check if="Phase 5B report exists">
+        <action>Load the Phase 5B UX Validation Report</action>
+        <action>Add to review plan:
+          5. **Wireframe Compliance (Phase 5B Trust Mode)**: Phase 5B already audited token compliance, structural hierarchy, and accessibility. Only check for UX REGRESSIONS introduced AFTER Phase 5B ran (compare Phase 5B report timestamp vs latest commits). Do NOT re-do the full token/structural audit.
+        </action>
+      </check>
+      <check if="Phase 5B report does NOT exist">
+        <action>Add to review plan:
+          5. **Wireframe Compliance**: Verify UI components match wireframe layout, design tokens, and interaction patterns
+        </action>
+      </check>
     </check>
   </step>
 

@@ -44,6 +44,7 @@ validation-rules:
 - [ ] **Interaction States Match:** Hover, focus, active, loading, empty, and error states match wireframe specifications
 - [ ] **Mobile Patterns Match:** Mobile-specific patterns (bottom sheets, touch targets, responsive columns) match wireframe
 - [ ] **No Anti-Patterns:** No alert(), no hover-gated functionality, no hardcoded colors bypassing design system
+- [ ] **Phase 5B Readiness:** Key UI elements have `data-testid` attributes (containers, interactive controls, state indicators) for Playwright UX assertions
 
 ## 🧪 Testing & Quality Assurance
 
