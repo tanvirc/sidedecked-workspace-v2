@@ -3,6 +3,14 @@ All notable changes to the SideDecked project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+### Fixed
+- **Card Detail Page wireframe compliance (Story 2-5 remediation)**: Closed three v5.1 wireframe gaps discovered under strengthened story lifecycle compliance gates
+  - `QuickBuyPanel` condition chips now use per-condition color coding — NM=green (#4ADE80), LP=lime (#A3E635), MP=yellow (warning), HP=red (negative) — replacing uniform amber; disabled (out-of-stock) chips retain condition color at 30% opacity with dashed border instead of uniform gray
+  - Mobile Row 3 condition chips updated with the same per-condition color map
+  - Mobile Row 3 context label (`NM · MKM '24 Foil`) moved from the scrollable condition chip zone into a dedicated action zone column above the secondary Deck/Collect buttons, matching the `.mobile-action-zone` wireframe structure
+  - Mobile qty chips changed from `1/2/3/4+` to `×1/×2/×3/×4` per wireframe spec
+  - 6 new compliance tests added (3 in `QuickBuyPanel.test.tsx`, 3 in `CardDetailPage.test.tsx`); 523/523 tests passing
+
 ### Added
 - **Card Detail Page BFF Endpoint (Story 2-5)**: Aggregating BFF endpoint that serves the card detail page with catalog data, marketplace listings, and seller trust signals from both backends in a single API call
   - `GET /api/cards/[id]` (storefront BFF): fetches catalog details from customer-backend, live listings from backend, and seller trust scores via batch lookup; returns unified `CardDetailBFFResponse` with graceful degradation — listings section shows a warning banner if the listings service is unreachable rather than failing the whole page
