@@ -357,6 +357,21 @@
     <action>Set {{story_file_path}} to the resolved story file path for Phase 4/5/7 evidence commands</action>
     <action>If starting a fresh session: load the Requirements Brief and Technical Design from the plan file (they are embedded in it)</action>
     <action>If a UX wireframe path is referenced in the plan: load it for component-level implementation guidance</action>
+    <critical>
+      WIREFRAME COMPONENT MAP (required for UI stories):
+      If a UX wireframe exists, BEFORE writing any component code, produce a Wireframe Component Map:
+      - For every named component/section in the wireframe, identify the exact JSX component or file that implements it
+      - List the wireframe's CSS class/structure → the corresponding Tailwind classes or CSS module classes in code
+      - Flag any wireframe component with NO corresponding code component as a BLOCKING gap
+      - Output the map as a table:
+        | Wireframe Element        | Code Component/File          | Structure Match | Gap? |
+        |--------------------------|------------------------------|-----------------|------|
+        | .action-panel (gold border) | CardDetailPage.tsx action col | must match     | ?    |
+        | .print-browser (button-list)| CompactPrintingsTable.tsx     | must match     | ?    |
+        | .quick-stats-bar         | CardDetailPage.tsx stats bar  | must match     | ?    |
+        | mobile v5.1 3-row bar    | mobile sticky bar             | must match     | ?    |
+      Any row where Gap=YES is a blocker that must be resolved before Phase 4 can complete.
+    </critical>
   </step>
 
   <step n="13" goal="Dev: Create feature branch in root and affected child repos">
@@ -409,6 +424,36 @@
         - cd back to root
     </action>
 
+    <!-- WIREFRAME COMPLIANCE GATE (UI stories only) -->
+    <check if="story has UX wireframe reference">
+      <critical>
+        MANDATORY: Complete this wireframe compliance check BEFORE marking Phase 4 done.
+        Do NOT skip. Do NOT approximate. This gate exists because UI deviations cause rework.
+      </critical>
+      <action>Re-read the wireframe HTML file at {{wireframe_path}}</action>
+      <action>Re-read every implemented UI component file for this story</action>
+      <action>For each wireframe section, verify the code matches by checking:
+        1. LAYOUT STRUCTURE: Is the grid/flex layout exactly as specified? (columns, sticky behaviour, responsive breakpoints)
+        2. COMPONENT FORMAT: Are list/table/card patterns implemented as the wireframe shows?
+           - A wireframe with button-list radio rows MUST be implemented as buttons with role="radio" — NOT as a table with columns
+           - A wireframe with a surface container (border, background) around a bar MUST have that container in the JSX
+        3. INTERACTIVE STATES: Are selected/hover/disabled states present for every wireframe state?
+        4. DESIGN TOKENS: Are accent colors (amber-400 / --accent-primary) applied via CSS variables or Tailwind semantic classes?
+           No hardcoded hex values. Gold borders on action panels: border-amber-400/50 at minimum.
+        5. ACCESSIBILITY: Are role=region, role=radiogroup, aria-label, aria-checked applied as wireframe implies?
+        6. MOBILE BAR: If wireframe shows a multi-row mobile sticky bar, is the exact row structure implemented?
+      </action>
+      <action>Output the compliance check result:
+        - For each wireframe section: PASS or FAIL with specific deviation noted
+        - Total: X/Y sections passing
+        - Any FAIL is a blocker that must be fixed before Phase 4 completes
+      </action>
+      <check if="any section FAILS">
+        <action>Fix all failing sections before proceeding — no partial compliance accepted</action>
+        <action>Re-run the compliance check after fixes until all sections PASS</action>
+      </check>
+    </check>
+
     <!-- EVIDENCE-BASED GATE: superpowers:verification-before-completion -->
     <action>Run verification commands and show FRESH output before claiming completion:
       - backend/: npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm run build &amp;&amp; npm run test:unit
@@ -430,6 +475,7 @@
       - [ ] Test coverage above 80% on changed modules — output shown
       - [ ] All acceptance criteria marked (IMPLEMENTED) in the story file
       - [ ] Changes committed and pushed to feature branch
+      - [ ] Wireframe compliance check: all sections PASS (if UI story)
 
       Type CONFIRM to proceed to integration testing.
       Or describe issues to fix first.
@@ -559,11 +605,25 @@
       - Severity: HIGH if hardcoded color bypasses design system entirely, MEDIUM if wrong shade of correct semantic color
     </action>
 
-    <!-- Audit 2: Structural Hierarchy -->
+    <!-- Audit 2: Structural Hierarchy (ENHANCED — catches common deviations) -->
     <action>As Sally: Compare JSX component hierarchy against wireframe HTML structure:
       - HIGH if layout container differs (e.g., grid changed to flex, responsive columns differ)
       - MEDIUM if extra wrapper nesting that doesn't affect layout
       - Verify interaction states (hover, focus, active, loading, empty, error) match wireframe specifications
+
+      SPECIFIC PATTERNS THAT MUST BE CHECKED (past deviations):
+      1. LIST/TABLE FORMAT: If the wireframe shows a component as a button-list with radio rows (role="radio"),
+         the implementation MUST be button-list rows, NOT an HTML table with columns.
+         Table format is ALWAYS a HIGH severity deviation from a radio button-list wireframe.
+      2. ACTION PANEL BORDER: If the wireframe's .action-panel uses border:1.5px solid var(--border-selected)
+         (gold rgba(212,168,67,0.50)), the code MUST have border-amber-400/50 or equivalent.
+         A generic border-border is a HIGH deviation.
+      3. QUICK-BUY HEADER: If the wireframe shows a section header with gold tinted background inside
+         the action panel ("QUICK BUY" label), the code MUST include that header element.
+      4. MOBILE MULTI-ROW BAR: If the wireframe defines a 3-row mobile sticky bar (price row, qty+CTA row,
+         condition+secondary row), the code MUST implement all three rows, not collapse them into one row.
+      5. QUICK STATS BAR CONTAINER: If the wireframe wraps legality pills in a surface container with
+         border and padding, the code MUST have the container — not just bare floated pills.
     </action>
 
     <!-- Audit 3: Playwright Computed-Style + Accessibility Tree -->
