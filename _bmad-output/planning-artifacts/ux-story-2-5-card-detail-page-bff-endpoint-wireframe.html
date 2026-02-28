@@ -324,6 +324,56 @@ html{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sa
 .mobile-ab-secondary-group{flex:1;display:flex;flex-direction:column;gap:var(--sp-1);}
 .mobile-ab-sec-btn{flex:1;padding:8px var(--sp-2);background:var(--bg-surface-2);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px;}
 
+/* ── v5.1 Mobile bottom bar — 3-row restructured ── */
+/* Row 1: price + seller */
+.mobile-ab-row1{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-bottom:1px solid var(--border-subtle);}
+.mobile-ab-price-big{font-size:22px;font-weight:800;font-family:'SF Mono',Consolas,monospace;color:var(--text-price);line-height:1;}
+.mobile-ab-seller-line{font-size:10px;color:var(--text-secondary);}
+.mobile-ab-listings-link{margin-left:auto;padding:4px 10px;background:transparent;border:1px solid var(--border-default);border-radius:var(--radius-xl);color:var(--interactive);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+/* Row 2: qty chips + primary CTA */
+.mobile-ab-row2{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);border-bottom:1px solid var(--border-subtle);}
+.mobile-qty-chips{display:flex;gap:var(--sp-1);flex-shrink:0;}
+.mobile-qty-chip{width:36px;height:36px;border:1px solid var(--border-default);border-radius:var(--radius-sm);background:var(--bg-surface-2);color:var(--text-secondary);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:all 0.12s;}
+.mobile-qty-chip.active{background:var(--accent-primary-dim);border-color:var(--border-selected);color:var(--accent-primary);}
+.mobile-ab-cart-btn-v2{flex:1;padding:10px;background:var(--accent-primary);color:var(--bg-base);border:none;border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;min-height:44px;}
+/* Row 3: condition chips + context label + secondary */
+.mobile-ab-row3{display:flex;align-items:center;padding:var(--sp-2) var(--sp-3) var(--sp-3);}
+.mobile-cond-zone{display:flex;align-items:center;gap:var(--sp-1);flex:1;overflow-x:auto;scrollbar-width:none;}
+.mobile-cond-zone::-webkit-scrollbar{display:none;}
+.mobile-action-zone{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;margin-left:var(--sp-2);}
+.mobile-select-ctx{font-size:9px;color:var(--text-tertiary);text-align:right;white-space:nowrap;font-style:italic;}
+.mobile-secondary-row{display:flex;gap:var(--sp-1);}
+.mobile-sec-btn-v2{padding:6px 10px;background:var(--bg-surface-2);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text-secondary);display:flex;align-items:center;gap:4px;min-height:44px;white-space:nowrap;}
+
+/* Listings bottom sheet */
+.sheet-demo-frame{width:390px;background:var(--bg-surface-1);border-radius:var(--radius-lg);border:1px solid var(--border-default);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.sheet-handle-bar{padding:var(--sp-3) var(--sp-4) var(--sp-1);display:flex;justify-content:center;}
+.sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--border-default);}
+.sheet-header-row{display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp-4) var(--sp-3);border-bottom:1px solid var(--border-subtle);}
+.sheet-title{font-size:14px;font-weight:700;}
+.sheet-close-btn{background:none;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;padding:0;font-family:inherit;}
+
+/* Mobile oracle section */
+.mobile-oracle-section{padding:var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);margin-bottom:var(--sp-3);}
+.mobile-oracle-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);}
+.mobile-oracle-text{font-size:12px;line-height:1.65;color:var(--text-secondary);font-style:italic;}
+.mobile-flavor{font-size:11px;color:var(--text-tertiary);font-style:italic;border-left:2px solid var(--border-default);padding-left:var(--sp-2);margin-top:var(--sp-2);line-height:1.5;}
+
+/* Mobile hero wrapper (for foil overlay) */
+.mobile-hero-wrap{position:relative;margin-bottom:var(--sp-4);}
+.mobile-hero-overlay{position:absolute;bottom:var(--sp-2);left:var(--sp-2);}
+
+/* Mobile card hero with relative positioning */
+.mobile-card-hero-v2{width:100%;aspect-ratio:63/88;background:linear-gradient(160deg,var(--bg-surface-2),var(--bg-surface-3));border-radius:var(--radius-md);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);max-height:200px;text-align:center;}
+
+/* Mobile inline legality */
+.mobile-legality-inline{margin-bottom:var(--sp-3);}
+.mobile-legality-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);}
+
+/* Mobile rulings accordion */
+.mobile-rulings-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:var(--sp-2) 0;background:none;border:none;border-bottom:1px solid var(--border-subtle);cursor:pointer;font-family:inherit;color:var(--text-tertiary);margin-bottom:var(--sp-2);}
+.mobile-rulings-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;}
+
 /* Utils */
 .mt-2{margin-top:var(--sp-2);}.mt-3{margin-top:var(--sp-3);}.mt-4{margin-top:var(--sp-4);}.mt-5{margin-top:var(--sp-5);}
 .mb-2{margin-bottom:var(--sp-2);}.mb-3{margin-bottom:var(--sp-3);}.mb-4{margin-bottom:var(--sp-4);}
@@ -337,7 +387,7 @@ html{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sa
 <div class="wf-header">
   <h1>SideDecked — Story <span>2-5</span>: Card Detail Page (BFF Endpoint)</h1>
   <p>Wireframe · storefront · 6 screens · Phase 2B</p>
-  <div class="version-badge">v5 — 3-col layout · oracle in left col · print browser with filters · legality above listings</div>
+  <div class="version-badge">v5.1 — inline oracle · 3-row mobile bar · listings sheet · rulings · foil badge</div>
 </div>
 
 <div class="tab-nav">
@@ -1157,141 +1207,274 @@ html{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sa
 </div><!-- /#loading -->
 
 <!-- ══════════════════════════════════════════
-     SCREEN 6 — MOBILE
+     SCREEN 6 — MOBILE v5.1
      ══════════════════════════════════════════ -->
 <div id="mobile" class="panel">
   <div class="panel-label">Screen 6</div>
-  <div class="panel-title">Mobile — v5: Tab Chips + 44px Touch Targets</div>
+  <div class="panel-title">Mobile — v5.1: Inline Oracle · 3-Row Bar · Bottom Sheet · Rulings</div>
   <div class="panel-desc">
-    Single column. v5 adds: (1) Tab chip row [Card Info | Legality] to surface oracle text and legality without deep scrolling — deck builders can tap "Legality" immediately. (2) 44px minimum touch targets on all secondary buttons in the sticky bottom bar. (3) Shipping estimate inline with price in the bottom bar.
+    v5.1 elicitation findings applied: Oracle text is now inline (no tap), scroll order is image → oracle → stats → prints → legality → rulings. The bottom bar is restructured to 3 rows — price, then qty×1–4 + Add to Cart, then condition + secondary actions. A listings bottom sheet gives buyers price comparison. Foil badge overlaid on card image. Rulings accordion added. Selected print+condition context label before save actions.
   </div>
 
-  <div class="note-blue">
-    <strong>v5 mobile changes:</strong> Tab chips for Card Info / Legality. Secondary buttons now 44px min-height. Shipping estimate shown in bottom bar next to seller name.
+  <div class="ug-strip">
+    <span class="ug-label">Changes from v5:</span>
+    <span class="ug-chip ug-player">⚔ Oracle inline · Rulings in scroll</span>
+    <span class="ug-chip ug-buyer">🛒 Listings bottom sheet · ×1–4 qty chips</span>
+    <span class="ug-chip ug-builder">🃏 Legality inline (no tap) · qty preset</span>
+    <span class="ug-chip ug-collector">♦ Print+condition context label · foil badge on image</span>
   </div>
 
-  <div class="mobile-frame">
-    <div class="mobile-statusbar"><span>9:41</span><span>SideDecked</span><span>●●●</span></div>
-    <div class="mobile-nav">
-      <span class="mobile-back">← Back</span>
-      <span class="mobile-nav-title">Card Detail</span>
-      <span style="font-size:18px;color:var(--text-secondary);">⋯</span>
-    </div>
+  <!-- Two-column layout: main frame + bottom sheet demo side-by-side -->
+  <div style="display:flex;gap:var(--sp-6);flex-wrap:wrap;align-items:flex-start;">
 
-    <div class="mobile-scroll">
-      <div class="mobile-card-hero">next/image · blur placeholder · max-height 200px</div>
-
-      <div class="card-game-row mb-2">
-        <span class="badge badge-mtg">MTG</span>
-        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
-        <span class="badge badge-foil">✦ Foil</span>
+    <!-- MAIN MOBILE FRAME -->
+    <div>
+      <div class="note-blue mb-3" style="max-width:390px;">
+        <strong>Scroll order (v5.1):</strong> Image → Oracle text → Stats bar → Prints → Legality → Rulings → [spacer]. Tabs removed — both oracle and legality are always inline.
       </div>
-      <div style="font-size:20px;font-weight:800;margin-bottom:3px;">Leyline of Resonance</div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--sp-3);">Enchantment — Leyline</div>
-
-      <!-- Quick stats bar (compact, horizontal scroll) -->
-      <div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);margin-bottom:var(--sp-3);overflow-x:auto;">
-        <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span></div>
-        <div style="width:1px;height:16px;background:var(--border-subtle);flex-shrink:0;"></div>
-        <span class="legal-pill" style="flex-shrink:0;">● Standard</span>
-        <span class="legal-pill" style="flex-shrink:0;">● Commander</span>
-        <span class="banned-pill" style="flex-shrink:0;">✕ Legacy</span>
-      </div>
-
-      <!-- v5: Tab chip strip — Card Info | Legality -->
-      <div class="mobile-tab-strip">
-        <button class="mobile-tab-chip active" onclick="mobileTab('card-info', this)">Card Info</button>
-        <button class="mobile-tab-chip" onclick="mobileTab('legality', this)">Legality</button>
-      </div>
-
-      <!-- Tab: Card Info (oracle) -->
-      <div id="mobile-card-info" style="margin-bottom:var(--sp-4);">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">CARD TEXT</div>
-        <div class="oracle mb-2" style="font-size:12px;">If Leyline of Resonance is in your opening hand, you may begin the game with it on the battlefield.<br><br>Whenever you cast an instant or sorcery spell, copy it.</div>
-        <div class="flavor">"The mana weeps where the ley lines fracture." — Alara Chronicles</div>
-      </div>
-
-      <!-- Tab: Legality (hidden by default) -->
-      <div id="mobile-legality" style="display:none;margin-bottom:var(--sp-4);">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">FORMAT LEGALITY</div>
-        <div class="legality-grid">
-          <span class="legality-pill legal">● Standard</span>
-          <span class="legality-pill legal">● Pioneer</span>
-          <span class="legality-pill legal">● Modern</span>
-          <span class="legality-pill legal">● Commander</span>
-          <span class="legality-pill legal">● Historic</span>
-          <span class="legality-pill banned">✕ Legacy</span>
-          <span class="legality-pill illegal">○ Vintage</span>
-          <span class="legality-pill illegal">○ Pauper</span>
+      <div class="mobile-frame">
+        <div class="mobile-statusbar"><span>9:41</span><span>SideDecked</span><span>●●●</span></div>
+        <div class="mobile-nav">
+          <span class="mobile-back">← Back</span>
+          <span class="mobile-nav-title">Card Detail</span>
+          <span style="font-size:18px;color:var(--text-secondary);">⋯</span>
         </div>
-      </div>
 
-      <!-- Print list -->
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">AVAILABLE PRINTS (23)</div>
-      <div class="mobile-print-list-wrap">
-        <div class="mobile-print-list" role="radiogroup">
-          <button class="print-row selected" role="radio" aria-checked="true">
-            <div class="print-row-radio"></div>
-            <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span> <span class="new-tag">New</span></div><div class="print-row-artist">Artist: J. Murray</div></div>
-            <div class="print-row-price">$2.49</div>
+        <div class="mobile-scroll">
+
+          <!-- Card image — v5.1: foil badge overlay -->
+          <div class="mobile-hero-wrap">
+            <div class="mobile-card-hero-v2">next/image · blur placeholder · max-height 200px</div>
+            <!-- v5.1: foil badge on image confirms selected variant -->
+            <div class="mobile-hero-overlay"><span class="foil-badge">✦ Foil</span></div>
+          </div>
+          <div class="note" style="font-size:10px;max-width:358px;margin-bottom:var(--sp-3);">
+            <strong>v5.1:</strong> Foil/treatment badge overlaid on card image — confirms selected variant (Foil, Borderless, Etched) at a glance.
+          </div>
+
+          <!-- Card identity -->
+          <div class="card-game-row mb-2">
+            <span class="badge badge-mtg">MTG</span>
+            <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+          </div>
+          <div style="font-size:20px;font-weight:800;margin-bottom:3px;">Leyline of Resonance</div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--sp-3);">Enchantment — Leyline</div>
+
+          <!-- v5.1: Oracle text inline (no tab needed) -->
+          <div class="mobile-oracle-section">
+            <div class="mobile-oracle-label">Card Text ⚔ Player</div>
+            <div class="mobile-oracle-text">
+              If Leyline of Resonance is in your opening hand, you may begin the game with it on the battlefield.<br><br>
+              Whenever you cast an instant or sorcery spell, copy it. You may choose new targets for the copy.
+            </div>
+            <div class="mobile-flavor">"The mana weeps where the ley lines fracture." — Alara Chronicles</div>
+          </div>
+          <div class="note" style="font-size:10px;max-width:358px;margin-bottom:var(--sp-3);">
+            <strong>v5.1:</strong> Oracle text inline after card name — no tap required. Players opening mid-game see it immediately.
+          </div>
+
+          <!-- Quick stats bar — legality pills inline -->
+          <div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);margin-bottom:var(--sp-3);overflow-x:auto;">
+            <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span></div>
+            <div style="width:1px;height:16px;background:var(--border-subtle);flex-shrink:0;"></div>
+            <span class="legal-pill" style="flex-shrink:0;">● Standard</span>
+            <span class="legal-pill" style="flex-shrink:0;">● Commander</span>
+            <span class="banned-pill" style="flex-shrink:0;">✕ Legacy</span>
+          </div>
+
+          <!-- Print browser -->
+          <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">AVAILABLE PRINTS (23)</div>
+          <div class="mobile-print-list-wrap">
+            <div style="display:flex;gap:var(--sp-1);padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-bottom:1px solid var(--border-subtle);overflow-x:auto;">
+              <button class="filter-chip active" style="font-size:10px;padding:2px 8px;flex-shrink:0;">All</button>
+              <button class="filter-chip" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Foil</button>
+              <button class="filter-chip" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Non-Foil</button>
+              <select class="sort-select" style="margin-left:auto;flex-shrink:0;font-size:10px;"><option>Price ↑</option><option>Year ↓</option></select>
+            </div>
+            <div class="mobile-print-list" role="radiogroup">
+              <button class="print-row selected" role="radio" aria-checked="true">
+                <div class="print-row-radio"></div>
+                <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span> <span class="new-tag">New</span></div><div class="print-row-artist">Artist: J. Murray</div></div>
+                <div class="print-row-price">$2.49</div>
+              </button>
+              <button class="print-row" role="radio" aria-checked="false">
+                <div class="print-row-radio"></div>
+                <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327 <span class="foil-tag">Foil</span></div><div class="print-row-artist">Artist: M. Tedin</div></div>
+                <div class="print-row-price">$4.10</div>
+              </button>
+              <button class="print-row" role="radio" aria-checked="false">
+                <div class="print-row-radio"></div>
+                <div class="print-row-info"><div class="print-row-set">Masters 25</div><div class="print-row-meta">2018 · #158</div><div class="print-row-artist">Artist: R. Donato</div></div>
+                <div class="print-row-price">$12.50</div>
+              </button>
+              <button class="print-row" role="radio" aria-checked="false">
+                <div class="print-row-radio"></div>
+                <div class="print-row-info"><div class="print-row-set" style="color:var(--text-secondary);">Tenth Edition</div><div class="print-row-meta">2007 · #092</div><div class="print-row-artist">Artist: D. Burgess</div></div>
+                <div class="print-row-no-stock">No listings</div>
+              </button>
+            </div>
+            <div class="print-list-footer">
+              <button class="link-btn">Show 19 more ↓</button>
+            </div>
+          </div>
+
+          <!-- v5.1: Format legality inline (no tab) -->
+          <div class="mobile-legality-inline">
+            <div class="mobile-legality-label">Format Legality 🃏 Builder</div>
+            <div class="legality-grid">
+              <span class="legality-pill legal">● Standard</span>
+              <span class="legality-pill legal">● Pioneer</span>
+              <span class="legality-pill legal">● Modern</span>
+              <span class="legality-pill legal">● Commander</span>
+              <span class="legality-pill banned">✕ Legacy</span>
+              <span class="legality-pill illegal">○ Vintage</span>
+            </div>
+          </div>
+          <div class="note-blue" style="font-size:10px;max-width:358px;margin-bottom:var(--sp-3);">
+            <strong>v5.1:</strong> Legality is always inline — removed from tab. Jordan (Deck Builder) confirmed this was the biggest mobile friction point.
+          </div>
+
+          <!-- v5.1: Rulings accordion -->
+          <button class="mobile-rulings-toggle" onclick="toggleMobileRulings()" aria-expanded="false" id="m-rulings-btn">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span class="mobile-rulings-title">Rulings</span>
+              <div class="ug-chip ug-player" style="font-size:9px;padding:1px 6px;">⚔ Player</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <span style="font-size:11px;background:var(--bg-surface-3);padding:1px 7px;border-radius:var(--radius-xl);">3</span>
+              <span id="m-rulings-icon" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+            </div>
           </button>
-          <button class="print-row" role="radio" aria-checked="false">
-            <div class="print-row-radio"></div>
-            <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327 <span class="foil-tag">Foil</span></div><div class="print-row-artist">Artist: M. Tedin</div></div>
-            <div class="print-row-price">$4.10</div>
-          </button>
-          <button class="print-row" role="radio" aria-checked="false">
-            <div class="print-row-radio"></div>
-            <div class="print-row-info"><div class="print-row-set">Masters 25</div><div class="print-row-meta">2018 · #158</div><div class="print-row-artist">Artist: R. Donato</div></div>
-            <div class="print-row-price">$12.50</div>
-          </button>
-          <button class="print-row" role="radio" aria-checked="false">
-            <div class="print-row-radio"></div>
-            <div class="print-row-info"><div class="print-row-set" style="color:var(--text-secondary);">Tenth Edition</div><div class="print-row-meta">2007 · #092</div><div class="print-row-artist">Artist: D. Burgess</div></div>
-            <div class="print-row-no-stock">No listings</div>
-          </button>
-        </div>
-        <div class="print-list-footer"><button class="link-btn">Show 19 more ↓</button></div>
-      </div>
+          <div id="m-rulings-body" style="display:none;padding:var(--sp-2) 0 var(--sp-3);">
+            <div class="ruling-item"><div class="ruling-date">2024-02-09</div><div class="ruling-text">If you have a Leyline in your opening hand, you may put it onto the battlefield before the game begins.</div></div>
+            <div class="ruling-item"><div class="ruling-date">2024-02-09</div><div class="ruling-text">The copy is created on the stack. The copy isn't cast, so abilities that trigger on casting won't trigger.</div></div>
+            <div class="ruling-item"><div class="ruling-date">2022-10-14</div><div class="ruling-text">If you cast a spell with an "X" in the cost, the X value for the copy is the same as the original.</div></div>
+          </div>
 
-      <!-- Spacer for sticky bar -->
-      <div style="height:148px;"></div>
-    </div>
+          <!-- Spacer for sticky bar (~138px) -->
+          <div style="height:138px;"></div>
+        </div><!-- /.mobile-scroll -->
 
-    <!-- STICKY BOTTOM BAR — v5: 44px touch targets -->
-    <div class="mobile-action-bar">
-      <div class="mobile-ab-cond-row" style="padding-bottom:var(--sp-2);">
-        <button class="cond-chip nm active" style="padding:4px 10px;font-size:11px;" aria-pressed="true">NM<span class="stock-count">·7</span></button>
-        <button class="cond-chip lp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">LP<span class="stock-count">·3</span></button>
-        <button class="cond-chip mp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">MP<span class="stock-count">·1</span></button>
-        <button class="cond-chip hp off" disabled style="padding:4px 10px;font-size:11px;">HP</button>
-      </div>
-      <div class="mobile-ab-price-row">
-        <div class="mobile-ab-price-col">
-          <div class="mobile-ab-from">From</div>
-          <div class="mobile-ab-price" aria-live="polite">$2.49</div>
-          <!-- v5: shipping estimate inline -->
-          <div class="mobile-ab-seller">CardKingdom · 99.4% · +$1.00 ship</div>
-        </div>
-        <div class="qty-stepper">
-          <button class="qty-btn" aria-label="Decrease">−</button>
-          <input class="qty-num" type="number" value="1" min="1" max="7" style="width:32px;" aria-label="Qty">
-          <button class="qty-btn" aria-label="Increase">+</button>
-        </div>
-      </div>
-      <div class="mobile-ab-primary-row">
-        <button class="mobile-ab-cart-btn" aria-label="Add 1 NM MKM 2024 Foil to cart for $2.49">Add to Cart</button>
-        <!-- v5: 44px min-height secondary buttons -->
-        <div class="mobile-ab-secondary-group">
-          <button class="mobile-ab-sec-btn" aria-label="Add to Deck (coming soon)">🃏 Deck <span class="soon-badge" style="font-size:8px;">Soon</span></button>
-          <button class="mobile-ab-sec-btn" aria-label="Add to Collection (coming soon)">♦ Save <span class="soon-badge" style="font-size:8px;">Soon</span></button>
-        </div>
-      </div>
-    </div>
-  </div><!-- /.mobile-frame -->
+        <!-- STICKY BOTTOM BAR — v5.1: 3 rows, thumb-optimised -->
+        <div class="mobile-action-bar">
 
-  <div class="note mt-4" style="max-width:560px;">
-    <strong>v5 mobile changes:</strong> (1) Tab chips surface Card Info + Legality without deep scroll. (2) Secondary buttons are 44px min-height for accessible touch targets. (3) Shipping estimate shown inline with seller in bottom bar. Print browser retains vertical list (no thumbnails per user preference).
+          <!-- Row 1: Price + seller + listings link -->
+          <div class="mobile-ab-row1">
+            <div style="flex:1;">
+              <div style="font-size:10px;color:var(--text-tertiary);">From</div>
+              <div class="mobile-ab-price-big" aria-live="polite">$2.49</div>
+              <div class="mobile-ab-seller-line">CardKingdom · 99.4% · +$1.00 ship</div>
+            </div>
+            <!-- v5.1: listings bottom sheet trigger -->
+            <button class="mobile-ab-listings-link" aria-label="View all 12 listings">12 listings ↑</button>
+          </div>
+
+          <!-- Row 2: ×1 ×2 ×3 ×4 qty chips + Add to Cart -->
+          <div class="mobile-ab-row2">
+            <div class="mobile-qty-chips" role="group" aria-label="Select quantity">
+              <button class="mobile-qty-chip active" aria-pressed="true">×1</button>
+              <button class="mobile-qty-chip" aria-pressed="false">×2</button>
+              <button class="mobile-qty-chip" aria-pressed="false">×3</button>
+              <button class="mobile-qty-chip" aria-pressed="false">×4</button>
+            </div>
+            <button class="mobile-ab-cart-btn-v2" aria-label="Add 1 NM Murders at Karlov Manor Foil to cart for $2.49">Add to Cart</button>
+          </div>
+          <div class="note-green" style="font-size:9px;padding:2px var(--sp-3);border-radius:0;margin:0;border:none;border-top:1px dashed rgba(74,222,128,0.2);">
+            ×1–×4 quick-select per Jordan (Builder): Commander wants 1, Modern wants 4, one tap. 5+ opens qty dialog.
+          </div>
+
+          <!-- Row 3: Condition chips + context label + secondary actions -->
+          <div class="mobile-ab-row3">
+            <div class="mobile-cond-zone" role="group" aria-label="Select condition">
+              <button class="cond-chip nm active" style="padding:4px 10px;font-size:11px;" aria-pressed="true">NM<span class="stock-count">·7</span></button>
+              <button class="cond-chip lp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">LP<span class="stock-count">·3</span></button>
+              <button class="cond-chip mp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">MP<span class="stock-count">·1</span></button>
+              <button class="cond-chip hp off" disabled aria-disabled="true" style="padding:4px 10px;font-size:11px;">HP</button>
+            </div>
+            <div class="mobile-action-zone">
+              <!-- v5.1: context label confirms print + condition before saving -->
+              <div class="mobile-select-ctx">NM · MKM '24 Foil</div>
+              <div class="mobile-secondary-row">
+                <button class="mobile-sec-btn-v2" aria-label="Add to Deck (coming soon)">🃏<span class="soon-badge" style="font-size:8px;">Soon</span></button>
+                <button class="mobile-sec-btn-v2" aria-label="Add to Collection (coming soon)">♦ Save<span class="soon-badge" style="font-size:8px;">Soon</span></button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.mobile-action-bar -->
+      </div><!-- /.mobile-frame -->
+    </div><!-- /main frame col -->
+
+    <!-- LISTINGS BOTTOM SHEET DEMO -->
+    <div style="max-width:390px;">
+      <div class="note-blue mb-3" style="max-width:390px;">
+        <strong>Listings bottom sheet state</strong> — activated by tapping "12 listings ↑" in the bottom bar. Slides up over 70% of viewport. Shows sortable listings table for price comparison (Maria's request). Drag handle dismisses.
+      </div>
+      <div class="sheet-demo-frame">
+        <div class="sheet-handle-bar"><div class="sheet-handle"></div></div>
+        <div class="sheet-header-row">
+          <div>
+            <div class="sheet-title">All Listings — MKM 2024 Foil</div>
+            <div style="font-size:11px;color:var(--text-secondary);">NM selected · 7 available</div>
+          </div>
+          <button class="sheet-close-btn" aria-label="Close listings">✕</button>
+        </div>
+        <div class="sort-row" style="background:var(--bg-surface-2);">
+          <span class="sort-label">Sort:</span>
+          <button class="sort-chip active">Price ↑</button>
+          <button class="sort-chip">Condition</button>
+          <button class="sort-chip">Seller Rating</button>
+        </div>
+        <div class="listing-row cheapest">
+          <div>
+            <div class="seller-name">CardKingdom</div>
+            <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">99.4%</span><span style="color:var(--text-secondary)"> · 14,820 sales</span></div>
+            <div class="seller-loc">📍 US · 1–2 days</div>
+          </div>
+          <div><span class="cond-badge cond-nm">NM</span></div>
+          <div class="listing-price-col"><div class="listing-price">$2.49</div><div class="listing-ship">+ $1.00</div></div>
+          <div><button class="gold-btn-sm">Add</button></div>
+        </div>
+        <div class="listing-row">
+          <div>
+            <div class="seller-name">TCGPlayer Store</div>
+            <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">97.8%</span><span style="color:var(--text-secondary)"> · 3,210</span></div>
+            <div class="seller-loc">📍 US · 2–3 days</div>
+          </div>
+          <div><span class="cond-badge cond-nm">NM</span></div>
+          <div class="listing-price-col"><div class="listing-price">$2.89</div><div class="listing-ship">Free $10+</div></div>
+          <div><button class="gold-btn-sm">Add</button></div>
+        </div>
+        <div class="listing-row">
+          <div>
+            <div class="seller-name">LocalGameShop</div>
+            <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">95.1%</span><span style="color:var(--text-secondary)"> · 412</span></div>
+            <div class="seller-loc">📍 CA · 3–5 days</div>
+          </div>
+          <div><span class="cond-badge cond-lp">LP</span></div>
+          <div class="listing-price-col"><div class="listing-price">$1.99</div><div class="listing-ship">+ $2.50</div></div>
+          <div><button class="gold-btn-sm">Add</button></div>
+        </div>
+        <div class="price-summary">
+          <div><div class="price-sum-label">Market Low</div><div class="price-sum-val">$1.99</div></div>
+          <div><div class="price-sum-label">Mid</div><div class="price-sum-val">$3.40</div></div>
+          <div><div class="price-sum-label">High</div><div class="price-sum-val">$8.00</div></div>
+        </div>
+      </div><!-- /.sheet-demo-frame -->
+    </div><!-- /sheet demo col -->
+
+  </div><!-- /two-col layout -->
+
+  <div class="note mt-4" style="max-width:860px;">
+    <strong>v5.1 mobile summary:</strong>
+    Oracle text inline (Player) ·
+    Legality inline (Deck Builder) ·
+    ×1–×4 qty chips replacing stepper (Builder/Buyer) ·
+    3-row bar reordered price→qty+CTA→condition+secondary ·
+    Context label "NM · MKM '24 Foil" before save (Collector) ·
+    Foil badge on card image (Collector) ·
+    Listings bottom sheet via "N listings ↑" (Buyer) ·
+    Rulings accordion in scroll (Player)
   </div>
 </div><!-- /#mobile -->
 
@@ -1314,11 +1497,14 @@ function toggleRulings() {
   icon.textContent = open ? '▲' : '▼';
   btn.setAttribute('aria-expanded', String(open));
 }
-function mobileTab(tab, el) {
-  document.getElementById('mobile-card-info').style.display = tab === 'card-info' ? 'block' : 'none';
-  document.getElementById('mobile-legality').style.display = tab === 'legality' ? 'block' : 'none';
-  document.querySelectorAll('.mobile-tab-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
+function toggleMobileRulings() {
+  const body = document.getElementById('m-rulings-body');
+  const icon = document.getElementById('m-rulings-icon');
+  const btn = document.getElementById('m-rulings-btn');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  icon.textContent = open ? '▲' : '▼';
+  btn.setAttribute('aria-expanded', String(open));
 }
 </script>
 </body>
