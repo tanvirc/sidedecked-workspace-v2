@@ -202,6 +202,26 @@
       - Implementation feasibility: PASS / concerns list
       - Priority of changes: must-fix before architecture / nice-to-have
     </action>
+    <action>As Winston (Architect) + Amelia (Dev) jointly: produce a Component Strategy Review table.
+      For EVERY named UI component/section in the wireframe, output a row in this table:
+
+      | Wireframe Component | Existing Code File | Strategy | Justification |
+      |---|---|---|---|
+      (example rows omitted — fill from actual wireframe)
+
+      Strategy options:
+        KEEP       — existing component is fully compliant; no changes needed
+        REFACTOR   — existing component needs targeted changes; same data shape
+        EXTRACT    — inline code should be extracted to its own component for testability
+        REPLACE    — existing component must be rebuilt from scratch (HIGH RISK — see notes)
+        BUILD-NEW  — no existing code; build from scratch
+
+      For any REPLACE or BUILD-NEW row, add a mandatory "Risk + Migration" note column explaining:
+        - Why the existing component cannot be refactored
+        - What will happen to the old component (deleted / kept for reference / gradual cutover)
+        - Estimated complexity delta vs REFACTOR
+      Store this table as the Component Strategy for Phase 3 carry-forward.
+    </action>
     <ask>
       ## Phase 2B Step 7 - Party Mode Wireframe Review Complete
 
@@ -277,6 +297,11 @@
       - BA traceability status: mapped ACs, unmapped ACs, and required follow-ups
       - Deployment classification: {{needs_deploy}} with justification
       - Wireframe implementation notes (if Phase 2B ran): component strategy, rendering approach
+      - ## Component Strategy (carry forward from Phase 2B party mode):
+          Reproduce the Component Strategy Review table from Phase 2B Step 7.
+          For any REPLACE or BUILD-NEW rows, add explicit tasks to the implementation plan
+          covering: (a) building the new component, (b) deleting or archiving the old component.
+          If Phase 2B was skipped, Winston must produce this table now before proceeding.
       - Architectural risks or open decisions
     </action>
     <ask>
@@ -363,14 +388,16 @@
       - For every named component/section in the wireframe, identify the exact JSX component or file that implements it
       - List the wireframe's CSS class/structure → the corresponding Tailwind classes or CSS module classes in code
       - Flag any wireframe component with NO corresponding code component as a BLOCKING gap
-      - Output the map as a table:
-        | Wireframe Element        | Code Component/File          | Structure Match | Gap? |
-        |--------------------------|------------------------------|-----------------|------|
-        | .action-panel (gold border) | CardDetailPage.tsx action col | must match     | ?    |
-        | .print-browser (button-list)| CompactPrintingsTable.tsx     | must match     | ?    |
-        | .quick-stats-bar         | CardDetailPage.tsx stats bar  | must match     | ?    |
-        | mobile v5.1 3-row bar    | mobile sticky bar             | must match     | ?    |
+      - Output the map as a table (Strategy column pre-filled from Phase 3 Component Strategy):
+        | Wireframe Element           | Code Component/File           | Strategy        | Structure Match | Gap? |
+        |-----------------------------|-------------------------------|-----------------|-----------------|------|
+        | .action-panel (gold border) | CardDetailPage.tsx action col | KEEP/REFACTOR/… | must match      | ?    |
+        | .print-browser (button-list)| CompactPrintingsTable.tsx     | KEEP/REFACTOR/… | must match      | ?    |
+        | .quick-stats-bar            | CardDetailPage.tsx stats bar  | KEEP/REFACTOR/… | must match      | ?    |
+        | mobile v5.1 3-row bar       | mobile sticky bar             | KEEP/REFACTOR/… | must match      | ?    |
+      Strategy values come from Phase 3 Component Strategy table — do NOT re-derive here.
       Any row where Gap=YES is a blocker that must be resolved before Phase 4 can complete.
+      Any row where Strategy=REPLACE or BUILD-NEW must have a corresponding task in the story file.
     </critical>
   </step>
 
@@ -626,13 +653,39 @@
          border and padding, the code MUST have the container — not just bare floated pills.
     </action>
 
-    <!-- Audit 3: Playwright Computed-Style + Accessibility Tree -->
+    <!-- Audit 3: Playwright Computed-Style + Accessibility Tree + Visual Regression -->
     <action>As Quinn: Generate a Playwright UX compliance test at storefront/e2e/{{story_key}}-ux-compliance.spec.ts:
       - getComputedStyle assertions on key elements (background-color, color resolve to correct CSS variable chain)
       - Viewport tests at { width: 375, height: 812 } (mobile) and { width: 1280, height: 900 } (desktop)
       - Screenshots saved to _bmad-output/ux-validation/{{story_key}}/
       - Accessibility tree snapshot (page.accessibility.snapshot()) saved as JSON to _bmad-output/ux-validation/{{story_key}}/accessibility-tree.json
       - Sally reads the accessibility tree JSON as a text-based rendered DOM structure for audit 4
+      - toMatchAriaSnapshot() for each major wireframe region (one per region: print browser, action panel, mobile bar)
+    </action>
+    <action>As Quinn: Run Playwright visual regression gate:
+      1. Verify @playwright/test is installed (storefront/package.json devDependencies).
+         If missing: add "@playwright/test": "^1.50.0" and run npm install.
+         Verify test:e2e script exists in package.json; add if missing:
+           "test:e2e": "playwright test"
+           "test:e2e:headed": "playwright test --headed"
+           "test:e2e:report": "playwright show-report"
+      2. On FIRST RUN for this story (no baseline screenshots exist):
+         Run: npm run test:e2e -- --update-snapshots
+         Commit the generated baseline screenshots in storefront/e2e/__screenshots__/
+         to the feature branch with message: test({{story-scope}}): add Playwright visual regression baselines for {{story-title}}
+      3. On SUBSEQUENT RUNS (baselines already committed):
+         Run: npm run test:e2e -- --project=chromium
+         If any screenshot diff exceeds 2% (maxDiffPixelRatio=0.02):
+           - Quinn saves the diff image to _bmad-output/ux-validation/{{story_key}}/visual-diff-*.png
+           - Quinn marks Audit 3 as FAIL with the specific diff details
+           - Phase 5B cannot proceed to APPROVED until all diffs are ≤ 2%
+      4. If Playwright tests fail for reasons other than visual diff (selector not found, timeout, crash):
+         Follow superpowers:systematic-debugging before retrying.
+    </action>
+    <action>As Quinn: Run CSS token self-check (if storefront/scripts/check-css-tokens.js exists):
+      Run: npm run check:tokens (from storefront/)
+      If violations found: list them in the UX Validation Report under CSS Token Compliance
+      Phase 5B cannot proceed to APPROVED with any check:tokens violations.
     </action>
 
     <!-- Audit 4: Sally's Verdict -->
