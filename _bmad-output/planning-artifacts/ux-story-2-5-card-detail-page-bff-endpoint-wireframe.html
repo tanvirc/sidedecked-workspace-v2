@@ -3,1283 +3,1160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SideDecked — Story 2-5: Card Detail Page (BFF Endpoint) Wireframe</title>
+<title>SideDecked — Story 2-5: Card Detail Page Wireframe v4</title>
 <style>
-/* ============================================================
-   DESIGN TOKENS — Midnight Forge
-   ============================================================ */
 :root {
   --bg-base: #0C0D12;
   --bg-surface-1: #13141A;
   --bg-surface-2: #1A1C24;
   --bg-surface-3: #22242E;
   --bg-surface-4: #2A2D38;
-
   --accent-primary: #D4A843;
   --accent-primary-hover: #E0B94F;
+  --accent-primary-dim: rgba(212,168,67,0.10);
   --interactive: #7C8CFF;
-  --interactive-hover: #9BA6FF;
-
+  --interactive-dim: rgba(124,140,255,0.10);
   --positive: #4ADE80;
   --negative: #EF5350;
   --warning: #FBBF24;
-
   --text-primary: #E8ECF1;
   --text-secondary: #8B93A6;
   --text-tertiary: #4F5568;
   --text-price: #D4A843;
-
   --border-subtle: rgba(255,255,255,0.06);
   --border-default: rgba(255,255,255,0.10);
+  --border-selected: rgba(212,168,67,0.50);
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.5;color:var(--text-primary);background:var(--bg-base);-webkit-font-smoothing:antialiased;}
 
-  --rarity-common: #6B6B6B;
-  --rarity-uncommon: #A8B4C0;
-  --rarity-rare: #D4A843;
-  --rarity-mythic: #E85D26;
+/* ── Wireframe chrome ── */
+.wf-header{text-align:center;padding:var(--sp-6) var(--sp-5) var(--sp-5);border-bottom:1px solid var(--border-subtle);background:var(--bg-surface-1);}
+.wf-header h1{font-size:20px;font-weight:700;} .wf-header h1 span{color:var(--accent-primary);}
+.wf-header p{margin-top:var(--sp-1);font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;}
+.version-badge{display:inline-block;margin-top:var(--sp-2);padding:2px 10px;border-radius:var(--radius-xl);background:rgba(74,222,128,0.12);color:var(--positive);font-size:11px;font-weight:600;}
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+.tab-nav{display:flex;justify-content:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-5);background:var(--bg-surface-1);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.tab-btn{display:inline-flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-4);border:1px solid var(--border-default);border-radius:var(--radius-xl);background:transparent;color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.tab-btn:hover{color:var(--text-primary);border-color:var(--interactive);background:var(--interactive-dim);}
+.tab-btn.active{color:var(--bg-base);background:var(--accent-primary);border-color:var(--accent-primary);}
 
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
-  --sp-7: 48px;
-}
+.panels{padding:var(--sp-5);}
+.panel{display:none;max-width:1100px;margin:0 auto;animation:fadeIn 0.2s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.panel-label{display:inline-block;padding:2px 10px;border-radius:var(--radius-sm);background:var(--interactive-dim);color:var(--interactive);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:var(--sp-2);}
+.panel-title{font-size:18px;font-weight:700;margin-bottom:var(--sp-2);}
+.panel-desc{font-size:13px;color:var(--text-secondary);margin-bottom:var(--sp-4);max-width:760px;line-height:1.7;}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text-primary);
-  background: var(--bg-base);
-  -webkit-font-smoothing: antialiased;
-}
-body { min-height: 100vh; }
+/* ── Annotations ── */
+.note      {background:var(--accent-primary-dim);border:1px dashed rgba(212,168,67,0.35);border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);font-size:11px;color:var(--accent-primary);margin-bottom:var(--sp-3);line-height:1.6;}
+.note strong{font-weight:700;}
+.note-blue {background:var(--interactive-dim);border:1px dashed rgba(124,140,255,0.35);color:var(--interactive);border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);font-size:11px;margin-bottom:var(--sp-3);line-height:1.6;}
+.note-green{background:rgba(74,222,128,0.07);border:1px dashed rgba(74,222,128,0.30);color:var(--positive);border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);font-size:11px;margin-bottom:var(--sp-3);line-height:1.6;}
+.note-warn {background:rgba(251,191,36,0.07);border:1px dashed rgba(251,191,36,0.30);color:var(--warning);border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);font-size:11px;margin-bottom:var(--sp-3);line-height:1.6;}
+.note-red  {background:rgba(239,83,80,0.07);border:1px dashed rgba(239,83,80,0.30);color:var(--negative);border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);font-size:11px;margin-bottom:var(--sp-3);line-height:1.6;}
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-.wireframe-header {
-  text-align: center;
-  padding: var(--sp-6) var(--sp-5) var(--sp-5);
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-surface-1);
-}
-.wireframe-header h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
-.wireframe-header h1 span { color: var(--accent-primary); }
-.wireframe-header p { margin-top: var(--sp-2); font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+/* User-group legend strip */
+.ug-strip{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-4);}
+.ug-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:var(--radius-xl);font-size:11px;font-weight:600;}
+.ug-buyer{background:rgba(212,168,67,0.12);color:var(--accent-primary);border:1px solid rgba(212,168,67,0.25);}
+.ug-builder{background:rgba(124,140,255,0.12);color:var(--interactive);border:1px solid rgba(124,140,255,0.25);}
+.ug-collector{background:rgba(74,222,128,0.12);color:var(--positive);border:1px solid rgba(74,222,128,0.25);}
+.ug-player{background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--border-default);}
+.ug-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;align-self:center;}
 
-/* ============================================================
-   TAB NAV
-   ============================================================ */
-.tab-nav {
-  display: flex;
-  justify-content: center;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-5);
-  background: var(--bg-surface-1);
-  border-bottom: 1px solid var(--border-subtle);
-  flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.tab-btn {
-  display: inline-flex; align-items: center; gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all 0.2s;
-  font-family: inherit;
-}
-.tab-btn:hover { color: var(--text-primary); border-color: var(--interactive); background: rgba(124,140,255,0.06); }
-.tab-btn.active { color: var(--bg-base); background: var(--accent-primary); border-color: var(--accent-primary); }
+/* ── Shared UI ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;}
+.badge-rare{background:rgba(212,168,67,0.14);color:var(--text-price);}
+.badge-mtg{background:rgba(139,76,181,0.18);color:#C084FC;}
+.badge-foil{background:linear-gradient(90deg,rgba(212,168,67,0.2),rgba(232,93,38,0.2));border:1px solid rgba(212,168,67,0.3);color:var(--accent-primary);}
+.rarity-dot{width:6px;height:6px;border-radius:50%;display:inline-block;background:var(--text-price);}
 
-/* ============================================================
-   PANELS
-   ============================================================ */
-.panels { padding: var(--sp-5); }
-.panel { display: none; max-width: 1100px; margin: 0 auto; animation: fadeIn 0.25s ease; }
-.panel.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+/* "Soon" badge for placeholder CTAs */
+.soon-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:1px 6px;border-radius:3px;background:rgba(124,140,255,0.15);color:var(--interactive);margin-left:4px;vertical-align:middle;}
 
-.panel-label {
-  display: inline-block; padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--radius-sm); background: rgba(124,140,255,0.10);
-  color: var(--interactive); font-size: 11px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--sp-3);
-}
-.panel-title { font-size: 20px; font-weight: 700; margin-bottom: var(--sp-2); }
-.panel-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: var(--sp-5); max-width: 640px; line-height: 1.7; }
+/* Gold / ghost / link buttons */
+.gold-btn{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;padding:11px var(--sp-4);background:var(--accent-primary);color:var(--bg-base);border:none;border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;}
+.gold-btn:hover{background:var(--accent-primary-hover);}
+.gold-btn:disabled{background:var(--bg-surface-4);color:var(--text-tertiary);cursor:not-allowed;}
+.gold-btn-sm{display:inline-flex;align-items:center;gap:var(--sp-1);padding:5px var(--sp-3);background:var(--accent-primary);color:var(--bg-base);border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
 
-/* ============================================================
-   ANNOTATIONS
-   ============================================================ */
-.annotation {
-  background: rgba(212,168,67,0.08);
-  border: 1px dashed rgba(212,168,67,0.35);
-  border-radius: var(--radius-sm);
-  padding: var(--sp-2) var(--sp-3);
-  font-size: 11px; color: var(--accent-primary);
-  margin-bottom: var(--sp-3);
-  line-height: 1.6;
-}
-.annotation strong { font-weight: 600; }
-.annotation-blue {
-  background: rgba(124,140,255,0.08);
-  border-color: rgba(124,140,255,0.35);
-  color: var(--interactive);
-}
+.secondary-btn{display:flex;align-items:center;width:100%;padding:9px var(--sp-3);background:var(--bg-surface-2);border:1px solid var(--border-default);border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;color:var(--text-primary);transition:all 0.15s;gap:var(--sp-2);}
+.secondary-btn:hover{border-color:rgba(255,255,255,0.2);background:var(--bg-surface-3);}
+.secondary-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.secondary-btn .btn-icon{font-size:15px;flex-shrink:0;}
+.secondary-btn .btn-label{flex:1;text-align:left;}
+.secondary-btn .btn-sub{font-size:11px;color:var(--text-tertiary);}
+.secondary-btn .chevron{font-size:10px;color:var(--text-tertiary);flex-shrink:0;}
 
-/* ============================================================
-   SHARED COMPONENTS
-   ============================================================ */
-.price { font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace; font-variant-numeric: tabular-nums; font-weight: 500; color: var(--text-price); }
+.ghost-btn{display:inline-flex;align-items:center;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3);background:transparent;color:var(--text-secondary);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;}
+.ghost-btn:hover{color:var(--text-primary);border-color:rgba(255,255,255,0.2);}
+.link-btn{background:none;border:none;color:var(--interactive);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:2px;padding:0;}
 
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px; border-radius: var(--radius-sm);
-  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
-}
-.badge-rare { background: rgba(212,168,67,0.14); color: var(--rarity-rare); }
-.badge-uncommon { background: rgba(168,180,192,0.14); color: var(--rarity-uncommon); }
-.badge-mtg { background: rgba(139,76,181,0.18); color: #C084FC; }
-.badge-pokemon { background: rgba(250,204,21,0.14); color: #FBBF24; }
+/* Condition chips */
+.cond-group{display:flex;gap:var(--sp-2);flex-wrap:wrap;}
+.cond-chip{display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;letter-spacing:0.04em;border:1.5px solid;cursor:pointer;transition:all 0.15s;font-family:inherit;background:transparent;}
+.nm{border-color:rgba(74,222,128,0.3);color:#4ADE80;} .nm.active{background:rgba(74,222,128,0.14);border-color:#4ADE80;}
+.lp{border-color:rgba(163,230,53,0.3);color:#A3E635;} .lp.active{background:rgba(163,230,53,0.12);border-color:#A3E635;}
+.mp{border-color:rgba(251,191,36,0.3);color:var(--warning);} .mp.active{background:rgba(251,191,36,0.10);border-color:var(--warning);}
+.hp{border-color:rgba(239,83,80,0.3);color:var(--negative);}
+.cond-chip.off{opacity:0.3;cursor:not-allowed;border-style:dashed;}
+.stock-count{font-size:10px;opacity:0.7;margin-left:3px;font-weight:400;}
 
-.rarity-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-.dot-rare { background: var(--rarity-rare); }
+/* Qty stepper */
+.qty-stepper{display:inline-flex;align-items:center;border:1px solid var(--border-default);border-radius:var(--radius-sm);overflow:hidden;}
+.qty-btn{width:32px;height:32px;border:none;background:var(--bg-surface-3);color:var(--text-primary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.qty-btn:hover{background:var(--bg-surface-4);}
+.qty-num{width:38px;height:32px;text-align:center;background:var(--bg-surface-2);border:none;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);color:var(--text-primary);font-size:14px;font-weight:600;font-family:inherit;}
 
-.gold-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  background: var(--accent-primary); color: var(--bg-base);
-  border: none; border-radius: var(--radius-sm);
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: background 0.15s; font-family: inherit;
-}
-.gold-btn:hover { background: var(--accent-primary-hover); }
-.gold-btn:disabled { background: var(--bg-surface-4); color: var(--text-tertiary); cursor: not-allowed; }
+/* Skeleton */
+.skel{background:linear-gradient(90deg,var(--bg-surface-2) 25%,var(--bg-surface-3) 50%,var(--bg-surface-2) 75%);background-size:200% 100%;animation:shim 1.5s infinite;border-radius:var(--radius-sm);}
+@keyframes shim{to{background-position:-200% 0;}}
 
-.ghost-btn {
-  display: inline-flex; align-items: center; gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  background: transparent; color: var(--text-secondary);
-  border: 1px solid var(--border-default); border-radius: var(--radius-sm);
-  font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit;
-}
-.ghost-btn:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.2); }
+/* ── PAGE GRID ── */
+.page-grid{display:grid;grid-template-columns:280px 1fr;gap:var(--sp-6);align-items:start;}
+.img-col{position:sticky;top:68px;}
+.card-hero{width:100%;aspect-ratio:63/88;background:linear-gradient(160deg,var(--bg-surface-2),var(--bg-surface-3));border-radius:var(--radius-lg);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.card-hero-inner{text-align:center;color:var(--text-tertiary);font-size:12px;}
+.card-hero-inner svg{display:block;margin:0 auto var(--sp-2);opacity:0.3;}
+.card-overlay{position:absolute;bottom:0;left:0;right:0;padding:var(--sp-3);background:linear-gradient(0deg,rgba(12,13,18,0.92) 60%,transparent);}
+.foil-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-sm);background:linear-gradient(90deg,rgba(212,168,67,0.2),rgba(232,93,38,0.2));border:1px solid rgba(212,168,67,0.3);color:var(--accent-primary);font-size:11px;font-weight:600;}
 
-/* ============================================================
-   CARD DETAIL LAYOUT
-   ============================================================ */
-.card-detail-grid {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: var(--sp-6);
-  align-items: start;
-}
-@media (max-width: 768px) {
-  .card-detail-grid { grid-template-columns: 1fr; }
-}
+/* ── CARD META ── */
+.card-game-row{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);}
+.card-name{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:var(--sp-1);line-height:1.15;}
+.card-type{font-size:13px;color:var(--text-secondary);}
 
-/* Left column */
-.card-image-column {}
-.card-image-hero {
-  width: 100%;
-  aspect-ratio: 63/88;
-  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-subtle);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-  margin-bottom: var(--sp-4);
-}
-.card-image-hero-inner {
-  text-align: center; color: var(--text-tertiary); font-size: 12px; z-index: 1;
-}
-.card-image-hero-inner svg { display: block; margin: 0 auto var(--sp-2); opacity: 0.3; }
-.card-image-overlay {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: var(--sp-3);
-  background: linear-gradient(0deg, rgba(12,13,18,0.9) 60%, transparent);
-}
-.card-foil-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px; border-radius: var(--radius-sm);
-  background: linear-gradient(90deg, rgba(212,168,67,0.2), rgba(232,93,38,0.2));
-  border: 1px solid rgba(212,168,67,0.3);
-  color: var(--accent-primary); font-size: 11px; font-weight: 600;
-}
+/* Quick stats bar — for players & deck builders */
+.quick-stats-bar{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);margin:var(--sp-3) 0 var(--sp-4);}
+.qs-item{display:flex;align-items:center;gap:var(--sp-2);}
+.qs-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;}
+.qs-value{font-size:13px;font-weight:600;color:var(--text-primary);}
+.qs-divider{width:1px;height:20px;background:var(--border-subtle);}
+.mana-pip{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:1.5px solid rgba(0,0,0,0.3);}
+.pip-2{background:#b0b0b0;color:#222;} .pip-g{background:#006600;color:#fff;} .pip-w{background:#f0ede0;color:#333;}
+.legal-dot{width:8px;height:8px;border-radius:50%;background:var(--positive);display:inline-block;margin-right:4px;}
+.banned-dot{width:8px;height:8px;border-radius:50%;background:var(--negative);display:inline-block;margin-right:4px;}
 
-/* Right column */
-.card-detail-content {}
-.card-game-row {
-  display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-3);
-}
-.card-name {
-  font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
-  color: var(--text-primary); margin-bottom: var(--sp-2); line-height: 1.1;
-}
-.card-type-line { font-size: 13px; color: var(--text-secondary); margin-bottom: var(--sp-4); }
-.card-set-info {
-  display: flex; align-items: center; gap: var(--sp-3);
-  padding: var(--sp-3); background: var(--bg-surface-2); border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle); margin-bottom: var(--sp-4);
-}
-.card-set-icon {
-  width: 36px; height: 36px; border-radius: var(--radius-sm);
-  background: var(--bg-surface-4); display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-}
-.set-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.set-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+/* ── PRINTS + ACTION PANEL GRID ── */
+.prints-action-grid{display:grid;grid-template-columns:1fr 248px;gap:var(--sp-4);align-items:start;margin-bottom:var(--sp-5);}
 
-/* Section dividers */
-.section { margin-top: var(--sp-5); }
-.section-header {
-  display: flex; align-items: center; gap: var(--sp-2);
-  margin-bottom: var(--sp-3);
-  padding-bottom: var(--sp-2); border-bottom: 1px solid var(--border-subtle);
-}
-.section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+/* Print list */
+.print-list-wrap{background:var(--bg-surface-1);border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden;}
+.print-list-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--border-subtle);}
+.print-list-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);}
+.print-list-count{font-size:11px;color:var(--text-tertiary);background:var(--bg-surface-3);padding:2px 8px;border-radius:var(--radius-xl);}
+.print-list{max-height:260px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border-default) transparent;}
+.print-list::-webkit-scrollbar{width:4px;} .print-list::-webkit-scrollbar-thumb{background:var(--border-default);border-radius:2px;}
+.print-row{display:flex;align-items:center;padding:10px var(--sp-4);gap:var(--sp-3);border-bottom:1px solid var(--border-subtle);cursor:pointer;background:transparent;width:100%;text-align:left;font-family:inherit;transition:background 0.12s;border-left:3px solid transparent;}
+.print-row:last-child{border-bottom:none;}
+.print-row:hover{background:rgba(255,255,255,0.025);}
+.print-row.selected{background:var(--accent-primary-dim);border-left-color:var(--accent-primary);}
+.print-row-radio{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border-default);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.print-row.selected .print-row-radio{border-color:var(--accent-primary);background:var(--accent-primary);}
+.print-row.selected .print-row-radio::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--bg-base);}
+.print-row-info{flex:1;min-width:0;}
+.print-row-set{font-size:13px;font-weight:600;color:var(--text-primary);}
+.print-row.selected .print-row-set{color:var(--accent-primary);}
+.print-row-meta{font-size:11px;color:var(--text-tertiary);margin-top:1px;display:flex;gap:var(--sp-2);align-items:center;}
+.foil-tag{font-size:9px;padding:1px 5px;border-radius:3px;background:linear-gradient(90deg,rgba(212,168,67,0.2),rgba(232,93,38,0.2));border:1px solid rgba(212,168,67,0.3);color:var(--accent-primary);font-weight:600;}
+.new-tag{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(74,222,128,0.12);color:var(--positive);font-weight:600;}
+.print-row-price{font-size:13px;font-weight:700;font-family:'SF Mono',Consolas,monospace;color:var(--text-price);flex-shrink:0;}
+.print-row-no-stock{font-size:12px;color:var(--text-tertiary);font-style:italic;flex-shrink:0;}
+.print-list-footer{padding:var(--sp-2) var(--sp-4);border-top:1px solid var(--border-subtle);text-align:center;}
 
-/* Game stats grid */
-.stats-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2);
-  margin-bottom: var(--sp-3);
-}
-.stat-chip {
-  padding: var(--sp-2) var(--sp-3); background: var(--bg-surface-2);
-  border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);
-}
-.stat-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
-.stat-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+/* ── ACTION PANEL ── */
+.action-panel{background:var(--bg-surface-1);border:1.5px solid var(--border-selected);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:68px;}
 
-/* Oracle text */
-.oracle-text {
-  padding: var(--sp-3); background: var(--bg-surface-2); border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle); font-size: 13px; line-height: 1.65;
-  color: var(--text-secondary); font-style: italic; margin-bottom: var(--sp-2);
-}
-.flavor-text {
-  padding: var(--sp-2) var(--sp-3); border-left: 2px solid var(--border-default);
-  font-size: 12px; color: var(--text-tertiary); font-style: italic; line-height: 1.6;
-}
+/* Section within action panel */
+.ap-section{padding:var(--sp-4);}
+.ap-section + .ap-section{border-top:1px solid var(--border-subtle);}
 
-/* Legality pills */
-.legality-grid {
-  display: flex; flex-wrap: wrap; gap: var(--sp-2);
-}
-.legality-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: var(--radius-xl);
-  font-size: 11px; font-weight: 600;
-}
-.legal   { background: rgba(74,222,128,0.10); color: var(--positive); border: 1px solid rgba(74,222,128,0.2); }
-.banned  { background: rgba(239,83,80,0.10); color: var(--negative); border: 1px solid rgba(239,83,80,0.2); }
-.illegal { background: rgba(255,255,255,0.05); color: var(--text-tertiary); border: 1px solid var(--border-subtle); }
+/* Quick Buy section */
+.ap-qb-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-2) var(--sp-4);background:rgba(212,168,67,0.07);border-bottom:1px solid rgba(212,168,67,0.15);}
+.ap-qb-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.10em;color:var(--accent-primary);}
+.ap-qb-ref{font-size:10px;color:var(--text-tertiary);}
 
-/* ============================================================
-   MARKETPLACE LISTINGS
-   ============================================================ */
-.listings-section {
-  margin-top: var(--sp-6);
-  background: var(--bg-surface-1);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-default);
-  overflow: hidden;
-}
-.listings-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: var(--sp-4) var(--sp-5);
-  border-bottom: 1px solid var(--border-subtle);
-}
-.listings-title {
-  font-size: 15px; font-weight: 700; color: var(--text-primary);
-}
-.listings-count {
-  font-size: 12px; color: var(--text-secondary);
-  background: var(--bg-surface-3); padding: 2px 10px; border-radius: var(--radius-xl);
-}
-.listings-sort-row {
-  display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-5);
-  background: var(--bg-surface-2); border-bottom: 1px solid var(--border-subtle);
-}
-.sort-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; }
-.sort-chip {
-  padding: 3px 10px; border-radius: var(--radius-xl); font-size: 11px; font-weight: 500;
-  background: transparent; border: 1px solid var(--border-default); color: var(--text-secondary);
-  cursor: pointer; font-family: inherit;
-}
-.sort-chip.active { background: rgba(124,140,255,0.12); border-color: var(--interactive); color: var(--interactive); }
+.ap-price-hero{display:flex;align-items:baseline;gap:var(--sp-2);margin-bottom:2px;}
+.ap-from{font-size:10px;color:var(--text-tertiary);}
+.ap-price{font-size:26px;font-weight:800;font-family:'SF Mono',Consolas,monospace;font-variant-numeric:tabular-nums;color:var(--text-price);line-height:1;}
+.ap-seller{font-size:11px;color:var(--text-secondary);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:4px;}
+.ap-trust{color:var(--positive);}
+.ap-row-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--sp-2);}
+.ap-qty-row{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-3);}
+.ap-stock{font-size:11px;color:var(--text-tertiary);}
+.ap-stock strong{color:var(--warning);}
+.ap-divider{height:1px;background:var(--border-subtle);margin:var(--sp-3) 0;}
 
-/* Listing row */
-.listing-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center; gap: var(--sp-4);
-  padding: var(--sp-4) var(--sp-5);
-  border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.15s;
-}
-.listing-row:last-child { border-bottom: none; }
-.listing-row:hover { background: rgba(255,255,255,0.02); }
+/* Deck & Collection section */
+.ap-save-header{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);}
+.ap-save-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);}
+.ap-footer{padding:var(--sp-2) var(--sp-4) var(--sp-3);border-top:1px solid var(--border-subtle);text-align:center;}
 
-.seller-info {}
-.seller-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
-.seller-trust {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; color: var(--positive);
-}
-.seller-trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--positive); flex-shrink: 0; }
-.seller-trust-text { color: var(--text-secondary); }
-.seller-location { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+/* Action panel states */
+.ap-degraded-msg{display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3);background:rgba(251,191,36,0.06);border-radius:var(--radius-md);margin-bottom:var(--sp-3);}
+.ap-empty-section{padding:var(--sp-5) var(--sp-4);text-align:center;}
+.ap-empty-icon{font-size:26px;opacity:0.4;margin-bottom:var(--sp-3);}
+.ap-empty-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2);}
+.ap-empty-sub{font-size:11px;color:var(--text-secondary);margin-bottom:var(--sp-3);line-height:1.6;}
 
-.listing-condition {}
-.condition-chip {
-  display: inline-flex; padding: 3px 8px; border-radius: var(--radius-sm);
-  font-size: 11px; font-weight: 700; letter-spacing: 0.04em; border: 1px solid;
-}
-.cond-nm { background: rgba(74,222,128,0.08); color: #4ADE80; border-color: rgba(74,222,128,0.2); }
-.cond-lp { background: rgba(163,230,53,0.08); color: #A3E635; border-color: rgba(163,230,53,0.2); }
-.cond-mp { background: rgba(251,191,36,0.08); color: var(--warning); border-color: rgba(251,191,36,0.2); }
-.cond-hp { background: rgba(239,83,80,0.08); color: var(--negative); border-color: rgba(239,83,80,0.2); }
+/* ── Card stats & oracle ── */
+.section{margin-bottom:var(--sp-5);}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);padding-bottom:var(--sp-2);border-bottom:1px solid var(--border-subtle);}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-bottom:var(--sp-3);}
+.stat-chip{padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-sm);border:1px solid var(--border-subtle);}
+.stat-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+.stat-value{font-size:14px;font-weight:600;color:var(--text-primary);}
+.oracle{padding:var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);font-size:13px;line-height:1.65;color:var(--text-secondary);font-style:italic;margin-bottom:var(--sp-2);}
+.flavor{padding:var(--sp-2) var(--sp-3);border-left:2px solid var(--border-default);font-size:12px;color:var(--text-tertiary);font-style:italic;line-height:1.6;}
 
-.listing-price-col { text-align: right; }
-.listing-price { font-size: 17px; font-weight: 700; color: var(--text-price); font-family: 'SF Mono', Consolas, monospace; }
-.listing-shipping { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+/* Legality */
+.legality-grid{display:flex;flex-wrap:wrap;gap:var(--sp-2);}
+.legality-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:var(--radius-xl);font-size:11px;font-weight:600;}
+.legal{background:rgba(74,222,128,0.10);color:var(--positive);border:1px solid rgba(74,222,128,0.20);}
+.banned{background:rgba(239,83,80,0.10);color:var(--negative);border:1px solid rgba(239,83,80,0.20);}
+.illegal{background:rgba(255,255,255,0.04);color:var(--text-tertiary);border:1px solid var(--border-subtle);}
 
-.listing-actions {}
+/* ── Listings table ── */
+.listings-section{margin-top:var(--sp-6);background:var(--bg-surface-1);border-radius:var(--radius-lg);border:1px solid var(--border-default);overflow:hidden;}
+.listings-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--border-subtle);}
+.listings-title{font-size:15px;font-weight:700;}
+.listings-count{font-size:12px;color:var(--text-secondary);background:var(--bg-surface-3);padding:2px 10px;border-radius:var(--radius-xl);}
+.sort-row{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-5);background:var(--bg-surface-2);border-bottom:1px solid var(--border-subtle);}
+.sort-label{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;}
+.sort-chip{padding:3px 10px;border-radius:var(--radius-xl);font-size:11px;font-weight:500;background:transparent;border:1px solid var(--border-default);color:var(--text-secondary);cursor:pointer;font-family:inherit;}
+.sort-chip.active{background:var(--interactive-dim);border-color:var(--interactive);color:var(--interactive);}
+.listing-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:var(--sp-4);padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--border-subtle);transition:background 0.15s;}
+.listing-row:last-child{border-bottom:none;}
+.listing-row:hover{background:rgba(255,255,255,0.02);}
+.listing-row.cheapest{background:rgba(212,168,67,0.04);border-left:3px solid var(--accent-primary);}
+.seller-name{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;}
+.seller-trust{display:inline-flex;align-items:center;gap:5px;font-size:11px;}
+.trust-dot{width:6px;height:6px;border-radius:50%;background:var(--positive);flex-shrink:0;}
+.seller-loc{font-size:11px;color:var(--text-tertiary);margin-top:2px;}
+.cond-badge{display:inline-flex;padding:3px 8px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;letter-spacing:0.04em;border:1px solid;}
+.cond-nm{background:rgba(74,222,128,0.08);color:#4ADE80;border-color:rgba(74,222,128,0.2);}
+.cond-lp{background:rgba(163,230,53,0.08);color:#A3E635;border-color:rgba(163,230,53,0.2);}
+.listing-price-col{text-align:right;}
+.listing-price{font-size:17px;font-weight:700;color:var(--text-price);font-family:'SF Mono',Consolas,monospace;}
+.listing-ship{font-size:11px;color:var(--text-tertiary);margin-top:2px;}
+.price-summary{display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap;padding:var(--sp-3) var(--sp-5);background:var(--bg-surface-2);border-top:1px solid var(--border-subtle);}
+.price-sum-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;}
+.price-sum-val{font-size:14px;font-weight:700;color:var(--text-price);font-family:'SF Mono',Consolas,monospace;margin-top:1px;}
+.degraded-banner{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);background:rgba(251,191,36,0.06);border-bottom:1px solid rgba(251,191,36,0.15);}
+.degraded-title{font-size:13px;font-weight:600;color:var(--warning);margin-bottom:2px;}
+.degraded-sub{font-size:12px;color:var(--text-secondary);}
+.retry-btn{margin-left:auto;padding:var(--sp-2) var(--sp-3);background:transparent;border:1px solid rgba(251,191,36,0.3);border-radius:var(--radius-sm);color:var(--warning);font-size:12px;cursor:pointer;font-family:inherit;}
+.listings-empty{padding:var(--sp-7) var(--sp-5);text-align:center;}
+.empty-icon{font-size:32px;opacity:0.4;margin-bottom:var(--sp-3);}
+.empty-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2);}
+.empty-sub{font-size:13px;color:var(--text-secondary);margin-bottom:var(--sp-4);}
 
-/* Degradation banner */
-.listings-degraded-banner {
-  display: flex; align-items: center; gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-5);
-  background: rgba(251,191,36,0.06); border-bottom: 1px solid rgba(251,191,36,0.15);
-}
-.degraded-icon { font-size: 18px; flex-shrink: 0; }
-.degraded-text {}
-.degraded-title { font-size: 13px; font-weight: 600; color: var(--warning); margin-bottom: 2px; }
-.degraded-sub { font-size: 12px; color: var(--text-secondary); }
+/* ── Mobile ── */
+.mobile-frame{width:390px;margin:0 auto;background:var(--bg-base);border-radius:var(--radius-xl);border:1px solid var(--border-default);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.6);}
+.mobile-statusbar{height:44px;background:var(--bg-surface-1);display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp-4);font-size:12px;font-weight:600;}
+.mobile-nav{padding:var(--sp-3) var(--sp-4);background:var(--bg-surface-1);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;gap:var(--sp-3);}
+.mobile-back{font-size:13px;color:var(--interactive);}
+.mobile-nav-title{font-size:15px;font-weight:600;flex:1;}
+.mobile-scroll{padding:var(--sp-4);}
+.mobile-card-hero{width:100%;aspect-ratio:63/88;background:linear-gradient(160deg,var(--bg-surface-2),var(--bg-surface-3));border-radius:var(--radius-md);border:1px solid var(--border-subtle);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);max-height:200px;text-align:center;margin-bottom:var(--sp-4);}
 
-/* Empty state */
-.listings-empty {
-  padding: var(--sp-7) var(--sp-5);
-  text-align: center;
-}
-.listings-empty-icon { font-size: 36px; margin-bottom: var(--sp-3); opacity: 0.4; }
-.listings-empty-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: var(--sp-2); }
-.listings-empty-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: var(--sp-4); }
+/* Mobile print list */
+.mobile-print-list-wrap{background:var(--bg-surface-1);border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--sp-4);}
+.mobile-print-list{max-height:200px;overflow-y:auto;}
 
-/* Price summary bar */
-.price-summary-bar {
-  display: flex; align-items: center; gap: var(--sp-5); flex-wrap: wrap;
-  padding: var(--sp-3) var(--sp-5);
-  background: var(--bg-surface-2); border-top: 1px solid var(--border-subtle);
-}
-.price-summary-item {}
-.price-summary-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; }
-.price-summary-value { font-size: 14px; font-weight: 700; color: var(--text-price); font-family: 'SF Mono', Consolas, monospace; margin-top: 1px; }
+/* Mobile sticky bottom bar — 3-action */
+.mobile-action-bar{background:var(--bg-surface-1);border-top:1.5px solid var(--border-selected);}
+.mobile-ab-cond-row{display:flex;gap:var(--sp-2);padding:var(--sp-2) var(--sp-3) 0;overflow-x:auto;}
+.mobile-ab-price-row{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);}
+.mobile-ab-price-col{flex:1;}
+.mobile-ab-from{font-size:10px;color:var(--text-tertiary);}
+.mobile-ab-price{font-size:20px;font-weight:800;font-family:'SF Mono',Consolas,monospace;color:var(--text-price);line-height:1;}
+.mobile-ab-seller{font-size:10px;color:var(--text-secondary);}
+.mobile-ab-primary-row{display:flex;gap:var(--sp-2);padding:0 var(--sp-3) var(--sp-3);}
+.mobile-ab-cart-btn{flex:2;padding:10px;background:var(--accent-primary);color:var(--bg-base);border:none;border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.mobile-ab-secondary-group{flex:1;display:flex;flex-direction:column;gap:var(--sp-1);}
+.mobile-ab-sec-btn{flex:1;padding:6px var(--sp-2);background:var(--bg-surface-2);border:1px solid var(--border-default);border-radius:var(--radius-sm);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:4px;}
 
-/* ============================================================
-   COMPACT PRINTINGS TABLE
-   ============================================================ */
-.printings-table { width: 100%; border-collapse: collapse; }
-.printings-table th {
-  text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-tertiary); padding: var(--sp-2) var(--sp-3);
-  border-bottom: 1px solid var(--border-subtle);
-}
-.printings-table td {
-  padding: var(--sp-2) var(--sp-3); font-size: 12px; color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-subtle);
-  cursor: pointer; transition: background 0.15s;
-}
-.printings-table tr:last-child td { border-bottom: none; }
-.printings-table tr.selected td { background: rgba(212,168,67,0.06); color: var(--text-primary); }
-.printings-table tr:hover td { background: rgba(255,255,255,0.02); }
-.printings-table tr.selected .print-set-name { color: var(--accent-primary); font-weight: 600; }
-.current-badge {
-  display: inline-block; padding: 1px 6px; border-radius: var(--radius-sm);
-  background: rgba(212,168,67,0.14); color: var(--accent-primary); font-size: 10px; font-weight: 600; margin-left: 6px;
-}
-
-/* Skeleton loading */
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-surface-2) 25%, var(--bg-surface-3) 50%, var(--bg-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-@keyframes shimmer { to { background-position: -200% 0; } }
-.skeleton-text { height: 12px; }
-.skeleton-title { height: 18px; }
-.skeleton-row { height: 60px; border-radius: 0; }
-
-/* ============================================================
-   MOBILE MOCK
-   ============================================================ */
-.mobile-frame {
-  width: 390px; margin: 0 auto;
-  background: var(--bg-base); border-radius: var(--radius-xl);
-  border: 1px solid var(--border-default); overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-}
-.mobile-statusbar {
-  height: 44px; background: var(--bg-surface-1);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 var(--sp-4); font-size: 12px; font-weight: 600; color: var(--text-primary);
-}
-.mobile-nav {
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--bg-surface-1); border-bottom: 1px solid var(--border-subtle);
-  display: flex; align-items: center; gap: var(--sp-3);
-}
-.mobile-back { font-size: 13px; color: var(--interactive); }
-.mobile-nav-title { font-size: 15px; font-weight: 600; flex: 1; }
-.mobile-content { padding: var(--sp-4); }
-.mobile-card-hero {
-  width: 100%; aspect-ratio: 63/88;
-  background: linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3));
-  border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: var(--text-tertiary); margin-bottom: var(--sp-4);
-  max-height: 340px;
-}
-.mobile-listing-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: var(--sp-3); background: var(--bg-surface-2); border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle); margin-bottom: var(--sp-2);
-  gap: var(--sp-3);
-}
-.mobile-listing-left { flex: 1; }
-.mobile-listing-right { display: flex; flex-direction: column; align-items: flex-end; gap: var(--sp-2); }
-.mobile-add-btn {
-  width: 100%; padding: var(--sp-3) var(--sp-4);
-  background: var(--accent-primary); color: var(--bg-base);
-  border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
-  cursor: pointer; margin-top: var(--sp-1); font-family: inherit;
-}
-
-/* ============================================================
-   SPACING HELPERS
-   ============================================================ */
-.mt-2 { margin-top: var(--sp-2); }
-.mt-3 { margin-top: var(--sp-3); }
-.mt-4 { margin-top: var(--sp-4); }
-.mt-5 { margin-top: var(--sp-5); }
-.mb-3 { margin-bottom: var(--sp-3); }
-.text-sm { font-size: 12px; }
-.text-xs { font-size: 11px; }
-.text-secondary { color: var(--text-secondary); }
-.text-tertiary { color: var(--text-tertiary); }
-.divider { height: 1px; background: var(--border-subtle); margin: var(--sp-5) 0; }
+/* Utils */
+.mt-2{margin-top:var(--sp-2);}.mt-3{margin-top:var(--sp-3);}.mt-4{margin-top:var(--sp-4);}.mt-5{margin-top:var(--sp-5);}
+.mb-2{margin-bottom:var(--sp-2);}.mb-3{margin-bottom:var(--sp-3);}.mb-4{margin-bottom:var(--sp-4);}
+.flex{display:flex;}.flex-between{display:flex;align-items:center;justify-content:space-between;}
+.gap-2{gap:var(--sp-2);}.gap-3{gap:var(--sp-3);}.items-center{align-items:center;}
+.divider{height:1px;background:var(--border-subtle);margin:var(--sp-5) 0;}
 </style>
 </head>
 <body>
 
-<div class="wireframe-header">
+<div class="wf-header">
   <h1>SideDecked — Story <span>2-5</span>: Card Detail Page (BFF Endpoint)</h1>
-  <p>Wireframe · storefront · 5 screens · Phase 2B</p>
+  <p>Wireframe · storefront · 6 screens · Phase 2B</p>
+  <div class="version-badge">v4 — Multi-user layout · Add to Deck + Collection placeholders</div>
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="showPanel('primary')">1 · Primary (Loaded)</button>
-  <button class="tab-btn" onclick="showPanel('degraded')">2 · Degraded State</button>
-  <button class="tab-btn" onclick="showPanel('empty')">3 · Empty Listings</button>
-  <button class="tab-btn" onclick="showPanel('loading')">4 · Loading Skeleton</button>
-  <button class="tab-btn" onclick="showPanel('mobile')">5 · Mobile View</button>
-  <button class="tab-btn" onclick="showPanel('edge')">6 · Edge Cases</button>
+  <button class="tab-btn active" onclick="go('primary')">1 · Primary</button>
+  <button class="tab-btn" onclick="go('switch')">2 · Print Switching</button>
+  <button class="tab-btn" onclick="go('nostock')">3 · No Stock</button>
+  <button class="tab-btn" onclick="go('degraded')">4 · Degraded</button>
+  <button class="tab-btn" onclick="go('loading')">5 · Loading</button>
+  <button class="tab-btn" onclick="go('mobile')">6 · Mobile</button>
 </div>
 
 <div class="panels">
 
-  <!-- ======================================================
-       PANEL 1: PRIMARY STATE — Catalog + Real Listings Loaded
-       ====================================================== -->
-  <div id="panel-primary" class="panel active">
-    <div class="panel-label">Screen 1</div>
-    <div class="panel-title">Card Detail Page — Primary (Loaded) State</div>
-    <div class="panel-desc">
-      BFF has successfully aggregated catalog data from customer-backend AND active listings from backend.
-      Trust scores have been enriched via the third parallel call to customer-backend.
-      <br><br>
-      <strong>Components:</strong> CardDetailPage (client) ← page.tsx (server, ISR revalidate:30) ← /api/cards/[id] BFF route
-    </div>
-
-    <div class="annotation">
-      <strong>AC1 — BFF Aggregation:</strong> The storefront BFF at <code>/api/cards/[id]</code> runs three parallel calls:
-      (1) <code>GET customer-backend:7000/api/cards/:id/details</code> for catalog,
-      (2) <code>GET backend:9001/store/products?metadata[catalog_sku]=...</code> for listings,
-      (3) <code>GET customer-backend:7000/api/sellers/:id/trust</code> for trust enrichment per seller.
-      All wrapped in <code>Promise.allSettled</code>. Listings or trust failure = graceful degrade only.
-    </div>
-
-    <!-- Card detail grid -->
-    <div class="card-detail-grid mt-4">
-
-      <!-- LEFT: Card image + printings -->
-      <div class="card-image-column">
-        <div class="card-image-hero">
-          <div class="card-image-hero-inner">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="3"/>
-              <circle cx="9" cy="9" r="1.5"/>
-              <path d="m21 15-6-6L3 21"/>
-            </svg>
-            Card Image<br><span style="font-size:10px">63×88 aspect · full-bleed hero</span>
-          </div>
-          <div class="card-image-overlay">
-            <span class="card-foil-badge">✦ Foil</span>
-          </div>
-        </div>
-
-        <div class="annotation text-xs">
-          <strong>AC2:</strong> Full-bleed card image. <code>selectedPrint</code> state in CardDetailPage controls which print image is shown.
-          The foil badge appears when <code>print.finish === 'foil'</code>.
-        </div>
-
-        <!-- Printings table -->
-        <div class="section">
-          <div class="section-header">
-            <span class="section-title">Other Printings</span>
-          </div>
-          <div class="annotation-blue annotation text-xs mb-3">
-            <strong>AC5 + Decision Q2-B:</strong> Clicking a row updates <code>selectedPrint</code> state client-side.
-            URL stays as <code>/cards/:cardId</code>. Selected row highlighted with gold accent.
-            <code>currentPrintId</code> prop on CompactPrintingsTable determines which row is "current".
-          </div>
-          <table class="printings-table">
-            <thead>
-              <tr>
-                <th>Set</th>
-                <th>Year</th>
-                <th>Rarity</th>
-                <th>#</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="selected">
-                <td class="print-set-name">
-                  Murders at Karlov Manor
-                  <span class="current-badge">Current</span>
-                </td>
-                <td>2024</td>
-                <td><span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span></td>
-                <td>242</td>
-              </tr>
-              <tr>
-                <td class="print-set-name">Streets of New Capenna</td>
-                <td>2022</td>
-                <td><span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span></td>
-                <td>187</td>
-              </tr>
-              <tr>
-                <td class="print-set-name">Double Masters 2022</td>
-                <td>2022</td>
-                <td><span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span></td>
-                <td>056</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- RIGHT: Card info + stats + legality + listings -->
-      <div class="card-detail-content">
-        <div class="card-game-row">
-          <span class="badge badge-mtg">MTG</span>
-          <span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span>
-        </div>
-        <div class="card-name">Atraxa, Praetors' Voice</div>
-        <div class="card-type-line">Legendary Creature — Phyrexian Angel Horror</div>
-
-        <div class="card-set-info">
-          <div class="card-set-icon">🏛</div>
-          <div>
-            <div class="set-name">Murders at Karlov Manor</div>
-            <div class="set-meta">MKM · #242/291 · 2024 · Eng</div>
-          </div>
-        </div>
-
-        <!-- Game stats (MTG: P/T, mana) -->
-        <div class="section">
-          <div class="section-header"><span class="section-title">Stats</span></div>
-          <div class="stats-grid">
-            <div class="stat-chip">
-              <div class="stat-label">Mana Cost</div>
-              <div class="stat-value">{W}{U}{B}{G}</div>
-            </div>
-            <div class="stat-chip">
-              <div class="stat-label">Mana Value</div>
-              <div class="stat-value">4</div>
-            </div>
-            <div class="stat-chip">
-              <div class="stat-label">Power / Toughness</div>
-              <div class="stat-value">4 / 4</div>
-            </div>
-          </div>
-          <div class="oracle-text">
-            Flying, deathtouch, lifelink, vigilance<br>
-            At the beginning of your end step, proliferate.
-          </div>
-          <div class="flavor-text">"Completion is the greatest mercy we can offer."</div>
-          <div class="annotation text-xs mt-2">
-            <strong>AC2 — Game-specific attrs:</strong> <code>GameStatsDisplay</code> component handles game branching via <code>card.gameCode</code>.
-            MTG shows: manaCost, manaValue, power/toughness. Pokémon: HP, retreat, energy type. YGO: ATK/DEF/Level. OP: Cost/Power.
-          </div>
-        </div>
-
-        <!-- Format legality -->
-        <div class="section">
-          <div class="section-header"><span class="section-title">Format Legality</span></div>
-          <div class="legality-grid">
-            <span class="legality-pill legal">✓ Commander</span>
-            <span class="legality-pill legal">✓ Modern</span>
-            <span class="legality-pill legal">✓ Legacy</span>
-            <span class="legality-pill banned">✗ Vintage</span>
-            <span class="legality-pill illegal">— Standard</span>
-            <span class="legality-pill illegal">— Pioneer</span>
-          </div>
-          <div class="annotation text-xs mt-2">
-            <strong>AC2 — Legality:</strong> Sourced from <code>card.prints[selectedIndex].legality</code> in the BFF response.
-            FormatLegalityGrid component renders pills. <code>FormatLegalityGrid.tsx</code> already handles this.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LISTINGS SECTION — full width below grid -->
-    <div class="listings-section mt-5">
-      <div class="listings-header">
-        <div>
-          <div class="listings-title">Active Listings</div>
-        </div>
-        <span class="listings-count">12 sellers</span>
-      </div>
-      <div class="listings-sort-row">
-        <span class="sort-label">Sort:</span>
-        <button class="sort-chip active">Price ↑</button>
-        <button class="sort-chip">Condition</button>
-        <button class="sort-chip">Seller Rating</button>
-      </div>
-
-      <div class="annotation mt-3" style="margin:0 var(--sp-5) 0;border-radius:0;border-left:none;border-right:none;border-top:none;">
-        <strong>AC3 — Seller Row Anatomy:</strong> Each row: seller name + trust signal ("99.2% positive · 412 sales" format per UX spec) + condition chip + price (sorted by price asc, then NM&gt;LP&gt;MP&gt;HP) + shipping est + "Add to Cart" button.
-        Trust data from third parallel BFF call to <code>customer-backend /api/sellers/:id/trust</code> (Q1: Decision A).
-        "Add to Cart" is visible and styled but non-functional in this story — Cart is Epic 5.
-      </div>
-
-      <!-- Listing row 1 — NM, best price -->
-      <div class="listing-row">
-        <div class="seller-info">
-          <div class="seller-name">CardVault Toronto</div>
-          <div class="seller-trust">
-            <span class="seller-trust-dot"></span>
-            <span>99.2% positive</span>
-            <span class="seller-trust-text">· 412 sales</span>
-          </div>
-          <div class="seller-location">Ships from Toronto, ON</div>
-        </div>
-        <div class="listing-condition">
-          <span class="condition-chip cond-nm">NM</span>
-          <div class="text-xs text-tertiary mt-2">English</div>
-        </div>
-        <div class="listing-price-col">
-          <div class="listing-price">$14.99</div>
-          <div class="listing-shipping">+ $1.50 shipping</div>
-        </div>
-        <div class="listing-actions">
-          <button class="gold-btn" onclick="showCartToast(this,'CardVault Toronto','NM','$14.99')" aria-label="Add to Cart from CardVault Toronto, Near Mint, $14.99">Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- Listing row 2 — LP -->
-      <div class="listing-row">
-        <div class="seller-info">
-          <div class="seller-name">MidnightForge Shop</div>
-          <div class="seller-trust">
-            <span class="seller-trust-dot"></span>
-            <span>97.8% positive</span>
-            <span class="seller-trust-text">· 1,204 sales</span>
-          </div>
-          <div class="seller-location">Ships from Vancouver, BC</div>
-        </div>
-        <div class="listing-condition">
-          <span class="condition-chip cond-lp">LP</span>
-          <div class="text-xs text-tertiary mt-2">English</div>
-        </div>
-        <div class="listing-price-col">
-          <div class="listing-price">$12.50</div>
-          <div class="listing-shipping">Free shipping</div>
-        </div>
-        <div class="listing-actions">
-          <button class="gold-btn" onclick="showCartToast(this,'MidnightForge Shop','LP','$12.50')" aria-label="Add to Cart from MidnightForge Shop, Lightly Played, $12.50">Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- Listing row 3 — MP — no trust data available (fallback: omit trust line) -->
-      <div class="listing-row">
-        <div class="seller-info">
-          <div class="seller-name">TCG Deals CA</div>
-          <!-- No trust data: trust line omitted entirely, not shown as broken -->
-          <div class="seller-location" style="margin-top:3px">Ships from Calgary, AB · New seller</div>
-        </div>
-        <div class="listing-condition">
-          <span class="condition-chip cond-mp">MP</span>
-          <div class="text-xs text-tertiary mt-2">English</div>
-        </div>
-        <div class="listing-price-col">
-          <div class="listing-price">$10.00</div>
-          <div class="listing-shipping">+ $2.00 shipping</div>
-        </div>
-        <div class="listing-actions">
-          <button class="gold-btn" onclick="showCartToast(this,'TCG Deals CA','MP','$10.00')" aria-label="Add to Cart from TCG Deals CA, Moderately Played, $10.00">Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- Price summary bar -->
-      <div class="price-summary-bar">
-        <div class="price-summary-item">
-          <div class="price-summary-label">Lowest NM</div>
-          <div class="price-summary-value">$14.99</div>
-        </div>
-        <div class="price-summary-item">
-          <div class="price-summary-label">Market Avg</div>
-          <div class="price-summary-value">$16.20</div>
-        </div>
-        <div class="price-summary-item">
-          <div class="price-summary-label">Sellers</div>
-          <div class="price-summary-value" style="color:var(--text-secondary);font-family:inherit">12</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="annotation annotation-blue mt-4">
-      <strong>Print-switch → listings re-fetch:</strong> When user clicks a different row in CompactPrintingsTable,
-      <code>selectedPrint</code> state updates in CardDetailPage (client component). The MarketplaceListingsSection
-      must react to <code>selectedPrint</code> changes and re-fetch listings for the new <code>catalogSku</code>
-      (derived from new print's set.code + print.number). Implement via <code>useEffect</code> watching <code>selectedPrint.id</code>.
-    </div>
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — PRIMARY
+     ══════════════════════════════════════════ -->
+<div id="primary" class="panel active">
+  <div class="panel-label">Screen 1</div>
+  <div class="panel-title">Primary — Card Loaded · All User Groups Served</div>
+  <div class="panel-desc">
+    The card detail page is the gravitational center — buyers, deck builders, collectors, and players all land here with different goals. The layout is sequenced so each group finds their primary action without friction: players read the card immediately, buyers buy quickly, deck builders check legality and add to a deck, collectors browse prints and save to collection.
   </div>
 
-  <!-- ======================================================
-       PANEL 2: DEGRADED STATE — Backend Listings Unavailable
-       ====================================================== -->
-  <div id="panel-degraded" class="panel">
-    <div class="panel-label">Screen 2</div>
-    <div class="panel-title">Card Detail Page — Degraded State (Listings Unavailable)</div>
-    <div class="panel-desc">
-      The backend (mercur-db) is temporarily unavailable or timed out (3s AbortController).
-      Catalog data from customer-backend still renders normally.
-      The BFF returns <code>listingsUnavailable: true</code>, <code>listings: []</code>.
-    </div>
-
-    <div class="annotation">
-      <strong>AC4 — Circuit Breaker:</strong> When <code>backend:9001/store/products</code> returns error or times out:
-      BFF catches via <code>Promise.allSettled</code>, sets <code>listingsUnavailable: true</code>.
-      Catalog renders normally. MarketplaceListingsSection detects the flag and shows the degradation banner below.
-      No raw errors, no blame — empathetic copy per UX spec.
-    </div>
-
-    <!-- Catalog renders exactly the same — abbreviated for wireframe -->
-    <div style="background:var(--bg-surface-1);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--sp-5);margin-top:var(--sp-4)">
-      <div class="text-secondary text-sm" style="text-align:center;padding:var(--sp-3) 0;">
-        [Catalog section renders normally — same as Screen 1. Card image, name, stats, legality all present.]
-      </div>
-    </div>
-
-    <!-- Listings section — degraded -->
-    <div class="listings-section mt-5">
-      <div class="listings-header">
-        <div class="listings-title">Active Listings</div>
-      </div>
-
-      <!-- Degradation banner -->
-      <div class="listings-degraded-banner">
-        <div class="degraded-icon">⚠</div>
-        <div class="degraded-text">
-          <div class="degraded-title">Seller listings are temporarily unavailable</div>
-          <div class="degraded-sub">Check back in a few minutes. Card information is up to date.</div>
-        </div>
-      </div>
-
-      <!-- Empty body with retry CTA -->
-      <div class="listings-empty" style="padding-top:var(--sp-5)">
-        <div class="listings-empty-icon">📦</div>
-        <div class="listings-empty-title">Can't load listings right now</div>
-        <div class="listings-empty-sub">We're having trouble reaching our listing database. This is temporary.</div>
-        <button class="ghost-btn" style="margin:0 auto">↺ Try again</button>
-      </div>
-    </div>
-
-    <div class="annotation annotation-blue mt-4">
-      <strong>Implementation note:</strong> The "Try again" button triggers a client-side refetch of <code>/api/cards/:id</code>.
-      Since <code>listingsUnavailable: true</code> is a BFF flag (not a render error), the retry should re-call the BFF route
-      rather than refreshing the page. Implement as a <code>router.refresh()</code> or a client fetch with state update.
-      The catalog section must NOT re-render on retry — only the listings section should update.
-    </div>
+  <!-- User group legend -->
+  <div class="ug-strip">
+    <span class="ug-label">Serves:</span>
+    <span class="ug-chip ug-buyer">🛒 Buyer — Quick Buy · listings table</span>
+    <span class="ug-chip ug-builder">🃏 Deck Builder — Stats · legality · Add to Deck</span>
+    <span class="ug-chip ug-collector">♦ Collector — Print list · Add to Collection</span>
+    <span class="ug-chip ug-player">⚔ Player — Oracle text · quick stats bar</span>
   </div>
 
-  <!-- ======================================================
-       PANEL 3: EMPTY LISTINGS — Card exists, zero sellers
-       ====================================================== -->
-  <div id="panel-empty" class="panel">
-    <div class="panel-label">Screen 3</div>
-    <div class="panel-title">Card Detail Page — Empty Listings State</div>
-    <div class="panel-desc">
-      The backend is online and responds successfully, but returns zero active listings for this card's catalog SKU.
-      <code>listings: []</code>, <code>listingsUnavailable: false</code>.
-      This is distinct from the degraded state — the system is healthy, the card just has no sellers.
-    </div>
+  <div class="page-grid">
 
-    <div class="annotation">
-      <strong>BA Edge Case:</strong> Empty listings (no sellers) vs unavailable listings (system down) must be visually
-      distinct. Empty state is a normal product state — some cards have no current sellers. The messaging should invite
-      action (wishlist/price alert) rather than suggesting a problem.
-    </div>
-
-    <div style="background:var(--bg-surface-1);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--sp-5);margin-top:var(--sp-4)">
-      <div class="text-secondary text-sm" style="text-align:center;padding:var(--sp-3) 0;">
-        [Catalog section renders normally.]
-      </div>
-    </div>
-
-    <div class="listings-section mt-5">
-      <div class="listings-header">
-        <div class="listings-title">Active Listings</div>
-        <span class="listings-count">0 sellers</span>
-      </div>
-
-      <div class="listings-empty">
-        <div class="listings-empty-icon">🔍</div>
-        <div class="listings-empty-title">No listings available right now</div>
-        <div class="listings-empty-sub">
-          No sellers are currently listing this card. Want to know when one appears?
+    <!-- LEFT: sticky card image -->
+    <div class="img-col">
+      <div class="card-hero">
+        <div class="card-hero-inner">
+          <svg width="36" height="36" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="currentColor" opacity="0.4"/><path d="M8 10h24M8 20h16M8 30h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Card image<br>next/image<br>blur placeholder
         </div>
-        <!-- Auth-aware CTA — two variants based on auth state -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--sp-2)">
-          <!-- Variant A: Authenticated user — stub CTA (Epic 2-8) -->
-          <button class="gold-btn" onclick="showToast('Price alerts coming in a future update!')" style="opacity:0.6" aria-label="Get notified when a listing is available — coming soon">
-            🔔 Notify me when available
+        <div class="card-overlay"><span class="foil-badge">✦ Foil</span></div>
+      </div>
+      <div class="note-blue mt-3" style="font-size:10px;">
+        <strong>Sticky:</strong> Card image follows scroll at <code>top:68px</code>. Action panel on the right is also sticky — both remain visible throughout the page.
+      </div>
+    </div>
+
+    <!-- RIGHT: card info -->
+    <div class="info-col">
+
+      <!-- Card identity -->
+      <div class="card-game-row">
+        <span class="badge badge-mtg">MTG</span>
+        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+        <span class="badge badge-foil">✦ Foil</span>
+      </div>
+      <div class="card-name">Leyline of Resonance</div>
+      <div class="card-type">Enchantment — Leyline</div>
+
+      <!-- Quick stats bar: serves players & deck builders scanning the card -->
+      <div class="quick-stats-bar">
+        <div class="ug-chip ug-player" style="font-size:10px;padding:2px 7px;">⚔ Player</div>
+        <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+        <div class="qs-divider"></div>
+        <div class="qs-item">
+          <span class="qs-label">Cost</span>
+          <span style="display:flex;align-items:center;gap:3px;">
+            <span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span>
+          </span>
+        </div>
+        <div class="qs-divider"></div>
+        <div class="qs-item">
+          <span class="qs-label">CMC</span>
+          <span class="qs-value">4</span>
+        </div>
+        <div class="qs-divider"></div>
+        <div class="qs-item">
+          <span class="legal-dot"></span>
+          <span class="qs-value" style="font-size:12px;">Standard, Pioneer, Modern, Commander</span>
+        </div>
+        <div class="qs-divider"></div>
+        <div class="qs-item">
+          <span class="banned-dot"></span>
+          <span class="qs-value" style="font-size:12px;">Legacy</span>
+        </div>
+      </div>
+      <div class="note" style="font-size:10px; margin-top: calc(-1 * var(--sp-2));">
+        <strong>Quick stats bar</strong> — players and deck builders scan mana cost + legality instantly without scrolling. Updates when print switches (shows print-specific legality if it differs).
+      </div>
+
+      <!-- PRINTS + ACTION PANEL -->
+      <div class="prints-action-grid">
+
+        <!-- Print list -->
+        <div class="print-list-wrap">
+          <div class="print-list-header">
+            <span class="print-list-title">Available Prints</span>
+            <span class="print-list-count">23</span>
+          </div>
+          <div class="note-green" style="margin:var(--sp-2) var(--sp-3);font-size:10px;">
+            <strong>Collectors + Buyers:</strong> One row per print, no art. Select to update Action Panel price and listings. role="radiogroup", keyboard ↑/↓ nav.
+          </div>
+          <div class="print-list" role="radiogroup" aria-label="Select card printing">
+            <button class="print-row selected" role="radio" aria-checked="true">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set">Murders at Karlov Manor</div>
+                <div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span> <span class="new-tag">New</span></div>
+              </div>
+              <div class="print-row-price">$2.49</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set">Dominaria United</div>
+                <div class="print-row-meta">2022 · #327 <span class="foil-tag">Foil</span></div>
+              </div>
+              <div class="print-row-price">$4.10</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set">Masters 25</div>
+                <div class="print-row-meta">2018 · #158</div>
+              </div>
+              <div class="print-row-price">$12.50</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set" style="color:var(--text-secondary);">Tenth Edition</div>
+                <div class="print-row-meta">2007 · #092</div>
+              </div>
+              <div class="print-row-no-stock">No listings</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set">Commander 2019</div>
+                <div class="print-row-meta">2019 · #204</div>
+              </div>
+              <div class="print-row-price">$3.20</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info">
+                <div class="print-row-set">Core Set 2021</div>
+                <div class="print-row-meta">2021 · #319</div>
+              </div>
+              <div class="print-row-price">$1.80</div>
+            </button>
+          </div>
+          <div class="print-list-footer">
+            <button class="link-btn">Show 17 more prints ↓</button>
+          </div>
+        </div><!-- /.print-list-wrap -->
+
+        <!-- ACTION PANEL -->
+        <div class="action-panel">
+
+          <!-- Quick Buy section -->
+          <div class="ap-qb-header">
+            <span class="ap-qb-label">Quick Buy</span>
+            <span class="ap-qb-ref">MKM · #242</span>
+          </div>
+          <div class="ap-section">
+            <div class="ug-chip ug-buyer" style="font-size:10px;padding:2px 7px;margin-bottom:var(--sp-3);display:inline-flex;">🛒 Buyer</div>
+
+            <!-- Price -->
+            <div class="ap-price-hero">
+              <span class="ap-from">From</span>
+              <span class="ap-price" aria-live="polite">$2.49</span>
+            </div>
+            <div class="ap-seller">
+              <span class="ap-trust">●</span> CardKingdom · <span class="ap-trust">99.4%</span>
+            </div>
+
+            <!-- Condition -->
+            <div class="ap-row-label">Condition</div>
+            <div class="cond-group mb-3">
+              <button class="cond-chip nm active" aria-pressed="true">NM<span class="stock-count">·7</span></button>
+              <button class="cond-chip lp" aria-pressed="false">LP<span class="stock-count">·3</span></button>
+              <button class="cond-chip mp" aria-pressed="false">MP<span class="stock-count">·1</span></button>
+              <button class="cond-chip hp off" disabled aria-disabled="true">HP</button>
+            </div>
+
+            <!-- Qty -->
+            <div class="ap-row-label">Quantity</div>
+            <div class="ap-qty-row">
+              <div class="qty-stepper" role="group">
+                <button class="qty-btn" aria-label="Decrease">−</button>
+                <input class="qty-num" type="number" value="1" min="1" max="7" aria-label="Quantity">
+                <button class="qty-btn" aria-label="Increase">+</button>
+              </div>
+              <span class="ap-stock"><strong>7 available</strong></span>
+            </div>
+
+            <div class="ap-divider"></div>
+            <button class="gold-btn mb-2" aria-label="Add 1 NM Murders at Karlov Manor to cart for $2.49">Add to Cart</button>
+          </div>
+
+          <!-- Deck + Collection section -->
+          <div class="ap-section">
+            <div class="ap-save-header">
+              <div style="display:flex;gap:var(--sp-1);">
+                <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+                <div class="ug-chip ug-collector" style="font-size:10px;padding:2px 7px;">♦ Collector</div>
+              </div>
+            </div>
+
+            <!-- Add to Deck -->
+            <button class="secondary-btn mb-2" aria-label="Add to Deck (coming soon)">
+              <span class="btn-icon">🃏</span>
+              <div class="btn-label">
+                Add to Deck
+                <span class="soon-badge">Soon</span>
+              </div>
+              <span class="chevron">▼</span>
+            </button>
+            <div class="note" style="font-size:10px;margin-bottom:var(--sp-3);">
+              <strong>Story 3-2 placeholder.</strong> Opens a deck picker sheet to choose which active deck to add this card to. Respects selected print. Disabled until deck builder is built.
+            </div>
+
+            <!-- Add to Collection -->
+            <button class="secondary-btn" aria-label="Add to Collection (coming soon)">
+              <span class="btn-icon">♦</span>
+              <div class="btn-label">
+                Add to Collection
+                <span class="soon-badge">Soon</span>
+              </div>
+            </button>
+            <div class="note-blue" style="font-size:10px;margin-top:var(--sp-2);">
+              <strong>Future story placeholder.</strong> Adds selected print + condition to the user's collection. Requires auth — unauthenticated state shows "Sign in to save". Enabled once collection story is built.
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="ap-footer">
+            <button class="link-btn">View all 12 listings ↓</button>
+          </div>
+
+        </div><!-- /.action-panel -->
+      </div><!-- /.prints-action-grid -->
+
+      <!-- Oracle & Stats — players read here -->
+      <div class="section">
+        <div class="sec-header">
+          <span class="sec-title">Card Text</span>
+          <div class="ug-chip ug-player" style="font-size:10px;padding:2px 7px;">⚔ Player</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-chip"><div class="stat-label">Mana Cost</div><div class="stat-value">2GW</div></div>
+          <div class="stat-chip"><div class="stat-label">P / T</div><div class="stat-value">—</div></div>
+          <div class="stat-chip"><div class="stat-label">CMC</div><div class="stat-value">4</div></div>
+        </div>
+        <div class="oracle">
+          If Leyline of Resonance is in your opening hand, you may begin the game with it on the battlefield.<br><br>
+          Whenever you cast an instant or sorcery spell, copy it. You may choose new targets for the copy.
+        </div>
+        <div class="flavor">"The mana weeps where the ley lines fracture." — Alara Chronicles</div>
+      </div>
+
+      <!-- Format Legality — deck builders check this carefully -->
+      <div class="section">
+        <div class="sec-header">
+          <span class="sec-title">Format Legality</span>
+          <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+        </div>
+        <div class="legality-grid">
+          <span class="legality-pill legal">● Standard</span>
+          <span class="legality-pill legal">● Pioneer</span>
+          <span class="legality-pill legal">● Modern</span>
+          <span class="legality-pill legal">● Commander</span>
+          <span class="legality-pill legal">● Historic</span>
+          <span class="legality-pill banned">✕ Legacy</span>
+          <span class="legality-pill illegal">○ Vintage</span>
+          <span class="legality-pill illegal">○ Pauper</span>
+        </div>
+        <div class="note-blue mt-3" style="font-size:10px;">
+          Legality is surfaced twice: in the quick stats bar above (for fast scanning) and in full detail here (for deck builders doing thorough checks). FormatLegalityGrid component.
+        </div>
+      </div>
+
+    </div><!-- /.info-col -->
+  </div><!-- /.page-grid -->
+
+  <!-- LISTINGS TABLE — buyers compare here -->
+  <div class="listings-section">
+    <div class="listings-header">
+      <span class="listings-title">All Listings — MKM 2024 Foil</span>
+      <div style="display:flex;align-items:center;gap:var(--sp-3);">
+        <div class="ug-chip ug-buyer" style="font-size:10px;padding:2px 7px;">🛒 Buyer</div>
+        <span class="listings-count">12 listings</span>
+      </div>
+    </div>
+    <div class="sort-row">
+      <span class="sort-label">Sort:</span>
+      <button class="sort-chip active">Price ↑</button>
+      <button class="sort-chip">Condition</button>
+      <button class="sort-chip">Seller Rating</button>
+    </div>
+    <div class="note-blue" style="padding:var(--sp-3) var(--sp-5);border-radius:0;margin:0;border-left:none;border-right:none;">
+      <strong>Re-fetches</strong> on print selection change. Cheapest row highlighted — drives the Action Panel price. Paginated at 20 rows client-side.
+    </div>
+    <div class="listing-row cheapest">
+      <div>
+        <div class="seller-name">CardKingdom</div>
+        <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">99.4% positive</span><span style="color:var(--text-secondary)"> · 14,820 sales</span></div>
+        <div class="seller-loc">📍 US · 1–2 days</div>
+      </div>
+      <div><span class="cond-badge cond-nm">NM</span></div>
+      <div class="listing-price-col"><div class="listing-price">$2.49</div><div class="listing-ship">+ $1.00 ship</div></div>
+      <div><button class="gold-btn-sm" aria-label="Add CardKingdom NM $2.49 to cart">Add to Cart</button></div>
+    </div>
+    <div class="listing-row">
+      <div>
+        <div class="seller-name">TCGPlayer Store</div>
+        <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">97.8% positive</span><span style="color:var(--text-secondary)"> · 3,210 sales</span></div>
+        <div class="seller-loc">📍 US · 2–3 days</div>
+      </div>
+      <div><span class="cond-badge cond-nm">NM</span></div>
+      <div class="listing-price-col"><div class="listing-price">$2.89</div><div class="listing-ship">Free over $10</div></div>
+      <div><button class="gold-btn-sm">Add to Cart</button></div>
+    </div>
+    <div class="listing-row">
+      <div>
+        <div class="seller-name">LocalGameShop</div>
+        <div class="seller-trust"><span class="trust-dot"></span><span style="color:var(--positive)">95.1% positive</span><span style="color:var(--text-secondary)"> · 412 sales</span></div>
+        <div class="seller-loc">📍 CA · 3–5 days</div>
+      </div>
+      <div><span class="cond-badge cond-lp">LP</span></div>
+      <div class="listing-price-col"><div class="listing-price">$1.99</div><div class="listing-ship">+ $2.50 ship</div></div>
+      <div><button class="gold-btn-sm">Add to Cart</button></div>
+    </div>
+    <div class="price-summary">
+      <div><div class="price-sum-label">Market Low</div><div class="price-sum-val">$1.99</div></div>
+      <div><div class="price-sum-label">Market Mid</div><div class="price-sum-val">$3.40</div></div>
+      <div><div class="price-sum-label">Market High</div><div class="price-sum-val">$8.00</div></div>
+      <div style="margin-left:auto;"><button class="ghost-btn">Load 9 more listings</button></div>
+    </div>
+  </div>
+</div><!-- /#primary -->
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — PRINT SWITCHING
+     ══════════════════════════════════════════ -->
+<div id="switch" class="panel">
+  <div class="panel-label">Screen 2</div>
+  <div class="panel-title">Print Switching — Mid-Transition</div>
+  <div class="panel-desc">User selected Dominaria United. Quick Buy section enters skeleton state; Add to Deck and Add to Collection remain accessible throughout (they don't depend on listing data). Card image crossfades.</div>
+
+  <div class="page-grid">
+    <div class="img-col">
+      <div class="card-hero" style="opacity:0.45;">
+        <div class="card-hero-inner">Crossfading to<br>DMU 2022 art…</div>
+      </div>
+    </div>
+    <div class="info-col">
+      <div class="card-game-row">
+        <span class="badge badge-mtg">MTG</span>
+        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+        <span class="badge badge-foil">✦ Foil</span>
+      </div>
+      <div class="card-name">Leyline of Resonance</div>
+      <div class="card-type">Enchantment — Leyline</div>
+      <div class="quick-stats-bar">
+        <span style="font-size:12px;color:var(--text-tertiary);">Stats unchanged — legality is per-card, not per-print</span>
+      </div>
+
+      <div class="prints-action-grid">
+        <div class="print-list-wrap">
+          <div class="print-list-header">
+            <span class="print-list-title">Available Prints</span>
+            <span class="print-list-count">23</span>
+          </div>
+          <div class="print-list" role="radiogroup">
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span></div></div>
+              <div class="print-row-price">$2.49</div>
+            </button>
+            <button class="print-row selected" role="radio" aria-checked="true">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327 <span class="foil-tag">Foil</span></div></div>
+              <div class="skel" style="width:36px;height:13px;display:block;"></div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Masters 25</div><div class="print-row-meta">2018 · #158</div></div>
+              <div class="print-row-price">$12.50</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set" style="color:var(--text-secondary);">Tenth Edition</div><div class="print-row-meta">2007 · #092</div></div>
+              <div class="print-row-no-stock">No listings</div>
+            </button>
+          </div>
+          <div class="print-list-footer"><button class="link-btn">Show 19 more ↓</button></div>
+        </div>
+
+        <div class="action-panel">
+          <div class="ap-qb-header">
+            <span class="ap-qb-label">Quick Buy</span>
+            <span class="ap-qb-ref" style="opacity:0.4;">DMU · #327</span>
+          </div>
+          <!-- Quick Buy: skeleton -->
+          <div class="ap-section">
+            <div class="note" style="font-size:10px;margin-bottom:var(--sp-3);">Loading price for DMU…</div>
+            <div class="skel mb-2" style="width:55%;height:28px;"></div>
+            <div class="skel mb-4" style="width:40%;height:10px;"></div>
+            <div class="skel mb-2" style="width:30%;height:10px;"></div>
+            <div class="flex gap-2 mb-4">
+              <div class="skel" style="width:56px;height:32px;border-radius:var(--radius-sm);"></div>
+              <div class="skel" style="width:56px;height:32px;border-radius:var(--radius-sm);"></div>
+              <div class="skel" style="width:56px;height:32px;border-radius:var(--radius-sm);"></div>
+            </div>
+            <div class="skel" style="height:42px;border-radius:var(--radius-md);"></div>
+          </div>
+          <!-- Deck + Collection still available -->
+          <div class="ap-section">
+            <div class="ap-save-header">
+              <div style="display:flex;gap:var(--sp-1);">
+                <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+                <div class="ug-chip ug-collector" style="font-size:10px;padding:2px 7px;">♦ Collector</div>
+              </div>
+            </div>
+            <div class="note-blue" style="font-size:10px;margin-bottom:var(--sp-3);">Add to Deck and Collection remain accessible while Quick Buy re-fetches — they don't depend on listing data.</div>
+            <button class="secondary-btn mb-2"><span class="btn-icon">🃏</span><div class="btn-label">Add to Deck <span class="soon-badge">Soon</span></div><span class="chevron">▼</span></button>
+            <button class="secondary-btn"><span class="btn-icon">♦</span><div class="btn-label">Add to Collection <span class="soon-badge">Soon</span></div></button>
+          </div>
+          <div class="ap-footer"><button class="link-btn">View all listings ↓</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /#switch -->
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3 — NO STOCK
+     ══════════════════════════════════════════ -->
+<div id="nostock" class="panel">
+  <div class="panel-label">Screen 3</div>
+  <div class="panel-title">No Stock — Selected Print Has No Listings</div>
+  <div class="panel-desc">Tenth Edition has no listings. Quick Buy shows empty state. Add to Deck and Add to Collection remain in the panel — a collector may still want to save this print to their wishlist even if no sellers are active. A deck builder can still add the card to their deck regardless of stock.</div>
+
+  <div class="page-grid">
+    <div class="img-col">
+      <div class="card-hero">
+        <div class="card-hero-inner">10E 2007 art<br>(no foil overlay)</div>
+      </div>
+    </div>
+    <div class="info-col">
+      <div class="card-game-row">
+        <span class="badge badge-mtg">MTG</span>
+        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+      </div>
+      <div class="card-name">Leyline of Resonance</div>
+      <div class="card-type">Enchantment — Leyline</div>
+      <div class="quick-stats-bar">
+        <div class="qs-item"><span class="qs-label">Cost</span> <span style="display:flex;align-items:center;gap:3px;"><span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span></span></div>
+        <div class="qs-divider"></div>
+        <div class="qs-item"><span class="legal-dot"></span><span class="qs-value" style="font-size:12px;">Standard, Commander</span></div>
+        <div class="qs-divider"></div>
+        <div class="qs-item"><span class="banned-dot"></span><span class="qs-value" style="font-size:12px;">Legacy</span></div>
+      </div>
+
+      <div class="prints-action-grid">
+        <div class="print-list-wrap">
+          <div class="print-list-header">
+            <span class="print-list-title">Available Prints</span>
+            <span class="print-list-count">23</span>
+          </div>
+          <div class="print-list" role="radiogroup">
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span></div></div>
+              <div class="print-row-price">$2.49</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327</div></div>
+              <div class="print-row-price">$4.10</div>
+            </button>
+            <button class="print-row selected" role="radio" aria-checked="true">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Tenth Edition</div><div class="print-row-meta">2007 · #092</div></div>
+              <div class="print-row-no-stock">No listings</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Commander 2019</div><div class="print-row-meta">2019 · #204</div></div>
+              <div class="print-row-price">$3.20</div>
+            </button>
+          </div>
+          <div class="print-list-footer"><button class="link-btn">Show 19 more ↓</button></div>
+        </div>
+
+        <div class="action-panel" style="border-color:var(--border-default);">
+          <div class="ap-qb-header" style="background:rgba(255,255,255,0.03);border-color:var(--border-subtle);">
+            <span class="ap-qb-label" style="color:var(--text-tertiary);">Quick Buy</span>
+            <span class="ap-qb-ref">10E · #092</span>
+          </div>
+          <!-- Quick Buy: no stock state -->
+          <div class="ap-empty-section">
+            <div class="ap-empty-icon">📭</div>
+            <div class="ap-empty-title">No listings for this print</div>
+            <div class="ap-empty-sub">No sellers have Tenth Edition in stock. Pick another print, or:</div>
+            <button class="ghost-btn" disabled aria-disabled="true" style="width:100%;justify-content:center;opacity:0.4;cursor:not-allowed;font-size:12px;">🔔 Notify me when available <span class="soon-badge">Soon</span></button>
+          </div>
+          <!-- Deck + Collection — especially useful here: deck builders add regardless of stock -->
+          <div class="ap-section">
+            <div class="ap-save-header">
+              <div style="display:flex;gap:var(--sp-1);">
+                <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+                <div class="ug-chip ug-collector" style="font-size:10px;padding:2px 7px;">♦ Collector</div>
+              </div>
+            </div>
+            <div class="note-green" style="font-size:10px;margin-bottom:var(--sp-3);">
+              <strong>Key insight:</strong> Deck builders and collectors can still act even with no listings. A deck builder plans their deck regardless of current stock. A collector tracks which print they want.
+            </div>
+            <button class="secondary-btn mb-2"><span class="btn-icon">🃏</span><div class="btn-label">Add to Deck <span class="soon-badge">Soon</span></div><span class="chevron">▼</span></button>
+            <button class="secondary-btn"><span class="btn-icon">♦</span><div class="btn-label">Add to Collection <span class="soon-badge">Soon</span></div></button>
+          </div>
+          <div class="ap-footer"><button class="link-btn">Browse other prints ↑</button></div>
+        </div>
+      </div>
+
+      <div class="listings-section mt-4">
+        <div class="listings-header"><span class="listings-title">All Listings — Tenth Edition</span><span class="listings-count">0</span></div>
+        <div class="listings-empty">
+          <div class="empty-icon">🎴</div>
+          <div class="empty-title">No sellers listing this print</div>
+          <div class="empty-sub">Select a different printing above to see available listings.</div>
+          <button class="ghost-btn" style="margin:0 auto;">Browse other prints ↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /#nostock -->
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4 — DEGRADED
+     ══════════════════════════════════════════ -->
+<div id="degraded" class="panel">
+  <div class="panel-label">Screen 4</div>
+  <div class="panel-title">Degraded — Backend (Listings) Unavailable</div>
+  <div class="panel-desc">Backend timed out. Quick Buy section shows amber warning. Add to Deck and Add to Collection remain available — they don't depend on listing data. Catalog, stats, and legality all render normally.</div>
+
+  <div class="page-grid">
+    <div class="img-col">
+      <div class="card-hero">
+        <div class="card-hero-inner">Card image<br>still renders</div>
+      </div>
+    </div>
+    <div class="info-col">
+      <div class="card-game-row">
+        <span class="badge badge-mtg">MTG</span>
+        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+      </div>
+      <div class="card-name">Leyline of Resonance</div>
+      <div class="card-type">Enchantment — Leyline</div>
+      <div class="quick-stats-bar">
+        <div class="qs-item"><span class="qs-label">Cost</span><span style="display:flex;align-items:center;gap:3px;"><span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span></span></div>
+        <div class="qs-divider"></div>
+        <div class="qs-item"><span class="legal-dot"></span><span class="qs-value" style="font-size:12px;">Standard, Commander</span></div>
+      </div>
+
+      <div class="prints-action-grid">
+        <div class="print-list-wrap">
+          <div class="print-list-header">
+            <span class="print-list-title">Available Prints</span>
+            <span class="print-list-count">23</span>
+          </div>
+          <div class="note-warn" style="margin:var(--sp-2) var(--sp-3);font-size:10px;">Prices show "—" — backend unavailable. Print selection still works.</div>
+          <div class="print-list" role="radiogroup">
+            <button class="print-row selected" role="radio" aria-checked="true">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span></div></div>
+              <div style="font-size:12px;color:var(--warning);">—</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327</div></div>
+              <div style="font-size:12px;color:var(--warning);">—</div>
+            </button>
+            <button class="print-row" role="radio" aria-checked="false">
+              <div class="print-row-radio"></div>
+              <div class="print-row-info"><div class="print-row-set">Masters 25</div><div class="print-row-meta">2018 · #158</div></div>
+              <div style="font-size:12px;color:var(--warning);">—</div>
+            </button>
+          </div>
+          <div class="print-list-footer"><button class="link-btn">Show more ↓</button></div>
+        </div>
+
+        <div class="action-panel" style="border-color:rgba(251,191,36,0.4);">
+          <div class="ap-qb-header" style="background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2);">
+            <span class="ap-qb-label" style="color:var(--warning);">Quick Buy</span>
+            <span class="ap-qb-ref">MKM · #242</span>
+          </div>
+          <div class="ap-section">
+            <div class="ap-degraded-msg">
+              <span style="font-size:18px;flex-shrink:0;">⚠️</span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--warning);margin-bottom:2px;">Listings temporarily unavailable</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Seller data couldn't be loaded. Try again in a moment.</div>
+              </div>
+            </div>
+            <button class="ghost-btn" style="width:100%;justify-content:center;">↻ Retry</button>
+          </div>
+          <!-- Deck + Collection: fully available even when backend is down -->
+          <div class="ap-section">
+            <div class="ap-save-header">
+              <div style="display:flex;gap:var(--sp-1);">
+                <div class="ug-chip ug-builder" style="font-size:10px;padding:2px 7px;">🃏 Builder</div>
+                <div class="ug-chip ug-collector" style="font-size:10px;padding:2px 7px;">♦ Collector</div>
+              </div>
+            </div>
+            <div class="note-green" style="font-size:10px;margin-bottom:var(--sp-3);"><strong>Resilient:</strong> These actions don't require listing data — they work even when the backend is down.</div>
+            <button class="secondary-btn mb-2"><span class="btn-icon">🃏</span><div class="btn-label">Add to Deck <span class="soon-badge">Soon</span></div><span class="chevron">▼</span></button>
+            <button class="secondary-btn"><span class="btn-icon">♦</span><div class="btn-label">Add to Collection <span class="soon-badge">Soon</span></div></button>
+          </div>
+          <div class="ap-footer"><button class="link-btn" style="opacity:0.4;">View all listings ↓</button></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-header"><span class="sec-title">Card Text</span></div>
+        <div class="oracle">If Leyline of Resonance is in your opening hand, you may begin the game with it on the battlefield.<br><br>Whenever you cast an instant or sorcery spell, copy it.</div>
+      </div>
+      <div class="section">
+        <div class="sec-header"><span class="sec-title">Format Legality</span></div>
+        <div class="legality-grid">
+          <span class="legality-pill legal">● Standard</span>
+          <span class="legality-pill legal">● Commander</span>
+          <span class="legality-pill banned">✕ Legacy</span>
+        </div>
+      </div>
+
+      <div class="listings-section mt-4">
+        <div class="listings-header"><span class="listings-title">All Listings</span></div>
+        <div class="degraded-banner">
+          <span style="font-size:18px;flex-shrink:0;">⚠️</span>
+          <div style="flex:1;"><div class="degraded-title">Seller listings temporarily unavailable</div><div class="degraded-sub">Catalog, stats, and card text are still available.</div></div>
+          <button class="retry-btn">↻ Retry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /#degraded -->
+
+<!-- ══════════════════════════════════════════
+     SCREEN 5 — LOADING SKELETON
+     ══════════════════════════════════════════ -->
+<div id="loading" class="panel">
+  <div class="panel-label">Screen 5</div>
+  <div class="panel-title">Loading — Initial BFF Fetch</div>
+  <div class="panel-desc">Skeleton matches the loaded layout exactly — card image, quick stats bar, print list rows, action panel sections (Quick Buy + Deck/Collection), oracle text, legality.</div>
+
+  <div class="page-grid">
+    <div class="img-col">
+      <div class="skel" style="width:100%;aspect-ratio:63/88;border-radius:var(--radius-lg);"></div>
+    </div>
+    <div class="info-col">
+      <div class="flex gap-2 mb-2"><div class="skel" style="width:48px;height:20px;border-radius:var(--radius-sm);"></div><div class="skel" style="width:48px;height:20px;border-radius:var(--radius-sm);"></div></div>
+      <div class="skel mb-2" style="width:65%;height:26px;border-radius:var(--radius-sm);"></div>
+      <div class="skel mb-3" style="width:38%;height:13px;border-radius:var(--radius-sm);"></div>
+      <!-- Quick stats bar skeleton -->
+      <div class="skel mb-4" style="height:40px;border-radius:var(--radius-md);"></div>
+
+      <div class="prints-action-grid">
+        <!-- Print list skeleton -->
+        <div class="print-list-wrap">
+          <div class="print-list-header">
+            <div class="skel" style="width:90px;height:11px;"></div>
+            <div class="skel" style="width:24px;height:18px;border-radius:var(--radius-xl);"></div>
+          </div>
+          <div style="padding:2px 0;">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);">
+              <div class="skel" style="width:14px;height:14px;border-radius:50%;flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="skel mb-1" style="height:13px;width:72%;"></div><div class="skel" style="height:10px;width:45%;"></div></div>
+              <div class="skel" style="width:36px;height:13px;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);">
+              <div class="skel" style="width:14px;height:14px;border-radius:50%;flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="skel mb-1" style="height:13px;width:62%;"></div><div class="skel" style="height:10px;width:38%;"></div></div>
+              <div class="skel" style="width:36px;height:13px;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:10px var(--sp-4);">
+              <div class="skel" style="width:14px;height:14px;border-radius:50%;flex-shrink:0;"></div>
+              <div style="flex:1;"><div class="skel mb-1" style="height:13px;width:55%;"></div><div class="skel" style="height:10px;width:30%;"></div></div>
+              <div class="skel" style="width:36px;height:13px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action panel skeleton -->
+        <div class="action-panel" style="border-color:var(--border-default);">
+          <div class="ap-qb-header" style="background:var(--bg-surface-2);border-color:var(--border-subtle);">
+            <div class="skel" style="width:70px;height:10px;"></div>
+            <div class="skel" style="width:45px;height:10px;"></div>
+          </div>
+          <div class="ap-section">
+            <div class="skel mb-2" style="width:50%;height:26px;"></div>
+            <div class="skel mb-4" style="width:38%;height:10px;"></div>
+            <div class="skel mb-2" style="width:30%;height:10px;"></div>
+            <div class="flex gap-2 mb-4">
+              <div class="skel" style="width:54px;height:32px;border-radius:var(--radius-sm);"></div>
+              <div class="skel" style="width:54px;height:32px;border-radius:var(--radius-sm);"></div>
+              <div class="skel" style="width:54px;height:32px;border-radius:var(--radius-sm);"></div>
+            </div>
+            <div class="skel" style="height:42px;border-radius:var(--radius-md);"></div>
+          </div>
+          <div class="ap-section">
+            <div class="skel mb-3" style="height:40px;border-radius:var(--radius-md);"></div>
+            <div class="skel" style="height:40px;border-radius:var(--radius-md);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid mt-4">
+        <div class="skel" style="height:56px;border-radius:var(--radius-sm);"></div>
+        <div class="skel" style="height:56px;border-radius:var(--radius-sm);"></div>
+        <div class="skel" style="height:56px;border-radius:var(--radius-sm);"></div>
+      </div>
+      <div class="skel mt-3" style="height:72px;border-radius:var(--radius-md);"></div>
+    </div>
+  </div>
+</div><!-- /#loading -->
+
+<!-- ══════════════════════════════════════════
+     SCREEN 6 — MOBILE
+     ══════════════════════════════════════════ -->
+<div id="mobile" class="panel">
+  <div class="panel-label">Screen 6</div>
+  <div class="panel-title">Mobile — Sticky Multi-Action Bottom Bar</div>
+  <div class="panel-desc">
+    On mobile (&lt;768px): two-column grids stack. The action panel is hidden and replaced by a sticky bottom bar with all three actions. Add to Cart is the primary CTA (large gold button). Add to Deck and Add to Collection are compact secondary buttons alongside it — all three actions visible without any overflow menu.
+  </div>
+
+  <div class="note-blue">
+    <strong>Mobile layout:</strong> <code>.prints-action-grid</code> → single column (print list full width, action panel hidden). <code>.mobile-action-bar</code> is <code>position:fixed; bottom:0</code> with <code>padding-bottom:env(safe-area-inset-bottom)</code>. All three user groups served from one bar.
+  </div>
+
+  <div class="mobile-frame">
+    <div class="mobile-statusbar"><span>9:41</span><span>SideDecked</span><span>●●●</span></div>
+    <div class="mobile-nav">
+      <span class="mobile-back">← Back</span>
+      <span class="mobile-nav-title">Card Detail</span>
+      <span style="font-size:18px;color:var(--text-secondary);">⋯</span>
+    </div>
+
+    <div class="mobile-scroll">
+      <!-- Card hero -->
+      <div class="mobile-card-hero">next/image · blur placeholder · max-height 200px</div>
+
+      <!-- Card meta -->
+      <div class="card-game-row mb-2">
+        <span class="badge badge-mtg">MTG</span>
+        <span class="badge badge-rare"><span class="rarity-dot"></span> Rare</span>
+      </div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:3px;">Leyline of Resonance</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--sp-3);">Enchantment — Leyline</div>
+
+      <!-- Quick stats bar (compact on mobile) -->
+      <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);background:var(--bg-surface-2);border-radius:var(--radius-md);border:1px solid var(--border-subtle);margin-bottom:var(--sp-4);overflow-x:auto;">
+        <div style="display:flex;align-items:center;gap:3px;flex-shrink:0;"><span class="mana-pip pip-2">2</span><span class="mana-pip pip-g">G</span><span class="mana-pip pip-w">W</span></div>
+        <div style="width:1px;height:16px;background:var(--border-subtle);flex-shrink:0;"></div>
+        <div style="font-size:11px;color:var(--text-secondary);flex-shrink:0;"><span class="legal-dot"></span>Standard · Commander</div>
+        <div style="width:1px;height:16px;background:var(--border-subtle);flex-shrink:0;"></div>
+        <div style="font-size:11px;color:var(--negative);flex-shrink:0;"><span class="banned-dot"></span>Legacy</div>
+      </div>
+
+      <!-- Print list (vertical rows, full width on mobile) -->
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">AVAILABLE PRINTS (23)</div>
+      <div class="mobile-print-list-wrap">
+        <div class="mobile-print-list" role="radiogroup" aria-label="Select printing">
+          <button class="print-row selected" role="radio" aria-checked="true">
+            <div class="print-row-radio"></div>
+            <div class="print-row-info"><div class="print-row-set">Murders at Karlov Manor</div><div class="print-row-meta">2024 · #242 <span class="foil-tag">Foil</span> <span class="new-tag">New</span></div></div>
+            <div class="print-row-price">$2.49</div>
           </button>
-          <div class="text-xs text-tertiary">Price alerts · Coming in story 2-8</div>
-          <div class="divider" style="width:200px"></div>
-          <!-- Variant B: Unauthenticated user — sign-in prompt -->
-          <div class="text-sm text-secondary" style="text-align:center">
-            <span style="color:var(--interactive);cursor:pointer;text-decoration:underline">Sign in</span>
-            &nbsp;to get notified when a listing appears
-          </div>
+          <button class="print-row" role="radio" aria-checked="false">
+            <div class="print-row-radio"></div>
+            <div class="print-row-info"><div class="print-row-set">Dominaria United</div><div class="print-row-meta">2022 · #327 <span class="foil-tag">Foil</span></div></div>
+            <div class="print-row-price">$4.10</div>
+          </button>
+          <button class="print-row" role="radio" aria-checked="false">
+            <div class="print-row-radio"></div>
+            <div class="print-row-info"><div class="print-row-set">Masters 25</div><div class="print-row-meta">2018 · #158</div></div>
+            <div class="print-row-price">$12.50</div>
+          </button>
+          <button class="print-row" role="radio" aria-checked="false">
+            <div class="print-row-radio"></div>
+            <div class="print-row-info"><div class="print-row-set" style="color:var(--text-secondary);">Tenth Edition</div><div class="print-row-meta">2007 · #092</div></div>
+            <div class="print-row-no-stock">No listings</div>
+          </button>
         </div>
+        <div class="print-list-footer"><button class="link-btn">Show 19 more ↓</button></div>
       </div>
+
+      <!-- Oracle text (abbreviated) -->
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:var(--sp-2);">CARD TEXT</div>
+      <div class="oracle mb-4" style="font-size:12px;">If Leyline of Resonance is in your opening hand, you may begin the game with it on the battlefield.<br><br>Whenever you cast an instant or sorcery spell, copy it.</div>
+
+      <!-- Spacer for sticky bar (bar is ~130px tall) -->
+      <div style="height:134px;"></div>
     </div>
 
-    <div class="annotation annotation-blue mt-4">
-      <strong>Scope note:</strong> "Notify me when available" CTA is included as a disabled stub in this story.
-      The wishlist/price-tracking story (2-8) will activate it. In this story, render it greyed-out with a tooltip
-      "Price alert feature coming soon" — do not wire up any backend call for notifications.
-    </div>
+    <!-- STICKY BOTTOM BAR — all user groups -->
+    <div class="mobile-action-bar">
+
+      <!-- Condition chips -->
+      <div class="mobile-ab-cond-row" style="padding-bottom:var(--sp-2);">
+        <button class="cond-chip nm active" style="padding:4px 10px;font-size:11px;" aria-pressed="true">NM<span class="stock-count">·7</span></button>
+        <button class="cond-chip lp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">LP<span class="stock-count">·3</span></button>
+        <button class="cond-chip mp" style="padding:4px 10px;font-size:11px;" aria-pressed="false">MP<span class="stock-count">·1</span></button>
+        <button class="cond-chip hp off" disabled style="padding:4px 10px;font-size:11px;">HP</button>
+      </div>
+
+      <!-- Price row -->
+      <div class="mobile-ab-price-row">
+        <div class="mobile-ab-price-col">
+          <div class="mobile-ab-from">From</div>
+          <div class="mobile-ab-price" aria-live="polite">$2.49</div>
+          <div class="mobile-ab-seller">CardKingdom · 99.4% ●</div>
+        </div>
+        <div class="qty-stepper">
+          <button class="qty-btn" aria-label="Decrease">−</button>
+          <input class="qty-num" type="number" value="1" min="1" max="7" style="width:32px;" aria-label="Qty">
+          <button class="qty-btn" aria-label="Increase">+</button>
+        </div>
+      </div>
+
+      <!-- Action buttons row: Cart (primary) + Deck + Collection (secondary) -->
+      <div class="mobile-ab-primary-row">
+        <button class="mobile-ab-cart-btn" aria-label="Add 1 NM MKM 2024 to cart for $2.49">Add to Cart</button>
+        <div class="mobile-ab-secondary-group">
+          <button class="mobile-ab-sec-btn" aria-label="Add to Deck (coming soon)">🃏 Deck <span class="soon-badge" style="font-size:8px;">Soon</span></button>
+          <button class="mobile-ab-sec-btn" aria-label="Add to Collection (coming soon)">♦ Save <span class="soon-badge" style="font-size:8px;">Soon</span></button>
+        </div>
+      </div>
+
+    </div><!-- /.mobile-action-bar -->
+  </div><!-- /.mobile-frame -->
+
+  <div class="note mt-4" style="max-width:500px;">
+    <strong>Mobile user group coverage:</strong> Buyers → price + qty + Add to Cart. Deck builders → 🃏 Deck button. Collectors → ♦ Save button. Players → quick stats bar + oracle text visible by scrolling. All three actions in one bar with no overflow menu.
   </div>
+</div><!-- /#mobile -->
 
-  <!-- ======================================================
-       PANEL 4: LOADING SKELETON
-       ====================================================== -->
-  <div id="panel-loading" class="panel">
-    <div class="panel-label">Screen 4</div>
-    <div class="panel-title">Card Detail Page — Loading Skeleton</div>
-    <div class="panel-desc">
-      Shown during client-side re-validation (ISR stale check) or when the user triggers a listings retry.
-      The page structure is fully rendered via ISR — the skeleton appears only in the listings section during re-fetch.
-      The catalog section never shows a skeleton (it's SSR/ISR rendered).
-    </div>
-
-    <div class="annotation">
-      <strong>ISR Strategy:</strong> <code>page.tsx</code> uses <code>export const revalidate = 30</code>.
-      Catalog fetch uses <code>next: &#123; revalidate: 300 &#125;</code>. Listings fetch uses <code>next: &#123; revalidate: 30 &#125;</code>.
-      The skeleton below is only for the listings re-fetch triggered client-side (print switch or retry).
-    </div>
-
-    <div class="annotation annotation-blue mt-3">
-      <strong>Catalog is ISR-rendered — never skeletons.</strong>
-      The card name, image, stats, and legality are rendered by the server component (ISR).
-      When the page first loads or the user switches prints and triggers a listings re-fetch,
-      only the listings section shows a skeleton. The catalog section below renders normally.
-    </div>
-
-    <!-- Catalog section renders normally (ISR pre-rendered) -->
-    <div class="card-detail-grid mt-4">
-      <div>
-        <div class="card-image-hero">
-          <div class="card-image-hero-inner">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-6-6L3 21"/>
-            </svg>
-            Card Image<br><span style="font-size:10px">Already loaded (SSR)</span>
-          </div>
-        </div>
-        <div class="section">
-          <div class="section-header"><span class="section-title">Other Printings</span></div>
-          <table class="printings-table">
-            <tbody>
-              <tr class="selected"><td class="print-set-name">Murders at Karlov Manor <span class="current-badge">Current</span></td><td>2024</td><td><span class="badge badge-rare">Rare</span></td><td>242</td></tr>
-              <tr><td class="print-set-name">Streets of New Capenna</td><td>2022</td><td><span class="badge badge-rare">Rare</span></td><td>187</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div>
-        <div class="card-game-row"><span class="badge badge-mtg">MTG</span><span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span></div>
-        <div class="card-name" style="font-size:22px">Atraxa, Praetors' Voice</div>
-        <div class="card-type-line">Legendary Creature — Phyrexian Angel Horror</div>
-        <div class="card-set-info mt-3">
-          <div class="card-set-icon">🏛</div>
-          <div><div class="set-name">Murders at Karlov Manor</div><div class="set-meta">MKM · #242 · 2024</div></div>
-        </div>
-        <div class="stats-grid mt-3">
-          <div class="stat-chip"><div class="stat-label">Mana</div><div class="stat-value">{W}{U}{B}{G}</div></div>
-          <div class="stat-chip"><div class="stat-label">Mana Value</div><div class="stat-value">4</div></div>
-          <div class="stat-chip"><div class="stat-label">P/T</div><div class="stat-value">4 / 4</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Listings skeleton -->
-    <div class="listings-section mt-5">
-      <div class="listings-header">
-        <div class="skeleton skeleton-text" style="width:120px"></div>
-        <div class="skeleton skeleton-text" style="width:60px"></div>
-      </div>
-      <div class="listing-row skeleton-row" style="border-radius:0"></div>
-      <div class="listing-row skeleton-row" style="border-radius:0"></div>
-      <div class="listing-row skeleton-row" style="border-radius:0;border-bottom:none"></div>
-    </div>
-
-    <div class="annotation annotation-blue mt-4">
-      <strong>Implementation:</strong> Use Tailwind's <code>animate-pulse</code> on placeholder divs within
-      <code>MarketplaceListingsSection</code>. Show skeleton only when <code>isLoadingListings === true</code>
-      (client state during re-fetch). Never show full-page skeleton — catalog is always available.
-    </div>
-  </div>
-
-  <!-- ======================================================
-       PANEL 5: MOBILE VIEW (390px)
-       ====================================================== -->
-  <div id="panel-mobile" class="panel">
-    <div class="panel-label">Screen 5</div>
-    <div class="panel-title">Mobile View — 390px (iPhone 15 viewport)</div>
-    <div class="panel-desc">
-      Single-column layout. Card image stacks above content. Listings become card-style rows.
-      "Add to Cart" button is full-width on each listing row. Grid collapses to 1 column.
-    </div>
-
-    <div class="annotation mb-3">
-      <strong>Mobile constraints from UX spec:</strong> No hover-gated interactions — every element must be tappable.
-      Min touch target: 44×44px. "Add to Cart" must be full-width on mobile, not inline.
-      Trust signal fits on one line: "99.2% · 412 sales" (abbreviated).
-    </div>
-
-    <div class="mobile-frame">
-      <div class="mobile-statusbar">
-        <span>9:41</span>
-        <span>●●●●</span>
-      </div>
-      <div class="mobile-nav">
-        <span class="mobile-back">← Search</span>
-        <span class="mobile-nav-title">Card Detail</span>
-        <button class="ghost-btn" style="font-size:11px;padding:4px 10px;">Share</button>
-      </div>
-      <div class="mobile-content">
-        <!-- Card image -->
-        <div class="mobile-card-hero">Card Image · Full Bleed</div>
-
-        <!-- Card identity -->
-        <div style="margin-bottom:var(--sp-4)">
-          <div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-2)">
-            <span class="badge badge-mtg">MTG</span>
-            <span class="badge badge-rare"><span class="rarity-dot dot-rare"></span>Rare</span>
-          </div>
-          <div style="font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px">Atraxa, Praetors' Voice</div>
-          <div class="text-secondary text-sm">Legendary Creature — Phyrexian Angel</div>
-          <div class="text-sm" style="margin-top:var(--sp-2);color:var(--text-tertiary)">Murders at Karlov Manor · MKM #242</div>
-        </div>
-
-        <!-- Stats (2-col on mobile) -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);margin-bottom:var(--sp-4)">
-          <div class="stat-chip"><div class="stat-label">Mana</div><div class="stat-value">{W}{U}{B}{G}</div></div>
-          <div class="stat-chip"><div class="stat-label">P/T</div><div class="stat-value">4 / 4</div></div>
-        </div>
-
-        <!-- Format legality (scrollable row) -->
-        <div style="overflow-x:auto;padding-bottom:var(--sp-2);margin-bottom:var(--sp-4)">
-          <div style="display:flex;gap:var(--sp-2);width:max-content">
-            <span class="legality-pill legal">✓ Commander</span>
-            <span class="legality-pill legal">✓ Modern</span>
-            <span class="legality-pill legal">✓ Legacy</span>
-            <span class="legality-pill banned">✗ Vintage</span>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Listings section on mobile -->
-        <div style="margin-bottom:var(--sp-3)">
-          <div style="font-size:14px;font-weight:700;margin-bottom:var(--sp-3)">Active Listings <span style="font-size:12px;color:var(--text-secondary)">· 12 sellers</span></div>
-
-          <!-- Listing card row 1 -->
-          <div class="mobile-listing-row">
-            <div class="mobile-listing-left">
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px">CardVault Toronto</div>
-              <div style="font-size:11px;color:var(--positive)">● 99.2% · 412 sales</div>
-              <div style="margin-top:var(--sp-2);display:flex;align-items:center;gap:var(--sp-2)">
-                <span class="condition-chip cond-nm">NM</span>
-                <span class="text-xs text-tertiary">Eng</span>
-              </div>
-              <button class="mobile-add-btn" disabled>Add to Cart — $14.99</button>
-            </div>
-          </div>
-
-          <!-- Listing card row 2 -->
-          <div class="mobile-listing-row">
-            <div class="mobile-listing-left">
-              <div style="font-size:13px;font-weight:600;margin-bottom:3px">MidnightForge Shop</div>
-              <div style="font-size:11px;color:var(--positive)">● 97.8% · 1,204 sales</div>
-              <div style="margin-top:var(--sp-2);display:flex;align-items:center;gap:var(--sp-2)">
-                <span class="condition-chip cond-lp">LP</span>
-                <span class="text-xs text-tertiary">Eng · Free shipping</span>
-              </div>
-              <button class="mobile-add-btn" disabled>Add to Cart — $12.50</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Printings (collapsible on mobile) -->
-        <div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-3)">
-          <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
-            <span style="font-size:13px;font-weight:600">Other Printings (3)</span>
-            <span class="text-secondary">▾</span>
-          </div>
-          <div style="font-size:11px;color:var(--text-tertiary);margin-top:var(--sp-2)">
-            [Collapsed on mobile by default — tap to expand]
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="annotation annotation-blue mt-4">
-      <strong>Mobile implementation notes:</strong>
-      (1) <code>card-detail-grid</code> uses <code>grid-template-columns: 1fr</code> below <code>md:</code> breakpoint (768px).
-      (2) Listings use card layout (<code>flex-col</code>) instead of table row on mobile — "Add to Cart" is full-width inside card.
-      (3) Format legality pills use <code>overflow-x: auto</code> horizontal scroll on mobile.
-      (4) Printings table collapses with a disclosure toggle on mobile (shadcn <code>Collapsible</code> component).
-      (5) All touch targets ≥ 44px — verified especially on condition chips and sort controls.
-    </div>
-  </div>
-
-  <!-- ======================================================
-       PANEL 6: EDGE CASES (Advanced Elicitation)
-       ====================================================== -->
-  <div id="panel-edge" class="panel">
-    <div class="panel-label">Screen 6</div>
-    <div class="panel-title">Advanced Elicitation — Edge Cases &amp; Missing States</div>
-    <div class="panel-desc">
-      Surfaced via advanced elicitation: error states, extreme data, accessibility, post-action feedback.
-      These scenarios must be handled in implementation even if not explicitly shown in Screens 1–5.
-    </div>
-
-    <!-- What happens when... -->
-    <div class="section-header mt-4"><span class="section-title">What happens when…?</span></div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-top:var(--sp-3)">
-
-      <!-- Card image fails to load -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--warning);margin-bottom:var(--sp-2)">⚠ Card image fails to load</div>
-        <div class="card-image-hero" style="height:160px;aspect-ratio:auto">
-          <div class="card-image-hero-inner">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;margin-bottom:6px"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-6-6L3 21"/></svg>
-            <span style="font-size:11px">Atraxa, Praetors' Voice</span><br>
-            <span style="font-size:10px;color:var(--text-tertiary)">Image unavailable</span>
-          </div>
-        </div>
-        <div class="annotation text-xs mt-2">
-          <strong>Implementation:</strong> Use Next.js <code>&lt;Image&gt;</code> with <code>onError</code> handler →
-          show card name centred in placeholder div. Do NOT show a broken image icon. Background:
-          <code>linear-gradient(160deg, var(--bg-surface-2), var(--bg-surface-3))</code>.
-        </div>
-      </div>
-
-      <!-- Very long seller name -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--warning);margin-bottom:var(--sp-2)">⚠ Very long seller / card name</div>
-        <div class="listing-row" style="padding:var(--sp-3);background:var(--bg-surface-3);border-radius:var(--radius-sm)">
-          <div class="seller-info">
-            <div class="seller-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">
-              VeryLongBusinessNameThatExceedsColumnWidth
-            </div>
-            <div class="seller-trust"><span class="seller-trust-dot"></span><span>98.5% positive</span><span class="seller-trust-text">· 234 sales</span></div>
-          </div>
-          <div class="listing-condition"><span class="condition-chip cond-nm">NM</span></div>
-          <div class="listing-price-col"><div class="listing-price">$14.99</div></div>
-          <div class="listing-actions"><button class="gold-btn" onclick="showCartToast(this,'Seller','NM','$14.99')" style="font-size:11px;padding:6px 10px">Add to Cart</button></div>
-        </div>
-        <div class="annotation text-xs mt-2">
-          <strong>Implementation:</strong> Seller name cell: <code>overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px</code>.
-          Card name on detail header: allow wrap (2 lines max). Do NOT truncate card name — it's the h1.
-        </div>
-      </div>
-
-      <!-- 50+ listings -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--warning);margin-bottom:var(--sp-2)">⚠ 50+ listings (popular card)</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3)">
-          <span class="listings-title" style="font-size:13px">Active Listings</span>
-          <span class="listings-count">87 sellers</span>
-        </div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:var(--sp-2)">[Rows 1–20 shown]</div>
-        <div style="display:flex;justify-content:center;gap:var(--sp-2);padding:var(--sp-3) 0;border-top:1px solid var(--border-subtle)">
-          <button class="ghost-btn">← Prev</button>
-          <span style="font-size:12px;color:var(--text-secondary);padding:6px 12px;background:var(--bg-surface-3);border-radius:var(--radius-sm)">Page 1 / 5</span>
-          <button class="ghost-btn">Next →</button>
-        </div>
-        <div class="annotation text-xs mt-2">
-          <strong>Implementation:</strong> Paginate at 20 rows. Show page controls when <code>listings.length &gt; 20</code>.
-          Alternative: virtual scroll (react-virtual) if performance testing shows DOM cost.
-          Default: simple pagination — avoid over-engineering. Client-side pagination of the BFF response array.
-        </div>
-      </div>
-
-      <!-- Batch trust endpoint annotation -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--interactive);margin-bottom:var(--sp-2)">🏗 Batch Trust Call (Winston + Amelia fix)</div>
-        <div style="font-family:monospace;font-size:11px;background:var(--bg-base);padding:var(--sp-3);border-radius:var(--radius-sm);color:var(--text-secondary);line-height:1.8">
-          <span style="color:var(--negative)">// ✗ BAD — N individual calls</span><br>
-          listings.forEach(l =&gt; fetch('/api/sellers/'+l.sellerId+'/trust'))<br><br>
-          <span style="color:var(--positive)">// ✓ GOOD — single batch call</span><br>
-          <span style="color:var(--interactive)">POST</span> /api/sellers/trust/batch<br>
-          Body: <span style="color:var(--accent-primary)">&#123; sellerIds: string[] &#125;</span><br>
-          Returns: <span style="color:var(--accent-primary)">Map&lt;sellerId, TrustScore&gt;</span>
-        </div>
-        <div class="annotation text-xs mt-2">
-          <strong>Required:</strong> If <code>POST /api/sellers/trust/batch</code> doesn't exist in customer-backend,
-          Task 4 must include creating it. BFF service calls it once per page load after receiving the listings array.
-          Dedup seller IDs before calling: <code>[...new Set(listings.map(l =&gt; l.sellerId))]</code>.
-        </div>
-      </div>
-
-    </div>
-
-    <!-- What does the user expect after... -->
-    <div class="section-header mt-5"><span class="section-title">What does the user expect after…?</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-top:var(--sp-3)">
-
-      <!-- After clicking Add to Cart (toast) -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2)">After clicking "Add to Cart"</div>
-        <!-- Toast mock -->
-        <div style="background:var(--bg-surface-4);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);display:flex;align-items:flex-start;gap:var(--sp-3)">
-          <span style="font-size:18px;flex-shrink:0">🛒</span>
-          <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Cart coming soon</div>
-            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">We're building multi-vendor checkout. You'll be the first to know.</div>
-          </div>
-        </div>
-        <div class="annotation text-xs mt-2">
-          <strong>Implementation:</strong> Use <code>sonner</code> toast (already in storefront deps).
-          <code>toast('Cart coming soon', &#123; description: '...' &#125;)</code>. The button must NOT be <code>disabled</code> —
-          it should be fully styled and clickable. This follows UX spec: no broken-looking UI for future features.
-        </div>
-        <div style="margin-top:var(--sp-3)">
-          <button class="gold-btn" onclick="showCartToast(this,'Demo','NM','$14.99')">Try it → Add to Cart</button>
-        </div>
-      </div>
-
-      <!-- After switching print -->
-      <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4)">
-        <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2)">After clicking a different printing</div>
-        <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:var(--sp-3)">
-          1. <code>selectedPrint</code> state updates → card image swaps<br>
-          2. <code>catalogSku</code> recomputed from new print<br>
-          3. Listings section shows skeleton (fetch in progress)<br>
-          4. BFF called: <code>/api/cards/:id?catalogSku=:sku</code><br>
-          5. Listings section re-renders with new results<br>
-          6. If new print has 0 listings → empty state shown<br>
-          7. URL does NOT change (client state only — Decision Q2-B)
-        </div>
-        <div class="annotation text-xs">
-          <strong>Implementation:</strong> <code>useEffect(() =&gt; &#123; fetchListings(selectedPrint) &#125;, [selectedPrint?.id])</code>.
-          Only the <code>MarketplaceListingsSection</code> re-renders — not the full page.
-          The BFF route accepts optional <code>?catalogSku=</code> param to skip catalog re-fetch when called client-side.
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Accessibility summary -->
-    <div class="section-header mt-5"><span class="section-title">Accessibility Requirements</span></div>
-    <div style="background:var(--bg-surface-2);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--sp-4);margin-top:var(--sp-3)">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);font-size:12px;line-height:1.8;color:var(--text-secondary)">
-        <div>
-          <div style="font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2)">Required ARIA attributes</div>
-          <code style="display:block;background:var(--bg-base);padding:var(--sp-2);border-radius:var(--radius-sm);font-size:11px;line-height:1.9;color:var(--text-secondary)">
-            &lt;button aria-label="Add to Cart from [Seller], [Condition], [Price]"&gt;<br>
-            &lt;table aria-label="Active listings for [Card Name]"&gt;<br>
-            &lt;tr aria-selected="true"&gt; (printings table)<br>
-            &lt;section aria-live="polite"&gt; (listings section — announces re-fetch)<br>
-            &lt;div role="status"&gt; (degradation banner — screen reader alert)
-          </code>
-        </div>
-        <div>
-          <div style="font-weight:600;color:var(--text-primary);margin-bottom:var(--sp-2)">Keyboard navigation</div>
-          <div>Tab order: card image → stats → legality pills → printings table rows → sort controls → listing rows → Add to Cart buttons</div>
-          <div style="margin-top:var(--sp-2)">Printings table: <kbd style="background:var(--bg-surface-3);padding:2px 6px;border-radius:4px;font-size:11px">↑</kbd> / <kbd style="background:var(--bg-surface-3);padding:2px 6px;border-radius:4px;font-size:11px">↓</kbd> to navigate rows, <kbd style="background:var(--bg-surface-3);padding:2px 6px;border-radius:4px;font-size:11px">Enter</kbd> to select print</div>
-          <div style="margin-top:var(--sp-2)">Min touch targets: 44×44px — especially condition chips (currently ~28px) → wrap in a min-height:44px row div on mobile</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /panels -->
-
-<!-- Toast notification mock -->
-<div id="toast-container" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none"></div>
+</div><!-- /.panels -->
 
 <script>
-function showPanel(name) {
+function go(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
-}
-
-function showCartToast(btn, seller, cond, price) {
-  showToast('🛒 Cart coming soon — ' + price + ' · ' + seller + ' · ' + cond);
-}
-
-function showToast(msg) {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.style.cssText = 'background:#22242E;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;font-size:13px;color:#E8ECF1;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.5);pointer-events:auto;animation:toastIn 0.2s ease;line-height:1.5;';
-  toast.textContent = msg;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s';
-    setTimeout(() => container.removeChild(toast), 300);
-  }, 3000);
+  document.getElementById(id).classList.add('active');
+  const ids = ['primary','switch','nostock','degraded','loading','mobile'];
+  document.querySelectorAll('.tab-btn')[ids.indexOf(id)].classList.add('active');
 }
 </script>
-
-<style>
-@keyframes toastIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-</style>
 </body>
 </html>
