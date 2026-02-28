@@ -22,7 +22,9 @@
 
 ## Audit 2: Structural Hierarchy
 
-**Status: PASS**
+**Status: PASS (revised 2026-03-01 — compliance remediation complete)**
+
+### Audit 2a: Original checks (Feb 28)
 
 | Check | Expected (wireframe) | Actual (implementation) | Result |
 |---|---|---|---|
@@ -39,6 +41,20 @@
 | Mobile: sticky bottom bar | Fixed bottom with Add to Cart | `fixed bottom-0` bar with `min-h-[44px]` | ✓ |
 | Mobile: tab chips | `role="tab"` | `role="tab"` with `aria-selected` | ✓ |
 | BuySection | REMOVED in v5.1 | Not rendered | ✓ |
+
+### Audit 2b: Compliance-remediation checks (2026-03-01)
+
+Three gaps discovered under strengthened story lifecycle compliance gates — all now **PASS**:
+
+| Gap | Check | Expected (wireframe) | Actual after fix | Result |
+|---|---|---|---|---|
+| 1 | QuickBuyPanel condition chips — color coding | NM=green, LP=lime, MP=yellow, HP=red | `CONDITION_COLORS` map applied; selected/unselected/disabled states per-condition | ✓ PASS |
+| 2 | Mobile Row 3 condition chips — color coding | Same per-condition colors | `CONDITION_COLORS` map applied in `CardDetailPage.tsx` mobile bar | ✓ PASS |
+| 3 | Mobile Row 3 context label — structural position | Label in `.mobile-action-zone` column above secondary buttons | Context label moved out of `mobile-cond-zone` into `data-testid="mobile-action-zone"` flex-col | ✓ PASS |
+| 4 | Mobile qty chips — label format | `×1`, `×2`, `×3`, `×4` | ``×${n}`` applied for all 4 chips | ✓ PASS |
+| 5 | Disabled chips — condition color at 30% opacity | Retain condition hue at 30% opacity | All three color classes applied + `opacity-30 border-dashed cursor-not-allowed` | ✓ PASS |
+
+**Full quality gate result (2026-03-01):** lint PASS (warnings only, pre-existing) · typecheck PASS · build PASS · tests 523/523 PASS
 
 ---
 
@@ -63,13 +79,13 @@ To activate: `npm install -D @playwright/test && npx playwright install`
 
 ## Audit 4: Overall Verdict
 
-**APPROVED with advisory items**
+**APPROVED — wireframe compliance remediation complete (2026-03-01)**
 
-The v5.1 three-column layout is structurally correct and matches the wireframe. AC6/AC6a requirements (condition chips `disabled`, qty stepper capped, skeleton state, race condition abort controller) are all implemented correctly.
+The v5.1 three-column layout is structurally correct and matches the wireframe. All five compliance gaps discovered under the strengthened story lifecycle gates have been resolved. Full quality gate passes: lint (warnings only, pre-existing) · typecheck · build · 523/523 tests.
 
 **Advisory (non-blocking):**
-1. Replace `text-gray-600 dark:text-gray-400` with `text-secondary` in `CardDetailPage.tsx:149` (MEDIUM)
+1. Replace `text-gray-600 dark:text-gray-400` with `text-secondary` in `CardDetailPage.tsx` (MEDIUM)
 2. Extract shared `getRarityColor` utility to eliminate duplication (LOW, follow-up story)
 3. Install Playwright and run UX compliance spec when E2E harness sprint runs (deferred)
 
-**No blockers to proceeding to Phase 6 (Deployment Check).**
+**No blockers to Phase 5B (Post-Build UX Validation) or deployment.**
