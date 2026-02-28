@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SideDecked — Story 9.1 Wireframe: Anonymous Homepage Hero &amp; Trust Foundation</title>
+<title>SideDecked — Story 9.1 Wireframe: Anonymous Homepage Hero & Trust Foundation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 
 /* ═══════════════════════════════════════════
-   DESIGN TOKENS — Midnight Forge
+   DESIGN TOKENS — Midnight Forge (exact from prototype)
 ═══════════════════════════════════════════ */
 :root {
   --bg-base:#0C0D12; --bg-s1:#13141A; --bg-s2:#1A1C24; --bg-s3:#22242E; --bg-s4:#2A2D38;
   --accent:#D4A843; --accent-hover:#E0B94F; --accent-dim:rgba(212,168,67,0.10); --accent-border:rgba(212,168,67,0.30);
   --blue:#7C8CFF; --blue-dim:rgba(124,140,255,0.10); --blue-border:rgba(124,140,255,0.30);
   --green:#4ADE80; --green-dim:rgba(74,222,128,0.08); --green-border:rgba(74,222,128,0.25);
-  --red:#EF5350;
+  --red:#EF5350; --red-dim:rgba(239,83,80,0.08); --red-border:rgba(239,83,80,0.25);
+  --warn:#FBBF24; --warn-dim:rgba(251,191,36,0.08); --warn-border:rgba(251,191,36,0.25);
   --text-1:#E8ECF1; --text-2:#8B93A6; --text-3:#4F5568;
   --border-s:rgba(255,255,255,0.06); --border-d:rgba(255,255,255,0.10);
   --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-full:999px;
@@ -29,45 +30,52 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-family:var(--font-b);font-size:14px;line-height:1.5;color:var(--text-1);background:var(--bg-base);-webkit-font-smoothing:antialiased;}
 button{font-family:inherit;cursor:pointer;border:none;background:none;}
-a{text-decoration:none;}
+a{text-decoration:none;color:inherit;}
 
 /* ═══ WIREFRAME CHROME ═══ */
-.wf-header{text-align:center;padding:var(--sp6) var(--sp5);border-bottom:1px solid var(--border-s);background:var(--bg-s1);position:relative;overflow:hidden;}
-.wf-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% -20%,rgba(212,168,67,0.07) 0%,transparent 70%);pointer-events:none;}
+.wf-header{text-align:center;padding:var(--sp7) var(--sp5) var(--sp6);border-bottom:1px solid var(--border-s);background:var(--bg-s1);position:relative;overflow:hidden;}
+.wf-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% -20%,rgba(212,168,67,0.08) 0%,transparent 70%);pointer-events:none;}
 .wf-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);margin-bottom:var(--sp2);}
-.wf-title{font-family:var(--font-d);font-size:26px;font-weight:700;letter-spacing:0.02em;margin-bottom:var(--sp2);}
-.wf-title .brand{color:var(--accent);}
-.wf-desc{font-size:13px;color:var(--text-2);max-width:580px;margin:0 auto var(--sp3);}
+.wf-header h1{font-family:var(--font-d);font-size:28px;font-weight:700;letter-spacing:0.02em;margin-bottom:var(--sp2);}
+.wf-header h1 .brand{color:var(--accent);}
+.wf-header p{font-size:13px;color:var(--text-2);max-width:620px;margin:0 auto var(--sp3);}
 .badge-row{display:flex;gap:var(--sp2);justify-content:center;flex-wrap:wrap;}
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:var(--r-full);font-size:11px;font-weight:600;}
 .badge-story{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border);}
 .badge-scope{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border);}
 .badge-rsc{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border);}
+.badge-fix{background:var(--red-dim);color:var(--red);border:1px solid var(--red-border);}
 
 /* ═══ TABS ═══ */
 .tab-nav{display:flex;justify-content:center;gap:var(--sp2);padding:var(--sp3) var(--sp5);background:var(--bg-s1);border-bottom:1px solid var(--border-s);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
-.tab-btn{display:inline-flex;align-items:center;gap:var(--sp2);padding:var(--sp2) var(--sp4);border:1px solid var(--border-d);border-radius:var(--r-full);color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.18s;background:none;}
+.tab-btn{display:inline-flex;align-items:center;gap:var(--sp2);padding:var(--sp2) var(--sp4);border:1px solid var(--border-d);border-radius:var(--r-full);color:var(--text-2);font-size:12px;font-weight:500;transition:all 0.18s;background:none;cursor:pointer;}
 .tab-btn:hover{color:var(--text-1);border-color:var(--blue);background:var(--blue-dim);}
 .tab-btn.active{color:var(--bg-base);background:var(--accent);border-color:var(--accent);}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot-anon{background:var(--text-3);} .dot-auth{background:var(--green);} .dot-dsk{background:#C084FC;} .dot-impl{background:var(--blue);}
 
 /* ═══ PANELS ═══ */
 .panels{padding:var(--sp6) var(--sp5);}
 .panel{display:none;animation:fadeIn 0.2s ease;}
 .panel.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.panel-meta{max-width:960px;margin:0 auto var(--sp5);}
-.panel-title{font-family:var(--font-d);font-size:18px;font-weight:700;margin-bottom:var(--sp2);}
+.panel-meta{max-width:900px;margin:0 auto var(--sp5);}
+.panel-eyebrow{display:inline-block;padding:2px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;background:var(--blue-dim);color:var(--blue);margin-bottom:var(--sp2);}
+.panel-title{font-family:var(--font-d);font-size:20px;font-weight:700;margin-bottom:var(--sp2);}
 .panel-desc{font-size:13px;color:var(--text-2);line-height:1.7;}
 
 /* ═══ ANNOTATIONS ═══ */
-.note{background:var(--accent-dim);border:1px dashed var(--accent-border);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;color:var(--accent);margin-bottom:var(--sp3);line-height:1.65;}
+.note     {background:var(--accent-dim);border:1px dashed var(--accent-border);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;color:var(--accent);margin-bottom:var(--sp3);line-height:1.65;}
 .note-blue{background:var(--blue-dim);border:1px dashed var(--blue-border);color:var(--blue);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
 .note-green{background:var(--green-dim);border:1px dashed var(--green-border);color:var(--green);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note-warn{background:var(--warn-dim);border:1px dashed var(--warn-border);color:var(--warn);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
+.note-red{background:var(--red-dim);border:1px dashed var(--red-border);color:var(--red);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;margin-bottom:var(--sp3);line-height:1.65;}
 .note strong{font-weight:700;}
-.ac-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:rgba(124,140,255,0.15);color:var(--blue);margin-left:6px;vertical-align:middle;}
+.atag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:var(--blue-dim);color:var(--blue);margin-left:6px;vertical-align:middle;}
+.atag-red{background:var(--red-dim);color:var(--red);}
 
 /* ═══ PROTO LAYOUT ═══ */
-.proto-layout{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:var(--sp6);align-items:start;}
+.proto-layout{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 390px;gap:var(--sp6);align-items:start;}
 .annotations{position:sticky;top:80px;}
 .phone-wrap{display:flex;justify-content:center;}
 
@@ -76,45 +84,77 @@ a{text-decoration:none;}
 .phone::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 18px 18px;z-index:10;}
 .phone-screen{background:var(--bg-base);overflow-y:auto;max-height:760px;scrollbar-width:none;}
 .phone-screen::-webkit-scrollbar{display:none;}
-.phone-status{display:flex;justify-content:space-between;align-items:center;padding:32px 20px 8px;font-size:12px;font-weight:600;color:var(--text-1);background:var(--bg-base);}
+.phone-status{display:flex;justify-content:space-between;align-items:center;padding:32px 20px 8px;font-size:12px;font-weight:600;color:var(--text-1);background:var(--bg-base);position:sticky;top:0;z-index:5;}
 .phone-status .time{font-family:var(--font-m);}
 .phone-status .icons{display:flex;gap:5px;font-size:11px;}
 
-/* ═══ MOBILE NAV ═══ */
+/* ═══ PHONE NAV ═══ */
 .p-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 10px;background:var(--bg-base);border-bottom:1px solid var(--border-s);gap:var(--sp2);}
 .p-logo{font-family:var(--font-d);font-size:18px;font-weight:700;letter-spacing:0.04em;color:var(--text-1);}
 .p-logo span{color:var(--accent);}
-.p-icon-btn{width:36px;height:36px;border-radius:var(--r-sm);background:var(--bg-s2);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-2);}
+.p-nav-links{display:flex;gap:var(--sp3);font-size:11px;font-weight:500;color:var(--text-2);}
 .p-nav-actions{display:flex;gap:var(--sp2);align-items:center;}
-.p-sign-in{padding:6px 12px;border-radius:var(--r-full);border:1px solid var(--border-d);font-size:12px;font-weight:600;color:var(--text-2);}
+.p-icon-btn{width:28px;height:28px;border-radius:var(--r-sm);background:var(--bg-s2);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-2);}
+.p-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#E85D26);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;}
+.p-notif-dot{position:relative;}
+.p-notif-dot::after{content:'1';position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid var(--bg-base);}
 
 /* ═══ MOBILE HERO ═══ */
 .p-hero{padding:var(--sp5) var(--sp4) var(--sp4);}
-.p-hero-h1{font-family:var(--font-d);font-size:22px;font-weight:700;line-height:1.2;letter-spacing:0.01em;color:var(--text-1);margin-bottom:var(--sp4);}
-.p-hero-h1 .accent{color:var(--accent);}
+.p-hero-h1{font-family:var(--font-d);font-size:22px;font-weight:700;line-height:1.2;letter-spacing:0.01em;color:var(--text-1);margin-bottom:var(--sp2);}
+.p-hero-h1 span{color:var(--accent);}
+.p-hero-sub{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:var(--sp4);}
 
 /* ═══ MOBILE SEARCH ═══ */
-.p-search{display:flex;align-items:center;gap:var(--sp2);padding:13px var(--sp3);background:var(--bg-s2);border:2px solid var(--blue-border);border-radius:var(--r-md);margin-bottom:var(--sp4);cursor:text;min-height:44px;}
-.p-search .icon{font-size:16px;color:var(--text-3);flex-shrink:0;}
+.p-search{display:flex;align-items:center;gap:var(--sp2);padding:11px var(--sp3);background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-md);margin-bottom:var(--sp4);cursor:text;transition:border-color 0.15s;min-height:44px;}
+.p-search:hover{border-color:var(--blue);}
+.p-search .icon{font-size:14px;color:var(--text-3);flex-shrink:0;}
 .p-search .placeholder{font-size:13px;color:var(--text-3);}
 
-/* ═══ MOBILE TRUST STRIP ═══ */
-.p-trust{padding:var(--sp3) var(--sp4);background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:var(--sp3);}
-.p-trust-row{display:flex;align-items:center;gap:var(--sp2);font-size:12px;color:var(--text-2);margin-bottom:4px;}
-.p-trust-row:last-child{margin-bottom:0;}
+/* ═══ CARD-BACK GAME TILES (Story 9-2 scope — shown as placeholder) ═══ */
+.p-cb-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp2);}
+.p-cb-tile{position:relative;border-radius:var(--r-md);overflow:hidden;cursor:pointer;aspect-ratio:5/7;border:2px solid transparent;transition:all 0.2s;}
+.p-cb-tile:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,0.5);}
+.p-cb-tile img{width:100%;height:100%;object-fit:cover;display:block;}
+.p-cb-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:6px;}
+.p-cb-overlay::before{content:'';position:absolute;inset:0;opacity:0.18;}
+.p-cb-mtg .p-cb-overlay::before{background:#9B59D0;}
+.p-cb-pkm .p-cb-overlay::before{background:#F5C518;}
+.p-cb-ygo .p-cb-overlay::before{background:#D4A843;}
+.p-cb-op  .p-cb-overlay::before{background:#E63946;}
+.cb-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.82) 0%,transparent 60%);}
+.cb-text{position:relative;z-index:1;}
+.cb-name{font-family:var(--font-d);font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;display:block;}
+.cb-count{font-family:var(--font-m);font-size:9px;color:rgba(255,255,255,0.55);display:block;margin-top:1px;}
+/* Placeholder tile for when images aren't available */
+.p-cb-tile-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:5/7;border-radius:var(--r-md);border:1px dashed var(--border-d);background:var(--bg-s2);gap:4px;}
+.p-cb-tile-placeholder .game-icon{font-size:20px;}
+.p-cb-tile-placeholder .game-name{font-family:var(--font-d);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-2);}
+.p-cb-tile-placeholder .game-count{font-family:var(--font-m);font-size:8px;color:var(--text-3);}
+/* Story 9-2 scope badge on game tiles section */
+.scope-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:700;background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border);margin-bottom:var(--sp2);}
+
+/* ═══ TRUST STRIP ═══ */
+.p-trust{margin:var(--sp4) var(--sp4) 0;padding:var(--sp3) var(--sp4);background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);display:flex;flex-direction:column;gap:5px;}
+.p-trust-row{display:flex;align-items:center;gap:var(--sp2);font-size:12px;color:var(--text-2);}
 .p-trust-row .icon{font-size:13px;flex-shrink:0;}
 .p-trust-row strong{color:var(--text-1);font-weight:600;}
-.p-trust-dot{width:4px;height:4px;border-radius:50%;background:var(--text-3);flex-shrink:0;}
 
-/* ═══ MOBILE SELLER SIGNAL ═══ */
-.p-seller-signal{display:flex;align-items:center;gap:var(--sp2);padding:var(--sp3) var(--sp4);font-size:12px;color:var(--text-2);min-height:44px;}
-.p-seller-signal a{color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px;min-height:44px;align-content:center;}
+/* ═══ SELLER CTA ═══ */
+.p-seller-cta{margin:var(--sp3) var(--sp4) 0;display:flex;align-items:center;gap:var(--sp2);font-size:12px;color:var(--text-2);min-height:44px;cursor:pointer;}
+.p-seller-cta a{color:var(--accent);font-weight:600;}
+.p-seller-cta a:hover{color:var(--accent-hover);}
 
-/* ═══ MOBILE EMPTY ZONE ═══ */
-.p-zone-placeholder{margin:var(--sp4) var(--sp4);background:var(--bg-s1);border:1px dashed var(--border-d);border-radius:var(--r-md);padding:var(--sp4);text-align:center;color:var(--text-3);font-size:11px;}
-.p-zone-placeholder .label{font-family:var(--font-d);font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:4px;}
+/* ═══ OUT OF SCOPE SLOT ═══ */
+.scope-slot{margin:var(--sp4) var(--sp4) 0;padding:var(--sp3);background:var(--bg-s1);border:1px dashed var(--blue-border);border-radius:var(--r-md);text-align:center;}
+.scope-slot-label{font-size:11px;color:var(--blue);font-weight:600;}
+.scope-slot-sub{font-size:10px;color:var(--text-3);margin-top:2px;}
 
-/* ═══ DESKTOP BROWSER ═══ */
+.p-spacer{height:var(--sp5);}
+
+/* ═══════════════════════════════════════════
+   DESKTOP BROWSER MOCKUP (exact from prototype)
+═══════════════════════════════════════════ */
 .desktop-wrap{max-width:1280px;margin:0 auto;}
 .browser{background:var(--bg-base);border-radius:12px;border:1px solid var(--border-d);box-shadow:0 24px 64px rgba(0,0,0,0.6);overflow:hidden;}
 .browser-chrome{background:var(--bg-s2);padding:10px 16px;display:flex;align-items:center;gap:var(--sp3);border-bottom:1px solid var(--border-s);}
@@ -123,43 +163,53 @@ a{text-decoration:none;}
 .b-dot-r{background:#EF5350;} .b-dot-y{background:#FBBF24;} .b-dot-g{background:#4ADE80;}
 .b-url{flex:1;background:var(--bg-s3);border-radius:20px;padding:5px 16px;font-size:11px;color:var(--text-3);font-family:var(--font-m);}
 
-/* ═══ DESKTOP NAV ═══ */
+/* Desktop Nav */
 .d-nav{display:flex;align-items:center;gap:var(--sp5);padding:0 var(--sp7);height:60px;border-bottom:1px solid var(--border-s);background:var(--bg-base);}
 .d-logo{font-family:var(--font-d);font-size:22px;font-weight:700;letter-spacing:0.04em;flex-shrink:0;}
 .d-logo span{color:var(--accent);}
 .d-nav-links{display:flex;gap:var(--sp5);font-size:13px;font-weight:500;color:var(--text-2);}
+.d-nav-links a{color:inherit;text-decoration:none;}
 .d-nav-search{flex:1;max-width:360px;display:flex;align-items:center;gap:var(--sp2);padding:8px var(--sp3);background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-md);cursor:text;}
 .d-nav-search .icon{font-size:13px;color:var(--text-3);}
 .d-nav-search .ph{font-size:12px;color:var(--text-3);}
 .d-nav-actions{display:flex;align-items:center;gap:var(--sp3);margin-left:auto;}
-.d-nav-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--r-full);font-size:12px;font-weight:600;border:1px solid var(--border-d);color:var(--text-2);}
+.d-nav-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--r-full);font-size:12px;font-weight:600;border:1px solid var(--border-d);color:var(--text-2);cursor:pointer;}
 .d-nav-btn.primary{background:var(--accent);color:var(--bg-base);border-color:var(--accent);}
+.d-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--bg-s2);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text-2);}
 
-/* ═══ DESKTOP HERO ═══ */
+/* Desktop Hero */
 .d-hero{display:grid;grid-template-columns:1fr 340px;gap:var(--sp7);padding:var(--sp7) var(--sp7) var(--sp6);align-items:start;}
-.d-hero-left{}
-.d-h1{font-family:var(--font-d);font-size:38px;font-weight:700;line-height:1.15;letter-spacing:0.01em;margin-bottom:var(--sp5);}
-.d-h1 .accent{color:var(--accent);}
-
-/* ═══ DESKTOP SEARCH ═══ */
-.d-search-bar{display:flex;align-items:center;gap:var(--sp3);padding:14px var(--sp4);background:var(--bg-s2);border:2px solid var(--blue-border);border-radius:var(--r-lg);margin-bottom:var(--sp4);cursor:text;}
+.d-h1{font-family:var(--font-d);font-size:38px;font-weight:700;line-height:1.15;letter-spacing:0.01em;margin-bottom:var(--sp3);}
+.d-h1 span{color:var(--accent);}
+.d-sub{font-size:15px;color:var(--text-2);line-height:1.65;margin-bottom:var(--sp5);}
+.d-search-bar{display:flex;align-items:center;gap:var(--sp3);padding:14px var(--sp4);background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-lg);margin-bottom:var(--sp4);cursor:text;transition:border-color 0.15s;}
+.d-search-bar:hover{border-color:var(--blue);}
 .d-search-bar .icon{font-size:18px;color:var(--text-3);}
 .d-search-bar .ph{font-size:15px;color:var(--text-3);flex:1;}
 .d-search-bar .kbd{font-family:var(--font-m);font-size:11px;color:var(--text-3);background:var(--bg-s3);border:1px solid var(--border-d);padding:2px 7px;border-radius:4px;}
 
-/* ═══ DESKTOP TRUST BAR ═══ */
-.d-trust-bar{display:flex;align-items:center;gap:var(--sp4);padding:12px 0;border-top:1px solid var(--border-s);border-bottom:1px solid var(--border-s);margin-bottom:var(--sp4);}
-.d-trust-item{display:flex;align-items:center;gap:var(--sp2);font-size:13px;color:var(--text-2);}
-.d-trust-item strong{color:var(--text-1);font-weight:600;}
-.d-divider{width:1px;height:16px;background:var(--border-d);}
+/* Desktop card-back game tiles */
+.d-cb-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp3);}
+.d-cb-tile{position:relative;border-radius:var(--r-lg);overflow:hidden;cursor:pointer;aspect-ratio:5/7;border:2px solid transparent;transition:all 0.22s;}
+.d-cb-tile:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.55);}
+.d-cb-tile img{width:100%;height:100%;object-fit:cover;display:block;}
+.d-cb-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;}
+.d-cb-overlay::before{content:'';position:absolute;inset:0;opacity:0.18;}
+.d-cb-mtg .d-cb-overlay::before{background:#9B59D0;}
+.d-cb-pkm .d-cb-overlay::before{background:#F5C518;}
+.d-cb-ygo .d-cb-overlay::before{background:#D4A843;}
+.d-cb-op  .d-cb-overlay::before{background:#E63946;}
+.dcb-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 55%);}
+.dcb-text{position:relative;z-index:1;}
+.dcb-name{font-family:var(--font-d);font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;display:block;}
+.dcb-count{font-family:var(--font-m);font-size:10px;color:rgba(255,255,255,0.55);display:block;margin-top:2px;}
+/* Desktop placeholder tiles */
+.d-cb-tile-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:5/7;border-radius:var(--r-lg);border:1px dashed var(--border-d);background:var(--bg-s2);gap:6px;}
+.d-cb-tile-placeholder .game-icon{font-size:28px;}
+.d-cb-tile-placeholder .game-name{font-family:var(--font-d);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-2);}
+.d-cb-tile-placeholder .game-count{font-family:var(--font-m);font-size:10px;color:var(--text-3);}
 
-/* ═══ DESKTOP SELLER SIGNAL ═══ */
-.d-seller-signal{display:flex;align-items:center;gap:var(--sp2);font-size:14px;color:var(--text-2);}
-.d-seller-signal a{color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px;}
-.d-seller-signal a:hover{color:var(--accent-hover);}
-
-/* ═══ DESKTOP RIGHT PANEL ═══ */
-.d-hero-right{}
+/* Desktop hero right panel */
 .d-trust-card{background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-lg);overflow:hidden;margin-bottom:var(--sp4);}
 .d-trust-card-header{padding:var(--sp3) var(--sp4);border-bottom:1px solid var(--border-s);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);}
 .d-trust-stats{display:grid;grid-template-columns:1fr 1fr;gap:0;}
@@ -169,638 +219,490 @@ a{text-decoration:none;}
 .d-trust-val{font-family:var(--font-m);font-size:22px;font-weight:500;color:var(--accent);display:block;margin-bottom:3px;}
 .d-trust-lbl{font-size:11px;color:var(--text-3);}
 
+/* Desktop seller card — exact from prototype */
 .d-seller-card{background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.02));border:1px solid var(--accent-border);border-radius:var(--r-lg);padding:var(--sp4);}
 .d-seller-card h4{font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:var(--sp2);}
 .d-seller-card p{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:var(--sp3);}
-.d-seller-btn{display:flex;align-items:center;justify-content:center;gap:var(--sp2);padding:9px var(--sp4);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:var(--r-md);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;width:100%;}
+.d-seller-btn{display:flex;align-items:center;justify-content:center;gap:var(--sp2);padding:9px var(--sp4);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:var(--r-md);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;width:100%;}
+.d-seller-btn:hover{background:rgba(212,168,67,0.18);}
 
-/* ═══ DESKTOP ZONE PLACEHOLDER ═══ */
-.d-zone-placeholder{border:1px dashed var(--border-d);border-radius:var(--r-md);padding:var(--sp5);text-align:center;color:var(--text-3);font-size:12px;margin-top:var(--sp5);}
-.d-zone-placeholder .label{font-family:var(--font-d);font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:4px;}
+/* Desktop trust bar — exact from prototype */
+.d-trust-bar{display:flex;align-items:center;gap:var(--sp6);padding:12px var(--sp7);background:var(--bg-s1);border-top:1px solid var(--border-s);border-bottom:1px solid var(--border-s);}
+.d-trust-item{display:flex;align-items:center;gap:var(--sp2);font-size:13px;color:var(--text-2);}
+.d-trust-item strong{color:var(--text-1);font-weight:600;}
+.d-trust-bar .spacer{flex:1;}
+.d-trust-bar .sell-cta{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;}
+.d-trust-bar .sell-cta:hover{color:var(--accent-hover);}
+.d-divider{width:1px;height:16px;background:var(--border-d);}
 
-/* ═══ INTERACTION STATES ═══ */
-.state-section{max-width:960px;margin:0 auto var(--sp6);}
-.state-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp4);}
-.state-card{background:var(--bg-s1);border:1px solid var(--border-s);border-radius:var(--r-lg);padding:var(--sp4);}
-.state-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-3);margin-bottom:var(--sp3);}
-.state-preview{background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);padding:var(--sp3);margin-bottom:var(--sp3);}
-.state-desc{font-size:12px;color:var(--text-2);line-height:1.6;}
+/* Desktop seller signal link (below trust bar, for anon) */
+.d-seller-signal{display:none;} /* hidden on desktop — seller card in hero right serves this */
 
-/* Search hover state */
-.search-hover{border-color:var(--blue) !important;box-shadow:0 0 0 3px var(--blue-dim);}
-
-/* Seller signal — authenticated (hidden) */
-.hidden-indicator{background:var(--bg-s2);border:1px dashed var(--border-d);border-radius:var(--r-sm);padding:var(--sp2) var(--sp3);font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:var(--sp2);}
-
-/* ═══ A11Y PANEL ═══ */
-.a11y-section{max-width:960px;margin:0 auto;}
-.a11y-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp3);}
-.a11y-card{background:var(--bg-s1);border:1px solid var(--green-border);border-radius:var(--r-md);padding:var(--sp4);}
-.a11y-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);margin-bottom:var(--sp2);}
-.a11y-item{font-size:12px;color:var(--text-2);padding:3px 0;border-bottom:1px solid var(--border-s);line-height:1.5;}
-.a11y-item:last-child{border-bottom:none;}
-.a11y-item strong{color:var(--text-1);}
-
-/* ═══ COMPONENT TREE ═══ */
-.tree-section{max-width:960px;margin:0 auto;}
-.tree{background:var(--bg-s1);border:1px solid var(--border-s);border-radius:var(--r-lg);padding:var(--sp5);font-family:var(--font-m);font-size:12px;line-height:2;}
-.tree .comp{color:var(--blue);}
-.tree .prop{color:var(--accent);}
-.tree .comment{color:var(--text-3);}
-.tree .indent-1{margin-left:20px;}
-.tree .indent-2{margin-left:40px;}
-.tree .indent-3{margin-left:60px;}
-.tree .indent-4{margin-left:80px;}
-.tree .rsc-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--green-dim);color:var(--green);margin-left:8px;font-family:var(--font-b);}
-.tree .cc-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--blue-dim);color:var(--blue);margin-left:8px;font-family:var(--font-b);}
+/* ═══ IMPLEMENTATION NOTES PANEL ═══ */
+.impl-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:var(--sp5);}
+.impl-table th{padding:var(--sp2) var(--sp3);background:var(--bg-s2);text-align:left;font-weight:600;color:var(--text-2);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border-s);}
+.impl-table td{padding:var(--sp2) var(--sp3);border-bottom:1px solid var(--border-s);color:var(--text-2);vertical-align:top;}
+.impl-table td:first-child{color:var(--text-1);font-weight:500;}
+.impl-table tr:last-child td{border-bottom:none;}
+.status-fix{display:inline-flex;align-items:center;gap:4px;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;background:var(--red-dim);color:var(--red);}
+.status-ok{display:inline-flex;align-items:center;gap:4px;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;background:var(--green-dim);color:var(--green);}
+.code{font-family:var(--font-m);font-size:11px;background:var(--bg-s3);padding:1px 5px;border-radius:3px;color:var(--accent);}
+.impl-section{max-width:960px;margin:0 auto;}
+.impl-section h3{font-family:var(--font-d);font-size:16px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-1);margin-bottom:var(--sp3);}
+.impl-section p{font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:var(--sp4);}
+.impl-card{background:var(--bg-s1);border:1px solid var(--border-s);border-radius:var(--r-lg);overflow:hidden;margin-bottom:var(--sp5);}
+.impl-card-header{padding:var(--sp3) var(--sp4);border-bottom:1px solid var(--border-s);display:flex;align-items:center;justify-content:space-between;}
+.impl-card-header h4{font-size:13px;font-weight:600;color:var(--text-1);}
 
 </style>
 </head>
 <body>
 
-<!-- ═══ HEADER ═══ -->
-<div class="wf-header">
-  <div class="wf-eyebrow">Story 9.1 — Wireframe v1.0</div>
-  <h1 class="wf-title">Anonymous Homepage — <span class="brand">Hero &amp; Trust Foundation</span></h1>
-  <p class="wf-desc">Full homepage replacement. Server-rendered RSC with two-column desktop hero (H1, search, trust strip, seller signal) and single-column mobile layout. No game tiles (9.2), no personalised strip (9.4), no serendipity section (9.6).</p>
+<!-- ════ HEADER ════ -->
+<header class="wf-header">
+  <div class="wf-eyebrow">Story 9.1 — Wireframe v2 · Matches Prototype Exactly</div>
+  <h1><span class="brand">SideDecked</span> — Hero &amp; Trust Foundation</h1>
+  <p>Implementation reference for Story 9.1. Visual design is pixel-identical to the v1 prototype. Game tile section is Story 9-2 scope — shown as placeholder to preserve spatial context. Token compliance fixes required before implementation.</p>
   <div class="badge-row">
-    <span class="badge badge-story">Story 9.1</span>
-    <span class="badge badge-scope">storefront/ only</span>
-    <span class="badge badge-rsc">RSC — Server Component</span>
+    <span class="badge badge-story">9-1 · Anonymous Homepage</span>
+    <span class="badge badge-scope">storefront/ · RSC</span>
+    <span class="badge badge-rsc">Next.js RSC · No use client on page.tsx</span>
+    <span class="badge badge-fix">Token Compliance Fix Required</span>
   </div>
-</div>
+</header>
 
-<!-- ═══ TABS ═══ -->
-<nav class="tab-nav" aria-label="Wireframe views">
-  <button class="tab-btn active" onclick="showPanel('mobile-anon')">📱 Mobile — Anonymous</button>
-  <button class="tab-btn" onclick="showPanel('mobile-auth')">📱 Mobile — Authenticated</button>
-  <button class="tab-btn" onclick="showPanel('desktop-anon')">🖥 Desktop — Anonymous</button>
-  <button class="tab-btn" onclick="showPanel('desktop-auth')">🖥 Desktop — Authenticated</button>
-  <button class="tab-btn" onclick="showPanel('states')">🔄 Interaction States</button>
-  <button class="tab-btn" onclick="showPanel('a11y')">♿ Accessibility</button>
-  <button class="tab-btn" onclick="showPanel('components')">🧱 Component Tree</button>
+<!-- ════ TABS ════ -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showPanel('anon',this)"><span class="dot dot-anon"></span>Mobile — Anonymous</button>
+  <button class="tab-btn" onclick="showPanel('auth',this)"><span class="dot dot-auth"></span>Mobile — Authenticated</button>
+  <button class="tab-btn" onclick="showPanel('desktop',this)"><span class="dot dot-dsk"></span>🖥 Desktop</button>
+  <button class="tab-btn" onclick="showPanel('impl',this)"><span class="dot dot-impl"></span>Token Compliance</button>
 </nav>
 
 <div class="panels">
 
-  <!-- ═══════════════════════════════════════
-       PANEL 1: MOBILE — ANONYMOUS
-  ═══════════════════════════════════════ -->
-  <div id="mobile-anon" class="panel active">
-    <div class="proto-layout">
-      <div class="annotations">
-        <div class="panel-meta">
-          <div class="panel-title">Mobile (390px) — Anonymous visitor</div>
-          <div class="panel-desc">Single-column layout. All elements stacked vertically. Search bar is the dominant interactive element. Seller signal visible below trust strip. Game selector section appears below (Story 9.2 — not in scope for 9.1, shown as placeholder).</div>
-        </div>
-        <div class="note"><strong>AC1:</strong> Page is server-rendered (Next.js RSC). H1 is above-fold, first heading in DOM. No client-side flash.</div>
-        <div class="note"><strong>AC2:</strong> Trust strip shows config-driven counts from <code>lib/site-config.ts</code>. Fallback: "—" if config missing.</div>
-        <div class="note"><strong>AC3:</strong> Seller signal rendered server-side. Present for anonymous visitors. Hidden for authenticated users (server reads cookies).</div>
-        <div class="note"><strong>AC4:</strong> All touch targets ≥ 44×44px. Search bar min-height 44px. Seller signal link min-height 44px.</div>
-        <div class="note-blue"><strong>Layout:</strong> max-width: 100%, padding: 0 16px. Single column. No right panel on mobile.</div>
-        <div class="note-green"><strong>Performance:</strong> LCP = H1 text (largest above-fold element). No image LCP. CLS prevention: seller signal rendered server-side (no layout shift). Trust strip height reserved.</div>
-      </div>
-      <div class="phone-wrap">
-        <div class="phone" role="img" aria-label="Mobile wireframe — anonymous visitor">
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span class="time" aria-hidden="true">9:41</span>
-              <span class="icons" aria-hidden="true">▲▲ 5G ▮▮▮</span>
+<!-- ═══════════════════════════════════
+     MOBILE — ANONYMOUS
+═══════════════════════════════════ -->
+<div id="panel-anon" class="panel active">
+  <div class="panel-meta">
+    <div class="panel-eyebrow">Mobile · 390px · State 1 — Anonymous</div>
+    <div class="panel-title">Anonymous Homepage — Story 9.1 Scope</div>
+    <div class="panel-desc">First-time visitor or low-intent browser. Hero proves marketplace credibility within 10 seconds. H1 has game names highlighted in gold. Card-back tile section is Story 9-2 scope but shown as spatial placeholder. Trust strip and seller signal are Story 9-1 deliverables.</div>
+  </div>
+  <div class="proto-layout">
+    <div class="annotations">
+      <div class="note-blue"><strong>AC1: H1 orientation sentence.</strong> Exact text required: "The marketplace for MTG, Pokemon, Yu-Gi-Oh! and One Piece singles. Buy individual cards from verified sellers — no booster packs required." Game names render in <code style="color:var(--accent)">var(--accent)</code> gold exactly as in the prototype. Must be first heading in DOM. <span class="atag">AC1</span></div>
+      <div class="note-blue"><strong>AC1: Search bar.</strong> Largest interactive element above the fold. Placeholder: "Search cards, sets, sellers…" Uses <code style="color:var(--accent)">EnhancedSearchBar</code> client component. Renders in <code style="color:var(--accent)">var(--bg-s2)</code> background with <code style="color:var(--accent)">var(--border-d)</code> border. Hover → <code style="color:var(--accent)">var(--blue)</code> border. <span class="atag">AC1</span></div>
+      <div class="note"><strong>Story 9-2 spatial slot — no DOM in 9-1:</strong> Card-back game tiles (4 across, 5:7 ratio, real card back images) belong to Story 9-2 GameSelectorGrid. Story 9-1 implementation renders <strong>no DOM element</strong> in this space — not a placeholder div, not a spinner, not an empty grid frame. Only a code comment: <code style="color:var(--blue);">{/* Story 9-2: GameSelectorGrid */}</code>. Shown in wireframe as spatial reference only. <span class="atag" style="background:var(--blue-dim);color:var(--blue);">9-2</span></div>
+      <div class="note"><strong>AC2: Trust strip.</strong> Below the game tiles slot. Background <code style="color:var(--accent)">var(--bg-s2)</code>, border <code style="color:var(--accent)">var(--border-s)</code>. Values from <code style="color:var(--accent)">getSiteConfig()</code> — never hardcoded. <strong>"Buyers protected"</strong> is static informational copy — no link, no modal, no interaction. Story 9-1 scope: render text only. <span class="atag">AC2</span></div>
+      <div class="note-green"><strong>AC3: Seller signal.</strong> Single line below trust strip. "Got cards to sell? Become a seller →" — link in <code style="color:var(--green)">var(--accent)</code> gold with hover to <code style="color:var(--green)">var(--accent-hover)</code>. Wrapper has <code style="color:var(--green)">min-height:44px</code> for touch compliance. RSC renders null when authenticated. <span class="atag">AC3</span></div>
+      <div class="note-blue"><strong>AC4: Mobile layout.</strong> Single column. All touch targets ≥ 44×44px. Search bar <code style="color:var(--blue)">min-height:44px</code>. Seller signal wrapper <code style="color:var(--blue)">min-height:44px</code>. Thumb-reachable — search bar within top 200px. <span class="atag">AC4</span></div>
+      <div class="note"><strong>Pluralization:</strong> Trust strip copy uses "verified sellers" — implementation must handle plural: <code style="color:var(--text-2)">sellerCount === 1 ? 'verified seller' : 'verified sellers'</code>. Same for "cards" if count could be 1 (unlikely but correct). Expected value ranges: cardCount ≈ 10k–2M, sellerCount ≈ 10–10k. <span class="atag">AC2</span></div>
+      <div class="note"><strong>Accessibility:</strong> (1) Search input requires <code style="color:var(--text-2)">aria-label="Search cards, sets, sellers"</code> — no visible label. (2) Emoji icons in trust strip (📦 👥 ✅) need <code style="color:var(--text-2)">aria-hidden="true"</code>. (3) Seller signal arrow → wrap <code style="color:var(--text-2)">→</code> in <code style="color:var(--text-2)">&lt;span aria-hidden="true"&gt;</code> or add <code style="color:var(--text-2)">aria-label</code> on the link. <span class="atag">AC4</span></div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status"><span class="time">9:41</span><div class="icons">📶 WiFi 🔋</div></div>
+          <nav class="p-nav">
+            <div class="p-logo">Side<span>Decked</span></div>
+            <div class="p-nav-links"><span>Browse</span><span>Decks</span><span>Sell</span></div>
+            <div class="p-nav-actions">
+              <button class="p-icon-btn">🔍</button>
+              <button class="p-icon-btn">🛒</button>
             </div>
-
-            <!-- Mobile Nav -->
-            <nav class="p-nav" aria-label="Site navigation">
-              <div class="p-logo">Side<span>Decked</span></div>
-              <div class="p-nav-actions">
-                <button class="p-icon-btn" aria-label="Cart">🛒</button>
-                <button class="p-sign-in" aria-label="Sign in">Sign in</button>
-              </div>
-            </nav>
-
-            <!-- Mobile Hero -->
-            <main>
-              <section class="p-hero" aria-label="Homepage hero">
-                <!-- H1 — AC1 — LCP element -->
-                <h1 class="p-hero-h1">
-                  The marketplace for <span class="accent">MTG, Pokemon, Yu-Gi-Oh!</span> and One Piece singles. Buy individual cards from verified sellers — no booster packs required.
-                </h1>
-
-                <!-- Search Bar — AC1 — CommandSearch component reuse -->
-                <div class="p-search" role="search" aria-label="Search cards, sets, sellers">
-                  <span class="icon" aria-hidden="true">🔍</span>
-                  <span class="placeholder">Search cards, sets, sellers...</span>
-                </div>
-
-                <!-- Trust Strip — AC2 — config-driven -->
-                <div class="p-trust" aria-label="Platform trust indicators">
-                  <div class="p-trust-row">
-                    <span class="icon" aria-hidden="true">🃏</span>
-                    <span><strong>142,000</strong> cards listed</span>
-                  </div>
-                  <div class="p-trust-row">
-                    <span class="icon" aria-hidden="true">✅</span>
-                    <span><strong>340</strong> verified sellers</span>
-                  </div>
-                  <div class="p-trust-row">
-                    <span class="icon" aria-hidden="true">🛡</span>
-                    <span>Buyers protected</span>
-                  </div>
-                </div>
-
-                <!-- Seller Signal — AC3 — anonymous only -->
-                <div class="p-seller-signal">
-                  <span>Looking to sell?</span>
-                  <a href="/sell" aria-label="Become a seller on SideDecked">Become a seller →</a>
-                </div>
-              </section>
-
-              <!-- Game Selector placeholder — Story 9.2 scope -->
-              <div class="p-zone-placeholder">
-                <span class="label">Game Selector Grid</span>
-                Story 9.2 scope — renders below hero in this slot
-              </div>
-
-              <!-- Serendipity placeholder — Story 9.6 scope -->
-              <div class="p-zone-placeholder">
-                <span class="label">Trending Now &amp; Deck of the Day</span>
-                Story 9.6 scope
-              </div>
-            </main>
+          </nav>
+          <!-- HERO: H1 + subtitle + search -->
+          <div class="p-hero">
+            <div class="p-hero-h1">The marketplace for <span>MTG, Pokémon, Yu-Gi-Oh!</span> and One Piece singles.</div>
+            <div class="p-hero-sub">Buy individual cards from verified sellers — no booster packs required.</div>
+            <div class="p-search">
+              <span class="icon">🔍</span>
+              <span class="placeholder">Search cards, sets, sellers…</span>
+            </div>
+            <!-- STORY 9-2 SCOPE: Card-back game tiles -->
+            <div style="margin-bottom:var(--sp2);">
+              <span class="scope-badge">Story 9-2 — GameSelectorGrid</span>
+            </div>
+            <div class="p-cb-tiles">
+              <div class="p-cb-tile-placeholder"><span class="game-icon">🧙</span><span class="game-name">MTG</span><span class="game-count">4,218</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">⚡</span><span class="game-name">PKM</span><span class="game-count">2,142</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">🎴</span><span class="game-name">YGO</span><span class="game-count">1,847</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">⚓</span><span class="game-name">OP</span><span class="game-count">893</span></div>
+            </div>
           </div>
+          <!-- STORY 9-1: Trust strip -->
+          <div class="p-trust">
+            <div class="p-trust-row"><span class="icon">📦</span><span><strong>{cardCount}</strong> cards listed across all games</span></div>
+            <div class="p-trust-row"><span class="icon">👥</span><span><strong>{sellerCount}</strong> verified sellers · graded and reviewed</span></div>
+            <div class="p-trust-row"><span class="icon">✅</span><span><strong>Buyers protected</strong> on every transaction</span></div>
+          </div>
+          <!-- STORY 9-1: Seller signal (anonymous only) -->
+          <div class="p-seller-cta"><span>Got cards to sell?</span>&nbsp;<a href="/sell">Become a seller →</a></div>
+          <!-- Story 9-4+ scope -->
+          <div class="scope-slot" style="margin-bottom:var(--sp4);">
+            <div class="scope-slot-label">Stories 9-3 through 9-6</div>
+            <div class="scope-slot-sub">Trending Now · Deck of the Day · Personalised Strip</div>
+          </div>
+          <div class="p-spacer"></div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 2: MOBILE — AUTHENTICATED
-  ═══════════════════════════════════════ -->
-  <div id="mobile-auth" class="panel">
-    <div class="proto-layout">
-      <div class="annotations">
-        <div class="panel-meta">
-          <div class="panel-title">Mobile (390px) — Authenticated user</div>
-          <div class="panel-desc">Identical to anonymous layout except: seller signal is NOT rendered. Auth check happens server-side via cookies — no hydration flash, no CLS.</div>
-        </div>
-        <div class="note"><strong>AC3:</strong> Seller signal absent. Server reads session cookie and omits the element entirely from RSC output. No client-side conditional rendering.</div>
-        <div class="note-blue"><strong>CLS prevention:</strong> Because seller signal is omitted server-side (not hidden via CSS), there is zero layout shift when the auth state resolves. The trust strip occupies the same height with or without the seller signal below it.</div>
-      </div>
-      <div class="phone-wrap">
-        <div class="phone" role="img" aria-label="Mobile wireframe — authenticated user">
-          <div class="phone-screen">
-            <div class="phone-status">
-              <span class="time" aria-hidden="true">9:41</span>
-              <span class="icons" aria-hidden="true">▲▲ 5G ▮▮▮</span>
-            </div>
-            <nav class="p-nav" aria-label="Site navigation">
-              <div class="p-logo">Side<span>Decked</span></div>
-              <div class="p-nav-actions">
-                <button class="p-icon-btn" aria-label="Cart">🛒</button>
-                <button class="p-icon-btn" aria-label="Notifications">🔔</button>
-                <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#E85D26);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;" aria-label="User menu, Tav">T</div>
-              </div>
-            </nav>
-            <main>
-              <section class="p-hero" aria-label="Homepage hero">
-                <h1 class="p-hero-h1">
-                  The marketplace for <span class="accent">MTG, Pokemon, Yu-Gi-Oh!</span> and One Piece singles. Buy individual cards from verified sellers — no booster packs required.
-                </h1>
-                <div class="p-search" role="search" aria-label="Search cards, sets, sellers">
-                  <span class="icon" aria-hidden="true">🔍</span>
-                  <span class="placeholder">Search cards, sets, sellers...</span>
-                </div>
-                <div class="p-trust" aria-label="Platform trust indicators">
-                  <div class="p-trust-row"><span class="icon" aria-hidden="true">🃏</span><span><strong>142,000</strong> cards listed</span></div>
-                  <div class="p-trust-row"><span class="icon" aria-hidden="true">✅</span><span><strong>340</strong> verified sellers</span></div>
-                  <div class="p-trust-row"><span class="icon" aria-hidden="true">🛡</span><span>Buyers protected</span></div>
-                </div>
-                <!-- NO SELLER SIGNAL — AC3 — omitted server-side -->
-                <div class="hidden-indicator" style="margin:var(--sp3) 0;" aria-hidden="true">
-                  <span>👻</span>
-                  <span>Seller signal omitted (user authenticated — server-side check)</span>
-                </div>
-              </section>
-              <div class="p-zone-placeholder"><span class="label">Personalised Strip</span>Story 9.4 scope</div>
-              <div class="p-zone-placeholder"><span class="label">Game Selector Grid</span>Story 9.2 scope</div>
-              <div class="p-zone-placeholder"><span class="label">Trending Now &amp; Deck of the Day</span>Story 9.6 scope</div>
-            </main>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 3: DESKTOP — ANONYMOUS
-  ═══════════════════════════════════════ -->
-  <div id="desktop-anon" class="panel">
-    <div class="panel-meta" style="max-width:1280px;margin:0 auto var(--sp4);">
-      <div class="panel-title">Desktop (1280px+) — Anonymous visitor</div>
-      <div class="panel-desc">Two-column hero. Left: H1 + search bar + trust bar + seller signal. Right: trust stats card + seller opportunity card. Both columns rendered server-side. No images in hero — LCP is H1 text.</div>
-    </div>
-    <div class="note" style="max-width:1280px;margin:0 auto var(--sp3);">
-      <strong>AC5:</strong> Two-column CSS Grid: <code>grid-template-columns: 1fr 340px</code> at 1280px+. Left column: 55%. Right column: fixed 340px. Gap: 48px.
-    </div>
-    <div class="desktop-wrap">
-      <div class="browser">
-        <div class="browser-chrome">
-          <div class="b-dots"><div class="b-dot b-dot-r"></div><div class="b-dot b-dot-y"></div><div class="b-dot b-dot-g"></div></div>
-          <div class="b-url">sidedecked.com</div>
-        </div>
-
-        <!-- Desktop Nav -->
-        <nav class="d-nav" aria-label="Site navigation">
-          <div class="d-logo">Side<span>Decked</span></div>
-          <div class="d-nav-links">
-            <a href="#">Cards</a>
-            <a href="#">Decks</a>
-            <a href="#">Sellers</a>
-          </div>
-          <div class="d-nav-search" role="search" aria-label="Quick search">
-            <span class="icon" aria-hidden="true">🔍</span>
-            <span class="ph">Search...</span>
-          </div>
-          <div class="d-nav-actions">
-            <div class="d-nav-btn">Sign in</div>
-            <div class="d-nav-btn primary">Get started</div>
-          </div>
-        </nav>
-
-        <!-- Desktop Hero — AC5 -->
-        <main>
-          <section class="d-hero" aria-label="Homepage hero">
-
-            <!-- LEFT COLUMN -->
-            <div class="d-hero-left">
-              <!-- H1 — AC1 — LCP element -->
-              <h1 class="d-h1">
-                The marketplace for <span class="accent">MTG, Pokemon,<br>Yu-Gi-Oh!</span> and One Piece singles.<br>
-                Buy individual cards from verified sellers — no booster packs required.
-              </h1>
-
-              <!-- Search Bar — AC1 — CommandSearch reuse -->
-              <div class="d-search-bar" role="search" aria-label="Search cards, sets, sellers">
-                <span class="icon" aria-hidden="true">🔍</span>
-                <span class="ph">Search cards, sets, sellers...</span>
-                <span class="kbd" aria-label="Keyboard shortcut Command K">⌘K</span>
-              </div>
-
-              <!-- Trust Bar — AC2 — config-driven -->
-              <div class="d-trust-bar" aria-label="Platform trust indicators">
-                <div class="d-trust-item">
-                  <span aria-hidden="true">🃏</span>
-                  <span><strong>142,000</strong> cards listed</span>
-                </div>
-                <div class="d-divider" aria-hidden="true"></div>
-                <div class="d-trust-item">
-                  <span aria-hidden="true">✅</span>
-                  <span><strong>340</strong> verified sellers</span>
-                </div>
-                <div class="d-divider" aria-hidden="true"></div>
-                <div class="d-trust-item">
-                  <span aria-hidden="true">🛡</span>
-                  <span>Buyers protected</span>
-                </div>
-              </div>
-
-              <!-- Seller Signal — AC3 — anonymous only -->
-              <div class="d-seller-signal">
-                <span>Looking to sell your cards?</span>
-                <a href="/sell" aria-label="Become a seller on SideDecked">Become a seller →</a>
-              </div>
-
-              <!-- Game selector placeholder — Story 9.2 -->
-              <div class="d-zone-placeholder" style="margin-top:var(--sp6);">
-                <span class="label">Game Selector Grid (4-col)</span>
-                Story 9.2 scope — renders below seller signal
-              </div>
-            </div>
-
-            <!-- RIGHT COLUMN — AC5 — static markup, no API call -->
-            <div class="d-hero-right">
-              <!-- Trust Stats Card -->
-              <div class="d-trust-card" aria-label="Platform stats">
-                <div class="d-trust-card-header">Marketplace Stats</div>
-                <div class="d-trust-stats">
-                  <div class="d-trust-stat">
-                    <span class="d-trust-val" aria-label="142 thousand cards">142k</span>
-                    <span class="d-trust-lbl">Cards listed</span>
-                  </div>
-                  <div class="d-trust-stat">
-                    <span class="d-trust-val">340</span>
-                    <span class="d-trust-lbl">Verified sellers</span>
-                  </div>
-                  <div class="d-trust-stat">
-                    <span class="d-trust-val" aria-label="4 point 9 out of 5">4.9</span>
-                    <span class="d-trust-lbl">Avg seller rating</span>
-                  </div>
-                  <div class="d-trust-stat">
-                    <span class="d-trust-val" aria-label="4 games">4</span>
-                    <span class="d-trust-lbl">TCG games</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Seller Opportunity Card — static copy -->
-              <div class="d-seller-card" aria-label="Sell your cards on SideDecked">
-                <h4>Turn your collection into cash</h4>
-                <p>List individual cards in minutes. We handle payments, buyer protection, and dispute resolution. Keep more of what you earn.</p>
-                <button class="d-seller-btn" aria-label="Start selling on SideDecked">
-                  <span aria-hidden="true">💰</span> Start selling →
-                </button>
-              </div>
-            </div>
-
-          </section>
-
-          <!-- Below-fold area — Stories 9.2, 9.4, 9.6 scope -->
-          <div class="d-zone-placeholder" style="margin:var(--sp3) var(--sp7) var(--sp5);">
-            <span class="label">Serendipity Layer — Trending Now &amp; Deck of the Day</span>
-            Story 9.6 scope — renders below hero
-          </div>
-        </main>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 4: DESKTOP — AUTHENTICATED
-  ═══════════════════════════════════════ -->
-  <div id="desktop-auth" class="panel">
-    <div class="panel-meta" style="max-width:1280px;margin:0 auto var(--sp4);">
-      <div class="panel-title">Desktop (1280px+) — Authenticated user</div>
-      <div class="panel-desc">Identical to anonymous except: seller signal is NOT rendered in left column. Right column trust stats card remains. Seller opportunity card remains (authenticated sellers can still navigate to /sell). Personalised strip (9.4) will appear above game grid.</div>
-    </div>
-    <div class="note" style="max-width:1280px;margin:0 auto var(--sp3);"><strong>AC3:</strong> Seller signal omitted entirely from RSC output for authenticated users. Server reads auth cookie — no client-side conditional, zero CLS.</div>
-    <div class="desktop-wrap">
-      <div class="browser">
-        <div class="browser-chrome">
-          <div class="b-dots"><div class="b-dot b-dot-r"></div><div class="b-dot b-dot-y"></div><div class="b-dot b-dot-g"></div></div>
-          <div class="b-url">sidedecked.com</div>
-        </div>
-        <nav class="d-nav" aria-label="Site navigation">
-          <div class="d-logo">Side<span>Decked</span></div>
-          <div class="d-nav-links"><a href="#">Cards</a><a href="#">Decks</a><a href="#">Sellers</a></div>
-          <div class="d-nav-search" role="search"><span class="icon" aria-hidden="true">🔍</span><span class="ph">Search...</span></div>
-          <div class="d-nav-actions">
-            <div style="width:34px;height:34px;border-radius:var(--r-sm);background:var(--bg-s2);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text-2);" aria-label="Cart">🛒</div>
-            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#E85D26);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;" aria-label="User menu, Tav">T</div>
-          </div>
-        </nav>
-        <main>
-          <section class="d-hero" aria-label="Homepage hero">
-            <div class="d-hero-left">
-              <h1 class="d-h1">The marketplace for <span class="accent">MTG, Pokemon,<br>Yu-Gi-Oh!</span> and One Piece singles.<br>Buy individual cards from verified sellers — no booster packs required.</h1>
-              <div class="d-search-bar" role="search" aria-label="Search cards, sets, sellers">
-                <span class="icon" aria-hidden="true">🔍</span>
-                <span class="ph">Search cards, sets, sellers...</span>
-                <span class="kbd" aria-label="Keyboard shortcut Command K">⌘K</span>
-              </div>
-              <div class="d-trust-bar" aria-label="Platform trust indicators">
-                <div class="d-trust-item"><span aria-hidden="true">🃏</span><span><strong>142,000</strong> cards listed</span></div>
-                <div class="d-divider" aria-hidden="true"></div>
-                <div class="d-trust-item"><span aria-hidden="true">✅</span><span><strong>340</strong> verified sellers</span></div>
-                <div class="d-divider" aria-hidden="true"></div>
-                <div class="d-trust-item"><span aria-hidden="true">🛡</span><span>Buyers protected</span></div>
-              </div>
-              <!-- NO SELLER SIGNAL — AC3 -->
-              <div class="hidden-indicator" aria-hidden="true" style="margin:var(--sp4) 0;"><span>👻</span><span>Seller signal omitted (authenticated — server-side check)</span></div>
-              <div class="d-zone-placeholder"><span class="label">Game Selector Grid (4-col)</span>Story 9.2 scope</div>
-            </div>
-            <div class="d-hero-right">
-              <div class="d-trust-card" aria-label="Platform stats">
-                <div class="d-trust-card-header">Marketplace Stats</div>
-                <div class="d-trust-stats">
-                  <div class="d-trust-stat"><span class="d-trust-val">142k</span><span class="d-trust-lbl">Cards listed</span></div>
-                  <div class="d-trust-stat"><span class="d-trust-val">340</span><span class="d-trust-lbl">Verified sellers</span></div>
-                  <div class="d-trust-stat"><span class="d-trust-val">4.9</span><span class="d-trust-lbl">Avg seller rating</span></div>
-                  <div class="d-trust-stat"><span class="d-trust-val">4</span><span class="d-trust-lbl">TCG games</span></div>
-                </div>
-              </div>
-              <div class="d-seller-card" aria-label="Sell your cards">
-                <h4>Turn your collection into cash</h4>
-                <p>List individual cards in minutes. We handle payments, buyer protection, and dispute resolution.</p>
-                <button class="d-seller-btn">💰 Start selling →</button>
-              </div>
-            </div>
-          </section>
-          <div class="d-zone-placeholder" style="margin:var(--sp3) var(--sp7) var(--sp5);"><span class="label">Personalised Strip + Serendipity Layer</span>Stories 9.4 + 9.6 scope</div>
-        </main>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 5: INTERACTION STATES
-  ═══════════════════════════════════════ -->
-  <div id="states" class="panel">
-    <div class="state-section">
-      <div class="panel-meta">
-        <div class="panel-title">Interaction States</div>
-        <div class="panel-desc">All interactive elements must have defined hover, focus, active, and error states. Story 9.1 has minimal interactivity — the search bar is a click-through, the seller signal is a link.</div>
-      </div>
-
-      <div class="state-grid">
-
-        <!-- Search bar: default -->
-        <div class="state-card">
-          <div class="state-label">Search Bar — Default</div>
-          <div class="state-preview">
-            <div class="d-search-bar" style="margin:0;">
-              <span class="icon" aria-hidden="true">🔍</span>
-              <span class="ph">Search cards, sets, sellers...</span>
-              <span class="kbd">⌘K</span>
-            </div>
-          </div>
-          <div class="state-desc">Border: <code>var(--border-d)</code>. Background: <code>var(--bg-s2)</code>.</div>
-        </div>
-
-        <!-- Search bar: hover/focus -->
-        <div class="state-card">
-          <div class="state-label">Search Bar — Hover / Focus <span class="ac-tag">AC1</span></div>
-          <div class="state-preview">
-            <div class="d-search-bar search-hover" style="margin:0;">
-              <span class="icon" aria-hidden="true">🔍</span>
-              <span class="ph">Search cards, sets, sellers...</span>
-              <span class="kbd">⌘K</span>
-            </div>
-          </div>
-          <div class="state-desc">Border: <code>var(--blue)</code>. Focus ring: <code>box-shadow: 0 0 0 3px var(--blue-dim)</code>. Visible focus indicator for keyboard users (WCAG 2.4.7).</div>
-        </div>
-
-        <!-- Seller signal: default (anonymous) -->
-        <div class="state-card">
-          <div class="state-label">Seller Signal — Anonymous <span class="ac-tag">AC3</span></div>
-          <div class="state-preview">
-            <div class="d-seller-signal" style="margin:0;">
-              <span>Looking to sell your cards?</span>
-              <a href="#" style="color:var(--accent);">Become a seller →</a>
-            </div>
-          </div>
-          <div class="state-desc">Link color: <code>var(--accent)</code>. Hover: <code>var(--accent-hover)</code>. Underline on hover. Min touch target: 44px height on mobile.</div>
-        </div>
-
-        <!-- Seller signal: authenticated (hidden) -->
-        <div class="state-card">
-          <div class="state-label">Seller Signal — Authenticated <span class="ac-tag">AC3</span></div>
-          <div class="state-preview">
-            <div class="hidden-indicator" style="margin:0;">
-              <span>👻</span><span>Element not present in DOM</span>
-            </div>
-          </div>
-          <div class="state-desc">Not rendered server-side. Server reads <code>sd-session</code> cookie. If auth check throws, degrade to showing signal (fail open).</div>
-        </div>
-
-        <!-- Trust strip: config values present -->
-        <div class="state-card">
-          <div class="state-label">Trust Strip — Config Present <span class="ac-tag">AC2</span></div>
-          <div class="state-preview">
-            <div class="p-trust" style="margin:0;">
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">🃏</span><span><strong>142,000</strong> cards listed</span></div>
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">✅</span><span><strong>340</strong> verified sellers</span></div>
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">🛡</span><span>Buyers protected</span></div>
-            </div>
-          </div>
-          <div class="state-desc">Values from <code>SITE_CARD_COUNT</code> and <code>SITE_SELLER_COUNT</code> in <code>lib/site-config.ts</code>.</div>
-        </div>
-
-        <!-- Trust strip: config missing fallback -->
-        <div class="state-card">
-          <div class="state-label">Trust Strip — Config Missing Fallback <span class="ac-tag">AC2</span></div>
-          <div class="state-preview">
-            <div class="p-trust" style="margin:0;">
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">🃏</span><span><strong>—</strong> cards listed</span></div>
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">✅</span><span><strong>—</strong> verified sellers</span></div>
-              <div class="p-trust-row"><span class="icon" aria-hidden="true">🛡</span><span>Buyers protected</span></div>
-            </div>
-          </div>
-          <div class="state-desc">If <code>SITE_CARD_COUNT</code> or <code>SITE_SELLER_COUNT</code> are undefined, render "—" placeholder. "Buyers protected" is always static copy, never a config value.</div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 6: ACCESSIBILITY
-  ═══════════════════════════════════════ -->
-  <div id="a11y" class="panel">
-    <div class="a11y-section">
-      <div class="panel-meta">
-        <div class="panel-title">Accessibility Requirements — WCAG 2.1 AA</div>
-        <div class="panel-desc">Story 9.1 introduces the first H1 on the homepage. All elements must meet contrast, keyboard, and screen reader requirements.</div>
-      </div>
-
-      <div class="a11y-grid">
-        <div class="a11y-card">
-          <div class="a11y-label">Semantic Structure</div>
-          <div class="a11y-item"><strong>&lt;h1&gt;</strong> — orientation sentence, first heading in DOM</div>
-          <div class="a11y-item"><strong>&lt;main&gt;</strong> — wraps all page content below nav</div>
-          <div class="a11y-item"><strong>&lt;nav aria-label="Site navigation"&gt;</strong> — distinct from tab nav</div>
-          <div class="a11y-item"><strong>&lt;section aria-label="Homepage hero"&gt;</strong> — landmark for hero</div>
-          <div class="a11y-item"><strong>No &lt;h2&gt; in story 9.1</strong> — right panel uses &lt;h4&gt; inside card (not heading hierarchy landmark)</div>
-        </div>
-
-        <div class="a11y-card">
-          <div class="a11y-label">Keyboard Navigation</div>
-          <div class="a11y-item">Tab order: Nav logo → Nav links → Nav search → Nav actions → Hero search bar → Seller signal link → Right panel CTA</div>
-          <div class="a11y-item"><strong>Search bar:</strong> focusable via Tab, activates CommandSearch on Enter/click</div>
-          <div class="a11y-item"><strong>Seller signal link:</strong> focusable, focus ring visible (<code>outline: 2px solid var(--blue)</code>)</div>
-          <div class="a11y-item"><strong>Right panel CTA:</strong> keyboard-activatable button with visible focus ring</div>
-          <div class="a11y-item"><strong>Skip link:</strong> <code>&lt;a href="#main"&gt;Skip to content&lt;/a&gt;</code> as first focusable element</div>
-        </div>
-
-        <div class="a11y-card">
-          <div class="a11y-label">Screen Reader</div>
-          <div class="a11y-item"><strong>Search:</strong> <code>role="search"</code> + <code>aria-label="Search cards, sets, sellers"</code></div>
-          <div class="a11y-item"><strong>Trust strip:</strong> <code>aria-label="Platform trust indicators"</code></div>
-          <div class="a11y-item"><strong>Icons:</strong> all decorative icons have <code>aria-hidden="true"</code></div>
-          <div class="a11y-item"><strong>Trust stats (desktop):</strong> numeric values have <code>aria-label</code> with expanded form ("142 thousand cards")</div>
-          <div class="a11y-item"><strong>Seller signal:</strong> <code>aria-label="Become a seller on SideDecked"</code> (descriptive, not just "→")</div>
-        </div>
-
-        <div class="a11y-card">
-          <div class="a11y-label">Contrast Ratios</div>
-          <div class="a11y-item"><strong>H1 text</strong> (#E8ECF1 on #0C0D12): ≈ 16.5:1 ✅</div>
-          <div class="a11y-item"><strong>Accent text</strong> (#D4A843 on #0C0D12): ≈ 7.1:1 ✅</div>
-          <div class="a11y-item"><strong>Search placeholder</strong> (#4F5568 on #1A1C24): ≈ 4.6:1 ✅</div>
-          <div class="a11y-item"><strong>Trust strip text</strong> (#8B93A6 on #1A1C24): ≈ 4.8:1 ✅</div>
-          <div class="a11y-item"><strong>Seller signal link</strong> (#D4A843 on #0C0D12): ≈ 7.1:1 ✅</div>
-        </div>
-
-        <div class="a11y-card">
-          <div class="a11y-label">Touch Targets (AC4)</div>
-          <div class="a11y-item"><strong>Search bar:</strong> min-height: 44px, full-width ✅</div>
-          <div class="a11y-item"><strong>Seller signal link:</strong> min-height: 44px via padding ✅</div>
-          <div class="a11y-item"><strong>Nav cart / sign-in:</strong> 36×36px — wrapped in 44px tappable area ✅</div>
-          <div class="a11y-item"><strong>Right panel CTA button:</strong> padding: 9px 16px, full-width ✅</div>
-        </div>
-
-        <div class="a11y-card">
-          <div class="a11y-label">Motion / Reduced Motion</div>
-          <div class="a11y-item">Story 9.1 has no animations on the hero or trust strip</div>
-          <div class="a11y-item">Hover transitions on search bar and seller link use <code>transition: border-color 0.15s, color 0.15s</code></div>
-          <div class="a11y-item"><code>@media (prefers-reduced-motion: reduce)</code> → remove all transitions ✅</div>
-          <div class="a11y-item">No autoplay, no infinite scroll, no marquee in 9.1 scope</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════
-       PANEL 7: COMPONENT TREE
-  ═══════════════════════════════════════ -->
-  <div id="components" class="panel">
-    <div class="tree-section">
-      <div class="panel-meta">
-        <div class="panel-title">Component Tree — Story 9.1 Scope</div>
-        <div class="panel-desc">All components in this story are React Server Components (RSC) unless explicitly marked as Client Components. No "use client" on page.tsx. Search bar reuses existing CommandSearch from Epic 2.3.</div>
-      </div>
-      <div class="note-blue">Repo: <strong>storefront/</strong> · Entry: <code>src/app/[locale]/(main)/page.tsx</code></div>
-      <div class="note"><strong>Existing components removed:</strong> <code>GamesBentoGrid</code>, <code>HomeClient</code>, <code>HomeProductSection</code>, community section. These are replaced by the new hero structure.</div>
-      <div class="tree">
-        <div><span class="comp">page.tsx</span> <span class="rsc-badge">RSC</span> <span class="comment">// replaces existing homepage</span></div>
-        <div class="indent-1"><span class="comp">&lt;HeroSection&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// new component: src/components/homepage/HeroSection.tsx</span></div>
-        <div class="indent-2"><span class="comp">&lt;HeroLeft&gt;</span> <span class="rsc-badge">RSC</span></div>
-        <div class="indent-3"><span class="prop">h1</span> <span class="comment">// orientation sentence — static, LCP element</span></div>
-        <div class="indent-3"><span class="comp">&lt;SearchBarTrigger /&gt;</span> <span class="cc-badge">Client</span> <span class="comment">// reuse existing from Epic 2.3 — opens CommandSearch</span></div>
-        <div class="indent-3"><span class="comp">&lt;TrustStrip&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// new: src/components/homepage/TrustStrip.tsx</span></div>
-        <div class="indent-4"><span class="prop">cardCount</span> <span class="comment">// from getSiteConfig().cardCount</span></div>
-        <div class="indent-4"><span class="prop">sellerCount</span> <span class="comment">// from getSiteConfig().sellerCount</span></div>
-        <div class="indent-3"><span class="comp">&lt;SellerSignal /&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// new: renders only when !isAuthenticated</span></div>
-        <div class="indent-4"><span class="prop">isAuthenticated</span> <span class="comment">// from getServerSession() or cookies()</span></div>
-        <div class="indent-2"><span class="comp">&lt;HeroRight&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// desktop only (hidden on mobile via CSS)</span></div>
-        <div class="indent-3"><span class="comp">&lt;TrustStatsCard /&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// new: static markup, values from getSiteConfig()</span></div>
-        <div class="indent-3"><span class="comp">&lt;SellerOpportunityCard /&gt;</span> <span class="rsc-badge">RSC</span> <span class="comment">// new: static marketing copy, link to /sell</span></div>
-        <div class="indent-1"><span class="comment">// Below-hero slots (populated by future stories)</span></div>
-        <div class="indent-1"><span class="comp">&lt;Suspense fallback=&#123;null&#125;&gt;</span> <span class="comment">// Story 9.4: PersonalisedStrip</span></div>
-        <div class="indent-1"><span class="comp">&lt;GameSelectorGrid /&gt;</span> <span class="comment">// Story 9.2 — not in 9.1 scope, slot reserved</span></div>
-        <div class="indent-1"><span class="comp">&lt;SerendipityLayer /&gt;</span> <span class="comment">// Story 9.6 — not in 9.1 scope, slot reserved</span></div>
-        <br>
-        <div><span class="comment">// New files created by Story 9.1:</span></div>
-        <div><span class="prop">src/lib/site-config.ts</span> <span class="comment">// getSiteConfig() — returns card/seller counts from env/constants</span></div>
-        <div><span class="prop">src/components/homepage/HeroSection.tsx</span></div>
-        <div><span class="prop">src/components/homepage/TrustStrip.tsx</span></div>
-        <div><span class="prop">src/components/homepage/SellerSignal.tsx</span></div>
-        <div><span class="prop">src/components/homepage/HeroRight.tsx</span></div>
-        <div><span class="prop">src/components/homepage/TrustStatsCard.tsx</span></div>
-        <div><span class="prop">src/components/homepage/SellerOpportunityCard.tsx</span></div>
-        <br>
-        <div><span class="comment">// Existing files modified by Story 9.1:</span></div>
-        <div><span class="prop">src/app/[locale]/(main)/page.tsx</span> <span class="comment">// replaces GamesBentoGrid + HomeClient + trending + community</span></div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
+<!-- ═══════════════════════════════════
+     MOBILE — AUTHENTICATED
+═══════════════════════════════════ -->
+<div id="panel-auth" class="panel">
+  <div class="panel-meta">
+    <div class="panel-eyebrow">Mobile · 390px · State 2 — Authenticated</div>
+    <div class="panel-title">Authenticated Homepage — Story 9.1 Scope</div>
+    <div class="panel-desc">Returning user. Seller signal link is NOT rendered — RSC returns null when isAuthenticated=true. Trust strip remains visible. Same layout as anonymous minus the seller CTA.</div>
+  </div>
+  <div class="proto-layout">
+    <div class="annotations">
+      <div class="note-green"><strong>AC3: Seller signal hidden.</strong> When <code style="color:var(--green)">isAuthenticated=true</code>, the SellerSignal component returns null. Not hidden via CSS — completely absent from the DOM. Server-side auth check via <code style="color:var(--green)">retrieveCustomer()</code>. Fail open: if auth throws, show the seller signal. <span class="atag">AC3</span></div>
+      <div class="note-blue"><strong>Auth check pattern.</strong> <code style="color:var(--blue)">retrieveCustomer().catch(() => null)</code> in page.tsx. Result passed to HeroSection as <code style="color:var(--blue)">isAuthenticated={!!customer}</code>. Null = not authenticated = show seller signal. <span class="atag">AC3</span></div>
+      <div class="note"><strong>Everything else identical.</strong> H1 text, subtitle, search bar, card-back tile slot, and trust strip are identical between authenticated and anonymous states. Only the seller signal CTA disappears. <span class="atag">AC3</span></div>
+      <div class="note-blue"><strong>No CLS risk — layout height stable.</strong> Auth is resolved server-side before render. The seller signal section is not hidden via CSS — it is absent from the RSC output entirely. The vertical space it occupies in the anonymous state is not reserved in the authenticated state: the trust strip simply becomes the last element in the hero. Because this is server-rendered with no hydration paint, there is no layout shift. Do NOT add a <code style="color:var(--blue);">min-height</code> placeholder div when authenticated — that would cause unnecessary whitespace. <span class="atag">AC3</span> <span class="atag">AC6</span></div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-status"><span class="time">9:41</span><div class="icons">📶 WiFi 🔋</div></div>
+          <nav class="p-nav">
+            <div class="p-logo">Side<span>Decked</span></div>
+            <div class="p-nav-links"><span>Browse</span><span>Decks</span></div>
+            <div class="p-nav-actions">
+              <button class="p-icon-btn p-notif-dot">🔔</button>
+              <button class="p-icon-btn">🛒</button>
+              <div class="p-avatar">T</div>
+            </div>
+          </nav>
+          <!-- Story 9-4 scope: personalised strip would go here -->
+          <div class="scope-slot" style="margin:var(--sp3) var(--sp4) 0;">
+            <div class="scope-slot-label">Story 9-4 — Personalised Strip</div>
+            <div class="scope-slot-sub">Welcome back, Tav · deck / alert / watchlist tiles</div>
+          </div>
+          <div class="p-hero" style="padding-top:var(--sp4);">
+            <div class="p-hero-h1">The marketplace for <span>MTG, Pokémon, Yu-Gi-Oh!</span> and One Piece singles.</div>
+            <div class="p-hero-sub">Buy individual cards from verified sellers — no booster packs required.</div>
+            <div class="p-search">
+              <span class="icon">🔍</span>
+              <span class="placeholder">Search cards, sets, sellers…</span>
+            </div>
+            <div style="margin-bottom:var(--sp2);">
+              <span class="scope-badge">Story 9-2 — GameSelectorGrid</span>
+            </div>
+            <div class="p-cb-tiles">
+              <div class="p-cb-tile-placeholder" style="border-color:var(--accent);"><span class="game-icon">🧙</span><span class="game-name" style="color:var(--accent);">MTG</span><span class="game-count">4,218</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">⚡</span><span class="game-name">PKM</span><span class="game-count">2,142</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">🎴</span><span class="game-name">YGO</span><span class="game-count">1,847</span></div>
+              <div class="p-cb-tile-placeholder"><span class="game-icon">⚓</span><span class="game-name">OP</span><span class="game-count">893</span></div>
+            </div>
+          </div>
+          <div class="p-trust">
+            <div class="p-trust-row"><span class="icon">📦</span><span><strong>{cardCount}</strong> cards listed across all games</span></div>
+            <div class="p-trust-row"><span class="icon">👥</span><span><strong>{sellerCount}</strong> verified sellers · graded and reviewed</span></div>
+            <div class="p-trust-row"><span class="icon">✅</span><span><strong>Buyers protected</strong> on every transaction</span></div>
+          </div>
+          <!-- SELLER SIGNAL: null for authenticated user -->
+          <div style="margin:var(--sp3) var(--sp4) 0;padding:var(--sp2) var(--sp3);background:var(--bg-s1);border:1px dashed var(--border-s);border-radius:var(--r-sm);font-size:11px;color:var(--text-3);">
+            SellerSignal → null (isAuthenticated=true · not rendered in DOM)
+          </div>
+          <div class="scope-slot" style="margin-bottom:var(--sp4);">
+            <div class="scope-slot-label">Stories 9-3 through 9-6</div>
+            <div class="scope-slot-sub">Trending Now · Deck of the Day · Personalised Strip</div>
+          </div>
+          <div class="p-spacer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     DESKTOP
+═══════════════════════════════════ -->
+<div id="panel-desktop" class="panel">
+  <div class="panel-meta">
+    <div class="panel-eyebrow">Desktop — 1280px · Anonymous State</div>
+    <div class="panel-title">Desktop Homepage — Story 9.1 Scope</div>
+    <div class="panel-desc">Two-column hero layout: left delivers H1 + subtitle + search + card-back tile slot (Story 9-2) + trust strip + seller signal. Right column: TrustStatsCard (Marketplace at a glance) + SellerOpportunityCard. Trust bar below hero. Both audience flows (buyer + seller evaluator) above the fold.</div>
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto var(--sp5);display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp3);">
+    <div class="note-blue"><strong>AC5: Two-column grid.</strong> <code style="color:var(--blue)">grid-cols-[1fr_340px] gap-12</code> at <code style="color:var(--blue)">lg:</code> breakpoint. Left: H1+search+tiles+trust+signal. Right: TrustStatsCard + SellerOpportunityCard. Both columns fully server-rendered — no client-side data fetching.</div>
+    <div class="note"><strong>AC5: Right column — static markup only.</strong> TrustStatsCard values come from <code style="color:var(--accent)">getSiteConfig()</code> props. SellerOpportunityCard is fully static. No API calls from the right column. Reserved height prevents CLS. <span class="atag">AC5</span></div>
+    <div class="note-green"><strong>Desktop trust bar.</strong> Full-width strip below hero with 4 trust items + "List your cards →" seller CTA. <code style="color:var(--green)">var(--bg-s1)</code> background, <code style="color:var(--green)">var(--border-s)</code> borders. Seller CTA in gold — anonymous only. <span class="atag">AC2</span></div>
+  </div>
+
+  <div class="desktop-wrap">
+    <div class="browser">
+      <div class="browser-chrome">
+        <div class="b-dots"><div class="b-dot b-dot-r"></div><div class="b-dot b-dot-y"></div><div class="b-dot b-dot-g"></div></div>
+        <div class="b-url">sidedecked.com</div>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="d-nav">
+        <div class="d-logo">Side<span>Decked</span></div>
+        <div class="d-nav-links">
+          <a href="#">Browse Cards</a>
+          <a href="#">Deck Builder</a>
+          <a href="#">Marketplace</a>
+          <a href="#">Sell</a>
+          <a href="#">Community</a>
+        </div>
+        <div class="d-nav-search">
+          <span class="icon" style="font-size:13px;color:var(--text-3);">🔍</span>
+          <span class="ph">Search cards…</span>
+          <span style="font-family:var(--font-m);font-size:11px;color:var(--text-3);background:var(--bg-s3);border:1px solid var(--border-d);padding:2px 7px;border-radius:4px;">⌘K</span>
+        </div>
+        <div class="d-nav-actions">
+          <button class="d-icon">🔔</button>
+          <button class="d-icon">🛒</button>
+          <button class="d-nav-btn">Sign in</button>
+          <button class="d-nav-btn primary">Get started</button>
+        </div>
+      </nav>
+
+      <!-- Desktop Hero: two-column -->
+      <div class="d-hero">
+        <!-- Left column -->
+        <div class="d-hero-left">
+          <div class="d-h1">The marketplace for <span>MTG, Pokémon, Yu-Gi-Oh!</span> and One Piece singles.</div>
+          <div class="d-sub">Buy individual cards from verified sellers — no booster packs required. Real prices, real stock, real sellers.</div>
+          <div class="d-search-bar">
+            <span class="icon" style="font-size:18px;color:var(--text-3);">🔍</span>
+            <span class="ph">Search any card by name, set, condition, or format…</span>
+            <span style="font-family:var(--font-m);font-size:11px;color:var(--text-3);background:var(--bg-s3);border:1px solid var(--border-d);padding:2px 7px;border-radius:4px;">⌘K</span>
+          </div>
+          <!-- Story 9-2 scope: card-back tiles -->
+          <div style="margin-bottom:var(--sp2);">
+            <span class="scope-badge">Story 9-2 — GameSelectorGrid</span>
+          </div>
+          <div class="d-cb-tiles" style="margin-bottom:var(--sp5);">
+            <div class="d-cb-tile-placeholder"><span class="game-icon">🧙</span><span class="game-name">Magic: The Gathering</span><span class="game-count">4,218 listings</span></div>
+            <div class="d-cb-tile-placeholder"><span class="game-icon">⚡</span><span class="game-name">Pokémon TCG</span><span class="game-count">2,142 listings</span></div>
+            <div class="d-cb-tile-placeholder"><span class="game-icon">🎴</span><span class="game-name">Yu-Gi-Oh!</span><span class="game-count">1,847 listings</span></div>
+            <div class="d-cb-tile-placeholder"><span class="game-icon">⚓</span><span class="game-name">One Piece TCG</span><span class="game-count">893 listings</span></div>
+          </div>
+          <!-- Story 9-1: desktop trust strip (horizontal version not needed — trust bar handles this below) -->
+          <!-- Seller signal for desktop: shown in right column via SellerOpportunityCard — redundant inline link omitted -->
+        </div>
+
+        <!-- Right column: TrustStatsCard + SellerOpportunityCard -->
+        <div class="d-hero-right">
+          <!-- TrustStatsCard -->
+          <div class="d-trust-card">
+            <div class="d-trust-card-header">Marketplace at a glance</div>
+            <div class="d-trust-stats">
+              <div class="d-trust-stat"><span class="d-trust-val">{cardCount}</span><span class="d-trust-lbl">Cards listed</span></div>
+              <div class="d-trust-stat"><span class="d-trust-val">{sellerCount}</span><span class="d-trust-lbl">Verified sellers</span></div>
+              <div class="d-trust-stat"><span class="d-trust-val">4</span><span class="d-trust-lbl">TCG games</span></div>
+              <div class="d-trust-stat"><span class="d-trust-val">✅</span><span class="d-trust-lbl">Buyers protected</span></div>
+            </div>
+          </div>
+          <!-- SellerOpportunityCard -->
+          <div class="d-seller-card">
+            <h4>Selling your collection?</h4>
+            <p>List cards in minutes. Set your price, we handle payments and buyer protection. {sellerCount} sellers already earning.</p>
+            <button class="d-seller-btn">Start selling →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop trust bar (below hero, above main content) -->
+      <div class="d-trust-bar">
+        <div class="d-trust-item"><span>📦</span><span><strong>{cardCount} cards</strong> listed</span></div>
+        <div class="d-divider"></div>
+        <div class="d-trust-item"><span>👥</span><span><strong>{sellerCount} verified sellers</strong></span></div>
+        <div class="d-divider"></div>
+        <div class="d-trust-item"><span>✅</span><span>Buyers protected on every order</span></div>
+        <div class="d-divider"></div>
+        <div class="d-trust-item"><span>🎮</span><span>MTG · Pokémon · Yu-Gi-Oh! · One Piece</span></div>
+        <div class="spacer"></div>
+        <div class="d-trust-item sell-cta">List your cards →</div>
+      </div>
+
+      <!-- Main content slot (Stories 9-3 through 9-6) -->
+      <div style="padding:var(--sp5) var(--sp7);">
+        <div style="padding:var(--sp5);background:var(--bg-s1);border:1px dashed var(--blue-border);border-radius:var(--r-lg);text-align:center;">
+          <div style="font-size:12px;color:var(--blue);font-weight:600;">Stories 9-3 through 9-6</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Trending Now · Deck of the Day · Homepage BFF endpoint · Serendipity Layer</div>
+        </div>
+      </div>
+
+    </div><!-- /browser -->
+  </div><!-- /desktop-wrap -->
+</div>
+
+<!-- ═══════════════════════════════════
+     TOKEN COMPLIANCE NOTES
+═══════════════════════════════════ -->
+<div id="panel-impl" class="panel">
+  <div class="impl-section">
+    <div class="panel-eyebrow">Token Compliance Fix Required</div>
+    <div class="panel-title" style="margin-top:var(--sp2);margin-bottom:var(--sp3);">Tailwind v3 Token Corrections</div>
+    <p>The original implementation used Tailwind class names that only resolve in Tailwind v4 (<code class="code">@theme inline</code>). This project is Tailwind v3.4.1 — those classes generate no CSS. The table below lists every broken class and its correct v3 replacement.</p>
+
+    <div class="impl-card">
+      <div class="impl-card-header"><h4>Components with Token Violations</h4></div>
+      <table class="impl-table">
+        <thead>
+          <tr><th>Component</th><th>Broken Class</th><th>Correct Class</th><th>Tailwind v3 Resolution</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>HeroSection.tsx (h1)</td>
+            <td><code class="code">text-text-primary</code></td>
+            <td><code class="code">text-primary</code></td>
+            <td><code class="code">textColor.primary</code> → <code class="code">var(--foreground)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStrip.tsx (container)</td>
+            <td><code class="code">bg-surface-2</code></td>
+            <td><code class="code">bg-bg-surface-2</code></td>
+            <td><code class="code">colors['bg-surface-2']</code> → <code class="code">var(--bg-surface-2)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStrip.tsx (container)</td>
+            <td><code class="code">border-border-default</code></td>
+            <td><code class="code">border-border</code></td>
+            <td><code class="code">colors.border</code> → <code class="code">var(--border)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStrip.tsx (rows)</td>
+            <td><code class="code">text-text-secondary</code></td>
+            <td><code class="code">text-secondary</code></td>
+            <td><code class="code">textColor.secondary</code> → <code class="code">var(--muted-foreground)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStrip.tsx (values)</td>
+            <td><code class="code">text-text-primary</code></td>
+            <td><code class="code">text-primary</code></td>
+            <td><code class="code">textColor.primary</code> → <code class="code">var(--foreground)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStatsCard.tsx (container)</td>
+            <td><code class="code">bg-surface-2</code></td>
+            <td><code class="code">bg-bg-surface-2</code></td>
+            <td><code class="code">colors['bg-surface-2']</code> → <code class="code">var(--bg-surface-2)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStatsCard.tsx (container)</td>
+            <td><code class="code">border-border-default</code></td>
+            <td><code class="code">border-border</code></td>
+            <td><code class="code">colors.border</code> → <code class="code">var(--border)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStatsCard.tsx (inner borders)</td>
+            <td><code class="code">border-border-default</code></td>
+            <td><code class="code">border-border</code></td>
+            <td><code class="code">colors.border</code> → <code class="code">var(--border)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStatsCard.tsx (stat values)</td>
+            <td><code class="code">text-accent</code></td>
+            <td><code class="code">text-accent-primary</code></td>
+            <td><code class="code">--accent</code> is rgba(212,168,67,0.15) in dark — invisible as text. <code class="code">--accent-primary</code> = <code class="code">var(--primary)</code> = solid gold.</td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>TrustStatsCard.tsx (labels)</td>
+            <td><code class="code">text-text-tertiary</code></td>
+            <td><code class="code">text-tertiary</code></td>
+            <td><code class="code">textColor.tertiary</code> → <code class="code">var(--card-foreground)</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerOpportunityCard.tsx (container)</td>
+            <td><code class="code">from-accent/[0.06] to-accent/[0.02]</code></td>
+            <td>Inline style or literal CSS</td>
+            <td>Opacity modifier on RGBA CSS var breaks CSS generation. Use: <code class="code">style={{background:'linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.02))'}}</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerOpportunityCard.tsx (container)</td>
+            <td><code class="code">border-accent-border</code></td>
+            <td>Inline style or CSS var</td>
+            <td>No <code class="code">accent-border</code> key in Tailwind config. Use: <code class="code">style={{borderColor:'var(--accent-border)'}}</code> or add token to config.</td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerOpportunityCard.tsx (CTA)</td>
+            <td><code class="code">bg-accent/10 hover:bg-accent/[0.18]</code></td>
+            <td>Inline style or literal CSS</td>
+            <td>Same opacity-on-RGBA issue. Use: <code class="code">style={{background:'var(--accent-dim)'}}</code> for base; hover via CSS or Tailwind group.</td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerOpportunityCard.tsx (CTA)</td>
+            <td><code class="code">border-accent-border</code></td>
+            <td>Inline style</td>
+            <td>Use: <code class="code">style={{borderColor:'var(--accent-border)'}}</code></td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerSignal.tsx (link)</td>
+            <td><code class="code">text-accent</code></td>
+            <td><code class="code">text-accent-primary</code></td>
+            <td><code class="code">colors['accent-primary']</code> → <code class="code">var(--accent-primary)</code> = solid gold.</td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+          <tr>
+            <td>SellerSignal.tsx (link hover)</td>
+            <td><code class="code">hover:text-accent-hover</code></td>
+            <td>Inline style or CSS</td>
+            <td>No <code class="code">accent-hover</code> key in Tailwind config. Use: <code class="code">className="text-accent-primary"</code> + CSS hover in globals, or use <code class="code">hover:text-accent-primary</code> (same color is fine, the transition is cosmetic).</td>
+            <td><span class="status-fix">FIX</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-green"><strong>Tokens that ARE correct and working:</strong> <code class="code">bg-bg-base</code> (not used directly but available), <code class="code">text-action</code> (valid, maps to <code class="code">var(--primary)</code>), <code class="code">text-accent-primary</code> (maps to <code class="code">var(--accent-primary)</code> = <code class="code">var(--primary)</code> = solid gold), <code class="code">font-mono</code> (maps to <code class="code">var(--font-mono)</code>), <code class="code">rounded-xl</code> (Tailwind default). The component structure (grid, flex, gap, padding, responsive breakpoints) is all correct — only token names need updating.</div>
+
+    <div class="note-warn"><strong>H1 accent color for game names.</strong> The prototype highlights "MTG, Pokémon, Yu-Gi-Oh!" in gold via <code class="code">color:var(--accent)</code> where <code class="code">--accent:#D4A843</code> (solid gold in the prototype's own token system). In the storefront, the equivalent is <code class="code">text-accent-primary</code> which resolves to <code class="code">var(--primary)</code>. Add a <code class="code">&lt;span className="text-accent-primary"&gt;</code> wrapper around the game names in the H1. This is currently missing from the implementation.</div>
+
+    <div class="note-red"><strong>Missing from implementation vs prototype:</strong> (1) Game name gold highlight in H1. (2) Subtitle line ("Buy individual cards from verified sellers...") is in H1 text in current implementation but prototype renders it as a separate <code class="code">sub</code> paragraph below H1 in smaller muted text. (3) "Got cards to sell?" prefix text before the seller signal link. Current implementation shows "Looking to sell your cards?" instead of prototype's "Got cards to sell?".</div>
+
+  </div>
+</div>
+
+</div><!-- /panels -->
+
 <script>
-function showPanel(id) {
+function showPanel(id, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
 }
+// Card-back tile click
+document.addEventListener('click', function(e) {
+  const tile = e.target.closest('.p-cb-tile, .d-cb-tile');
+  if (!tile) return;
+  const group = tile.closest('.p-cb-tiles, .d-cb-tiles');
+  if (!group) return;
+  group.querySelectorAll('.p-cb-tile, .d-cb-tile').forEach(t => {
+    t.style.borderColor = '';
+    t.style.boxShadow = '';
+  });
+  tile.style.borderColor = 'var(--accent)';
+  tile.style.boxShadow = '0 0 0 1px var(--accent), 0 12px 28px rgba(0,0,0,0.5)';
+});
 </script>
 </body>
 </html>
