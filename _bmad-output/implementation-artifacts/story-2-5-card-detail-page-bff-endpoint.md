@@ -45,3 +45,23 @@ So that I can make an informed purchase decision from a single page.
 
 Wireframe: `_bmad-output/planning-artifacts/ux-story-2-5-card-detail-page-bff-endpoint-wireframe.html` (v5.1)
 UX Validation Report: `_bmad-output/ux-validation/story-2-5/ux-validation-report.md`
+
+## Code Review Record
+
+**Review date:** 2026-03-01
+**Reviewer:** Quinn (QA, adversarial mode)
+**Result:** APPROVED — all 0 HIGH / 4 MEDIUM / 3 LOW issues resolved
+
+### Issues Fixed (commit `0242a9c`)
+
+| # | Severity | Issue | Resolution |
+|---|---|---|---|
+| 1 | MEDIUM | `CONDITION_COLORS` duplicated in QuickBuyPanel + CardDetailPage | Extracted to `src/lib/utils/conditionColors.ts` |
+| 2 | MEDIUM | Inline IIFE in JSX className (re-runs on every render) | Replaced with `getConditionChipClasses()` helper |
+| 3 | MEDIUM | E2E color regex matched wrong amber value (`212` not `251`) | Fixed to match `rgb(251,191,36)` = amber-400 |
+| 4 | MEDIUM | `page.accessibility.snapshot()` deprecated (Playwright 1.47+) | Replaced with `page.locator('body').ariaSnapshot()` |
+| 5 | LOW | E2E test name stale ("1/2/3/4+") | Updated to "×1/×2/×3/×4" |
+| 6 | LOW | `printRef.ts` guard checked `print.number` but body never uses it | Guard simplified to `!print?.set?.code` |
+| 7 | LOW | Non-standard Tailwind opacity `/12` in `CompactPrintingsTable` | Changed to `/10` |
+
+**Quality gate (post-review):** lint (warnings only) · typecheck PASS · 523/523 tests PASS
