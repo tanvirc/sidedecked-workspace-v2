@@ -1,9 +1,11 @@
 ---
-stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics', 'step-03-create-stories', 'step-04-final-validation']
+stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics', 'step-03-create-stories', 'step-04-final-validation', 'epic-09-step-01-requirements', 'epic-09-step-02-design', 'epic-09-step-03-stories', 'epic-09-step-04-validation']
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
   - _bmad-output/planning-artifacts/ux-design-specification.md
+  - _bmad-output/design-thinking-2026-02-28.md
+  - _bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html
 ---
 
 # sidedecked - Epic Breakdown
@@ -243,6 +245,21 @@ FR58: Epic 8 — Automated financial reconciliation
 FR59: Epic 8 — Referential integrity across both backends
 FR60: Epic 8 — Transactional email notifications
 FR61: Epic 8 — (Growth) Platform metrics dashboard
+HPR-FR1:  Epic 9 — Four-mode homepage architecture (single URL)
+HPR-FR2:  Epic 9 — A-static trust strip with config-driven data source
+HPR-FR3:  Epic 9 — Personalised three-tile strip (Suspense, server component)
+HPR-FR4:  Epic 9 — BFF endpoint GET /api/homepage/context
+HPR-FR5:  Epic 9 — Mobile strip collapse to highest-priority tile
+HPR-FR6:  Epic 9 — Newcomer orientation banner (sd_first_visit cookie)
+HPR-FR7:  Epic 9 — Game selector grid with listing counts + game preference cookie
+HPR-FR8:  Epic 9 — Trending Now (3 cards, live prices, 5min TTL)
+HPR-FR9:  Epic 9 — Deck of the Day (community deck, build cost, available count)
+HPR-FR10: Epic 9 — Format Alert (authenticated, ban list changes, 24h TTL)
+HPR-FR11: Epic 9 — Seller signal (anonymous only, Become a seller →)
+FR5 (also): Epic 9 — Anonymous homepage is the primary browsing surface
+FR7 (also): Epic 9 — Search bar is the primary above-fold interactive element
+FR12 (also): Epic 9 — Watchlist hits surface in personalised strip tile
+FR24 (also): Epic 9 — Deck of the Day is the homepage expression of deck discovery
 
 ## Epic List
 
@@ -293,6 +310,12 @@ Admins can review flagged listings, manage the card catalog (trigger ETL updates
 **FRs covered:** FR56, FR57, FR58, FR59, FR60, FR61 (Growth)
 **Dependencies:** All previous epics (admin operations span the entire platform)
 **Implementation notes:** Admin via MedusaJS admin API for MVP. Transactional emails via Resend. Financial reconciliation between order records and Stripe data. Referential integrity monitoring between catalog (sidedecked-db) and product listings (mercur-db).
+
+### Epic 9: Storefront Homepage Redesign
+Every visitor experiences a homepage matched to their mode the moment they land. Anonymous visitors can evaluate the marketplace in under 10 seconds. Returning users restore their context in under 3 taps. Seller evaluators see a clear entry point without scrolling. Newcomers receive orientation before any marketplace content. The homepage becomes the first working demonstration of SideDecked's core differentiator — a platform that knows you.
+**FRs covered:** HPR-FR1, HPR-FR2, HPR-FR3, HPR-FR4, HPR-FR5, HPR-FR6, HPR-FR7, HPR-FR8, HPR-FR9, HPR-FR10, HPR-FR11, FR5 (also), FR7 (also), FR12 (also), FR24 (also)
+**Dependencies:** Epic 1 (auth detection for personalised strip and format alert), Epic 2 (card catalog for game listing counts and trending cards), Epic 3 (deck data for personalised strip tile and Deck of the Day)
+**Implementation notes:** Six stories in dependency order: anonymous hero foundation → game selector → BFF endpoint → personalised strip → newcomer banner → serendipity layer. Stories 9.5 and 9.6 are parallel-capable after 9.3. Design system: Midnight Forge tokens, Rajdhani display font, DM Sans body, DM Mono prices. Prototype: `_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html`. Test guide: `_bmad-output/planning-artifacts/ux-a3-usability-test-guide.html`.
 
 ## Epic 1: Authentication & User Profiles
 
@@ -1581,3 +1604,275 @@ So that I can monitor marketplace health and make data-driven decisions.
 **Given** metrics data is aggregated
 **When** the dashboard renders
 **Then** data is sourced from real order and user records — not estimated or sampled
+
+
+## Epic 9: Storefront Homepage Redesign
+
+Every visitor experiences a homepage matched to their mode the moment they land. Anonymous visitors can evaluate the marketplace in under 10 seconds. Returning users restore their context in under 3 taps. Seller evaluators see a clear entry point without scrolling. Newcomers receive orientation before any marketplace content. The homepage becomes the first working demonstration of SideDecked's core differentiator — a platform that knows you.
+
+### Story 9.1: Anonymous Homepage — Hero & Trust Foundation
+
+As an anonymous visitor,
+I want to land on a homepage that immediately proves the marketplace is real and shows me how to start,
+So that I can evaluate SideDecked and begin searching within 10 seconds without doubting its legitimacy.
+
+**Acceptance Criteria:**
+
+**Given** I visit `/` without being authenticated
+**When** the page loads
+**Then** the page is server-rendered (no client-side flash of content)
+**And** an `<h1>` orientation sentence is visible above the fold: "The marketplace for MTG, Pokemon, Yu-Gi-Oh! and One Piece singles. Buy individual cards from verified sellers — no booster packs required."
+**And** a search bar is the largest interactive element above the fold
+**And** the search bar placeholder reads "Search cards, sets, sellers..."
+
+**Given** the page has rendered
+**When** I view the area below the search bar
+**Then** an A-static trust strip is visible: "[card_count] cards · [seller_count] verified sellers · Buyers protected"
+**And** the trust strip data values are sourced from a server-side config (not hardcoded in the component)
+**And** a seller signal link is visible below the trust strip: "Become a seller ->"
+
+**Given** I am authenticated when visiting `/`
+**When** the page loads
+**Then** the seller signal link is not rendered
+
+**Given** the page is loaded on a mobile viewport (390px)
+**When** I view the layout
+**Then** all elements are single-column and touch-target compliant (minimum 44x44px)
+**And** the search bar is reachable with one thumb
+
+**Given** the page is loaded on desktop (1280px+)
+**When** I view the layout
+**Then** a two-column hero is rendered: left column (H1 + search + trust strip + seller signal), right column (trust stats card + seller opportunity card)
+
+**Given** the page has fully loaded
+**When** measured via Lighthouse or equivalent
+**Then** LCP <= 2.5s and CLS < 0.1
+
+---
+
+### Story 9.2: Game Selector Grid
+
+As a visitor (anonymous or authenticated),
+I want to tap a game tile to narrow the marketplace to my TCG and have that preference remembered,
+So that I don't have to re-select my game on every visit.
+
+**Acceptance Criteria:**
+
+**Given** I am on the homepage
+**When** I view the section below the trust strip
+**Then** a 2x2 grid (mobile) or 4-column row (desktop) of game tiles is visible
+**And** each tile shows the actual card-back image from `/public/images/card-backs/` with a game-colour overlay (MTG: purple, Pokemon: yellow, YGO: gold, One Piece: red)
+**And** each tile displays the game name in Rajdhani uppercase font and live listing count in DM Mono
+**And** tile aspect ratio is 5:7 on all breakpoints
+
+**Given** the listing counts are displayed
+**When** the customer-backend listing count service is available
+**Then** each count reflects current live inventory for that game, Redis-cached with 30s TTL
+
+**Given** the listing count service is unavailable
+**When** the tile renders
+**Then** the listing count is omitted (tile still renders without count; no error shown)
+
+**Given** I tap the Pokemon tile
+**When** the tap is registered
+**Then** the search bar placeholder updates to "Search Pokemon cards, sets, sellers..."
+**And** a `sd_game_pref=pokemon` cookie is set (SameSite=Lax, 30-day expiry)
+**And** the Pokemon tile receives a visible selected state (accent-colour border)
+
+**Given** I return to the homepage on a subsequent visit with `sd_game_pref=pokemon` set
+**When** the page renders
+**Then** the Pokemon tile is pre-highlighted and the search bar shows the Pokemon placeholder
+
+**Given** I navigate to a game tile using keyboard (Tab)
+**When** I press Enter
+**Then** the game preference is applied identically to a tap interaction
+
+---
+
+### Story 9.3: Homepage Context BFF Endpoint
+
+As a returning authenticated user,
+I want a single fast API call to retrieve my deck progress, latest price alert, and watchlist hits,
+So that the homepage can restore my context without multiple client-side round trips.
+
+**Acceptance Criteria:**
+
+**Given** I make a `GET /api/homepage/context` request with a valid session JWT
+**When** all three upstream services (deck, price alert, watchlist) are available
+**Then** the response is 200 OK with the HomepageContext shape: `{ deck?, priceAlert?, watchlist? }`
+**And** deck field shape: `{ name: string; total: number; filled: number; missing: string[] }`
+**And** priceAlert field shape: `{ cardName: string; delta: number; direction: 'up' | 'down' }`
+**And** watchlist field shape: `{ newListingCount: number }`
+**And** response time is < 100ms P95
+
+**Given** I make a request without a valid session JWT
+**When** the endpoint processes the request
+**Then** the response is 401 Unauthorized
+
+**Given** the deck service is unavailable but price alert and watchlist services are available
+**When** the endpoint is called
+**Then** the response is 200 OK with `deck` undefined and the other two fields populated
+**And** no error is thrown or surfaced to the caller
+
+**Given** all three upstream services are unavailable
+**When** the endpoint is called
+**Then** the response is 200 OK with an empty object (all fields undefined)
+
+**Given** a service call exceeds the timeout threshold
+**When** the circuit breaker triggers
+**Then** the endpoint falls back gracefully (5s timeout per service, 3x retry with exponential backoff)
+
+**Given** two concurrent requests from the same user session
+**When** both are processed
+**Then** each response is session-scoped (no cross-user data leakage; no shared Redis cache key)
+
+**Given** the HomepageContext TypeScript type is exported from this route
+**When** the type is imported by the personalised strip component
+**Then** full type safety is enforced end-to-end with no `any` types
+
+---
+
+### Story 9.4: Authenticated Personalised Strip
+
+As a returning authenticated user,
+I want to see my deck progress, latest price alert, and watchlist hits the moment I land on the homepage,
+So that I can resume where I left off in under 3 taps without navigating through the site.
+
+**Acceptance Criteria:**
+
+**Given** I am authenticated and visit `/`
+**When** the page begins rendering
+**Then** a Suspense boundary wraps the personalised strip server component
+**And** the anonymous hero (Story 9.1 layout) renders immediately as the Suspense fallback
+**And** the Suspense fallback is pixel-identical to the anonymous hero (CLS < 0.1 when strip resolves)
+
+**Given** the BFF endpoint resolves with all three fields populated
+**When** the Suspense boundary resolves
+**Then** the personalised strip replaces the anonymous hero above the fold
+**And** three equal-width tiles are rendered:
+- Tile 1 (Deck): deck name, filled/total card count, missing count, "View ->" link to /decks/[id]
+- Tile 2 (Price Alert): card name, price delta with up/down indicator, "View ->" link to card detail page
+- Tile 3 (Watchlist): new listing count, "View ->" link to /watchlist
+
+**Given** I tap the deck tile
+**When** the navigation fires
+**Then** I am taken directly to `/decks/[id]` for that deck
+
+**Given** I tap the price alert tile
+**When** the navigation fires
+**Then** I am taken to the card detail page `/cards/[game]/[slug]`
+
+**Given** I tap the watchlist tile
+**When** the navigation fires
+**Then** I am taken to `/watchlist`
+
+**Given** the BFF endpoint returns all fields as undefined
+**When** the Suspense boundary resolves
+**Then** the personalised strip does not render and the anonymous hero remains visible
+
+**Given** I am on a mobile viewport (390px) with all three tiles present
+**When** the strip renders
+**Then** all three tiles are shown in an equal-width 3-column grid
+
+**Given** I am unauthenticated
+**When** the page loads
+**Then** the personalised strip server component is never invoked and the anonymous hero is the only hero rendered
+
+---
+
+### Story 9.5: Newcomer Orientation Banner
+
+As a first-time visitor who has never encountered TCG card singles before,
+I want to read a plain-English explanation of what SideDecked is before I see any marketplace content,
+So that I understand the site's purpose without needing prior TCG knowledge.
+
+**Acceptance Criteria:**
+
+**Given** I visit `/` for the first time (no `sd_first_visit` cookie) and I am unauthenticated
+**When** the page renders
+**Then** a dismissible banner is visible above the hero
+**And** banner content: "New to card singles? Buy individual cards — no booster packs needed. Start with a search ->"
+**And** a dismiss button (x) is present and keyboard-accessible
+
+**Given** I click the dismiss button
+**When** the dismiss fires
+**Then** the `sd_first_visit=dismissed` cookie is set (SameSite=Lax, 365-day expiry)
+**And** the banner collapses without a layout shift (CSS height transition, not display:none swap)
+**And** prefers-reduced-motion users see the banner removed instantly with no animation
+
+**Given** I focus the search bar input
+**When** the focus event fires
+**Then** the banner auto-dismisses identically to a manual dismiss click and the cookie is set
+
+**Given** I return to the homepage on any subsequent visit with `sd_first_visit=dismissed` set
+**When** the page renders
+**Then** the banner is not present in the DOM
+
+**Given** I am authenticated when visiting `/`
+**When** the page renders
+**Then** the banner is not rendered regardless of cookie state
+
+**Given** I am using keyboard navigation and the banner is visible
+**When** I press Escape
+**Then** the banner dismisses and focus moves to the search bar
+
+---
+
+### Story 9.6: Serendipity Layer — Trending Now & Deck of the Day
+
+As a visitor browsing without a specific card in mind,
+I want to see trending cards with live prices and a featured community deck on the homepage,
+So that I can discover cards and decks I didn't know I wanted, and (if authenticated) stay aware of ban list changes affecting my decks.
+
+**Acceptance Criteria:**
+
+**Trending Now section:**
+
+**Given** I am on the homepage (any auth state) and scroll below the game selector grid
+**When** the Trending Now section renders
+**Then** up to 3 trending cards are displayed, each showing: card name, game, price (lowest listing), and a "View listings ->" CTA
+**And** prices are sourced from customer-backend listing service, cached with 5min TTL
+**And** card data is sourced from a server-side curation config (not hardcoded in the component)
+
+**Given** I click "View listings ->" on a trending card
+**When** the navigation fires
+**Then** I am taken to `/cards/[game]/[slug]` for that card
+
+**Given** the curation config contains fewer than 3 cards
+**When** the section renders
+**Then** only the available cards are shown (minimum 1; section still renders)
+
+**Deck of the Day section:**
+
+**Given** the Deck of the Day config contains a valid deck entry
+**When** the section renders
+**Then** it displays: deck name, game, format, estimated build cost, available card count on SideDecked, and a "Buy missing cards ->" CTA
+**And** estimated build cost is calculated from current lowest-price listings per card in the deck
+**And** available card count reflects live inventory from customer-backend, cached 5min TTL
+
+**Given** I click "Buy missing cards ->"
+**When** the navigation fires
+**Then** I am taken to the cart optimizer pre-seeded with the deck's cards
+
+**Given** the customer-backend is unavailable when rendering this section
+**When** the section attempts to fetch data
+**Then** the section is omitted from the page entirely (no error state, no skeleton; section simply absent)
+
+**Format Alert — authenticated only:**
+
+**Given** I am authenticated and one or more of my active decks contains cards affected by a recent ban list or rotation change
+**When** the homepage renders
+**Then** a Format Alert banner is visible: "[N] card(s) in your deck are now banned · Find replacements ->"
+**And** the alert data is cached per user with a 24h TTL
+
+**Given** I click "Find replacements ->"
+**When** the navigation fires
+**Then** I am taken to the affected deck's detail page with the banned cards highlighted
+
+**Given** none of my active decks are affected by recent changes
+**When** the homepage renders
+**Then** the Format Alert banner is not rendered
+
+**Given** I am unauthenticated
+**When** the homepage renders
+**Then** the Format Alert banner is never rendered

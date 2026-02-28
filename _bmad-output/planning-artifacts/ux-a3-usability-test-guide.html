@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Usability Test Guide · A3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0C0D12;--bg1:#13141A;--bg2:#1A1C24;--bg3:#22242E;--bg4:#2A2D38;
+  --acc:#D4A843;--acc-h:#E0B94F;--acc-d:rgba(212,168,67,.10);--acc-b:rgba(212,168,67,.28);
+  --blu:#7C8CFF;--blu-d:rgba(124,140,255,.10);--blu-b:rgba(124,140,255,.28);
+  --grn:#4ADE80;--grn-d:rgba(74,222,128,.08);--grn-b:rgba(74,222,128,.25);
+  --red:#EF5350;--red-d:rgba(239,83,80,.08);--red-b:rgba(239,83,80,.25);
+  --orn:#F97316;--orn-d:rgba(249,115,22,.08);--orn-b:rgba(249,115,22,.28);
+  --t1:#E8ECF1;--t2:#8B93A6;--t3:#4F5568;
+  --bs:rgba(255,255,255,.06);--bd:rgba(255,255,255,.10);
+  --rsm:6px;--rmd:10px;--rlg:16px;--rxl:24px;--rf:999px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  --fd:'Rajdhani',system-ui,sans-serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-family:var(--fb);font-size:14px;line-height:1.5;color:var(--t1);background:var(--bg);-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+a{color:var(--blu);}
+
+/* HEADER */
+.hdr{text-align:center;padding:var(--s7) var(--s5) var(--s6);background:var(--bg1);border-bottom:1px solid var(--bs);position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% -10%,rgba(212,168,67,.07) 0%,transparent 70%);pointer-events:none;}
+.hdr-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--acc);margin-bottom:var(--s2);}
+.hdr h1{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:.02em;margin-bottom:var(--s2);}
+.hdr h1 em{color:var(--acc);font-style:normal;}
+.hdr p{font-size:13px;color:var(--t2);max-width:520px;margin:0 auto var(--s3);}
+.badge-row{display:flex;gap:var(--s2);justify-content:center;flex-wrap:wrap;}
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:var(--rf);font-size:11px;font-weight:600;}
+.bdg-grn{background:var(--grn-d);color:var(--grn);border:1px solid var(--grn-b);}
+.bdg-blu{background:var(--blu-d);color:var(--blu);border:1px solid var(--blu-b);}
+.bdg-acc{background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-b);}
+
+/* TABS */
+.tab-nav{display:flex;justify-content:center;gap:var(--s2);padding:var(--s3) var(--s5);background:var(--bg1);border-bottom:1px solid var(--bs);flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.tab-btn{display:inline-flex;align-items:center;gap:var(--s2);padding:var(--s2) var(--s4);border:1px solid var(--bd);border-radius:var(--rf);color:var(--t2);font-size:12px;font-weight:500;transition:all .18s;}
+.tab-btn:hover{color:var(--t1);border-color:var(--blu);background:var(--blu-d);}
+.tab-btn.active{color:var(--bg);background:var(--acc);border-color:var(--acc);}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* PANELS */
+.panels{padding:var(--s6) var(--s5);max-width:960px;margin:0 auto;}
+.panel{display:none;animation:fi .2s ease;}
+.panel.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION HEADS */
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--acc);margin-bottom:var(--s2);}
+.sec-title{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:.02em;margin-bottom:var(--s2);}
+.sec-desc{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:var(--s5);}
+.sec{margin-bottom:var(--s7);}
+
+/* NOTES */
+.note     {background:var(--acc-d);border:1px dashed var(--acc-b);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:11px;color:var(--acc);margin-bottom:var(--s3);line-height:1.65;}
+.note-blu {background:var(--blu-d);border:1px dashed var(--blu-b);color:var(--blu);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:11px;margin-bottom:var(--s3);line-height:1.65;}
+.note-grn {background:var(--grn-d);border:1px dashed var(--grn-b);color:var(--grn);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:11px;margin-bottom:var(--s3);line-height:1.65;}
+.note-red {background:var(--red-d);border:1px dashed var(--red-b);color:var(--red);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:11px;margin-bottom:var(--s3);line-height:1.65;}
+.note strong{font-weight:700;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rlg);padding:var(--s5);margin-bottom:var(--s4);}
+.card-accent{border-left:3px solid var(--acc);}
+.card-blu{border-left:3px solid var(--blu);}
+.card-grn{border-left:3px solid var(--grn);}
+.card-red{border-left:3px solid var(--red);}
+.card-orn{border-left:3px solid var(--orn);}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);padding:var(--s2) var(--s3);text-align:left;border-bottom:1px solid var(--bs);}
+td{padding:var(--s3);border-bottom:1px solid var(--bs);color:var(--t2);vertical-align:top;}
+td strong{color:var(--t1);}
+tr:last-child td{border-bottom:none;}
+.tbl-wrap{background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rlg);overflow:hidden;margin-bottom:var(--s5);}
+
+/* TASK CARD */
+.task-card{background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rlg);overflow:hidden;margin-bottom:var(--s5);}
+.task-hdr{display:flex;align-items:center;gap:var(--s3);padding:var(--s4) var(--s5);border-bottom:1px solid var(--bs);background:var(--bg3);}
+.task-num{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--acc);line-height:1;min-width:36px;}
+.task-meta{flex:1;}
+.task-title{font-family:var(--fd);font-size:16px;font-weight:700;letter-spacing:.03em;color:var(--t1);}
+.task-sub{font-size:11px;color:var(--t2);margin-top:2px;}
+.task-hyp{padding:2px 8px;border-radius:var(--rf);font-size:10px;font-weight:700;font-family:var(--fm);background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-b);}
+.task-body{padding:var(--s5);}
+.task-body > * + *{margin-top:var(--s4);}
+
+/* PROMPT BOX */
+.prompt-box{background:var(--bg);border:1px solid var(--acc-b);border-radius:var(--rmd);padding:var(--s4);position:relative;}
+.prompt-box::before{content:'SAY VERBATIM';position:absolute;top:-1px;left:var(--s3);transform:translateY(-50%);font-size:9px;font-weight:700;letter-spacing:.1em;background:var(--acc);color:var(--bg);padding:1px 6px;border-radius:3px;}
+.prompt-box p{font-size:13px;color:var(--t1);line-height:1.7;font-style:italic;}
+.prompt-box .action{font-style:normal;color:var(--acc);font-weight:600;}
+
+/* OBSERVE GRID */
+.obs-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);}
+.obs-item{background:var(--bg3);border-radius:var(--rmd);padding:var(--s3);}
+.obs-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--s1);}
+.obs-label.grn{color:var(--grn);}
+.obs-label.red{color:var(--red);}
+.obs-item ul{list-style:none;padding:0;}
+.obs-item li{font-size:12px;color:var(--t2);line-height:1.6;padding-left:14px;position:relative;}
+.obs-item li::before{content:'→';position:absolute;left:0;color:var(--t3);font-size:10px;top:3px;}
+
+/* CHECKLIST */
+.checklist{list-style:none;padding:0;}
+.checklist li{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s2) 0;border-bottom:1px solid var(--bs);font-size:13px;color:var(--t2);}
+.checklist li:last-child{border-bottom:none;}
+.check-box{width:18px;height:18px;border-radius:4px;border:2px solid var(--bd);flex-shrink:0;margin-top:1px;}
+
+/* SCRIPT BOX */
+.script-box{background:var(--bg);border-radius:var(--rmd);padding:var(--s4);border:1px solid var(--bd);position:relative;}
+.script-box::before{content:'INTRO SCRIPT';position:absolute;top:-1px;left:var(--s3);transform:translateY(-50%);font-size:9px;font-weight:700;letter-spacing:.1em;background:var(--blu);color:#fff;padding:1px 6px;border-radius:3px;}
+.script-box p{font-size:13px;color:var(--t1);line-height:1.8;font-style:italic;}
+.script-box .aside{font-style:normal;color:var(--t3);font-size:11px;}
+
+/* SCREENER */
+.q-card{background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rmd);padding:var(--s4);margin-bottom:var(--s3);}
+.q-num{font-family:var(--fm);font-size:10px;color:var(--acc);font-weight:500;margin-bottom:var(--s1);}
+.q-text{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:var(--s3);}
+.q-options{display:flex;flex-wrap:wrap;gap:var(--s2);}
+.q-opt{padding:4px 12px;border-radius:var(--rf);font-size:12px;border:1px solid var(--bd);color:var(--t2);}
+.q-opt.pass{border-color:var(--grn-b);color:var(--grn);background:var(--grn-d);}
+.q-opt.note{border-color:var(--acc-b);color:var(--acc);background:var(--acc-d);}
+.q-opt.fail{border-color:var(--red-b);color:var(--red);background:var(--red-d);}
+
+/* SYNTHESIS */
+.hyp-table td.v{color:var(--grn);font-weight:600;text-align:center;}
+.hyp-table td.x{color:var(--red);font-weight:600;text-align:center;}
+.hyp-table td.q{color:var(--acc);font-weight:600;text-align:center;}
+.hyp-table td.blank{text-align:center;color:var(--t3);}
+.hyp-row th:first-child{width:260px;}
+.gate-card{background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rmd);padding:var(--s4);display:flex;gap:var(--s3);margin-bottom:var(--s3);}
+.gate-badge{padding:4px 10px;border-radius:var(--rsm);font-family:var(--fm);font-size:11px;font-weight:500;white-space:nowrap;height:fit-content;margin-top:2px;}
+.gate-badge.p1{background:var(--red-d);color:var(--red);border:1px solid var(--red-b);}
+.gate-badge.p3{background:var(--acc-d);color:var(--acc);border:1px solid var(--acc-b);}
+.gate-badge.p4{background:var(--blu-d);color:var(--blu);border:1px solid var(--blu-b);}
+.gate-body{flex:1;}
+.gate-body strong{display:block;font-size:13px;font-weight:600;color:var(--t1);margin-bottom:var(--s1);}
+.gate-body p{font-size:12px;color:var(--t2);line-height:1.6;}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--bs);margin:var(--s7) 0;}
+
+/* RECRUIT CARD */
+.slot-card{display:grid;grid-template-columns:48px 1fr auto;gap:var(--s3);align-items:center;background:var(--bg2);border:1px solid var(--bs);border-radius:var(--rmd);padding:var(--s3) var(--s4);margin-bottom:var(--s2);}
+.slot-num{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--t3);}
+.slot-num.pri{color:var(--acc);}
+.slot-meta strong{display:block;font-size:13px;font-weight:600;color:var(--t1);}
+.slot-meta span{font-size:11px;color:var(--t2);}
+.slot-badge{padding:3px 10px;border-radius:var(--rf);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.slot-req{background:var(--red-d);color:var(--red);border:1px solid var(--red-b);}
+.slot-opt{background:var(--bg3);color:var(--t3);border:1px solid var(--bs);}
+
+/* PRINT */
+@media print{
+  .tab-nav{display:none!important;}
+  .panel{display:block!important;}
+  .task-card{break-inside:avoid;}
+  body{background:#fff;color:#000;}
+  .hdr{background:#f5f5f5;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eyebrow">Action Item A3 · Homepage Redesign</div>
+  <h1>Usability Test Guide — <em>SideDecked</em></h1>
+  <p>Facilitator kit for 5–7 moderated sessions testing the homepage redesign prototype across four user modes.</p>
+  <div class="badge-row">
+    <span class="bdg bdg-grn">● 5–7 Participants</span>
+    <span class="bdg bdg-blu">● 20–30 min/session</span>
+    <span class="bdg bdg-acc">● Lo-fi prototype · no polish</span>
+  </div>
+</div>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="show('recruit')"><span class="dot" style="background:var(--acc)"></span>Recruit</button>
+  <button class="tab-btn" onclick="show('session')"><span class="dot" style="background:var(--blu)"></span>Session Guide</button>
+  <button class="tab-btn" onclick="show('observe')"><span class="dot" style="background:var(--grn)"></span>Observe</button>
+  <button class="tab-btn" onclick="show('synthesise')"><span class="dot" style="background:var(--red)"></span>Synthesise</button>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     TAB 1: RECRUIT
+══════════════════════════════════════════ -->
+<div class="panels">
+<div id="tab-recruit" class="panel active">
+
+  <div class="sec">
+    <div class="sec-label">Step 1 of 4</div>
+    <div class="sec-title">Participant Recruitment</div>
+    <div class="sec-desc">Target 5–7 people across all four homepage modes. Prioritise slots P01, P04, and P05 — these test the assumptions (newcomer, seller, community) that are hardest to validate analytically.</div>
+
+    <div class="note"><strong>Priority order:</strong> P01 (genuine newcomer) · P04 (seller evaluator) · P02+P03 (returning buyers) · P05 (community browser). Slots P06–P07 are optional top-ups.</div>
+
+    <div class="slot-card"><span class="slot-num pri">P01</span><div class="slot-meta"><strong>Newcomer</strong><span>Never bought card singles before. Curious about TCGs or just heard the term. May play games but hasn't bought on a marketplace.</span></div><span class="slot-badge slot-req">Required</span></div>
+    <div class="slot-card"><span class="slot-num pri">P02</span><div class="slot-meta"><strong>Returning Buyer — any game</strong><span>Buys singles 1–4× per month. Has a wishlist or is tracking prices. Uses at least one other marketplace (TCGPlayer, CardMarket, etc.).</span></div><span class="slot-badge slot-req">Required</span></div>
+    <div class="slot-card"><span class="slot-num pri">P03</span><div class="slot-meta"><strong>Returning Buyer — different game to P02</strong><span>Same profile as P02 but from a different TCG community (e.g. if P02 plays MTG, P03 should play Pokémon or YGO).</span></div><span class="slot-badge slot-req">Required</span></div>
+    <div class="slot-card"><span class="slot-num pri">P04</span><div class="slot-meta"><strong>Seller Evaluator</strong><span>Has listed cards for sale before, or is actively considering it. Wants to know if a new platform is worth their time. May also be a buyer.</span></div><span class="slot-badge slot-req">Required</span></div>
+    <div class="slot-card"><span class="slot-num pri">P05</span><div class="slot-meta"><strong>Community Browser</strong><span>Follows TCG content (YouTube, Reddit, Discord), looks up card prices sometimes, but doesn't buy regularly. Browses more than buys.</span></div><span class="slot-badge slot-req">Required</span></div>
+    <div class="slot-card"><span class="slot-num">P06</span><div class="slot-meta"><strong>Power Buyer (optional)</strong><span>Buys frequently (weekly). Uses multiple marketplaces. Has strong opinions about UX. Good for stress-testing assumptions.</span></div><span class="slot-badge slot-opt">Optional</span></div>
+    <div class="slot-card"><span class="slot-num">P07</span><div class="slot-meta"><strong>Second Newcomer (optional)</strong><span>Same profile as P01. Having two newcomers increases confidence in P2 (orientation sentence) results.</span></div><span class="slot-badge slot-opt">Optional</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="sec">
+    <div class="sec-label">Screener Questions</div>
+    <div class="sec-desc">Use these questions to confirm participant fit before scheduling. Ask via message or a short form. <strong style="color:var(--t1)">Green = desired · Amber = note but ok · Red = exclude only if over-represented.</strong></div>
+
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div class="q-text">Have you ever bought or sold trading card singles online?</div>
+      <div class="q-options">
+        <span class="q-opt pass">Yes, I buy regularly</span>
+        <span class="q-opt pass">Yes, I've sold before</span>
+        <span class="q-opt note">Once or twice, ages ago</span>
+        <span class="q-opt pass">No, never — but I'm curious</span>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div class="q-text">Which trading card games do you play, collect, or follow?</div>
+      <div class="q-options">
+        <span class="q-opt pass">Magic: The Gathering</span>
+        <span class="q-opt pass">Pokémon TCG</span>
+        <span class="q-opt pass">Yu-Gi-Oh!</span>
+        <span class="q-opt pass">One Piece TCG</span>
+        <span class="q-opt note">Other TCG</span>
+        <span class="q-opt note">None — just curious</span>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div class="q-text">If you were buying a specific card right now, how would you find it?</div>
+      <div class="q-options">
+        <span class="q-opt pass">Search on TCGPlayer / CardMarket</span>
+        <span class="q-opt pass">Search on eBay</span>
+        <span class="q-opt note">Ask in Discord / Facebook group</span>
+        <span class="q-opt pass">I wouldn't know where to look</span>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div class="q-text">Have you ever listed your own cards for sale anywhere?</div>
+      <div class="q-options">
+        <span class="q-opt pass">Yes, on a dedicated marketplace</span>
+        <span class="q-opt pass">Yes, on eBay or Facebook</span>
+        <span class="q-opt note">I've thought about it but haven't yet</span>
+        <span class="q-opt note">No, I only buy</span>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q5</div>
+      <div class="q-text">How would you describe your knowledge of TCG card singles?</div>
+      <div class="q-options">
+        <span class="q-opt note">Never heard the term before</span>
+        <span class="q-opt pass">I know what they are but I'm new to buying/selling</span>
+        <span class="q-opt pass">I understand the market well</span>
+        <span class="q-opt pass">I follow prices and market trends closely</span>
+      </div>
+    </div>
+
+    <div class="note-blu"><strong>Tip:</strong> You don't need "perfect" participants. A P02 who answers Q4 with "I've thought about it" gives you bonus seller signal data. Diversity of experience level within a mode is fine.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="sec">
+    <div class="sec-label">Recruitment Message Template</div>
+    <div class="card card-blu">
+      <p style="font-size:13px;line-height:1.8;color:var(--t2);">Hi [Name] — I'm running a quick 25-minute feedback session on a new website design for trading card enthusiasts. No experience needed — I'm specifically looking for people who may or may not have bought cards online before. You'd be looking at some early-stage screens on a phone and telling me what you think. Happy to do it over video call or in person. Would you be up for it? [Date/Time options]</p>
+    </div>
+  </div>
+
+</div><!-- /tab-recruit -->
+
+<!-- ══════════════════════════════════════════
+     TAB 2: SESSION GUIDE
+══════════════════════════════════════════ -->
+<div id="tab-session" class="panel">
+
+  <div class="sec">
+    <div class="sec-label">Step 2 of 4</div>
+    <div class="sec-title">Session Guide</div>
+    <div class="sec-desc">Use this tab during the session. Follow task order. Do not skip setup — the first-impression task (T1) is invalidated if the participant has already seen any part of the prototype.</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Pre-Session Checklist</div>
+    <ul class="checklist">
+      <li><span class="check-box"></span>Prototype loaded on test device: <code style="font-size:11px;color:var(--acc);">_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html</code></li>
+      <li><span class="check-box"></span>Tab 1 (State 1 — Anonymous) active, scrolled to top, no tiles selected</li>
+      <li><span class="check-box"></span>Card-back tile images loading (check MTG / Pokémon / YGO / One Piece tiles are visible)</li>
+      <li><span class="check-box"></span>Screen recording running, or dedicated note-taker present</li>
+      <li><span class="check-box"></span>Stopwatch ready (for T3 time-to-first-value measurement)</li>
+      <li><span class="check-box"></span>Observation sheet open (Tab 3 of this guide, or printed)</li>
+      <li><span class="check-box"></span>Room quiet — participant comfortable, no one else watching</li>
+      <li><span class="check-box"></span>Verbal consent obtained: "OK if I take notes / record the screen?"</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <div class="sec">
+    <div class="sec-label">Intro Script</div>
+    <div class="script-box" style="margin-bottom:var(--s5)">
+      <p>"Thanks for making time — I really appreciate it. Before we start, a few things: <strong>we're testing the design, not you</strong> — there are absolutely no wrong answers, and you can't make a mistake. Whatever you do is useful data for us.<br><br>
+      I'm going to ask you to complete a few tasks on this phone. As you go, please <strong>think out loud</strong> — tell me what you're looking at, what you expect to happen, and anything that feels confusing or unclear. That commentary is the most valuable thing you can give us.<br><br>
+      I won't be able to answer your questions during the tasks — that's intentional, because we want to see how the design handles it on its own. After each task I'll ask you a couple of questions. Any questions before we begin?"</p>
+      <span class="aside" style="display:block;margin-top:var(--s3);">// Handle questions briefly. Do not describe the site or explain any features. Hand over the device.</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TASK 1 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T1</span>
+      <div class="task-meta">
+        <div class="task-title">First Impression</div>
+        <div class="task-sub">All participants · ~3 min · Do this first, before any other exposure</div>
+      </div>
+      <span class="task-hyp">Tests P2</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> Prototype on State 1 (Anonymous), scrolled to top. Do NOT let the participant see it yet. Cover the screen or hold it face-down.</div>
+      <div class="prompt-box">
+        <p>"I'm going to show you a website for exactly <span class="action">5 seconds</span>. Then I'll take it back. Ready?" <span class="action">[Show State 1. Start timer. Take back after 5 seconds.]</span><br><br>
+        "What is this website? What can you do here? Who do you think it's for?"</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Mentions trading cards, TCG, buying/selling cards</li>
+            <li>Can name at least one game or card type</li>
+            <li>Uses words like "marketplace" or "shop"</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>"I have no idea what this is" (P2 fail)</li>
+            <li>"Is this a game?" — confuses product with service</li>
+            <li>Describes the visual style but not the purpose</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Follow-up:</strong> "Was anything immediately clear? Was anything confusing?"</div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T2</span>
+      <div class="task-meta">
+        <div class="task-title">Trust Evaluation</div>
+        <div class="task-sub">Anonymous visitors + Newcomers (P01, P02, P03, P05) · ~5 min</div>
+      </div>
+      <span class="task-hyp">Tests P3</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> Hand back the device. State 1 visible, scrolled to top. Let them explore freely.</div>
+      <div class="prompt-box">
+        <p>"You're thinking about buying something here for the first time. Looking at this page — <span class="action">how confident do you feel</span> about this site? What would make you more confident?"</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Reads or taps the trust strip ("8,400 cards · 340 sellers")</li>
+            <li>Asks about reviews, ratings, or return policy</li>
+            <li>Notices seller count as social proof</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>Ignores trust strip entirely (P3 fail)</li>
+            <li>"These numbers feel made up" (P3 credibility fail)</li>
+            <li>Asks for reviews/ratings that aren't there (unmet need)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Follow-up:</strong> "Point to anything on this page that makes you more or less confident."</div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T3</span>
+      <div class="task-meta">
+        <div class="task-title">Find a Card</div>
+        <div class="task-sub">All participants · ~5 min · Start stopwatch when task is given</div>
+      </div>
+      <span class="task-hyp">Time-to-value</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> State 1 visible, scrolled to top. <strong>Start stopwatch silently when you finish the prompt.</strong> Stop when they tap the search bar.</div>
+      <div class="prompt-box">
+        <p>"Find me a Near Mint Charizard Base Set. <span class="action">Show me what you'd do.</span>"</p>
+        <p style="margin-top:var(--s2);">"If you were on this site right now looking for that card — go ahead."</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Goes to search bar within 5 seconds (search primacy)</li>
+            <li>Taps a Pokémon game tile before searching</li>
+            <li>Reads the search placeholder text</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>Scrolls past search looking for a browse path</li>
+            <li>Time to first tap &gt; 15 seconds (orientation failure)</li>
+            <li>Taps a trending card instead of searching</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Record time:</strong> _______ seconds to first tap. <strong>First tap was:</strong> ☐ Search bar &nbsp; ☐ Game tile &nbsp; ☐ Trending card &nbsp; ☐ Nav link &nbsp; ☐ Other: _______</div>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T4</span>
+      <div class="task-meta">
+        <div class="task-title">Returning User Strip</div>
+        <div class="task-sub">Authenticated participants (P02, P03, P06) only · ~5 min</div>
+      </div>
+      <span class="task-hyp">Tests P1</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> Switch to Tab 2 (Authenticated State). Scroll to top. Hand back device. <strong>Say nothing for 10 full seconds after handing it over.</strong></div>
+      <div class="prompt-box">
+        <p>"You've used this site before — you've got a watchlist and some price alerts set up." <span class="action">[Hand device. Wait 10 seconds in silence. Watch eyes, not the screen.]</span><br><br>
+        "What do you notice first? What would you tap?"</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Notices the personalised strip unprompted</li>
+            <li>Can describe what each tile does without asking</li>
+            <li>Taps a strip tile as their first action</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>Ignores strip, goes straight to search (P1 fail)</li>
+            <li>"What's this?" — strip not self-explanatory (P1 fail)</li>
+            <li>Taps strip but says "I'm not sure what this does"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Follow-up:</strong> "Without me explaining — what do you think those three tiles show you?"</div>
+    </div>
+  </div>
+
+  <!-- TASK 5 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T5</span>
+      <div class="task-meta">
+        <div class="task-title">Seller Evaluation</div>
+        <div class="task-sub">Seller evaluators (P04) + any participant who answered Q4 positively · ~5 min</div>
+      </div>
+      <span class="task-hyp">Tests P4</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> State 1 (Anonymous), scrolled to top. Let them scroll freely — do not prompt direction.</div>
+      <div class="prompt-box">
+        <p>"You're thinking about listing your card collection here — deciding if it's worth your time. Spend <span class="action">30 seconds on this page</span>. Tell me anything that's relevant to that decision."</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Finds "Become a seller" below the trust strip</li>
+            <li>Notes buyer count / card count as demand signal</li>
+            <li>Asks about fees, categories, or seller tools</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>Scrolls full page without noticing seller CTA (P4 fail)</li>
+            <li>"There's nothing here for sellers" (P4 critical fail)</li>
+            <li>Finds seller link only after 20+ seconds of searching</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Follow-up:</strong> "What would need to be on this page for you to decide to list here?"</div>
+    </div>
+  </div>
+
+  <!-- TASK 6 -->
+  <div class="task-card">
+    <div class="task-hdr">
+      <span class="task-num">T6</span>
+      <div class="task-meta">
+        <div class="task-title">Serendipitous Discovery</div>
+        <div class="task-sub">Community browsers + anonymous visitors (P01, P05, P06) · ~3 min</div>
+      </div>
+      <span class="task-hyp">Tests P5</span>
+    </div>
+    <div class="task-body">
+      <div class="note"><strong>Setup:</strong> State 1, scrolled down to the Trending Now section. Hand device without comment.</div>
+      <div class="prompt-box">
+        <p>"You're browsing with <span class="action">no specific card in mind</span> — just exploring. Go ahead."</p>
+      </div>
+      <div class="obs-grid">
+        <div class="obs-item">
+          <div class="obs-label grn">Green signals</div>
+          <ul>
+            <li>Taps a trending card within 15 seconds</li>
+            <li>Reads card names / prices aloud</li>
+            <li>"Oh, that's interesting" — organic engagement</li>
+          </ul>
+        </div>
+        <div class="obs-item">
+          <div class="obs-label red">Watch for</div>
+          <ul>
+            <li>Scrolls past without engaging (P5 fail)</li>
+            <li>"I'd only be here if I had something specific in mind"</li>
+            <li>Engages but says "I don't know what any of these are"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note-blu"><strong>Follow-up:</strong> "What, if anything, would make you want to tap one of these cards?"</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="sec">
+    <div class="sec-label">Post-Session Debrief</div>
+    <div class="card card-accent">
+      <p style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:var(--s4);">Ask all three. Give time for real answers — don't rush. This is where the most useful unprompted insights come out.</p>
+      <div style="display:flex;flex-direction:column;gap:var(--s4);">
+        <div>
+          <strong style="font-size:13px;color:var(--t1);">D1 — Summary test</strong>
+          <p style="font-size:13px;color:var(--t2);margin-top:4px;">"In one sentence — what is this website for?"</p>
+          <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);margin-top:var(--s2);min-height:48px;font-size:11px;color:var(--t3);">Notes: ___________________________________________</div>
+        </div>
+        <div>
+          <strong style="font-size:13px;color:var(--t1);">D2 — Return intent</strong>
+          <p style="font-size:13px;color:var(--t2);margin-top:4px;">"What would make you come back here instead of going somewhere else?"</p>
+          <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);margin-top:var(--s2);min-height:48px;font-size:11px;color:var(--t3);">Notes: ___________________________________________</div>
+        </div>
+        <div>
+          <strong style="font-size:13px;color:var(--t1);">D3 — Edit prompt</strong>
+          <p style="font-size:13px;color:var(--t2);margin-top:4px;">"If you could remove one thing from that page, what would it be? If you could add one thing — what's missing?"</p>
+          <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);margin-top:var(--s2);min-height:48px;font-size:11px;color:var(--t3);">Notes: ___________________________________________</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-session -->
+
+<!-- ══════════════════════════════════════════
+     TAB 3: OBSERVE
+══════════════════════════════════════════ -->
+<div id="tab-observe" class="panel">
+
+  <div class="sec">
+    <div class="sec-label">Step 3 of 4</div>
+    <div class="sec-title">Observation Sheet</div>
+    <div class="sec-desc">One copy per participant. Fill in during or immediately after the session. Focus on <em>what they did</em>, not just what they said. Behaviours outweigh stated preferences.</div>
+    <div class="note"><strong>Print tip:</strong> Ctrl+P / Cmd+P from this tab to get a clean observation sheet per participant.</div>
+  </div>
+
+  <div class="card card-accent" style="margin-bottom:var(--s5);">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s4);margin-bottom:var(--s4);">
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px;">Participant</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:13px;color:var(--t3);min-height:32px;">P0_  _______________</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px;">Mode</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:13px;color:var(--t3);min-height:32px;">☐ Newcomer &nbsp; ☐ Buyer &nbsp; ☐ Seller &nbsp; ☐ Browser</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px;">Date</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:13px;color:var(--t3);min-height:32px;">_______________</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);">
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px;">Game(s) they play</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:13px;color:var(--t3);min-height:32px;">_______________</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px;">Current marketplace(s)</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s2) var(--s3);font-size:13px;color:var(--t3);min-height:32px;">_______________</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:80px">Task</th>
+          <th style="width:100px">Hypothesis</th>
+          <th>What they did (behaviour)</th>
+          <th style="width:200px">What they said (quote)</th>
+          <th style="width:60px">Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>T1</strong><br><span style="font-size:11px;color:var(--t3)">First impression<br>5-sec cover</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--acc)">P2</span></td>
+          <td style="min-height:60px;"> </td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?</td>
+        </tr>
+        <tr>
+          <td><strong>T2</strong><br><span style="font-size:11px;color:var(--t3)">Trust eval<br>anon/new</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--acc)">P3</span></td>
+          <td> </td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?</td>
+        </tr>
+        <tr>
+          <td><strong>T3</strong><br><span style="font-size:11px;color:var(--t3)">Find a card<br>all</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--t2)">Time</span></td>
+          <td>Time to tap: ____s &nbsp;&nbsp; First tap: ☐ Search &nbsp; ☐ Tile &nbsp; ☐ Trending &nbsp; ☐ Nav &nbsp; ☐ Other: ____</td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?</td>
+        </tr>
+        <tr>
+          <td><strong>T4</strong><br><span style="font-size:11px;color:var(--t3)">Return strip<br>auth only</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--acc)">P1</span></td>
+          <td> </td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?<br>☐ N/A</td>
+        </tr>
+        <tr>
+          <td><strong>T5</strong><br><span style="font-size:11px;color:var(--t3)">Seller eval<br>P04+</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--acc)">P4</span></td>
+          <td> </td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?<br>☐ N/A</td>
+        </tr>
+        <tr>
+          <td><strong>T6</strong><br><span style="font-size:11px;color:var(--t3)">Serendipity<br>browse</span></td>
+          <td><span style="font-family:var(--fm);font-size:11px;color:var(--acc)">P5</span></td>
+          <td> </td>
+          <td> </td>
+          <td style="text-align:center">☐ ✓<br>☐ ✗<br>☐ ?<br>☐ N/A</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-blu">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blu);margin-bottom:var(--s3)">Other observations this session</div>
+    <div style="display:flex;flex-direction:column;gap:var(--s3);">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Hesitation moments (what caused them)</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);min-height:48px;font-size:11px;color:var(--t3)"> </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Unprompted surprise / delight</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);min-height:48px;font-size:11px;color:var(--t3)"> </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px;">Strongest quote from debrief</div>
+        <div style="background:var(--bg3);border-radius:var(--rsm);padding:var(--s3);min-height:48px;font-size:11px;color:var(--t3)"> </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-observe -->
+
+<!-- ══════════════════════════════════════════
+     TAB 4: SYNTHESISE
+══════════════════════════════════════════ -->
+<div id="tab-synthesise" class="panel">
+
+  <div class="sec">
+    <div class="sec-label">Step 4 of 4</div>
+    <div class="sec-title">Synthesis</div>
+    <div class="sec-desc">Complete after all sessions. Transfer ✓ / ✗ / ? signals from each observation sheet into the tracking table, then work through the decision gates in order.</div>
+    <div class="note-grn"><strong>Legend:</strong> &nbsp; ✓ Validated &nbsp;&nbsp; ✗ Invalidated &nbsp;&nbsp; ? Needs more data &nbsp;&nbsp; — Not tested (wrong mode)</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Hypothesis Tracking Table</div>
+    <div class="tbl-wrap">
+      <table class="hyp-table">
+        <thead class="hyp-row">
+          <tr>
+            <th>Assumption</th>
+            <th style="text-align:center">P01</th>
+            <th style="text-align:center">P02</th>
+            <th style="text-align:center">P03</th>
+            <th style="text-align:center">P04</th>
+            <th style="text-align:center">P05</th>
+            <th style="text-align:center">P06</th>
+            <th style="text-align:center">P07</th>
+            <th style="text-align:center;width:80px">Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>P1 — Personalised strip immediately understood</strong><br><span style="font-size:11px;color:var(--t3)">≥ 70% tap a tile within 10s without prompting</span></td>
+            <td class="blank">—</td><td class="blank"> </td><td class="blank"> </td><td class="blank">—</td><td class="blank">—</td><td class="blank"> </td><td class="blank">—</td>
+            <td class="blank"> </td>
+          </tr>
+          <tr>
+            <td><strong>P2 — Orientation sentence works</strong><br><span style="font-size:11px;color:var(--t3)">≥ 80% identify it as a TCG card marketplace within 5s</span></td>
+            <td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td>
+            <td class="blank"> </td>
+          </tr>
+          <tr>
+            <td><strong>P3 — A-static trust strip feels credible</strong><br><span style="font-size:11px;color:var(--t3)">Majority of anonymous visitors don't question the numbers</span></td>
+            <td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td>
+            <td class="blank"> </td>
+          </tr>
+          <tr>
+            <td><strong>P4 — Seller CTA visible to evaluators</strong><br><span style="font-size:11px;color:var(--t3)">Seller evaluators notice "Become a seller" unaided</span></td>
+            <td class="blank">—</td><td class="blank">—</td><td class="blank">—</td><td class="blank"> </td><td class="blank">—</td><td class="blank">—</td><td class="blank">—</td>
+            <td class="blank"> </td>
+          </tr>
+          <tr>
+            <td><strong>P5 — Serendipity layer drives organic engagement</strong><br><span style="font-size:11px;color:var(--t3)">Browsers tap a trending card without a specific goal</span></td>
+            <td class="blank"> </td><td class="blank">—</td><td class="blank">—</td><td class="blank">—</td><td class="blank"> </td><td class="blank"> </td><td class="blank"> </td>
+            <td class="blank"> </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Decision Gates</div>
+    <div class="sec-desc">If an assumption is invalidated (majority ✗), trigger the corresponding action before writing any production code.</div>
+
+    <div class="gate-card">
+      <span class="gate-badge p1">P1 Fails</span>
+      <div class="gate-body">
+        <strong>Revisit Concept 2 (Context-Restoring Homepage) architecture</strong>
+        <p>If returning users don't understand the strip, the personalisation layer is not self-documenting. Options: add a one-time tooltip on first visit; simplify to 1 tile ("Continue where you left off"); or drop the strip and surface context inline with search. Do not build this in production until the strip is validated.</p>
+      </div>
+    </div>
+
+    <div class="gate-card">
+      <span class="gate-badge p3">P3 Fails</span>
+      <div class="gate-body">
+        <strong>Accelerate real-time data pipeline or find alternative trust signal</strong>
+        <p>If static counts feel fabricated, swap to dynamic counts sourced from real data even at low volume ("47 listings added this week"), or replace with social proof (reviews, verified seller badges). Do not ship A-static metrics that users actively distrust.</p>
+      </div>
+    </div>
+
+    <div class="gate-card">
+      <span class="gate-badge p4">P4 Fails</span>
+      <div class="gate-body">
+        <strong>Elevate seller signal to hero level</strong>
+        <p>If seller evaluators can't find the CTA without prompting, promote to a bifurcated hero (Crazy 8 C2): left column for buyers, right column for sellers. This is a larger layout change that requires its own design pass. Flag as P0 blocker before seller acquisition campaigns.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Synthesis Questions</div>
+    <div class="card card-accent">
+      <ol style="list-style:decimal;padding-left:var(--s5);display:flex;flex-direction:column;gap:var(--s4);">
+        <li style="font-size:13px;color:var(--t2);line-height:1.7;padding-left:var(--s2);">Which assumptions held across <em>all</em> participants who tested them?</li>
+        <li style="font-size:13px;color:var(--t2);line-height:1.7;padding-left:var(--s2);">Which were invalidated — and what is the severity? (Cosmetic fix vs. architectural rethink?)</li>
+        <li style="font-size:13px;color:var(--t2);line-height:1.7;padding-left:var(--s2);">What patterns emerged across tasks that weren't in any hypothesis?</li>
+        <li style="font-size:13px;color:var(--t2);line-height:1.7;padding-left:var(--s2);">What is the <strong style="color:var(--t1)">single highest-impact change</strong> to make before the next prototype iteration?</li>
+        <li style="font-size:13px;color:var(--t2);line-height:1.7;padding-left:var(--s2);">Are we ready to move to A5 (refine prototype), or do results require reframing the problem (back to DEFINE)?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Next Actions</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>If result is…</th><th>Next action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>All P1–P5 validated</strong></td><td>Proceed to A5 (revise prototype) → A6 (component spec) → A7 (create epic)</td></tr>
+          <tr><td><strong>1–2 assumptions fail (minor)</strong></td><td>A4 decision doc → targeted revision → re-test failed assumptions with 2–3 participants before A5</td></tr>
+          <tr><td><strong>P1 or P4 fails (structural)</strong></td><td>Trigger decision gate above → revisit IDEATE before prototype revision</td></tr>
+          <tr><td><strong>P2 fails (orientation)</strong></td><td>Back to DEFINE — challenge statement may need reframing. Run another First Principles pass.</td></tr>
+          <tr><td><strong>P3 fails (trust)</strong></td><td>Escalate data pipeline priority. Ship real counts before homepage goes live.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /tab-synthesise -->
+</div><!-- /panels -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

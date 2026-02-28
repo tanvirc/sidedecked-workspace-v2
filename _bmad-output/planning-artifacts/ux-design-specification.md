@@ -22,6 +22,7 @@ inputDocuments:
   - docs/epics/epic-08-search-discovery.md
   - docs/epics/epic-09-inventory-management.md
   - docs/epics/epic-10-payment-processing.md
+  - _bmad-output/design-thinking-2026-02-28.md
 ---
 
 # UX Design Specification — SideDecked Storefront
@@ -1924,3 +1925,154 @@ AA is the industry standard and legal safe harbor. AAA for contrast ratios on pr
 - "Copy as Image" button on deck view: generates a pre-designed share card with slightly boosted background for Discord/social contrast.
 - Deck share card: dark but not pitch-black, card thumbnails in row, deck name in gold, SideDecked watermark subtle.
 - Keyboard shortcut overlay for vendor dashboard: Cmd+/ (macOS) or Ctrl+/ (Windows) shows shortcut reference.
+
+
+---
+
+## Homepage Redesign
+
+> **Source:** Design Thinking Session — `_bmad-output/design-thinking-2026-02-28.md` (2026-02-28)
+> **Prototype:** `_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html`
+> **Test guide:** `_bmad-output/planning-artifacts/ux-a3-usability-test-guide.html`
+> **Status:** Prototype built · User testing in progress (A3) · Production epic pending (A7)
+
+---
+
+### Design Challenge
+
+The SideDecked homepage serves visitors who arrive without a specific card in mind. High-intent buyers bypass it via search. The redesign must deliver **three distinct experiences from one URL**, with a single organising principle: **eliminate the delay between arrival and meaningful action**.
+
+**Time-to-first-value targets:**
+
+| Mode | Target |
+|---|---|
+| Anonymous browser / evaluator | First meaningful signal ≤ 10 seconds |
+| Returning authenticated user | Back to context (deck / alerts / watchlist) ≤ 3 taps |
+| Seller evaluator | Seller success evidence visible above fold |
+| TCG newcomer | Understands the site purpose ≤ 5 seconds |
+
+---
+
+### Four Homepage Modes (one URL)
+
+**Mode 1 — Anonymous visitor**
+Prove the marketplace is real, capable, and trustworthy inside 10 seconds. Credibility signals are mode-specific: casual collectors need visual trust (real photos, reviews); TCG-native players need real prices and availability numbers.
+
+**Mode 2 — Authenticated returning user**
+Return the user to their existing context in under 3 taps. A compact three-tile personalised strip (deck progress · price alert · watchlist hits) replaces or precedes the hero for logged-in users.
+
+**Mode 3 — Seller evaluator**
+Surface platform health and seller success evidence above the fold. Required signals: active seller count, average time to first sale, transparent fee structure, real seller testimonials.
+
+**Mode 4 — Orientation-first newcomer**
+TCG-newcomers who need a single orienting statement before any credibility proof: *"Buy and sell MTG, Pokémon, Yu-Gi-Oh! and One Piece singles from verified sellers."* Delivered via a dismissible first-visit banner (cookie-gated, never shown to returning visitors).
+
+**Cross-mode path — Community-to-commerce loop**
+Community browsers who discover a card while browsing non-commerce content. The homepage must enable accidental discovery, not only explicit purchase intent.
+
+---
+
+### Three Concepts
+
+**Concept 1 — "The Bifurcated Alive Hero"**
+A hero that speaks to buyers and sellers simultaneously. Search bar is the largest interactive element. A-static trust metrics at launch ("8,400 cards · 340 verified sellers"); graduates to A-live when daily transactions ≥ 10. Same design system, swappable data sources — no redesign required.
+
+**Concept 2 — "The Context-Restoring Homepage"**
+An authenticated server component layer. A three-tile compact strip replaces hero CTAs for returning users: deck progress · triggered price alerts · watchlist hits. Anonymous users see Concept 1 unchanged. Architecture: single BFF endpoint, Redis-cached per session, rendered as Next.js 15 server component inside a Suspense boundary — no flash of wrong content.
+
+**Concept 3 — "The Serendipity Layer"**
+Below-fold section for non-intent browsers. Shared by both states: Trending Now (3 community-surfaced cards with live prices) + Deck of the Day (community deck with build cost) + Format Alert (authenticated only, ban list changes affecting the user's decks).
+
+---
+
+### Composed Page Architecture
+
+```
+Anonymous:                    Authenticated:
+──────────────────────        ─────────────────────────────────
+Nav (sticky)                  Nav (sticky, notif bell + cart)
+[Concept 1 Hero]              [Personalised Strip — Concept 2]
+  H1 orientation sentence       Deck progress · Price alert
+  Search bar (largest el)       Watchlist hits
+  A-static trust strip        [Search bar]
+  Seller signal (single line) [A-static trust strip (compact)]
+[Game Selector Grid]            Format alert (conditional)
+  4 card-back image tiles     [Game Selector Grid]
+[Trending Now — Concept 3]    [Trending Now — Concept 3]
+[Deck of the Day]             [Deck of the Day]
+[Footer]                      [Footer — seller CTA removed]
+```
+
+Newcomer variant = Anonymous state + dismissible orientation banner above the hero (first visit only, `sd_first_visit` cookie).
+
+---
+
+### Key Component Specifications
+
+**Game Selector Grid**
+- 4 tiles: 2×2 grid (mobile), 4-column row (desktop)
+- Each tile: card-back image from `/public/images/card-backs/` with game-colour overlay (MTG: purple · Pokémon: yellow · YGO: gold · One Piece: red)
+- Aspect ratio 5:7 · overlay: game name (Rajdhani, uppercase) + listing count (DM Mono)
+- On tap: filters search context to that game (cookie-persisted per user)
+- Listing count: Redis-cached, 30s TTL
+
+**A-static Trust Strip**
+- Launch content: "📦 8,400 cards · 👥 340 verified sellers · ✅ Buyers protected"
+- Graduation trigger (product decision, no redesign): when daily completed transactions ≥ 10, swap static config to Redis live endpoint
+
+**Personalised Strip (Concept 2)**
+- BFF endpoint: `GET /api/homepage/context` — aggregates deck + price alert + watchlist services
+- Next.js 15 server component inside `<Suspense>` with anonymous hero as fallback
+- Mobile fallback: highest-priority tile only + "···" overflow
+- Response: `{ deck?, priceAlert?, watchlist? }` — all fields optional, renders gracefully with any subset
+
+**Newcomer Orientation Banner**
+- Cookie: `sd_first_visit` — set on first load, cleared on first search focus or explicit dismiss
+- Never shown to authenticated users
+- Copy: "👋 New to card singles? Buy individual cards — no booster packs needed. Start with a search →"
+
+---
+
+### Data Architecture
+
+| Element | Launch Source | Production Source | Cache |
+|---|---|---|---|
+| A-static trust counts | Static config | Redis query | N/A → 30s TTL |
+| Personalised strip | Customer-backend services | Same | Session |
+| Trending cards | Manual curation (3 cards) | Algorithmic endpoint | 5min TTL |
+| Game listing counts | Customer-backend count query | Same | 30s TTL |
+| Format alert | Static ban list | Ban list API + deck analysis | 24h TTL |
+
+---
+
+### Test Hypotheses (Usability Testing — A3)
+
+Five assumptions tested against the lo-fi prototype before any production code is written:
+
+| ID | Assumption | Success Criterion | Risk if Failed |
+|---|---|---|---|
+| P1 | Returning users understand the personalised strip without explanation | ≥ 70% tap a tile within 10s unprompted | Concept 2 architecture rethink |
+| P2 | Orientation sentence works for newcomers without alienating experts | ≥ 80% identify site purpose within 5s | Back to DEFINE |
+| P3 | A-static trust strip feels credible | Majority don't question the numbers | Accelerate live data pipeline |
+| P4 | Seller CTA visible to seller evaluators | Seller participants notice it unaided | Elevate to bifurcated hero |
+| P5 | Serendipity layer engages non-intent browsers | Browsers tap a trending card without a goal | Remove or reposition Concept 3 |
+
+**Decision gates:** P1 fail → pause Concept 2 build. P4 fail → bifurcated hero. P2 fail → redesign orientation layer before any production work.
+
+---
+
+### Prototype and Testing Artifacts
+
+| Artifact | Path |
+|---|---|
+| Lo-fi HTML prototype (5 states) | `_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html` |
+| Usability test guide | `_bmad-output/planning-artifacts/ux-a3-usability-test-guide.html` |
+| Design thinking session | `_bmad-output/design-thinking-2026-02-28.md` |
+
+---
+
+### Launch Graduation Criteria
+
+- **A-static → A-live:** When daily completed transactions ≥ 10, swap to Redis live endpoint. No design change required.
+- **Trending cards → algorithmic:** When sufficient transaction + search volume exists, replace manual curation.
+- **Seller signal → hero elevation:** Trigger if P4 fails in testing, or when seller acquisition becomes primary growth lever.
