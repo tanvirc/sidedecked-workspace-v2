@@ -2,7 +2,7 @@
 
 **Epic:** Epic 9 — Storefront Homepage Redesign
 **Story key:** 9-1-anonymous-homepage-hero-trust-foundation
-**Status:** implemented
+**Status:** done
 
 ## User Story
 
@@ -34,7 +34,22 @@ So that I can evaluate SideDecked and begin searching within 10 seconds without 
 - [x] Task 6: Performance validation — LCP <= 2.5s, CLS < 0.1; reserved height on right column [AC6]
 - [x] Task 7: Tests (unit + integration) and quality gate [All ACs]
 
+## Corrective Cycle Notes (2026-03-01)
+
+**Root cause:** Original implementation used Tailwind v4 `@theme inline` token names (e.g. `text-text-primary`, `bg-surface-2`) in a Tailwind v3.4.1 project. The `@theme inline` block in `globals.css` is ignored by v3, causing transparent backgrounds and invisible text/borders.
+
+**Additional fixes applied:**
+- H1 game names now wrapped in `<span style={{ color: "var(--accent)" }}>` (gold highlight, matching prototype)
+- Subtitle moved to separate `<p className="text-secondary">` element (was embedded in H1)
+- SellerSignal copy corrected: "Got cards to sell?" (was "Looking to sell your cards?")
+- Arrow `→` in seller signal wrapped in `<span aria-hidden="true">`
+- SellerOpportunityCard gradient and border replaced with inline styles + `.accent-cta-btn` CSS class (opacity modifiers on RGBA CSS vars are not supported in Tailwind v3)
+- TrustStrip seller count pluralisation added
+
+**Corrective plan:** `docs/plans/2026-03-01-9-1-corrective-token-and-prototype-alignment-plan.md`
+**Coverage:** 100% statements / 100% branch / 100% functions / 100% lines (all 6 homepage components)
+
 ## UX Design Reference
 
 Prototype: `_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html`
-Wireframe: `_bmad-output/planning-artifacts/ux-9-1-anonymous-homepage-hero-trust-foundation-wireframe.html` (to be produced in Phase 2B)
+Wireframe: `_bmad-output/planning-artifacts/ux-9-1-anonymous-homepage-hero-trust-foundation-wireframe.html` (v2 — rewritten to match prototype exactly)
