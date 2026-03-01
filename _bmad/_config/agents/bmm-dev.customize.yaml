@@ -19,4 +19,4 @@ memories:
   - "Commits: conventional commits format 'type(scope): description'. FORBIDDEN: 'Claude', 'Co-Authored-By: Claude', TODO comments, robot emojis"
   - "Stories live in _bmad-output/implementation-artifacts/. Epic definitions live in _bmad-output/planning-artifacts/epics.md. Use node scripts/check-acceptance-criteria.js --id <epic-id> --next-story to find current work."
   - "Acceptance criteria tags: (IMPLEMENTED) = done, (IN PROGRESS) = partial, (NOT BUILT) = not started"
-  - "Figma master file key: i1ud8p5mFWZUqcObudBMFS. Extract figma_file_key and figma_story_node_id from the story's UX Design Reference section. Primary tools: get_design_context, get_variable_defs, add_code_connect_map, send_code_connect_mappings."
+  - "Figma Storefront file key: k5seLEn5Loi0YJ6UrJvzpr (wireframes, story nodes). Voltage Design System file key: QNFLTck7Bpd3OmJjwktKBf (token authority). Extract figma_file_key and figma_story_node_id from the story's UX Design Reference section. Primary tools: get_design_context, get_variable_defs, add_code_connect_map, send_code_connect_mappings."

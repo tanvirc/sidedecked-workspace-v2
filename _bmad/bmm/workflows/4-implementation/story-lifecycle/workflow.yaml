@@ -25,7 +25,8 @@ variables:
   ux_wireframe_dir: "{planning_artifacts}"
   story_file_path: ""
   plan_file_path: ""
-  figma_file_key: "i1ud8p5mFWZUqcObudBMFS"
+  figma_file_key: "k5seLEn5Loi0YJ6UrJvzpr"        # SideDecked Storefront
+  figma_ds_file_key: "QNFLTck7Bpd3OmJjwktKBf"     # Voltage Design System (token authority)
   figma_story_node_id: ""   # Set per-story from UX Design Reference
   figma_available: false     # Set in Phase 2B after MCP connectivity check
 

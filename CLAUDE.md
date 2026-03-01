@@ -188,6 +188,19 @@ node scripts/check-acceptance-criteria.js --id <epic-id> --next-story # first in
 
 ---
 
+## Figma Design Files
+
+| File | Key | Purpose |
+|---|---|---|
+| SideDecked Storefront | `k5seLEn5Loi0YJ6UrJvzpr` | Wireframes — story nodes, golden references, UI implementation source |
+| Voltage Design System | `QNFLTck7Bpd3OmJjwktKBf` | Design tokens — color, typography, motion (token authority on conflicts) |
+
+- Wireframe source HTML: `docs/plans/wireframes/storefront-*.html` (shared nav via `sd-nav.js`)
+- Pages: Homepage, Search, Card Detail, Auth, Profile, Deck Builder, Deck Browser, Deck Viewer
+- Design system plan: `docs/plans/2026-03-01-voltage-design-system.md`
+
+---
+
 ## Architecture Docs Reference
 
 Read the relevant doc **before** starting. All in `docs/architecture/`.

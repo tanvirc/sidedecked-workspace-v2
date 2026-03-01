@@ -17,4 +17,4 @@ memories:
   - "UX outputs go in _bmad-output/planning-artifacts/. Reference existing storefront components before designing new patterns."
   - "Key UX flows: card browsing/search (Algolia-powered), multi-vendor cart, vendor inventory management, deck builder, community forum."
   - "TCG-specific UX: card condition grades (NM, LP, MP, HP, DMG), foil/variant display, set/edition filtering are core patterns."
-  - "Figma master file key: i1ud8p5mFWZUqcObudBMFS. Primary Figma MCP tools: get_design_context (primary), get_screenshot, get_variable_defs, generate_figma_design."
+  - "Figma Storefront file key: k5seLEn5Loi0YJ6UrJvzpr (wireframes, story nodes, golden references). Voltage Design System file key: QNFLTck7Bpd3OmJjwktKBf (token authority). Primary Figma MCP tools: get_design_context (primary), get_screenshot, get_variable_defs, generate_figma_design."

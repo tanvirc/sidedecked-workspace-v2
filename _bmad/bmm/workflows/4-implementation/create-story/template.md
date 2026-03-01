@@ -41,7 +41,7 @@ so that {{benefit}}.
 <!-- Populated automatically by create-story when UX artifacts exist -->
 
 - **Wireframe (HTML):** [Discovered path written by create-story, or "none found"]
-- **Figma File Key:** [e.g., "i1ud8p5mFWZUqcObudBMFS" or "N/A"]
+- **Figma File Key:** [e.g., "k5seLEn5Loi0YJ6UrJvzpr" or "N/A"]
 - **Figma Node ID:** [e.g., "123:456" or "N/A"]
 - **Figma URL:** [full URL or "N/A"]
 - **UX Spec:** `_bmad-output/planning-artifacts/ux-design-specification.md`

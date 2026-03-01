@@ -104,6 +104,17 @@ All 20 rarity tokens recalibrated to pass WCAG AA contrast:
 | Transition default | `150ms ease-out` | All interactive transitions |
 | Gradient sweep | `@keyframes gradient-sweep` | Hero sections, banners |
 
+## Figma Files
+
+| File | Key | URL |
+|---|---|---|
+| Voltage Design System | `QNFLTck7Bpd3OmJjwktKBf` | https://www.figma.com/design/QNFLTck7Bpd3OmJjwktKBf |
+| SideDecked Storefront | `k5seLEn5Loi0YJ6UrJvzpr` | https://www.figma.com/design/k5seLEn5Loi0YJ6UrJvzpr |
+
+- **Voltage DS file** — dark + light mode captures of all 10 design system sections
+- **Storefront file** — 8 page wireframes (Homepage, Search, Card Detail, Auth, Profile, Deck Builder, Deck Browser, Deck Viewer) with desktop + mobile variants
+- Source HTML: `docs/plans/wireframes/storefront-*.html` (shared nav via `sd-nav.js`)
+
 ## Files Changed
 
 | File | Change |

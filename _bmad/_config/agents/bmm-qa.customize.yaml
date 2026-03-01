@@ -17,4 +17,4 @@ memories:
   - "TDD required: failing test first → minimal implementation → pass → refactor."
   - "Performance targets to validate: API < 100ms p95, DB queries < 50ms."
   - "Each story has acceptance criteria with (IMPLEMENTED)/(IN PROGRESS)/(NOT BUILT) tags — QA validates these are accurate."
-  - "Figma MCP tools for QA: get_screenshot (golden reference), get_design_context (structural reference), get_variable_defs (token validation). Figma master file key: i1ud8p5mFWZUqcObudBMFS."
+  - "Figma MCP tools for QA: get_screenshot (golden reference), get_design_context (structural reference), get_variable_defs (token validation). Figma Storefront file key: k5seLEn5Loi0YJ6UrJvzpr. Voltage Design System file key: QNFLTck7Bpd3OmJjwktKBf (token authority)."
