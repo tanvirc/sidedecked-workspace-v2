@@ -108,7 +108,7 @@
        Non-UI stories skip Phase 2B and proceed directly to Phase 3.
        ═══════════════════════════════════════════════════════ -->
 
-  <step n="5" goal="UX Designer: Assess UI scope">
+  <step n="5" goal="UX Designer: Assess UI scope and Figma availability">
     <action>Load and read {agent_path}/ux-designer.md — adopt Sally (UX Designer) persona completely</action>
     <action>Review the confirmed story file and Requirements Brief from Phase 2</action>
     <action>The ux-design-specification.md is already in context via input_file_patterns</action>
@@ -128,6 +128,21 @@
         - Interaction patterns (clicks, submissions, state changes)
         - Responsive behavior requirements
       </action>
+
+      <!-- Figma MCP Availability Check -->
+      <action>Check Figma MCP connectivity:
+        - Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="0:1") to verify MCP is reachable
+        - If successful: set {{figma_available}} = true
+        - If MCP call fails or times out: set {{figma_available}} = false
+      </action>
+      <check if="{{figma_available}} == true">
+        <action>Call get_metadata(fileKey="{{figma_file_key}}", nodeId="0:1") to search for existing wireframe frames matching the story key</action>
+        <action>If matching frame found: set {{figma_story_node_id}} to its node ID</action>
+        <action>Output: "Figma MCP connected — file {{figma_file_key}} accessible. Existing story node: {{figma_story_node_id}} (or 'none found')"</action>
+      </check>
+      <check if="{{figma_available}} != true">
+        <action>Output: "Figma MCP unavailable — will use HTML wireframe as sole design reference."</action>
+      </check>
     </check>
     <ask>
       ## Phase 2B Step 5 — UI Scope Assessment
@@ -139,7 +154,7 @@
     </ask>
   </step>
 
-  <step n="6" goal="UX Designer: Produce HTML wireframe">
+  <step n="6" goal="UX Designer: Produce wireframe (Figma-first with HTML fallback)">
     <action>As UX Designer (Sally):
       - Reference _bmad-output/planning-artifacts/ux-design-directions.html for styling and format conventions
       - Reference ux-design-specification.md for design system, patterns, and interaction principles
@@ -154,13 +169,34 @@
         (typography, color palette, spacing, component variants, accessibility standards)
     </action>
     <action>Save the wireframe to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html</action>
+
+    <!-- Figma Capture Path (when Figma MCP is available) -->
+    <check if="{{figma_available}} == true">
+      <action>Capture the HTML wireframe into Figma:
+        - Call generate_figma_design(outputMode="existingFile", fileKey="{{figma_file_key}}")
+        - Follow the capture instructions returned by the tool
+        - Poll with captureId until status is 'completed'
+        - Record the resulting node ID as {{figma_story_node_id}}
+      </action>
+      <action>Extract design tokens from Figma:
+        - Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}")
+        - Store token definitions for downstream token mapping
+      </action>
+      <action>Update the story file's UX Design Reference section:
+        - Set Figma File Key to {{figma_file_key}}
+        - Set Figma Node ID to {{figma_story_node_id}}
+        - Set Figma URL to the constructed figma.com/design URL
+      </action>
+    </check>
+
     <ask>
-      ## Phase 2B Step 6 — HTML Wireframe Produced
+      ## Phase 2B Step 6 — Wireframe Produced
 
       UX Designer has produced the HTML wireframe and saved it to:
       _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html
+      {{#if figma_available}}Figma wireframe captured to node {{figma_story_node_id}} in file {{figma_file_key}}.{{/if}}
 
-      Open the file in a browser to review it.
+      Open the HTML file in a browser to review it.
 
       Type CONFIRM to proceed to party mode review.
       Or describe wireframe changes needed before the review.
@@ -184,6 +220,10 @@
       - {agent_path}/architect.md — Winston (Architect)
       - {agent_path}/dev.md — Amelia (Developer)
     </action>
+    <!-- Provide Figma visual reference alongside HTML for the review -->
+    <check if="{{figma_available}} == true AND {{figma_story_node_id}} is set">
+      <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to provide a visual reference for the party mode reviewers</action>
+    </check>
     <action>As Sally (UX Designer): Review for design system alignment, interaction patterns, accessibility compliance, visual hierarchy, and component reuse</action>
     <action>As John (PM): Review for scope alignment with the epic's goals and user personas; flag any scope creep or missing user journeys</action>
     <action>As Mary (BA): Review for acceptance criteria coverage - does every AC have a corresponding UI element? Are business rules reflected? Any missing edge case screens?</action>
@@ -243,6 +283,17 @@
     </action>
     <action>As UX Designer (Sally): Incorporate approved changes from party mode feedback and elicitation findings into the wireframe HTML file</action>
     <action>Save the refined wireframe back to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html</action>
+
+    <!-- Re-capture refined wireframe into Figma -->
+    <check if="{{figma_available}} == true">
+      <action>Re-capture the refined wireframe into Figma:
+        - Call generate_figma_design(outputMode="existingFile", fileKey="{{figma_file_key}}")
+        - Poll with captureId until status is 'completed'
+        - Update {{figma_story_node_id}} with the new node ID if changed
+        - Update the story file's UX Design Reference with the latest Figma Node ID
+      </action>
+    </check>
+
     <action>Output: final confirmed wireframe path and a summary of all changes made</action>
     <ask>
       ## Phase 2B Complete — UX Wireframe Validated
@@ -266,6 +317,11 @@
     <action>Load and read {agent_path}/analyst.md — load Mary (BA) perspective for AC traceability co-review</action>
     <action>Architecture docs are already in context via input_file_patterns</action>
     <action>If Phase 2B produced a wireframe: load _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html as additional context for the technical design</action>
+
+    <!-- Provide Figma design context to Architect -->
+    <check if="{{figma_available}} == true AND {{figma_story_node_id}} is set">
+      <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to give the Architect reference code and a screenshot for the technical design</action>
+    </check>
   </step>
 
   <step n="10" goal="Architect: Design the technical solution">
@@ -331,6 +387,9 @@
       **Repos:** {list of affected repos}
       **Deployment:** {needs_deploy — true/false with reason}
       **UX Wireframe:** {path to wireframe HTML if Phase 2B ran, otherwise "N/A"}
+      **Figma Reference:** {figma.com/design URL if figma_available, otherwise "N/A"}
+      **Figma File Key:** {figma_file_key if figma_available, otherwise "N/A"}
+      **Figma Node ID:** {figma_story_node_id if figma_available, otherwise "N/A"}
 
       ## Requirements Brief (from Phase 2)
       {summarize: clarified ACs, business rules, UX flows}
@@ -382,6 +441,23 @@
     <action>Set {{story_file_path}} to the resolved story file path for Phase 4/5/7 evidence commands</action>
     <action>If starting a fresh session: load the Requirements Brief and Technical Design from the plan file (they are embedded in it)</action>
     <action>If a UX wireframe path is referenced in the plan: load it for component-level implementation guidance</action>
+
+    <!-- Load Figma design context for token mapping -->
+    <check if="plan file contains Figma File Key and Figma Node ID (not 'N/A')">
+      <action>Extract {{figma_file_key}} and {{figma_story_node_id}} from the plan file</action>
+      <!-- Verify MCP connectivity before trusting stored Figma fields -->
+      <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to verify Figma MCP is reachable in this session</action>
+      <check if="get_screenshot succeeded">
+        <action>Set {{figma_available}} = true</action>
+        <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma reference code and screenshot</action>
+        <action>Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma design tokens</action>
+        <action>Build token mapping table from Figma tokens (Figma-first). Cross-reference with HTML wireframe CSS values — Figma takes precedence on conflicts.</action>
+      </check>
+      <check if="get_screenshot failed or MCP is unavailable">
+        <action>Set {{figma_available}} = false</action>
+        <action>Output: "Figma MCP unavailable in this session — using HTML wireframe as sole design reference."</action>
+      </check>
+    </check>
     <critical>
       WIREFRAME COMPONENT MAP (required for UI stories):
       If a UX wireframe exists, BEFORE writing any component code, produce a Wireframe Component Map:
@@ -478,6 +554,17 @@
       <check if="any section FAILS">
         <action>Fix all failing sections before proceeding — no partial compliance accepted</action>
         <action>Re-run the compliance check after fixes until all sections PASS</action>
+      </check>
+
+      <!-- Figma Golden Reference + Code Connect (when Figma available) -->
+      <check if="{{figma_available}} == true AND {{figma_story_node_id}} is set">
+        <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to capture a golden reference screenshot for Phase 5B comparison</action>
+        <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to compare structural hierarchy against Figma reference code</action>
+        <action>After all wireframe sections PASS compliance, create Code Connect mappings:
+          - For each implemented UI component that maps to a Figma node:
+            call add_code_connect_map(fileKey="{{figma_file_key}}", nodeId="{component_node_id}", source="{component_file_path}", componentName="{ComponentName}", label="React")
+          - For batch mapping of multiple components: use send_code_connect_mappings
+        </action>
       </check>
     </check>
 
@@ -598,14 +685,26 @@
        ═══════════════════════════════════════════════════════ -->
 
   <step n="17" goal="Check if post-build UX validation is needed">
-    <action>Read {{story_file_path}} and search for a "## UX Design Reference" section containing a wireframe path</action>
-    <check if="no UX Design Reference section OR no wireframe path">
+    <action>Read {{story_file_path}} and search for a "## UX Design Reference" section containing a wireframe path or Figma Node ID</action>
+    <check if="no UX Design Reference section OR (no wireframe path AND no Figma Node ID)">
       <action>Output: "No UX wireframe reference detected — skipping Phase 5B. Proceeding directly to Phase 6 (Deployment Check)."</action>
       <action>List the signals that confirmed no UX scope (e.g., story has no UX Design Reference section)</action>
     </check>
-    <check if="UX Design Reference section exists with wireframe path">
-      <action>Set {{wireframe_path}} to the wireframe file path extracted from the story</action>
-      <action>Output: "UX wireframe found at {{wireframe_path}} — proceeding to Post-Build UX Validation."</action>
+    <check if="UX Design Reference section exists with wireframe path OR Figma Node ID">
+      <action>Set {{wireframe_path}} to the wireframe file path extracted from the story (if present)</action>
+      <action>Extract {{figma_file_key}} and {{figma_story_node_id}} from the story's UX Design Reference (if present and not 'N/A')</action>
+      <!-- Verify MCP connectivity before trusting stored Figma fields -->
+      <check if="both Figma File Key and Figma Node ID are present and not 'N/A'">
+        <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to verify Figma MCP is reachable</action>
+        <check if="get_screenshot succeeded">
+          <action>Set {{figma_available}} = true</action>
+        </check>
+        <check if="get_screenshot failed or MCP is unavailable">
+          <action>Set {{figma_available}} = false</action>
+          <action>Output: "Figma MCP unavailable — Phase 5B will use HTML wireframe only."</action>
+        </check>
+      </check>
+      <action>Output: "UX reference found — wireframe: {{wireframe_path}}, Figma: {{figma_story_node_id}} (available: {{figma_available}}) — proceeding to Post-Build UX Validation."</action>
     </check>
     <ask>
       ## Phase 5B Step 17 — UX Validation Scope Check
@@ -625,15 +724,25 @@
       Four audits must be performed. Sally leads audits 1-2 and 4. Quinn leads audit 3.
     </critical>
 
-    <!-- Audit 1: CSS Token Compliance -->
+    <!-- Audit 1: CSS Token Compliance (Figma-enhanced when available) -->
     <action>As Sally: Grep each implemented component for hardcoded colors and spacing:
       - Forbidden patterns: bg-gray-*, text-gray-*, #hex colors, rgb(), hsl(), inline px values
       - Expected: CSS custom properties from storefront/src/styles/globals.css, Tailwind semantic classes
       - Severity: HIGH if hardcoded color bypasses design system entirely, MEDIUM if wrong shade of correct semantic color
     </action>
+    <check if="{{figma_available}} == true">
+      <action>As Sally: Cross-reference implementation tokens against Figma variable definitions:
+        - Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}")
+        - For each CSS value in the implementation, check if it maps to a Figma variable
+        - Flag values with no corresponding Figma variable as MEDIUM severity
+        - Figma Tokens Cross-Reference table: | Implementation Value | Figma Variable | Match? |
+      </action>
+    </check>
 
-    <!-- Audit 2: Structural Hierarchy (ENHANCED — catches common deviations) -->
-    <action>As Sally: Compare JSX component hierarchy against wireframe HTML structure:
+    <!-- Audit 2: Structural Hierarchy (ENHANCED — catches common deviations, Figma-authoritative when available) -->
+    <action>As Sally: Compare JSX component hierarchy against wireframe structure:
+      - When Figma is available: call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") and use Figma reference code as the AUTHORITATIVE structural source. HTML wireframe is secondary — Figma wins on conflicts.
+      - When Figma is not available: compare against HTML wireframe structure as before.
       - HIGH if layout container differs (e.g., grid changed to flex, responsive columns differ)
       - MEDIUM if extra wrapper nesting that doesn't affect layout
       - Verify interaction states (hover, focus, active, loading, empty, error) match wireframe specifications
@@ -653,7 +762,14 @@
          border and padding, the code MUST have the container — not just bare floated pills.
     </action>
 
-    <!-- Audit 3: Playwright Computed-Style + Accessibility Tree + Visual Regression -->
+    <!-- Audit 3: Playwright Computed-Style + Accessibility Tree + Visual Regression (with Figma golden reference) -->
+    <check if="{{figma_available}} == true">
+      <action>As Quinn: Save Figma golden reference screenshot:
+        - Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}")
+        - Save to _bmad-output/ux-validation/{{story_key}}/figma-golden-reference.png
+        - This becomes the visual comparison baseline alongside Playwright screenshots
+      </action>
+    </check>
     <action>As Quinn: Generate a Playwright UX compliance test at storefront/e2e/{{story_key}}-ux-compliance.spec.ts:
       - getComputedStyle assertions on key elements (background-color, color resolve to correct CSS variable chain)
       - Viewport tests at { width: 375, height: 812 } (mobile) and { width: 1280, height: 900 } (desktop)
@@ -688,12 +804,14 @@
       Phase 5B cannot proceed to APPROVED with any check:tokens violations.
     </action>
 
-    <!-- Audit 4: Sally's Verdict -->
+    <!-- Audit 4: Sally's Verdict (enhanced with Figma sections when available) -->
     <action>As Sally: Produce a UX Validation Report:
       - CSS Token Compliance: PASS / list of violations with file:line
       - Structural Hierarchy: PASS / list of deviations with severity
       - Accessibility Tree Review: PASS / issues found in tree structure
       - Playwright Test Results: PASS / failures (if tests were run)
+      - Figma Token Cross-Reference: PASS / unmapped tokens (when Figma available)
+      - Golden Reference Screenshots: figma-golden-reference.png, impl-desktop-1280x900.png, impl-mobile-375x812.png (when Figma available)
       - Overall Verdict: APPROVED or BLOCKED with specific items to fix
       - Save report to: _bmad-output/ux-validation/{{story_key}}/ux-validation-report.md
     </action>
@@ -875,6 +993,8 @@
           - Summary of changes specific to this repo
           - **Documentation Changes** section listing docs updated or created
           - **UX Wireframe** reference (if Phase 2B ran): _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html
+          - **Figma Wireframe** URL (if Figma available): figma.com/design/{{figma_file_key}}?node-id={{figma_story_node_id}}
+          - **Golden Reference Screenshots**: paths to figma-golden-reference.png and Playwright implementation screenshots (if Phase 5B ran with Figma)
           - Railway production URL (if Phase 6 ran)
           - Testing notes (unit + integration coverage)
           - Acceptance criteria checklist

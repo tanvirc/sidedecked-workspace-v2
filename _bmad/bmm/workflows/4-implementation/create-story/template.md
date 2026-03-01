@@ -40,10 +40,13 @@ so that {{benefit}}.
 
 <!-- Populated automatically by create-story when UX artifacts exist -->
 
-- **Wireframe:** [Discovered path written by create-story, or "none found"]
+- **Wireframe (HTML):** [Discovered path written by create-story, or "none found"]
+- **Figma File Key:** [e.g., "i1ud8p5mFWZUqcObudBMFS" or "N/A"]
+- **Figma Node ID:** [e.g., "123:456" or "N/A"]
+- **Figma URL:** [full URL or "N/A"]
 - **UX Spec:** `_bmad-output/planning-artifacts/ux-design-specification.md`
 - **Key design decisions:** [Extracted from UX artifacts]
-- **Design tokens/patterns to use:** [Extracted from wireframe]
+- **Design tokens/patterns to use:** [Extracted from wireframe or Figma variables]
 - **Anti-patterns to avoid:** [From UX spec]
 
 ## Dev Agent Record
