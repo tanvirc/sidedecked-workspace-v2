@@ -162,159 +162,6 @@
     .annotation.blue { background: var(--info); }
 
     /* =============================================
-       GLASS NAV BAR
-       ============================================= */
-    .glass-nav {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      display: flex;
-      align-items: center;
-      padding: 0 32px;
-      height: 64px;
-      background: rgba(24, 22, 42, 0.80);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-default);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-      gap: 24px;
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-      flex-shrink: 0;
-    }
-    .logo-accent { color: #8B5CF6; }
-    .nav-links {
-      display: flex;
-      gap: 8px;
-      margin-left: 16px;
-    }
-    .nav-links a {
-      font-family: var(--font-heading);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      padding: 8px 14px;
-      border-radius: 10px;
-      transition: all 0.15s;
-    }
-    .nav-links a:hover {
-      color: var(--text-primary);
-      background: rgba(139, 92, 246, 0.08);
-    }
-
-    /* Search bar in nav */
-    .nav-search {
-      flex: 1;
-      max-width: 520px;
-      margin: 0 32px;
-      position: relative;
-    }
-    .nav-search-input {
-      width: 100%;
-      height: 40px;
-      background: var(--bg-surface-2);
-      border: 2px solid var(--brand-primary);
-      border-radius: var(--radius-md);
-      padding: 0 44px 0 40px;
-      font-family: var(--font-body);
-      font-size: 14px;
-      color: var(--text-primary);
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 1px 2px rgba(0,0,0,0.2);
-    }
-    .nav-search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--brand-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .nav-search-icon svg {
-      width: 16px;
-      height: 16px;
-    }
-    .nav-search-kbd {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-tertiary);
-      background: var(--bg-surface-3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid var(--border-default);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .nav-icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.15s;
-    }
-    .nav-icon-btn:hover {
-      background: var(--bg-surface-2);
-      color: var(--text-primary);
-      border-color: var(--border-default);
-    }
-    .nav-icon-btn svg { width: 18px; height: 18px; }
-    .nav-badge {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: var(--brand-secondary);
-      font-size: 9px;
-      font-weight: 600;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-    .nav-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
-      margin-left: 4px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-size: 12px;
-      font-weight: 600;
-      color: #FFFFFF;
-    }
-
-    /* =============================================
        AUTOCOMPLETE DROPDOWN
        ============================================= */
     .autocomplete {
@@ -972,99 +819,6 @@
     /* =============================================
        MOBILE STYLES
        ============================================= */
-    .m-nav {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      padding: 44px 16px 0;
-      background: rgba(24, 22, 42, 0.80);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-default);
-      display: flex;
-      flex-direction: column;
-    }
-    .m-nav-top {
-      display: flex;
-      align-items: center;
-      height: 48px;
-      gap: 12px;
-    }
-    .m-hamburger {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .m-hamburger svg { width: 22px; height: 22px; }
-    .m-nav-logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-      flex: 1;
-      text-align: center;
-    }
-    .m-nav-logo .logo-accent { color: #8B5CF6; }
-    .m-nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-    .m-nav-actions .nav-icon-btn {
-      width: 32px;
-      height: 32px;
-    }
-    .m-nav-actions .nav-icon-btn svg { width: 16px; height: 16px; }
-    .m-nav-actions .nav-avatar {
-      width: 28px;
-      height: 28px;
-      font-size: 10px;
-    }
-    .m-nav-bottom {
-      padding-bottom: 10px;
-    }
-    .m-search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .m-search-input {
-      flex: 1;
-      height: 36px;
-      background: var(--bg-surface-2);
-      border: 1.5px solid var(--border-strong);
-      border-radius: var(--radius-md);
-      padding: 0 12px 0 32px;
-      font-size: 13px;
-      color: var(--text-primary);
-      font-family: var(--font-body);
-      position: relative;
-    }
-    .m-search-icon-wrap {
-      position: relative;
-      flex: 1;
-    }
-    .m-search-icon {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-tertiary);
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .m-search-icon svg {
-      width: 14px;
-      height: 14px;
-    }
 
     /* Mobile filter chips */
     .m-filters-scroll {
@@ -1295,27 +1049,9 @@
       <!-- Annotation: Algolia -->
       <div class="annotation blue" style="top: 105px; left: 520px; z-index: 60;">Algolia InstantSearch</div>
 
-      <!-- ====== GLASS NAV BAR ====== -->
-      <nav class="glass-nav">
-        <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-
-        <div class="nav-links">
-          <a href="#">Browse Cards</a>
-          <a href="#">Deck Builder</a>
-          <a href="#">Marketplace</a>
-          <a href="#">Sell</a>
-          <a href="#">Community</a>
-        </div>
-
-        <div class="nav-search">
-          <span class="nav-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-          <div class="nav-search-input" style="display: flex; align-items: center;">
-            <span style="color: var(--text-primary); font-size: 14px;">lightning bolt</span>
-            <span style="margin-left: auto; color: var(--text-tertiary); font-size: 14px;">|</span>
-          </div>
-          <span class="nav-search-kbd">&#8984;K</span>
-
-          <!-- ====== AUTOCOMPLETE DROPDOWN ====== -->
+      <!-- ====== GLASS NAV BAR (shared module) ====== -->
+      <div id="sd-nav-root">
+        <div data-sd-slot="search-dropdown">
           <div class="autocomplete">
             <!-- Recent Searches -->
             <div class="autocomplete-section">
@@ -1392,29 +1128,9 @@
             </div>
           </div>
         </div>
-
-        <div class="nav-actions">
-          <!-- Theme toggle -->
-          <button class="nav-icon-btn" title="Theme toggle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-          </button>
-          <!-- Notifications -->
-          <button class="nav-icon-btn" title="Notifications">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-          </button>
-          <!-- Wishlist -->
-          <button class="nav-icon-btn" title="Wishlist">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-          </button>
-          <!-- Cart -->
-          <button class="nav-icon-btn" title="Cart">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            <span class="nav-badge">3</span>
-          </button>
-          <!-- Avatar -->
-          <div class="nav-avatar">TC</div>
-        </div>
-      </nav>
+      </div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ searchContent: 'expanded', searchValue: 'lightning bolt' });</script>
 
       <!-- ====== ACTIVE FILTERS BAR ====== -->
       <div class="filters-bar">
@@ -1906,33 +1622,9 @@
     <div class="frame-label">Mobile <span class="dim">390 x 844</span></div>
     <div class="mobile-frame">
 
-      <!-- ====== MOBILE NAV ====== -->
-      <div class="m-nav">
-        <div class="m-nav-top">
-          <!-- Hamburger -->
-          <button class="m-hamburger" title="Menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-          </button>
-          <!-- Logo -->
-          <div class="m-nav-logo">Side<span class="logo-accent">Decked</span></div>
-          <!-- Cart + Avatar -->
-          <div class="m-nav-actions">
-            <button class="nav-icon-btn" title="Cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <span class="nav-badge">3</span>
-            </button>
-            <div class="nav-avatar">TC</div>
-          </div>
-        </div>
-        <div class="m-nav-bottom">
-          <div class="m-search">
-            <div class="m-search-icon-wrap">
-              <span class="m-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-              <input type="text" class="m-search-input" value="lightning bolt" readonly style="background: var(--bg-surface-2); border: 1.5px solid var(--border-strong); border-radius: var(--radius-md); padding: 0 12px 0 32px; font-size: 13px; color: var(--text-primary); font-family: var(--font-body); height: 36px; width: 100%;" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- ====== MOBILE NAV (shared module) ====== -->
+      <div id="sd-nav-mobile"></div>
+      <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, searchContent: 'expanded', searchValue: 'lightning bolt' });</script>
 
       <!-- ====== MOBILE FILTER CHIPS ====== -->
       <div class="m-filters-scroll">

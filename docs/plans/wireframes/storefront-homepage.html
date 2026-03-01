@@ -152,162 +152,6 @@
        SHARED COMPONENT STYLES
        ============================================= */
 
-    /* --- Navigation --- */
-    .glass-nav {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(24, 22, 42, 0.60);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.08);
-      padding: 0 32px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-    }
-    .glass-nav .nav-inner {
-      display: flex;
-      align-items: center;
-      height: 64px;
-      max-width: 1344px;
-      margin: 0 auto;
-      gap: 24px;
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 24px;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-      flex-shrink: 0;
-    }
-    .logo-accent {
-      color: #8B5CF6;
-    }
-    .nav-links {
-      display: flex;
-      gap: 8px;
-      margin-left: 16px;
-    }
-    .nav-links a {
-      font-family: var(--font-heading);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      padding: 8px 14px;
-      border-radius: 10px;
-      transition: all 0.15s;
-    }
-    .nav-links a:hover {
-      color: var(--text-primary);
-      background: rgba(139, 92, 246, 0.08);
-    }
-    .nav-search-pill {
-      flex: 1;
-      max-width: 420px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      background: var(--bg-surface-2);
-      border: 1px solid var(--border-default);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .nav-search-pill:hover {
-      border-color: var(--border-strong);
-    }
-    .nav-search-pill svg {
-      width: 16px;
-      height: 16px;
-      color: var(--text-tertiary);
-      flex-shrink: 0;
-    }
-    .nav-search-pill span {
-      font-size: 13px;
-      color: var(--text-tertiary);
-    }
-    .nav-search-pill .kbd {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-tertiary);
-      background: var(--bg-surface-3);
-      border: 1px solid var(--border-default);
-      padding: 2px 6px;
-      border-radius: 5px;
-      margin-left: auto;
-    }
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .nav-icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.15s;
-      position: relative;
-    }
-    .nav-icon-btn:hover {
-      background: var(--bg-surface-2);
-      color: var(--text-primary);
-      border-color: var(--border-default);
-    }
-    .nav-icon-btn svg { width: 18px; height: 18px; }
-    .nav-badge {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: var(--brand-secondary);
-      font-size: 9px;
-      font-weight: 600;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-    .nav-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
-      margin-left: 4px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-size: 12px;
-      font-weight: 600;
-      color: #FFFFFF;
-    }
-    .nav-notif-dot {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--brand-secondary);
-      border: 2px solid var(--bg-surface-1);
-    }
-
     /* --- Hero --- */
     .hero {
       position: relative;
@@ -846,47 +690,6 @@
     /* =============================================
        MOBILE OVERRIDES
        ============================================= */
-    .mobile-frame .glass-nav {
-      padding: 0 20px;
-      height: auto;
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .mobile-frame .nav-top-row {
-      display: flex;
-      align-items: center;
-      height: 56px;
-      gap: 12px;
-    }
-    .mobile-frame .nav-inner { display: none; }
-    .mobile-frame .nav-logo { font-size: 20px; flex: 1; text-align: center; }
-    .mobile-frame .nav-links { display: none; }
-    .mobile-frame .nav-bottom-row {
-      padding-bottom: 10px;
-    }
-    .mobile-frame .nav-bottom-row .nav-search-pill {
-      flex: 1;
-      max-width: none;
-      padding: 6px 14px;
-    }
-    .mobile-frame .nav-bottom-row .nav-search-pill span { font-size: 12px; }
-    .mobile-frame .nav-bottom-row .nav-search-pill .kbd { display: none; }
-    .mobile-frame .nav-actions { gap: 2px; }
-    .mobile-frame .nav-icon-btn { width: 32px; height: 32px; }
-    .mobile-frame .nav-icon-btn svg { width: 16px; height: 16px; }
-    .mobile-frame .nav-avatar { width: 28px; height: 28px; font-size: 10px; }
-    .mobile-frame .hamburger-btn {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .mobile-frame .hamburger-btn svg { width: 22px; height: 22px; }
-
     .mobile-frame .hero { padding: 48px 20px 40px; }
     .mobile-frame .hero h1 { font-size: 44px; }
     .mobile-frame .hero-sub { font-size: 15px; max-width: 100%; margin-bottom: 28px; }
@@ -965,47 +768,14 @@
     <div class="desktop-frame" data-frame-name="Desktop — 1440px">
 
       <!-- NAV -->
-      <nav class="glass-nav">
-        <div class="nav-inner">
-          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-          <div class="nav-links">
-            <a href="#">Browse Cards</a>
-            <a href="#">Deck Builder</a>
-            <a href="#">Marketplace</a>
-            <a href="#">Sell</a>
-            <a href="#">Community</a>
-          </div>
-          <div class="nav-search-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <span>Search cards, sets, sellers...</span>
-            <span class="kbd">&#8984;K</span>
-          </div>
-          <div class="nav-actions">
-            <!-- Theme toggle -->
-            <button class="nav-icon-btn" title="Theme toggle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            </button>
-            <!-- Notifications -->
-            <button class="nav-icon-btn" title="Notifications">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span class="nav-notif-dot"></span>
-            </button>
-            <!-- Wishlist -->
-            <button class="nav-icon-btn" title="Wishlist">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            </button>
-            <!-- Cart -->
-            <button class="nav-icon-btn" title="Cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <span class="nav-badge">3</span>
-            </button>
-            <!-- Avatar -->
-            <div class="nav-avatar">TC</div>
-          </div>
-          <span class="annotation" style="position:absolute; top:72px; left:48px;">&lt;ModernHeader&gt;</span>
-          <span class="annotation--breakpoint annotation" style="position:absolute; top:72px; right:48px;">sticky, blur(16px)</span>
-        </div>
-      </nav>
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({
+        annotations: [
+          { text: '&lt;ModernHeader&gt;', position: 'left' },
+          { text: 'sticky, blur(16px)', position: 'right', type: 'breakpoint' }
+        ]
+      });</script>
 
       <!-- HERO -->
       <section class="hero">
@@ -1262,29 +1032,8 @@
       <div class="mobile-inner">
 
         <!-- NAV -->
-        <nav class="glass-nav">
-          <!-- Top row: hamburger | logo | cart + avatar -->
-          <div class="nav-top-row">
-            <button class="hamburger-btn" title="Menu">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-            </button>
-            <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-            <div class="nav-actions">
-              <button class="nav-icon-btn" title="Cart">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                <span class="nav-badge">3</span>
-              </button>
-              <div class="nav-avatar">TC</div>
-            </div>
-          </div>
-          <!-- Bottom row: full-width search -->
-          <div class="nav-bottom-row">
-            <div class="nav-search-pill">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              <span>Search cards, sets, sellers...</span>
-            </div>
-          </div>
-        </nav>
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true });</script>
 
         <!-- HERO -->
         <section class="hero">

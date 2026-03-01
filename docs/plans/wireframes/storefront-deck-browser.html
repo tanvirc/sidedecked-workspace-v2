@@ -168,132 +168,6 @@
     }
 
     /* =============================================
-       GLASS NAVIGATION BAR (scrolled state)
-       ============================================= */
-    .glass-nav {
-      background: rgba(24, 22, 42, 0.80);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(44, 42, 74, 0.5);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-      padding: 0 32px;
-    }
-    .nav-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      height: 56px;
-      gap: 16px;
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-      color: var(--text-primary);
-      flex-shrink: 0;
-    }
-    .logo-accent {
-      color: #8B5CF6;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-left: 32px;
-    }
-    .nav-link {
-      font-family: var(--font-heading);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .nav-link.active {
-      color: var(--text-primary);
-    }
-    .nav-search {
-      flex: 1;
-      max-width: 360px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(33, 32, 58, 0.6);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 8px 14px;
-    }
-    .nav-search svg {
-      width: 14px;
-      height: 14px;
-      color: var(--text-tertiary);
-      flex-shrink: 0;
-    }
-    .nav-search span {
-      font-size: 13px;
-      color: var(--text-tertiary);
-    }
-    .nav-search .kbd {
-      margin-left: auto;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-tertiary);
-      background: var(--bg-surface-3);
-      padding: 3px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border-default);
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-shrink: 0;
-    }
-    .nav-icon {
-      width: 20px;
-      height: 20px;
-      color: var(--text-tertiary);
-      cursor: pointer;
-    }
-    .nav-cart {
-      position: relative;
-    }
-    .nav-cart-badge {
-      position: absolute;
-      top: -6px;
-      right: -8px;
-      background: var(--brand-primary);
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 10px;
-      font-weight: 600;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-    .nav-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-size: 12px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    /* =============================================
        HERO SECTION
        ============================================= */
     .hero {
@@ -961,56 +835,6 @@
       color: var(--text-secondary);
     }
 
-    /* =============================================
-       MOBILE OVERRIDES
-       ============================================= */
-    .mobile-frame .glass-nav {
-      padding: 0 16px;
-    }
-    .mobile-frame .nav-inner {
-      height: auto;
-      flex-wrap: wrap;
-      padding: 10px 0;
-      gap: 0;
-    }
-    .mobile-frame .nav-row-top {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      gap: 10px;
-      height: 40px;
-    }
-    .mobile-frame .nav-row-bottom {
-      width: 100%;
-      padding-top: 8px;
-    }
-    .mobile-frame .nav-logo {
-      font-size: 18px;
-      flex: 1;
-    }
-    .mobile-frame .nav-links { display: none; }
-    .mobile-frame .nav-search {
-      flex: 1;
-      padding: 6px 10px;
-      max-width: none;
-      margin: 0;
-    }
-    .mobile-frame .nav-search span { font-size: 12px; }
-    .mobile-frame .nav-search .kbd { display: none; }
-    .nav-hamburger {
-      display: none;
-    }
-    .mobile-frame .nav-hamburger {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-    }
-    .mobile-frame .nav-hamburger svg {
-      width: 22px;
-      height: 22px;
-    }
-
     /* Mobile hero */
     .mobile-frame .hero {
       padding: 36px 20px 28px;
@@ -1213,38 +1037,9 @@
       </div>
 
       <!-- Glass Navigation Bar -->
-      <nav class="glass-nav">
-        <div class="nav-inner">
-          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-          <div class="nav-links">
-            <a class="nav-link" href="#">Browse Cards</a>
-            <a class="nav-link active" href="#">Deck Builder</a>
-            <a class="nav-link" href="#">Marketplace</a>
-            <a class="nav-link" href="#">Sell</a>
-            <a class="nav-link" href="#">Community</a>
-          </div>
-          <div class="nav-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Search cards, sets, sellers...</span>
-            <span class="kbd">&#8984;K</span>
-          </div>
-          <div class="nav-right">
-            <!-- Theme toggle -->
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <!-- Notifications bell -->
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <!-- Wishlist heart -->
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            <!-- Cart bag with badge -->
-            <div class="nav-cart">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <span class="nav-cart-badge">3</span>
-            </div>
-            <!-- Avatar -->
-            <div class="nav-avatar">TC</div>
-          </div>
-        </div>
-      </nav>
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Deck Builder' });</script>
 
       <!-- Section 1: Hero -->
       <section class="hero">
@@ -1990,32 +1785,9 @@
     <div class="mobile-frame">
       <div class="mobile-inner">
 
-        <!-- Glass Navigation Bar (mobile) — two-row layout -->
-        <nav class="glass-nav">
-          <div class="nav-inner">
-            <!-- Row 1: Hamburger, Logo, Cart + Avatar -->
-            <div class="nav-row-top">
-              <div class="nav-hamburger">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-              </div>
-              <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-              <div style="display:flex; align-items:center; gap:12px;">
-                <div class="nav-cart">
-                  <svg class="nav-icon" style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                  <span class="nav-cart-badge">3</span>
-                </div>
-                <div class="nav-avatar" style="width:28px;height:28px;font-size:10px;">TC</div>
-              </div>
-            </div>
-            <!-- Row 2: Compact search pill -->
-            <div class="nav-row-bottom">
-              <div class="nav-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <span>Search cards, sets, sellers...</span>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <!-- Glass Navigation Bar (mobile) -->
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true });</script>
 
         <!-- Hero (mobile) -->
         <section class="hero">

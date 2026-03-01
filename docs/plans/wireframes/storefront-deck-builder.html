@@ -177,118 +177,6 @@
       border-color: rgba(59, 130, 246, 0.3);
     }
 
-    /* =============================================
-       GLASS NAVIGATION BAR (workspace variant)
-       ============================================= */
-    .glass-nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(24, 22, 42, 0.80);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.08);
-      padding: 0 24px;
-    }
-    .glass-nav .nav-inner {
-      display: flex;
-      align-items: center;
-      height: 56px;
-      gap: 16px;
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-      color: #FFFFFF;
-      flex-shrink: 0;
-    }
-    .logo-accent {
-      color: #8B5CF6;
-    }
-    .nav-deck-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0 auto;
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--text-primary);
-    }
-    .nav-deck-name .pencil-icon {
-      width: 14px;
-      height: 14px;
-      color: var(--text-tertiary);
-    }
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-    .nav-icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.15s;
-      position: relative;
-    }
-    .nav-icon-btn:hover {
-      background: var(--bg-surface-2);
-      color: var(--text-primary);
-      border-color: var(--border-default);
-    }
-    .nav-icon-btn svg { width: 18px; height: 18px; }
-    .nav-badge {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: var(--brand-secondary);
-      font-size: 9px;
-      font-weight: 600;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-    .nav-notif-dot {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--brand-secondary);
-      border: 2px solid rgba(24, 22, 42, 0.80);
-    }
-    .nav-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
-      margin-left: 4px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-size: 12px;
-      font-weight: 600;
-      color: #FFFFFF;
-    }
     .btn {
       font-family: var(--font-heading);
       font-size: 13px;
@@ -1065,57 +953,6 @@
     /* =============================================
        MOBILE LAYOUT
        ============================================= */
-    .mobile-nav {
-      background: rgba(24, 22, 42, 0.80);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.08);
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      height: 52px;
-      gap: 10px;
-      padding-top: 8px;
-    }
-    .mobile-nav .mobile-nav-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 16px;
-      color: #FFFFFF;
-      flex-shrink: 0;
-      letter-spacing: -0.02em;
-    }
-    .mobile-nav .mobile-nav-logo .logo-accent {
-      color: #8B5CF6;
-    }
-    .mobile-nav .deck-name-mobile {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text-primary);
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .mobile-nav .btn-save-mobile {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      font-weight: 600;
-      background: var(--brand-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 6px 14px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .mobile-nav .nav-avatar {
-      width: 28px;
-      height: 28px;
-      font-size: 10px;
-    }
-
     /* Mobile Tab Bar */
     .mobile-tabs {
       display: flex;
@@ -1447,46 +1284,9 @@
         <span class="annotation--note annotation">Drag &amp; drop via @dnd-kit</span>
       </div>
 
-      <!-- Glass Navigation Bar (workspace variant) -->
-      <nav class="glass-nav">
-        <div class="nav-inner">
-          <!-- Logo (far left) -->
-          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
-          <!-- Center: editable deck name + workspace buttons -->
-          <div class="nav-deck-name">
-            <span>Mono Red Burn</span>
-            <svg class="pencil-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-              <path d="m15 5 4 4"/>
-            </svg>
-          </div>
-          <div class="nav-actions">
-            <button class="btn btn-primary">Save</button>
-            <button class="btn btn-ghost">Share</button>
-            <button class="btn btn-dropdown">Export <span class="chevron"></span></button>
-            <!-- Theme toggle -->
-            <button class="nav-icon-btn" title="Theme toggle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            </button>
-            <!-- Notifications -->
-            <button class="nav-icon-btn" title="Notifications">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span class="nav-notif-dot"></span>
-            </button>
-            <!-- Wishlist -->
-            <button class="nav-icon-btn" title="Wishlist">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            </button>
-            <!-- Cart -->
-            <button class="nav-icon-btn" title="Cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <span class="nav-badge">3</span>
-            </button>
-            <!-- Avatar -->
-            <div class="nav-avatar">TC</div>
-          </div>
-        </div>
-      </nav>
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ variant: 'workspace', deckName: 'Mono Red Burn' });</script>
 
       <!-- Three-Panel Workspace -->
       <div class="workspace">
@@ -2119,12 +1919,8 @@
     <div class="mobile-frame">
       <div class="mobile-inner" style="position: relative;">
         <!-- Mobile Nav -->
-        <div class="mobile-nav">
-          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
-          <span class="deck-name-mobile">Mono Red Burn</span>
-          <button class="btn-save-mobile">Save</button>
-          <div class="nav-avatar">TC</div>
-        </div>
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, variant: 'workspace', deckName: 'Mono Red Burn' });</script>
 
         <!-- Tab Bar -->
         <div class="mobile-tabs">
@@ -2312,12 +2108,8 @@
     <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Search Tab</span></div>
     <div class="mobile-frame">
       <div class="mobile-inner">
-        <div class="mobile-nav">
-          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
-          <span class="deck-name-mobile">Mono Red Burn</span>
-          <button class="btn-save-mobile">Save</button>
-          <div class="nav-avatar">TC</div>
-        </div>
+        <div id="sd-nav-mobile-2"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile-2', mobile: true, variant: 'workspace', deckName: 'Mono Red Burn' });</script>
         <div class="mobile-tabs">
           <div class="mobile-tab">Deck</div>
           <div class="mobile-tab active">Search</div>
@@ -2414,12 +2206,8 @@
     <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Stats Tab</span></div>
     <div class="mobile-frame">
       <div class="mobile-inner">
-        <div class="mobile-nav">
-          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
-          <span class="deck-name-mobile">Mono Red Burn</span>
-          <button class="btn-save-mobile">Save</button>
-          <div class="nav-avatar">TC</div>
-        </div>
+        <div id="sd-nav-mobile-3"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile-3', mobile: true, variant: 'workspace', deckName: 'Mono Red Burn' });</script>
         <div class="mobile-tabs">
           <div class="mobile-tab">Deck</div>
           <div class="mobile-tab">Search</div>
@@ -2526,12 +2314,8 @@
     <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Card Preview Bottom Sheet</span></div>
     <div class="mobile-frame">
       <div class="mobile-inner">
-        <div class="mobile-nav">
-          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
-          <span class="deck-name-mobile">Mono Red Burn</span>
-          <button class="btn-save-mobile">Save</button>
-          <div class="nav-avatar">TC</div>
-        </div>
+        <div id="sd-nav-mobile-4"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile-4', mobile: true, variant: 'workspace', deckName: 'Mono Red Burn' });</script>
         <div class="mobile-tabs">
           <div class="mobile-tab">Deck</div>
           <div class="mobile-tab active">Search</div>
