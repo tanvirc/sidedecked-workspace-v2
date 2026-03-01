@@ -105,6 +105,50 @@ The storefront uses a Next.js API route as a BFF aggregator for the card detail 
 
 **Listing sort order:** Price ascending, then `CONDITION_ORDER` (NM > LP > MP > HP > DMG) at equal price.
 
+### 12. Listing Count API + Game Preference Cookie Flow (Story 9.2)
+
+The homepage Game Selector Grid uses a lightweight count endpoint in customer-backend and a client-side cookie to deliver game-scoped pre-filtering on the cards browse page.
+
+**Endpoint:** `GET /api/catalog/listing-counts` (customer-backend, no auth required)
+
+```
+Response 200:
+{
+  "counts": { "MTG": 387420, "POKEMON": 214850, "YUGIOH": 156290, "OPTCG": 42180 },
+  "cachedAt": "2026-03-01T10:00:00.000Z"
+}
+
+Cache: Redis key "listing-counts:by-game", TTL 30s
+DB query (uses idx_sku_market index):
+  SELECT game_code, COUNT(*) AS count FROM catalog_skus
+  WHERE (has_c2c_listings = true OR has_b2c_inventory = true)
+    AND is_active = true AND deleted_at IS NULL
+  GROUP BY game_code
+
+Failure: DB error → 503; storefront treats non-200 as undefined → tiles render without counts
+```
+
+**Game Preference Cookie Flow:**
+
+```
+Tile tap (client)
+  └─ document.cookie = "sd_game_pref=POKEMON; max-age=2592000; path=/; SameSite=Lax"
+  └─ router.push("/cards?game=POKEMON")         ← URL routing (Algolia URL state)
+
+/cards page.tsx (SSR)
+  ├─ searchParams.game present  → initialGame = "POKEMON"   (URL wins)
+  └─ searchParams.game absent   → initialGame = cookies().get("sd_game_pref")?.value
+
+AlgoliaSearchResults
+  └─ initialUiState = { refinementList: { game: ["POKEMON"] } }   (or [] when absent)
+```
+
+**Key properties:**
+- Cookie write is best-effort — navigation fires regardless of write success/failure
+- `initialUiState` applies only on first render; URL routing (`?game=`) takes permanent precedence
+- Storefront fetches counts via `fetchGameListingCounts()` with `{ next: { revalidate: 30 } }` (matches Redis TTL)
+- Cookie has no `HttpOnly` flag — intentionally client-writable
+
 ### 3. Commerce to Customer Domain Integration
 
 #### Authentication Flow
@@ -1117,6 +1161,7 @@ Both endpoints are protected by `authenticateToken` + `requirePlatformAdmin` mid
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-03-01 | Added §12 listing-count API and game preference cookie flow (Story 9-2) |
 | 2.1 | 2026-02-28 | Added §11 BFF pattern for card detail page (Story 2-5) |
 | 2.0 | 2025-09-11 | Complete rewrite with comprehensive integration patterns |
 | 1.1 | 2025-01-15 | Added event-driven patterns and circuit breakers |
