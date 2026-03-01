@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Search Results Wireframe (Voltage)</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (Dark Mode)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: #1E1A3A;
+      --brand-secondary-subtle: #2A1A12;
+
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --interactive: #8B5CF6;
+
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+    }
+
+    /* =============================================
+       RESET + BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: #060610;
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+
+    /* =============================================
+       WIREFRAME CANVAS
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 80px;
+      padding: 60px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .frame-label {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .frame-label .dim {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--brand-primary);
+      background: var(--brand-primary-subtle);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* =============================================
+       DESKTOP FRAME (1440px)
+       ============================================= */
+    .desktop-frame {
+      width: 1440px;
+      min-height: 1200px;
+      background: var(--bg-base);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* =============================================
+       MOBILE FRAME (390px)
+       ============================================= */
+    .mobile-frame {
+      width: 390px;
+      min-height: 844px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      border: 3px solid var(--border-strong);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .mobile-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      z-index: 50;
+    }
+
+    /* =============================================
+       ANNOTATION BADGES
+       ============================================= */
+    .annotation {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--brand-secondary);
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 40;
+      pointer-events: none;
+      line-height: 1.3;
+    }
+    .annotation.violet { background: var(--brand-primary); }
+    .annotation.green { background: var(--positive); }
+    .annotation.blue { background: var(--info); }
+
+    /* =============================================
+       GLASS NAV BAR
+       ============================================= */
+    .glass-nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      height: 64px;
+      background: rgba(24, 22, 42, 0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-default);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .logo-accent { color: #8B5CF6; }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+    }
+    .nav-links a {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      transition: all 0.15s;
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    /* Search bar in nav */
+    .nav-search {
+      flex: 1;
+      max-width: 520px;
+      margin: 0 32px;
+      position: relative;
+    }
+    .nav-search-input {
+      width: 100%;
+      height: 40px;
+      background: var(--bg-surface-2);
+      border: 2px solid var(--brand-primary);
+      border-radius: var(--radius-md);
+      padding: 0 44px 0 40px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-search-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .nav-search-kbd {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-default);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .nav-icon-btn:hover {
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+    }
+    .nav-icon-btn svg { width: 18px; height: 18px; }
+    .nav-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--brand-secondary);
+      font-size: 9px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
+      margin-left: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    /* =============================================
+       AUTOCOMPLETE DROPDOWN
+       ============================================= */
+    .autocomplete {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: rgba(33, 32, 58, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.1);
+      overflow: hidden;
+      z-index: 50;
+    }
+    .autocomplete-section {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .autocomplete-section:last-child { border-bottom: none; }
+    .autocomplete-section-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      padding: 0 16px 8px;
+    }
+    .autocomplete-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: rgba(139, 92, 246, 0.1);
+    }
+    .autocomplete-item .clock-icon {
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .autocomplete-item .clock-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+    .autocomplete-item .card-thumb {
+      width: 32px;
+      height: 44px;
+      background: var(--bg-surface-3);
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-default);
+    }
+    .autocomplete-item .item-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .autocomplete-item .item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .autocomplete-item .item-set {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .autocomplete-item .game-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .game-badge.mtg { background: rgba(167, 139, 250, 0.15); color: var(--game-mtg); }
+    .game-badge.pokemon { background: rgba(252, 211, 77, 0.15); color: var(--game-pokemon); }
+    .game-badge.ygo { background: rgba(96, 165, 250, 0.15); color: var(--game-ygo); }
+    .game-badge.op { background: rgba(52, 211, 153, 0.15); color: var(--game-op); }
+
+    .autocomplete-item .item-price {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--brand-primary);
+      flex-shrink: 0;
+    }
+    .autocomplete-footer {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-default);
+      background: rgba(24, 22, 42, 0.5);
+    }
+    .autocomplete-footer .search-action {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .autocomplete-footer .search-action strong {
+      color: var(--brand-primary);
+    }
+    .autocomplete-footer .kbd-hints {
+      display: flex;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .autocomplete-footer .kbd-hint {
+      background: var(--bg-surface-3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* =============================================
+       ACTIVE FILTERS BAR
+       ============================================= */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filters-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: var(--text-tertiary);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { color: var(--brand-primary); }
+    .breadcrumb .sep { color: var(--border-strong); }
+    .breadcrumb .current { color: var(--text-primary); font-weight: 500; }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .filter-chip .x {
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.7;
+    }
+    .filter-chip.violet { background: rgba(167, 139, 250, 0.18); color: var(--game-mtg); border: 1px solid rgba(167, 139, 250, 0.3); }
+    .filter-chip.green { background: rgba(16, 185, 129, 0.18); color: var(--positive); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .filter-chip.coral { background: rgba(255, 120, 73, 0.18); color: var(--brand-secondary); border: 1px solid rgba(255, 120, 73, 0.3); }
+    .clear-all {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+    }
+    .clear-all:hover { color: var(--negative); }
+
+    /* Results count + Sort row */
+    .results-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .results-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .results-count strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .results-sort {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .view-toggle {
+      display: flex;
+      background: var(--bg-surface-2);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+    }
+    .view-toggle-btn {
+      width: 34px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .view-toggle-btn.active {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .sort-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      cursor: pointer;
+    }
+    .sort-dropdown .arrow { font-size: 10px; color: var(--text-tertiary); }
+
+    /* =============================================
+       MAIN LAYOUT
+       ============================================= */
+    .search-layout {
+      display: flex;
+      min-height: 900px;
+    }
+
+    /* Sidebar Filters */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-default);
+      padding: 24px 20px;
+      background: var(--bg-surface-1);
+    }
+    .filter-section {
+      margin-bottom: 24px;
+    }
+    .filter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
+    .filter-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.01em;
+    }
+    .filter-count {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-3);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .filter-chevron {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      transition: transform 0.15s;
+    }
+    .filter-divider {
+      height: 1px;
+      background: var(--border-default);
+      margin: 0 0 24px;
+    }
+
+    /* Checkbox filter */
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      cursor: pointer;
+    }
+    .filter-check .checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-surface-2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .filter-check .checkbox.checked {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+    .filter-check .checkbox.checked::after {
+      content: '✓';
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .filter-check .game-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .filter-check .label {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .filter-check .count {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+    }
+
+    /* Rarity badges */
+    .rarity-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rarity-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid;
+      cursor: pointer;
+    }
+
+    /* Condition chips */
+    .condition-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .condition-chip {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-2);
+      color: var(--text-secondary);
+    }
+    .condition-chip.active {
+      border-color: var(--positive);
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    /* Price range slider */
+    .price-range {
+      padding: 4px 0;
+    }
+    .price-slider-track {
+      height: 4px;
+      background: var(--bg-surface-3);
+      border-radius: 2px;
+      position: relative;
+      margin: 12px 0;
+    }
+    .price-slider-fill {
+      position: absolute;
+      left: 0%;
+      right: 52%;
+      height: 100%;
+      background: var(--brand-primary);
+      border-radius: 2px;
+    }
+    .price-slider-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      border: 2px solid var(--text-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .price-slider-thumb.left { left: 0%; }
+    .price-slider-thumb.right { left: 48%; }
+    .price-inputs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .price-input {
+      flex: 1;
+      height: 32px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+      text-align: center;
+    }
+    .price-dash {
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    /* Show all link */
+    .show-all-link {
+      font-size: 12px;
+      color: var(--brand-primary);
+      cursor: pointer;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    /* =============================================
+       CARD GRID
+       ============================================= */
+    .grid-area {
+      flex: 1;
+      padding: 20px 24px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .card-item {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      position: relative;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .card-item:hover {
+      border-color: var(--border-strong);
+    }
+    /* Hover annotation on first card */
+    .card-item:first-child::after {
+      content: 'hover: glass border + shadow';
+      position: absolute;
+      top: -10px;
+      right: -4px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--brand-secondary);
+      background: rgba(255, 120, 73, 0.15);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px dashed var(--brand-secondary);
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .card-image {
+      width: 100%;
+      aspect-ratio: 5 / 7;
+      background: var(--bg-surface-3);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+    }
+    .card-image .img-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 4px;
+      line-height: 1.3;
+    }
+    .card-image .game-indicator {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(9, 9, 15, 0.75);
+      backdrop-filter: blur(4px);
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 600;
+    }
+    .card-image .game-indicator .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .card-details { padding: 0 2px; }
+    .card-name {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+    .card-set {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .card-condition {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .card-condition.nm { background: rgba(16, 185, 129, 0.12); color: var(--positive); }
+    .card-condition.lp { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+    .card-condition.mp { background: rgba(255, 120, 73, 0.12); color: var(--brand-secondary); }
+    .card-condition.hp { background: rgba(239, 68, 68, 0.12); color: var(--negative); }
+    .card-price {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--brand-primary);
+    }
+    .card-seller {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .card-seller-name {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .card-seller-stars {
+      font-size: 10px;
+      color: var(--warning);
+      letter-spacing: 1px;
+    }
+    .card-add-btn {
+      width: 100%;
+      height: 32px;
+      margin-top: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* =============================================
+       PAGINATION
+       ============================================= */
+    .pagination-wrap {
+      padding: 32px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .pagination-showing {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .page-btn {
+      min-width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-body);
+    }
+    .page-btn:hover { background: var(--bg-surface-2); }
+    .page-btn.active {
+      background: var(--brand-primary);
+      color: #fff;
+      font-weight: 600;
+      border-color: var(--brand-primary);
+    }
+    .page-btn.nav-arrow {
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+    .page-dots {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      padding: 0 4px;
+    }
+
+    /* =============================================
+       MOBILE STYLES
+       ============================================= */
+    .m-nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 44px 16px 0;
+      background: rgba(24, 22, 42, 0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+    }
+    .m-nav-top {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      gap: 12px;
+    }
+    .m-hamburger {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .m-hamburger svg { width: 22px; height: 22px; }
+    .m-nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      flex: 1;
+      text-align: center;
+    }
+    .m-nav-logo .logo-accent { color: #8B5CF6; }
+    .m-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .m-nav-actions .nav-icon-btn {
+      width: 32px;
+      height: 32px;
+    }
+    .m-nav-actions .nav-icon-btn svg { width: 16px; height: 16px; }
+    .m-nav-actions .nav-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 10px;
+    }
+    .m-nav-bottom {
+      padding-bottom: 10px;
+    }
+    .m-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .m-search-input {
+      flex: 1;
+      height: 36px;
+      background: var(--bg-surface-2);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 0 12px 0 32px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      position: relative;
+    }
+    .m-search-icon-wrap {
+      position: relative;
+      flex: 1;
+    }
+    .m-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .m-search-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Mobile filter chips */
+    .m-filters-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      overflow-x: auto;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .m-filter-chip {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .m-filter-chip.active {
+      background: rgba(167, 139, 250, 0.15);
+      border-color: rgba(167, 139, 250, 0.3);
+      color: var(--game-mtg);
+    }
+
+    .m-results-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+    }
+    .m-results-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Mobile card grid */
+    .m-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 12px 12px;
+    }
+    .m-card-item {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 8px;
+    }
+    .m-card-image {
+      width: 100%;
+      aspect-ratio: 5 / 7;
+      background: var(--bg-surface-3);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding: 4px;
+      border: 1px solid var(--border-default);
+      line-height: 1.3;
+    }
+    .m-card-name {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .m-card-price {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--brand-primary);
+      margin-top: 2px;
+    }
+
+    /* Mobile bottom bar */
+    .m-bottom-bar {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(24, 22, 42, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-default);
+    }
+    .m-bottom-count {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .m-sort-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      cursor: pointer;
+    }
+
+    /* Mobile bottom sheet overlay */
+    .m-sheet-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      background: rgba(9, 9, 15, 0.6);
+      z-index: 40;
+    }
+    .m-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(33, 32, 58, 0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px 24px 0 0;
+      border-top: 1px solid var(--border-strong);
+      max-height: 60%;
+      overflow-y: auto;
+      z-index: 41;
+    }
+    .m-sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin: 10px auto 16px;
+    }
+    .m-sheet-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding: 0 20px 14px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .m-sheet-section {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .m-sheet-section:last-child { border-bottom: none; }
+    .m-sheet-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+    .m-sheet-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .m-sheet-radio {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-surface-2);
+      flex-shrink: 0;
+    }
+    .m-sheet-radio.checked {
+      border-color: var(--brand-primary);
+      background: var(--brand-primary);
+      box-shadow: inset 0 0 0 3px var(--bg-surface-2);
+    }
+
+    /* =============================================
+       ENDPOINT ANNOTATION
+       ============================================= */
+    .endpoint-note {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-2);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-default);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 16px 32px;
+    }
+    .endpoint-note .method {
+      color: var(--positive);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ============================================================
+       DESKTOP FRAME (1440px)
+       ============================================================ -->
+  <div>
+    <div class="frame-label">Desktop <span class="dim">1440 x 1200</span></div>
+    <div class="desktop-frame">
+
+      <!-- Annotation: EnhancedSearchBar -->
+      <div class="annotation violet" style="top: 6px; left: 400px; z-index: 60;">&lt;EnhancedSearchBar /&gt;</div>
+
+      <!-- Annotation: Algolia -->
+      <div class="annotation blue" style="top: 105px; left: 520px; z-index: 60;">Algolia InstantSearch</div>
+
+      <!-- ====== GLASS NAV BAR ====== -->
+      <nav class="glass-nav">
+        <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
+
+        <div class="nav-links">
+          <a href="#">Browse Cards</a>
+          <a href="#">Deck Builder</a>
+          <a href="#">Marketplace</a>
+          <a href="#">Sell</a>
+          <a href="#">Community</a>
+        </div>
+
+        <div class="nav-search">
+          <span class="nav-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <div class="nav-search-input" style="display: flex; align-items: center;">
+            <span style="color: var(--text-primary); font-size: 14px;">lightning bolt</span>
+            <span style="margin-left: auto; color: var(--text-tertiary); font-size: 14px;">|</span>
+          </div>
+          <span class="nav-search-kbd">&#8984;K</span>
+
+          <!-- ====== AUTOCOMPLETE DROPDOWN ====== -->
+          <div class="autocomplete">
+            <!-- Recent Searches -->
+            <div class="autocomplete-section">
+              <div class="autocomplete-section-label">Recent Searches</div>
+              <div class="autocomplete-item">
+                <span class="clock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                <div class="item-text">
+                  <div class="item-name">lightning bolt alpha</div>
+                </div>
+              </div>
+              <div class="autocomplete-item">
+                <span class="clock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                <div class="item-text">
+                  <div class="item-name">lightning bolt revised</div>
+                </div>
+              </div>
+              <div class="autocomplete-item">
+                <span class="clock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                <div class="item-text">
+                  <div class="item-name">bolt of lightning</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Suggested Cards -->
+            <div class="autocomplete-section">
+              <div class="autocomplete-section-label">Suggested</div>
+              <div class="autocomplete-item active">
+                <div class="card-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect width="18" height="18" x="3" y="3" rx="2"/></svg></div>
+                <div class="item-text">
+                  <div class="item-name">Lightning Bolt</div>
+                  <div class="item-set">Alpha Edition</div>
+                </div>
+                <span class="game-badge mtg">MTG</span>
+                <span class="item-price">$465.00</span>
+              </div>
+              <div class="autocomplete-item">
+                <div class="card-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect width="18" height="18" x="3" y="3" rx="2"/></svg></div>
+                <div class="item-text">
+                  <div class="item-name">Lightning Bolt</div>
+                  <div class="item-set">Revised Edition</div>
+                </div>
+                <span class="game-badge mtg">MTG</span>
+                <span class="item-price">$1.25</span>
+              </div>
+              <div class="autocomplete-item">
+                <div class="card-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect width="18" height="18" x="3" y="3" rx="2"/></svg></div>
+                <div class="item-text">
+                  <div class="item-name">Lightning Bolt</div>
+                  <div class="item-set">Masters 25</div>
+                </div>
+                <span class="game-badge mtg">MTG</span>
+                <span class="item-price">$2.50</span>
+              </div>
+              <div class="autocomplete-item">
+                <div class="card-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect width="18" height="18" x="3" y="3" rx="2"/></svg></div>
+                <div class="item-text">
+                  <div class="item-name">Lightning Bolt</div>
+                  <div class="item-set">Double Masters</div>
+                </div>
+                <span class="game-badge mtg">MTG</span>
+                <span class="item-price">$1.80</span>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="autocomplete-footer">
+              <span class="search-action">Search for &ldquo;<strong>lightning bolt</strong>&rdquo;</span>
+              <span class="kbd-hints">
+                <span class="kbd-hint">&uarr;&darr;</span>
+                <span class="kbd-hint">&#9166; select</span>
+                <span class="kbd-hint">esc</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <!-- Theme toggle -->
+          <button class="nav-icon-btn" title="Theme toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+          <!-- Notifications -->
+          <button class="nav-icon-btn" title="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          </button>
+          <!-- Wishlist -->
+          <button class="nav-icon-btn" title="Wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          </button>
+          <!-- Cart -->
+          <button class="nav-icon-btn" title="Cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="nav-badge">3</span>
+          </button>
+          <!-- Avatar -->
+          <div class="nav-avatar">TC</div>
+        </div>
+      </nav>
+
+      <!-- ====== ACTIVE FILTERS BAR ====== -->
+      <div class="filters-bar">
+        <div class="filters-bar-left">
+          <div class="breadcrumb">
+            <a href="#">Home</a>
+            <span class="sep">&#8250;</span>
+            <a href="#">Search</a>
+            <span class="sep">&#8250;</span>
+            <span class="current">&ldquo;lightning bolt&rdquo;</span>
+          </div>
+          <span class="filter-chip violet">Magic: The Gathering <span class="x">&times;</span></span>
+          <span class="filter-chip green">Near Mint <span class="x">&times;</span></span>
+          <span class="filter-chip coral">$1 &mdash; $25 <span class="x">&times;</span></span>
+        </div>
+        <button class="clear-all">Clear all</button>
+      </div>
+
+      <!-- ====== RESULTS BAR ====== -->
+      <div class="results-bar">
+        <div class="results-count"><strong>2,847</strong> results</div>
+        <div class="results-sort">
+          <div class="view-toggle">
+            <button class="view-toggle-btn active" title="Grid view">&#9638;</button>
+            <button class="view-toggle-btn" title="List view">&#9776;</button>
+          </div>
+          <div class="sort-dropdown">
+            Price: Low &rarr; High
+            <span class="arrow">&#9660;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== API ENDPOINT NOTE ====== -->
+      <div class="endpoint-note">
+        <span class="method">GET</span> /api/search?q=lightning+bolt&game=mtg&condition=nm&price_min=1&price_max=25&sort=price_asc
+      </div>
+
+      <!-- ====== MAIN SEARCH LAYOUT ====== -->
+      <div class="search-layout">
+
+        <!-- Annotation: FacetedFilters -->
+        <div class="annotation green" style="top: 260px; left: 14px; z-index: 60;">&lt;FacetedFilters /&gt;</div>
+
+        <!-- ====== LEFT SIDEBAR ====== -->
+        <div class="sidebar">
+
+          <!-- Game Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Game</span>
+              <span class="filter-count">4</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox checked"></div>
+              <div class="game-dot" style="background: var(--game-mtg);"></div>
+              <span class="label">Magic: The Gathering</span>
+              <span class="count">1,842</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <div class="game-dot" style="background: var(--game-pokemon);"></div>
+              <span class="label">Pok&eacute;mon</span>
+              <span class="count">623</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <div class="game-dot" style="background: var(--game-ygo);"></div>
+              <span class="label">Yu-Gi-Oh!</span>
+              <span class="count">289</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <div class="game-dot" style="background: var(--game-op);"></div>
+              <span class="label">One Piece</span>
+              <span class="count">93</span>
+            </div>
+          </div>
+          <div class="filter-divider"></div>
+
+          <!-- Set Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Set</span>
+              <span class="filter-count">47</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Alpha Edition</span>
+              <span class="count">12</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Beta Edition</span>
+              <span class="count">14</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Revised Edition</span>
+              <span class="count">208</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Fourth Edition</span>
+              <span class="count">186</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Masters 25</span>
+              <span class="count">94</span>
+            </div>
+            <span class="show-all-link">Show all 47 sets &rarr;</span>
+          </div>
+          <div class="filter-divider"></div>
+
+          <!-- Rarity Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Rarity</span>
+              <span class="filter-count">4</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="rarity-badges">
+              <span class="rarity-badge" style="color: #9CA3AF; border-color: rgba(156,163,175,0.3); background: rgba(156,163,175,0.08);">Common</span>
+              <span class="rarity-badge" style="color: #93C5FD; border-color: rgba(147,197,253,0.3); background: rgba(147,197,253,0.08);">Uncommon</span>
+              <span class="rarity-badge" style="color: #FCD34D; border-color: rgba(252,211,77,0.3); background: rgba(252,211,77,0.08);">Rare</span>
+              <span class="rarity-badge" style="color: #FB923C; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.08);">Mythic Rare</span>
+            </div>
+          </div>
+          <div class="filter-divider"></div>
+
+          <!-- Condition Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Condition</span>
+              <span class="filter-count">5</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="condition-chips">
+              <span class="condition-chip active">NM</span>
+              <span class="condition-chip">LP</span>
+              <span class="condition-chip">MP</span>
+              <span class="condition-chip">HP</span>
+              <span class="condition-chip">DMG</span>
+            </div>
+          </div>
+          <div class="filter-divider"></div>
+
+          <!-- Price Range Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Price Range</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="price-range">
+              <div class="price-slider-track">
+                <div class="price-slider-fill"></div>
+                <div class="price-slider-thumb left"></div>
+                <div class="price-slider-thumb right"></div>
+              </div>
+              <div class="price-inputs">
+                <div class="price-input">$0</div>
+                <span class="price-dash">&mdash;</span>
+                <div class="price-input">$500</div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-divider"></div>
+
+          <!-- Format Filter -->
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-title">Format</span>
+              <span class="filter-count">4</span>
+              <span class="filter-chevron">&#9660;</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Standard</span>
+              <span class="count">342</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Modern</span>
+              <span class="count">1,204</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Commander</span>
+              <span class="count">2,156</span>
+            </div>
+            <div class="filter-check">
+              <div class="checkbox"></div>
+              <span class="label">Pioneer</span>
+              <span class="count">687</span>
+            </div>
+          </div>
+
+        </div><!-- /sidebar -->
+
+        <!-- ====== MAIN GRID AREA ====== -->
+        <div class="grid-area">
+
+          <!-- Annotation: CardBrowsingPage -->
+          <div class="annotation" style="position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 14px;">&lt;CardBrowsingPage /&gt;</div>
+
+          <div class="card-grid">
+
+            <!-- Card 1: Lightning Bolt -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Lightning Bolt<br>Alpha Edition</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Lightning Bolt</div>
+                <div class="card-set">Alpha Edition (1993)</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$465.00</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">VintageCardShop</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 2: Counterspell -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Counterspell<br>Dominaria Remastered</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Counterspell</div>
+                <div class="card-set">Dominaria Remastered</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$1.85</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">MetaDecks</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 3: Dark Ritual -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Dark Ritual<br>Beta Edition</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Dark Ritual</div>
+                <div class="card-set">Beta Edition (1993)</div>
+                <div class="card-meta">
+                  <span class="card-condition lp">LP</span>
+                  <span class="card-price">$22.50</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">CardHaven</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 4: Sol Ring -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Sol Ring<br>Commander Legends</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Sol Ring</div>
+                <div class="card-set">Commander Legends</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$3.25</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">DeckMasters</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 5: Path to Exile -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Path to Exile<br>Modern Masters</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Path to Exile</div>
+                <div class="card-set">Modern Masters 2017</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$4.15</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">TopDeckTCG</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 6: Thoughtseize -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Thoughtseize<br>Theros</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Thoughtseize</div>
+                <div class="card-set">Theros (2013)</div>
+                <div class="card-meta">
+                  <span class="card-condition mp">MP</span>
+                  <span class="card-price">$12.99</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">NexusCards</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 7: Swords to Plowshares -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Swords to Plowshares<br>Iconic Masters</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Swords to Plowshares</div>
+                <div class="card-set">Iconic Masters</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$2.40</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">CardCastle</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 8: Brainstorm -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Brainstorm<br>Conspiracy</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Brainstorm</div>
+                <div class="card-set">Conspiracy (2014)</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$1.10</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">SpellSlinger</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 9: Force of Will -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Force of Will<br>Alliances</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Force of Will</div>
+                <div class="card-set">Alliances (1996)</div>
+                <div class="card-meta">
+                  <span class="card-condition lp">LP</span>
+                  <span class="card-price">$89.99</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">LegacyVault</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 10: Snapcaster Mage -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Snapcaster Mage<br>Innistrad</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Snapcaster Mage</div>
+                <div class="card-set">Innistrad (2011)</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$24.50</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">FlashbackMTG</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 11: Tarmogoyf -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Tarmogoyf<br>Modern Horizons 2</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Tarmogoyf</div>
+                <div class="card-set">Modern Horizons 2</div>
+                <div class="card-meta">
+                  <span class="card-condition hp">HP</span>
+                  <span class="card-price">$8.75</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">GreenDeckGo</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+            <!-- Card 12: Liliana of the Veil -->
+            <div class="card-item">
+              <div class="card-image">
+                <div class="game-indicator"><div class="dot" style="background: var(--game-mtg);"></div><span style="color: var(--game-mtg);">MTG</span></div>
+                <span class="img-label">Liliana of the Veil<br>Dominaria United</span>
+              </div>
+              <div class="card-details">
+                <div class="card-name">Liliana of the Veil</div>
+                <div class="card-set">Dominaria United</div>
+                <div class="card-meta">
+                  <span class="card-condition nm">NM</span>
+                  <span class="card-price">$6.99</span>
+                </div>
+                <div class="card-seller">
+                  <span class="card-seller-name">DarkRealms</span>
+                  <span class="card-seller-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                </div>
+                <div class="card-add-btn">&#43; Add to Cart</div>
+              </div>
+            </div>
+
+          </div><!-- /card-grid -->
+
+          <!-- ====== PAGINATION ====== -->
+          <div class="pagination-wrap">
+            <div class="pagination-showing">Showing 1&ndash;12 of 2,847 results</div>
+            <div class="pagination">
+              <button class="page-btn nav-arrow">&laquo; Prev</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <span class="page-dots">&hellip;</span>
+              <button class="page-btn">47</button>
+              <button class="page-btn nav-arrow">Next &raquo;</button>
+            </div>
+          </div>
+
+        </div><!-- /grid-area -->
+      </div><!-- /search-layout -->
+
+    </div><!-- /desktop-frame -->
+  </div>
+
+  <!-- ============================================================
+       MOBILE FRAME (390px)
+       ============================================================ -->
+  <div>
+    <div class="frame-label">Mobile <span class="dim">390 x 844</span></div>
+    <div class="mobile-frame">
+
+      <!-- ====== MOBILE NAV ====== -->
+      <div class="m-nav">
+        <div class="m-nav-top">
+          <!-- Hamburger -->
+          <button class="m-hamburger" title="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+          <!-- Logo -->
+          <div class="m-nav-logo">Side<span class="logo-accent">Decked</span></div>
+          <!-- Cart + Avatar -->
+          <div class="m-nav-actions">
+            <button class="nav-icon-btn" title="Cart">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span class="nav-badge">3</span>
+            </button>
+            <div class="nav-avatar">TC</div>
+          </div>
+        </div>
+        <div class="m-nav-bottom">
+          <div class="m-search">
+            <div class="m-search-icon-wrap">
+              <span class="m-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+              <input type="text" class="m-search-input" value="lightning bolt" readonly style="background: var(--bg-surface-2); border: 1.5px solid var(--border-strong); border-radius: var(--radius-md); padding: 0 12px 0 32px; font-size: 13px; color: var(--text-primary); font-family: var(--font-body); height: 36px; width: 100%;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== MOBILE FILTER CHIPS ====== -->
+      <div class="m-filters-scroll">
+        <span class="m-filter-chip" style="background: var(--bg-surface-3); border-color: var(--border-strong); color: var(--text-primary); font-weight: 600;">&#9776; Filters</span>
+        <span class="m-filter-chip active">MTG &times;</span>
+        <span class="m-filter-chip" style="background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.3); color: var(--positive);">NM &times;</span>
+        <span class="m-filter-chip">Rarity</span>
+        <span class="m-filter-chip" style="background: rgba(255,120,73,0.12); border-color: rgba(255,120,73,0.3); color: var(--brand-secondary);">$1&ndash;$25 &times;</span>
+        <span class="m-filter-chip">More</span>
+      </div>
+
+      <!-- ====== MOBILE RESULTS BAR ====== -->
+      <div class="m-results-bar">
+        <span class="m-results-count" style="font-size: 12px; color: var(--text-secondary);"><strong style="color: var(--text-primary);">2,847</strong> results</span>
+      </div>
+
+      <!-- ====== MOBILE CARD GRID ====== -->
+      <div class="m-card-grid">
+        <div class="m-card-item">
+          <div class="m-card-image">Lightning Bolt<br>Alpha</div>
+          <div class="m-card-name">Lightning Bolt</div>
+          <div class="m-card-price">$465.00</div>
+        </div>
+        <div class="m-card-item">
+          <div class="m-card-image">Counterspell<br>DOM Remastered</div>
+          <div class="m-card-name">Counterspell</div>
+          <div class="m-card-price">$1.85</div>
+        </div>
+        <div class="m-card-item">
+          <div class="m-card-image">Dark Ritual<br>Beta</div>
+          <div class="m-card-name">Dark Ritual</div>
+          <div class="m-card-price">$22.50</div>
+        </div>
+        <div class="m-card-item">
+          <div class="m-card-image">Sol Ring<br>CMD Legends</div>
+          <div class="m-card-name">Sol Ring</div>
+          <div class="m-card-price">$3.25</div>
+        </div>
+        <div class="m-card-item">
+          <div class="m-card-image">Path to Exile<br>Modern Masters</div>
+          <div class="m-card-name">Path to Exile</div>
+          <div class="m-card-price">$4.15</div>
+        </div>
+        <div class="m-card-item">
+          <div class="m-card-image">Thoughtseize<br>Theros</div>
+          <div class="m-card-name">Thoughtseize</div>
+          <div class="m-card-price">$12.99</div>
+        </div>
+      </div>
+
+      <!-- ====== MOBILE BOTTOM SHEET OVERLAY ====== -->
+      <div class="m-sheet-overlay">
+        <div class="m-sheet">
+          <div class="m-sheet-handle"></div>
+          <div class="m-sheet-title">Filters</div>
+
+          <div class="m-sheet-section">
+            <div class="m-sheet-section-title">Game</div>
+            <div class="m-sheet-option">
+              <div class="m-sheet-radio checked"></div>
+              <div class="game-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--game-mtg); flex-shrink: 0;"></div>
+              <span>Magic: The Gathering</span>
+            </div>
+            <div class="m-sheet-option">
+              <div class="m-sheet-radio"></div>
+              <div class="game-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--game-pokemon); flex-shrink: 0;"></div>
+              <span>Pok&eacute;mon</span>
+            </div>
+            <div class="m-sheet-option">
+              <div class="m-sheet-radio"></div>
+              <div class="game-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--game-ygo); flex-shrink: 0;"></div>
+              <span>Yu-Gi-Oh!</span>
+            </div>
+          </div>
+
+          <div class="m-sheet-section">
+            <div class="m-sheet-section-title">Condition</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <span class="condition-chip active" style="font-size: 12px;">NM</span>
+              <span class="condition-chip" style="font-size: 12px;">LP</span>
+              <span class="condition-chip" style="font-size: 12px;">MP</span>
+              <span class="condition-chip" style="font-size: 12px;">HP</span>
+              <span class="condition-chip" style="font-size: 12px;">DMG</span>
+            </div>
+          </div>
+
+          <div class="m-sheet-section">
+            <div class="m-sheet-section-title">Price Range</div>
+            <div class="price-inputs" style="max-width: 200px;">
+              <div class="price-input">$1</div>
+              <span class="price-dash">&mdash;</span>
+              <div class="price-input">$25</div>
+            </div>
+          </div>
+
+          <div class="m-sheet-section" style="padding-bottom: 20px;">
+            <div style="display: flex; gap: 10px;">
+              <button style="flex: 1; height: 40px; background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius-md); color: var(--text-secondary); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer;">Clear All</button>
+              <button style="flex: 2; height: 40px; background: var(--brand-primary); border: none; border-radius: var(--radius-md); color: #fff; font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer;">Show 2,847 Results</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== MOBILE BOTTOM BAR ====== -->
+      <div class="m-bottom-bar">
+        <span class="m-bottom-count">2,847 results</span>
+        <button class="m-sort-btn">
+          Sort
+          <span style="font-size: 10px; color: var(--text-tertiary);">&#9660;</span>
+        </button>
+      </div>
+
+    </div><!-- /mobile-frame -->
+  </div>
+
+</div><!-- /canvas -->
+
+</body>
+</html>

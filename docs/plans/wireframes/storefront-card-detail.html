@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Card Detail Page Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS — DARK MODE
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: #1E1A3A;
+      --brand-secondary-subtle: #2A1A12;
+
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* =============================================
+       RESET + BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: #060610;
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--brand-primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* =============================================
+       WIREFRAME LAYOUT — SIDE BY SIDE
+       ============================================= */
+    .wireframe-container {
+      display: flex;
+      gap: 48px;
+      padding: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      flex-shrink: 0;
+    }
+    .frame-label {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .frame-label span {
+      color: var(--brand-primary);
+    }
+
+    /* =============================================
+       DESKTOP FRAME
+       ============================================= */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* =============================================
+       MOBILE FRAME
+       ============================================= */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 32px;
+      border: 3px solid var(--border-strong);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* =============================================
+       GLASS NAVIGATION BAR
+       ============================================= */
+    .glass-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(24, 22, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-default);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+    }
+    .nav-logo .logo-accent { color: #8B5CF6; }
+    .nav-logo-mobile .logo-accent { color: #8B5CF6; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .nav-link {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: var(--text-primary); text-decoration: none; }
+    .nav-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      width: 280px;
+    }
+    .nav-search-icon { opacity: 0.5; }
+    .nav-search kbd {
+      font-family: var(--font-body);
+      font-size: 11px;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--text-tertiary);
+      margin-left: auto;
+    }
+    .nav-cart-wrapper {
+      position: relative;
+    }
+    .nav-cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Mobile nav */
+    .glass-nav-mobile {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(24, 22, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-default);
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-nav-top {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .mobile-nav-bottom {
+      padding-bottom: 10px;
+      width: 100%;
+    }
+    .mobile-search-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      width: 100%;
+    }
+    .nav-logo-mobile {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* =============================================
+       BREADCRUMBS
+       ============================================= */
+    .breadcrumbs {
+      padding: 16px 48px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumbs a {
+      color: var(--brand-primary);
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .breadcrumbs a:hover { text-decoration: underline; }
+    .breadcrumb-sep { color: var(--text-tertiary); opacity: 0.5; }
+    .breadcrumb-current { color: var(--text-secondary); }
+
+    .breadcrumbs-mobile {
+      padding: 12px 16px;
+      font-size: 11px;
+    }
+
+    /* =============================================
+       THREE-COLUMN LAYOUT
+       ============================================= */
+    .three-col {
+      display: grid;
+      grid-template-columns: 360px 1fr 320px;
+      gap: 32px;
+      padding: 0 48px 48px;
+      align-items: start;
+      /* Component annotation */
+    }
+    .col-image {
+      position: sticky;
+      top: 80px;
+    }
+    .col-info {
+      min-width: 0;
+    }
+    .col-buy {
+      position: sticky;
+      top: 80px;
+    }
+
+    /* =============================================
+       CARD IMAGE COLUMN
+       ============================================= */
+    .card-image-wrapper {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      transition: box-shadow 0.3s ease;
+    }
+    .card-image-wrapper:hover {
+      box-shadow: 0 0 40px rgba(139, 92, 246, 0.25), 0 0 80px rgba(139, 92, 246, 0.1);
+    }
+    .card-image-inner {
+      aspect-ratio: 2.5 / 3.5;
+      background: linear-gradient(160deg, #1a1830 0%, #2a1a3a 30%, #1a2030 60%, #15152a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-image-inner::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    }
+    .card-placeholder-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 2px dashed rgba(139, 92, 246, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .card-placeholder-icon svg {
+      width: 36px;
+      height: 36px;
+      color: var(--brand-primary);
+      opacity: 0.6;
+    }
+    .card-placeholder-text {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      position: relative;
+      z-index: 1;
+    }
+    .card-placeholder-sub {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      opacity: 0.6;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Print Selector */
+    .print-selector {
+      margin-top: 16px;
+    }
+    .print-selector-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .print-thumbnails {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .print-thumb {
+      flex-shrink: 0;
+      width: 48px;
+      height: 67px;
+      border-radius: 6px;
+      background: var(--bg-surface-2);
+      border: 2px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .print-thumb:hover {
+      border-color: var(--border-strong);
+    }
+    .print-thumb.active {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--brand-primary);
+    }
+    .print-count {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+    }
+
+    /* =============================================
+       GLASS CARD
+       ============================================= */
+    .glass-card {
+      background: rgba(33, 32, 58, 0.60);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .glass-card + .glass-card {
+      margin-top: 20px;
+    }
+    .glass-card-strong {
+      background: rgba(33, 32, 58, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    /* =============================================
+       CARD HEADER
+       ============================================= */
+    .card-header {
+      margin-bottom: 24px;
+    }
+    .game-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--game-mtg);
+      background: rgba(167, 139, 250, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .game-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--game-mtg);
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .card-set-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .card-set {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .rarity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9CA3AF;
+      background: rgba(156, 163, 175, 0.1);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .rarity-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9CA3AF;
+    }
+    .mana-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .mana-symbol {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #D32F2F, #B71C1C);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* =============================================
+       GAME STATS BLOCK
+       ============================================= */
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.5);
+    }
+    .stat-row:last-of-type {
+      border-bottom: none;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      min-width: 100px;
+    }
+    .stat-value {
+      font-size: 13px;
+      color: var(--text-primary);
+      text-align: right;
+      flex: 1;
+    }
+    .rules-text {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 12px 16px;
+      background: rgba(9, 9, 15, 0.4);
+      border-radius: 10px;
+      border-left: 3px solid var(--brand-primary);
+      margin: 12px 0;
+    }
+    .flavor-text {
+      font-style: italic;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      padding: 8px 16px;
+      line-height: 1.5;
+    }
+    .format-legality {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .format-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .format-legal {
+      color: var(--positive);
+      border-color: rgba(16, 185, 129, 0.25);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .format-illegal {
+      color: var(--negative);
+      border-color: rgba(239, 68, 68, 0.25);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* =============================================
+       PRICE INSIGHTS
+       ============================================= */
+    .price-hero {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .price-hero-value {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--brand-primary);
+    }
+    .price-trend {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--positive);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .price-trend-neg { color: var(--negative); }
+    .sparkline-container {
+      height: 64px;
+      background: rgba(9, 9, 15, 0.3);
+      border-radius: 10px;
+      margin: 16px 0;
+      position: relative;
+      overflow: hidden;
+      padding: 8px;
+    }
+    .sparkline-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .price-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .price-stat {
+      text-align: center;
+    }
+    .price-stat-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .price-stat-value {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .external-price-ref {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(44, 42, 74, 0.5);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .external-price-ref a {
+      color: var(--brand-primary);
+      font-size: 12px;
+    }
+
+    /* =============================================
+       PRINTINGS TABLE
+       ============================================= */
+    .printings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .printings-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .printings-table td {
+      padding: 10px 12px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(44, 42, 74, 0.3);
+    }
+    .printings-table tr.active-row td {
+      background: rgba(139, 92, 246, 0.06);
+      color: var(--text-primary);
+    }
+    .printings-table tr.active-row td:first-child {
+      border-left: 2px solid var(--brand-primary);
+    }
+    .printing-price {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    .foil-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399, #fcd34d);
+      color: #09090F;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+    .view-all-link {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    /* =============================================
+       RULINGS ACCORDION
+       ============================================= */
+    .accordion {
+      margin-top: 20px;
+    }
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.5);
+    }
+    .accordion-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .accordion-icon {
+      color: var(--text-tertiary);
+      font-size: 18px;
+      transition: transform 0.2s;
+    }
+    .accordion-body {
+      padding: 12px 0;
+    }
+    .ruling-entry {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.25);
+    }
+    .ruling-entry:last-child { border-bottom: none; }
+    .ruling-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+    .ruling-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* =============================================
+       QUICK BUY PANEL
+       ============================================= */
+    .condition-selector {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .condition-chip {
+      flex: 1;
+      text-align: center;
+      padding: 8px 6px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-2);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+    .condition-chip:hover {
+      border-color: var(--border-strong);
+    }
+    .condition-chip.active-nm {
+      border-color: var(--positive);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--positive);
+    }
+    .condition-chip.active-lp {
+      border-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    .selected-price {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .selected-price-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+    .qty-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .qty-btn:first-child { border-radius: 8px 0 0 8px; }
+    .qty-btn:last-child { border-radius: 0 8px 8px 0; }
+    .qty-value {
+      width: 56px;
+      height: 40px;
+      border-top: 1px solid var(--border-default);
+      border-bottom: 1px solid var(--border-default);
+      background: var(--bg-surface-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .btn-add-cart {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-add-cart:hover {
+      background: #7C3AED;
+      transform: translateY(-1px);
+    }
+    .btn-wishlist {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-wishlist:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    /* =============================================
+       MARKETPLACE LISTINGS
+       ============================================= */
+    .listings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-default);
+      margin-bottom: 14px;
+    }
+    .listings-title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .listings-sort {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .seller-listing {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.3);
+    }
+    .seller-listing:last-of-type { border-bottom: none; }
+    .seller-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .seller-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .seller-rating {
+      font-size: 11px;
+      color: #FBBF24;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .seller-rating-num {
+      color: var(--text-tertiary);
+      font-size: 11px;
+    }
+    .seller-condition {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .cond-nm {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--positive);
+    }
+    .cond-lp {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+    .seller-price {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .btn-buy-mini {
+      padding: 5px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--brand-primary);
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--brand-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-buy-mini:hover {
+      background: rgba(139, 92, 246, 0.2);
+    }
+
+    /* =============================================
+       RELATED CARDS
+       ============================================= */
+    .related-section {
+      padding: 48px 48px 64px;
+      border-top: 1px solid var(--border-default);
+    }
+    .related-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+    .related-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .related-card {
+      flex-shrink: 0;
+      width: 150px;
+    }
+    .related-card-img {
+      width: 150px;
+      height: 210px;
+      border-radius: 10px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .related-card:hover .related-card-img {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+    }
+    .related-card-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .related-card-price {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* =============================================
+       MOBILE SPECIFIC
+       ============================================= */
+    .mobile-card-image {
+      padding: 16px;
+    }
+    .mobile-card-image .card-image-wrapper {
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .mobile-card-header {
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+    .mobile-card-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .mobile-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mobile-condition-row {
+      padding: 0 16px;
+      margin-bottom: 12px;
+    }
+    .mobile-condition-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+    .mobile-buy-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      margin-bottom: 20px;
+    }
+    .mobile-price {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .mobile-add-cart {
+      flex: 1;
+      height: 44px;
+      border: none;
+      border-radius: 10px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Mobile Tabs */
+    .mobile-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-default);
+      padding: 0 16px;
+      margin-bottom: 0;
+    }
+    .mobile-tab {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .mobile-tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+    }
+    .mobile-tab-content {
+      padding: 16px;
+    }
+
+    /* Sticky Bottom Buy Bar (Mobile) */
+    .sticky-buy-bar {
+      position: sticky;
+      bottom: 0;
+      z-index: 50;
+      background: rgba(24, 22, 42, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-default);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .sticky-bar-price {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .sticky-bar-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .sticky-bar-btn {
+      height: 44px;
+      padding: 0 28px;
+      border: none;
+      border-radius: 10px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* =============================================
+       DEV HANDOFF ANNOTATIONS
+       ============================================= */
+    .annotation {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: rgba(139, 92, 246, 0.7);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 200;
+      white-space: nowrap;
+    }
+    .annotation-inline {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: rgba(139, 92, 246, 0.5);
+      margin-top: 4px;
+      display: block;
+    }
+    [data-component]::before {
+      content: attr(data-component);
+      position: absolute;
+      top: -10px;
+      left: 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: rgba(139, 92, 246, 0.6);
+      background: rgba(139, 92, 246, 0.06);
+      border: 1px dashed rgba(139, 92, 246, 0.2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    /* =============================================
+       MOBILE RELATED SECTION
+       ============================================= */
+    .mobile-related {
+      padding: 16px;
+      border-top: 1px solid var(--border-default);
+      margin-bottom: 72px;
+    }
+    .mobile-related-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .mobile-related-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .mobile-related-card {
+      flex-shrink: 0;
+      width: 110px;
+    }
+    .mobile-related-card-img {
+      width: 110px;
+      height: 154px;
+      border-radius: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .mobile-related-card-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-related-card-price {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+<div class="wireframe-container">
+
+  <!-- ═══════════════════════════════════════════════
+       DESKTOP FRAME — 1440px
+       ═══════════════════════════════════════════════ -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop <span>1440px</span></div>
+    <div class="desktop-frame" data-component="&lt;CardDetailPage&gt;">
+
+      <!-- Glass Navigation Bar (scrolled state) -->
+      <nav class="glass-nav" style="background:rgba(24,22,42,0.80);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,0.3);border-bottom:1px solid rgba(139,92,246,0.12);">
+        <div style="display:flex;align-items:center;gap:32px;">
+          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
+          <div class="nav-links">
+            <a class="nav-link" href="#">Browse Cards</a>
+            <a class="nav-link" href="#">Deck Builder</a>
+            <a class="nav-link" href="#">Marketplace</a>
+            <a class="nav-link" href="#">Sell</a>
+            <a class="nav-link" href="#">Community</a>
+          </div>
+        </div>
+        <div class="nav-search">
+          <span class="nav-search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          Search cards, sets, sellers...
+          <kbd>&#8984;K</kbd>
+        </div>
+        <div class="nav-actions">
+          <!-- Theme toggle -->
+          <div class="nav-icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </div>
+          <!-- Notifications bell -->
+          <div class="nav-icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <!-- Wishlist heart -->
+          <div class="nav-icon-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <!-- Cart bag with badge -->
+          <div class="nav-icon-btn nav-cart-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="nav-cart-badge">3</span>
+          </div>
+          <!-- Avatar -->
+          <div class="nav-avatar">TC</div>
+        </div>
+      </nav>
+
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs">
+        <a href="#">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="#">MTG</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="#">Revised Edition</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Lightning Bolt</span>
+      </div>
+
+      <!-- Three-Column Layout -->
+      <div class="three-col">
+
+        <!-- ─── Column 1: Card Image (sticky) ─── -->
+        <div class="col-image" style="position:relative;">
+          <span class="annotation" style="top:-18px;left:0;">GET /api/bff/cards/:catalogSku</span>
+          <div class="card-image-wrapper">
+            <div class="card-image-inner">
+              <div class="card-placeholder-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="card-placeholder-text">Lightning Bolt</div>
+              <div class="card-placeholder-sub">3ED / 2.5 x 3.5 card image</div>
+            </div>
+          </div>
+
+          <!-- Print Selector -->
+          <div class="print-selector" style="position:relative;">
+            <span class="annotation-inline">&lt;PrintBrowser&gt;</span>
+            <div class="print-selector-label">Select Printing</div>
+            <div class="print-thumbnails">
+              <div class="print-thumb active">3ED</div>
+              <div class="print-thumb">A25</div>
+              <div class="print-thumb">M11</div>
+              <div class="print-thumb">STA</div>
+              <div class="print-thumb">2X2</div>
+              <div class="print-thumb">LCI</div>
+            </div>
+            <div class="print-count">12 printings available</div>
+          </div>
+        </div>
+
+        <!-- ─── Column 2: Card Info (scrollable) ─── -->
+        <div class="col-info">
+
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="game-badge">
+              <span class="game-badge-dot"></span>
+              MTG
+            </div>
+            <h1 class="card-title">Lightning Bolt</h1>
+            <div class="card-set-line">
+              <span class="card-set">Revised Edition (3ED)</span>
+              <span class="rarity-badge">
+                <span class="rarity-dot"></span>
+                Common
+              </span>
+            </div>
+            <div class="mana-cost">
+              <span style="font-size:12px;color:var(--text-tertiary);margin-right:4px;">Mana:</span>
+              <span class="mana-symbol">R</span>
+            </div>
+          </div>
+
+          <!-- Game Stats Block -->
+          <div class="glass-card" style="position:relative;">
+            <span class="annotation-inline">&lt;GameStatsDisplay&gt;</span>
+            <div class="section-title">Card Details</div>
+            <div class="stat-row">
+              <span class="stat-label">Type</span>
+              <span class="stat-value">Instant</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Mana Cost</span>
+              <span class="stat-value" style="display:flex;align-items:center;justify-content:flex-end;gap:4px;">
+                <span class="mana-symbol" style="width:20px;height:20px;font-size:11px;">R</span>
+              </span>
+            </div>
+            <div class="stat-row" style="border-bottom:none;">
+              <span class="stat-label">Color</span>
+              <span class="stat-value" style="color:#EF4444;">Red</span>
+            </div>
+
+            <div class="rules-text">
+              Lightning Bolt deals 3 damage to any target.
+            </div>
+            <div class="flavor-text">
+              "The spark of genius, the flash of inspiration..."
+            </div>
+
+            <div style="margin-top:16px;">
+              <div class="section-title" style="font-size:12px;">Format Legality</div>
+              <div class="format-legality">
+                <span class="format-chip format-legal">Modern &#10003;</span>
+                <span class="format-chip format-legal">Legacy &#10003;</span>
+                <span class="format-chip format-illegal">Standard &#10007;</span>
+                <span class="format-chip format-legal">Commander &#10003;</span>
+                <span class="format-chip format-illegal">Pioneer &#10007;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Insights -->
+          <div class="glass-card" style="position:relative;">
+            <span class="annotation-inline">&lt;PriceInsightsSection&gt;</span>
+            <div class="section-title">Price Insights</div>
+            <div class="price-hero">
+              <span class="price-hero-value">$2.49</span>
+              <span class="price-trend">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l5-5 5 5"/><path d="M7 7l5 5 5-5" opacity="0"/></svg>
+                12% this week
+              </span>
+            </div>
+
+            <div class="sparkline-container">
+              <svg class="sparkline-svg" viewBox="0 0 400 48" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,38 L15,36 L30,35 L45,37 L60,34 L75,30 L90,32 L105,28 L120,25 L135,27 L150,24 L165,22 L180,26 L195,20 L210,18 L225,22 L240,16 L255,14 L270,18 L285,12 L300,15 L315,10 L330,12 L345,8 L360,10 L375,6 L400,8 L400,48 L0,48 Z" fill="url(#sparkFill)"/>
+                <path d="M0,38 L15,36 L30,35 L45,37 L60,34 L75,30 L90,32 L105,28 L120,25 L135,27 L150,24 L165,22 L180,26 L195,20 L210,18 L225,22 L240,16 L255,14 L270,18 L285,12 L300,15 L315,10 L330,12 L345,8 L360,10 L375,6 L400,8" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="400" cy="8" r="3" fill="#8B5CF6"/>
+              </svg>
+              <span style="position:absolute;top:6px;right:10px;font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);">30 day</span>
+            </div>
+
+            <div class="price-stats-row">
+              <div class="price-stat">
+                <div class="price-stat-label">Low</div>
+                <div class="price-stat-value">$0.89</div>
+              </div>
+              <div class="price-stat">
+                <div class="price-stat-label">Median</div>
+                <div class="price-stat-value">$2.49</div>
+              </div>
+              <div class="price-stat">
+                <div class="price-stat-label">High</div>
+                <div class="price-stat-value">$14.99</div>
+              </div>
+            </div>
+
+            <div class="external-price-ref">
+              TCGPlayer Market: <a href="#">$2.35</a>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-left:2px;opacity:0.5;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+          </div>
+
+          <!-- Printings Table -->
+          <div class="glass-card" style="position:relative;">
+            <span class="annotation-inline">&lt;CompactPrintingsTable&gt;</span>
+            <div class="section-title">Printings</div>
+            <table class="printings-table">
+              <thead>
+                <tr>
+                  <th>Set</th>
+                  <th>Year</th>
+                  <th>Rarity</th>
+                  <th>Condition</th>
+                  <th style="text-align:right;">Market Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="active-row">
+                  <td style="font-weight:600;color:var(--text-primary);">3ED</td>
+                  <td>1994</td>
+                  <td>Common</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$2.49</span></td>
+                </tr>
+                <tr>
+                  <td>A25</td>
+                  <td>2018</td>
+                  <td>Uncommon</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$1.89</span></td>
+                </tr>
+                <tr>
+                  <td>M11</td>
+                  <td>2010</td>
+                  <td>Common</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$3.29</span></td>
+                </tr>
+                <tr>
+                  <td>STA</td>
+                  <td>2021</td>
+                  <td>Rare</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$8.99</span><span class="foil-badge">Foil</span></td>
+                </tr>
+                <tr>
+                  <td>2X2</td>
+                  <td>2022</td>
+                  <td>Common</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$1.49</span></td>
+                </tr>
+                <tr>
+                  <td>LCI</td>
+                  <td>2023</td>
+                  <td>Common</td>
+                  <td>NM</td>
+                  <td style="text-align:right;"><span class="printing-price">$4.99</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <a href="#" class="view-all-link">View all 12 printings &rarr;</a>
+          </div>
+
+          <!-- Rulings Accordion -->
+          <div class="accordion">
+            <div class="accordion-header">
+              <span class="accordion-title">Rulings</span>
+              <span class="accordion-icon">&minus;</span>
+            </div>
+            <div class="accordion-body">
+              <div class="ruling-entry">
+                <div class="ruling-date">2009-10-01</div>
+                <div class="ruling-text">Lightning Bolt can target any creature, player, or planeswalker. If Lightning Bolt targets a planeswalker, the damage is dealt to that planeswalker, not redirected from a player.</div>
+              </div>
+              <div class="ruling-entry">
+                <div class="ruling-date">2004-10-04</div>
+                <div class="ruling-text">The amount of damage dealt is always 3, regardless of the number of targets or any other game state.</div>
+              </div>
+              <div class="ruling-entry">
+                <div class="ruling-date">2004-10-04</div>
+                <div class="ruling-text">This is an instant, so it can be cast at any time priority is held, including during combat or on your opponent's turn.</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /col-info -->
+
+        <!-- ─── Column 3: Quick Buy Panel (sticky) ─── -->
+        <div class="col-buy" style="position:relative;">
+          <div class="glass-card-strong" style="position:relative;">
+            <span class="annotation-inline">&lt;QuickBuyPanel&gt;</span>
+
+            <!-- Condition Selector -->
+            <div style="margin-bottom:4px;">
+              <div class="section-title" style="font-size:12px;">Condition</div>
+            </div>
+            <div class="condition-selector">
+              <div class="condition-chip active-nm">NM</div>
+              <div class="condition-chip">LP</div>
+              <div class="condition-chip">MP</div>
+              <div class="condition-chip">HP</div>
+            </div>
+
+            <!-- Price -->
+            <div class="selected-price">$2.49</div>
+            <div class="selected-price-label">Near Mint &middot; Revised Edition</div>
+
+            <!-- Quantity -->
+            <div style="margin-bottom:4px;">
+              <div class="section-title" style="font-size:12px;">Quantity</div>
+            </div>
+            <div class="qty-stepper">
+              <div class="qty-btn">&minus;</div>
+              <div class="qty-value">1</div>
+              <div class="qty-btn">+</div>
+            </div>
+
+            <!-- Add to Cart -->
+            <button class="btn-add-cart">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              Add to Cart
+            </button>
+
+            <!-- Wishlist -->
+            <button class="btn-wishlist">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Save to Wishlist
+            </button>
+
+            <!-- Marketplace Listings -->
+            <div class="listings-header" style="position:relative;">
+              <span class="annotation-inline" style="position:absolute;top:-12px;left:0;">&lt;MarketplaceListingsSection&gt;</span>
+              <span class="listings-title">Available from 23 sellers</span>
+              <span class="listings-sort">
+                Best Price
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+            </div>
+
+            <!-- Seller Listings -->
+            <div class="seller-listing">
+              <div class="seller-info">
+                <div class="seller-name">CardKingdom</div>
+                <div class="seller-rating">
+                  &#9733;&#9733;&#9733;&#9733;&#9733;
+                  <span class="seller-rating-num">4.9</span>
+                </div>
+              </div>
+              <span class="seller-condition cond-nm">NM</span>
+              <span class="seller-price">$2.49</span>
+              <button class="btn-buy-mini">Buy</button>
+            </div>
+
+            <div class="seller-listing">
+              <div class="seller-info">
+                <div class="seller-name">MTGDeals</div>
+                <div class="seller-rating">
+                  &#9733;&#9733;&#9733;&#9733;&#9734;
+                  <span class="seller-rating-num">4.3</span>
+                </div>
+              </div>
+              <span class="seller-condition cond-nm">NM</span>
+              <span class="seller-price">$2.29</span>
+              <button class="btn-buy-mini">Buy</button>
+            </div>
+
+            <div class="seller-listing">
+              <div class="seller-info">
+                <div class="seller-name">TCGMarket</div>
+                <div class="seller-rating">
+                  &#9733;&#9733;&#9733;&#9733;&#9733;
+                  <span class="seller-rating-num">4.8</span>
+                </div>
+              </div>
+              <span class="seller-condition cond-lp">LP</span>
+              <span class="seller-price">$2.89</span>
+              <button class="btn-buy-mini">Buy</button>
+            </div>
+
+            <div class="seller-listing">
+              <div class="seller-info">
+                <div class="seller-name">GameVault</div>
+                <div class="seller-rating">
+                  &#9733;&#9733;&#9733;&#9733;&#9734;
+                  <span class="seller-rating-num">4.1</span>
+                </div>
+              </div>
+              <span class="seller-condition cond-nm">NM</span>
+              <span class="seller-price">$1.99</span>
+              <button class="btn-buy-mini">Buy</button>
+            </div>
+
+            <a href="#" class="view-all-link">View all 23 listings &rarr;</a>
+          </div>
+
+          <!-- BFF annotation -->
+          <div style="margin-top:12px;">
+            <span class="annotation-inline">BFF aggregates catalog + listings + pricing</span>
+          </div>
+        </div><!-- /col-buy -->
+
+      </div><!-- /three-col -->
+
+      <!-- Related Cards Section -->
+      <div class="related-section">
+        <h2 class="related-title">You Might Also Like</h2>
+        <div class="related-scroll">
+          <div class="related-card">
+            <div class="related-card-img">Chain Lightning</div>
+            <div class="related-card-name">Chain Lightning</div>
+            <div class="related-card-price">$3.49</div>
+          </div>
+          <div class="related-card">
+            <div class="related-card-img">Shock</div>
+            <div class="related-card-name">Shock</div>
+            <div class="related-card-price">$0.15</div>
+          </div>
+          <div class="related-card">
+            <div class="related-card-img">Rift Bolt</div>
+            <div class="related-card-name">Rift Bolt</div>
+            <div class="related-card-price">$0.49</div>
+          </div>
+          <div class="related-card">
+            <div class="related-card-img">Lava Spike</div>
+            <div class="related-card-name">Lava Spike</div>
+            <div class="related-card-price">$1.99</div>
+          </div>
+          <div class="related-card">
+            <div class="related-card-img">Fireblast</div>
+            <div class="related-card-name">Fireblast</div>
+            <div class="related-card-price">$1.29</div>
+          </div>
+          <div class="related-card">
+            <div class="related-card-img">Searing Blaze</div>
+            <div class="related-card-name">Searing Blaze</div>
+            <div class="related-card-price">$0.79</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /desktop-frame -->
+  </div><!-- /frame-wrapper desktop -->
+
+
+  <!-- ═══════════════════════════════════════════════
+       MOBILE FRAME — 390px
+       ═══════════════════════════════════════════════ -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile <span>390px</span></div>
+    <div class="mobile-frame" data-component="&lt;CardDetailPage mobile&gt;">
+
+      <!-- Glass Nav (compact, two-row) -->
+      <nav class="glass-nav-mobile">
+        <!-- Top row: Hamburger, Logo, Cart + Avatar -->
+        <div class="mobile-nav-top">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- Hamburger menu icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="nav-logo-mobile">Side<span class="logo-accent">Decked</span></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <!-- Cart bag with badge -->
+            <div style="position:relative;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span class="nav-cart-badge">3</span>
+            </div>
+            <!-- Avatar -->
+            <div class="nav-avatar" style="width:28px;height:28px;font-size:11px;">TC</div>
+          </div>
+        </div>
+        <!-- Bottom row: Search pill (compact) -->
+        <div class="mobile-nav-bottom">
+          <div class="mobile-search-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            Search cards, sets, sellers...
+          </div>
+        </div>
+      </nav>
+
+      <!-- Breadcrumbs (truncated) -->
+      <div class="breadcrumbs breadcrumbs-mobile">
+        <span style="color:var(--text-tertiary);">...</span>
+        <span class="breadcrumb-sep">/</span>
+        <a href="#">3ED</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Lightning Bolt</span>
+      </div>
+
+      <!-- Card Image -->
+      <div class="mobile-card-image">
+        <div class="card-image-wrapper">
+          <div class="card-image-inner">
+            <div class="card-placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            </div>
+            <div class="card-placeholder-text">Lightning Bolt</div>
+            <div class="card-placeholder-sub">3ED</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Name + Badge + Set -->
+      <div class="mobile-card-header">
+        <div class="mobile-meta-row" style="margin-bottom:6px;">
+          <div class="game-badge" style="font-size:10px;padding:3px 8px;">
+            <span class="game-badge-dot" style="width:5px;height:5px;"></span>
+            MTG
+          </div>
+          <span class="rarity-badge" style="font-size:11px;padding:2px 8px;">
+            <span class="rarity-dot" style="width:5px;height:5px;"></span>
+            Common
+          </span>
+        </div>
+        <h1 class="mobile-card-title">Lightning Bolt</h1>
+        <div class="mobile-meta-row">
+          <span style="font-size:13px;color:var(--text-secondary);">Revised Edition (3ED)</span>
+          <span class="mana-symbol" style="width:20px;height:20px;font-size:11px;">R</span>
+        </div>
+      </div>
+
+      <!-- Condition Chips (horizontal scroll) -->
+      <div class="mobile-condition-row">
+        <div class="mobile-condition-chips">
+          <div class="condition-chip active-nm" style="min-width:48px;padding:7px 12px;">NM</div>
+          <div class="condition-chip" style="min-width:48px;padding:7px 12px;">LP</div>
+          <div class="condition-chip" style="min-width:48px;padding:7px 12px;">MP</div>
+          <div class="condition-chip" style="min-width:48px;padding:7px 12px;">HP</div>
+          <div class="condition-chip" style="min-width:48px;padding:7px 12px;">DMG</div>
+        </div>
+      </div>
+
+      <!-- Price + Add to Cart -->
+      <div class="mobile-buy-row">
+        <div>
+          <div class="mobile-price">$2.49</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">Near Mint</div>
+        </div>
+        <button class="mobile-add-cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- Tabbed Sections -->
+      <div class="mobile-tabs">
+        <div class="mobile-tab active">Details</div>
+        <div class="mobile-tab">Prices</div>
+        <div class="mobile-tab">Sellers</div>
+        <div class="mobile-tab">Printings</div>
+      </div>
+
+      <!-- Details Tab Content (active) -->
+      <div class="mobile-tab-content">
+
+        <!-- Game Stats -->
+        <div class="glass-card" style="margin-bottom:16px;padding:16px;">
+          <div class="stat-row">
+            <span class="stat-label" style="font-size:12px;">Type</span>
+            <span class="stat-value" style="font-size:12px;">Instant</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label" style="font-size:12px;">Mana Cost</span>
+            <span class="stat-value" style="font-size:12px;display:flex;align-items:center;justify-content:flex-end;">
+              <span class="mana-symbol" style="width:18px;height:18px;font-size:10px;">R</span>
+            </span>
+          </div>
+          <div class="stat-row" style="border-bottom:none;">
+            <span class="stat-label" style="font-size:12px;">Color</span>
+            <span class="stat-value" style="font-size:12px;color:#EF4444;">Red</span>
+          </div>
+
+          <div class="rules-text" style="font-size:13px;padding:10px 12px;margin:10px 0;">
+            Lightning Bolt deals 3 damage to any target.
+          </div>
+          <div class="flavor-text" style="font-size:12px;padding:6px 12px;">
+            "The spark of genius, the flash of inspiration..."
+          </div>
+        </div>
+
+        <!-- Format Legality -->
+        <div style="margin-bottom:16px;">
+          <div class="section-title" style="font-size:11px;">Format Legality</div>
+          <div class="format-legality" style="gap:6px;">
+            <span class="format-chip format-legal" style="font-size:11px;padding:4px 10px;">Modern &#10003;</span>
+            <span class="format-chip format-legal" style="font-size:11px;padding:4px 10px;">Legacy &#10003;</span>
+            <span class="format-chip format-illegal" style="font-size:11px;padding:4px 10px;">Standard &#10007;</span>
+            <span class="format-chip format-legal" style="font-size:11px;padding:4px 10px;">Commander &#10003;</span>
+            <span class="format-chip format-illegal" style="font-size:11px;padding:4px 10px;">Pioneer &#10007;</span>
+          </div>
+        </div>
+
+        <!-- Price Insights (compact) -->
+        <div class="glass-card" style="padding:16px;margin-bottom:16px;">
+          <div class="section-title" style="font-size:11px;">Price Insights</div>
+          <div class="price-hero" style="margin-bottom:2px;">
+            <span class="price-hero-value" style="font-size:20px;">$2.49</span>
+            <span class="price-trend" style="font-size:12px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l5-5 5 5"/></svg>
+              12%
+            </span>
+          </div>
+
+          <div class="sparkline-container" style="height:48px;margin:10px 0;">
+            <svg class="sparkline-svg" viewBox="0 0 400 48" preserveAspectRatio="none">
+              <path d="M0,38 L15,36 L30,35 L45,37 L60,34 L75,30 L90,32 L105,28 L120,25 L135,27 L150,24 L165,22 L180,26 L195,20 L210,18 L225,22 L240,16 L255,14 L270,18 L285,12 L300,15 L315,10 L330,12 L345,8 L360,10 L375,6 L400,8 L400,48 L0,48 Z" fill="url(#sparkFill)"/>
+              <path d="M0,38 L15,36 L30,35 L45,37 L60,34 L75,30 L90,32 L105,28 L120,25 L135,27 L150,24 L165,22 L180,26 L195,20 L210,18 L225,22 L240,16 L255,14 L270,18 L285,12 L300,15 L315,10 L330,12 L345,8 L360,10 L375,6 L400,8" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="price-stats-row" style="gap:8px;">
+            <div class="price-stat">
+              <div class="price-stat-label" style="font-size:10px;">Low</div>
+              <div class="price-stat-value" style="font-size:14px;">$0.89</div>
+            </div>
+            <div class="price-stat">
+              <div class="price-stat-label" style="font-size:10px;">Median</div>
+              <div class="price-stat-value" style="font-size:14px;">$2.49</div>
+            </div>
+            <div class="price-stat">
+              <div class="price-stat-label" style="font-size:10px;">High</div>
+              <div class="price-stat-value" style="font-size:14px;">$14.99</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seller Listings (compact) -->
+        <div class="glass-card" style="padding:16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <span class="listings-title" style="font-size:13px;">23 sellers</span>
+            <span class="listings-sort" style="font-size:11px;">Best Price <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+
+          <div class="seller-listing" style="padding:8px 0;">
+            <div class="seller-info">
+              <div class="seller-name" style="font-size:12px;">GameVault</div>
+              <div class="seller-rating" style="font-size:10px;">&#9733;&#9733;&#9733;&#9733; <span class="seller-rating-num" style="font-size:10px;">4.1</span></div>
+            </div>
+            <span class="seller-condition cond-nm" style="font-size:10px;padding:2px 6px;">NM</span>
+            <span class="seller-price" style="font-size:13px;">$1.99</span>
+            <button class="btn-buy-mini" style="font-size:11px;padding:4px 10px;">Buy</button>
+          </div>
+
+          <div class="seller-listing" style="padding:8px 0;">
+            <div class="seller-info">
+              <div class="seller-name" style="font-size:12px;">MTGDeals</div>
+              <div class="seller-rating" style="font-size:10px;">&#9733;&#9733;&#9733;&#9733; <span class="seller-rating-num" style="font-size:10px;">4.3</span></div>
+            </div>
+            <span class="seller-condition cond-nm" style="font-size:10px;padding:2px 6px;">NM</span>
+            <span class="seller-price" style="font-size:13px;">$2.29</span>
+            <button class="btn-buy-mini" style="font-size:11px;padding:4px 10px;">Buy</button>
+          </div>
+
+          <div class="seller-listing" style="padding:8px 0;">
+            <div class="seller-info">
+              <div class="seller-name" style="font-size:12px;">CardKingdom</div>
+              <div class="seller-rating" style="font-size:10px;">&#9733;&#9733;&#9733;&#9733;&#9733; <span class="seller-rating-num" style="font-size:10px;">4.9</span></div>
+            </div>
+            <span class="seller-condition cond-nm" style="font-size:10px;padding:2px 6px;">NM</span>
+            <span class="seller-price" style="font-size:13px;">$2.49</span>
+            <button class="btn-buy-mini" style="font-size:11px;padding:4px 10px;">Buy</button>
+          </div>
+
+          <a href="#" class="view-all-link" style="font-size:12px;padding:8px;">View all 23 listings &rarr;</a>
+        </div>
+
+        <!-- Compact Printings -->
+        <div class="glass-card" style="padding:16px;margin-bottom:16px;overflow-x:auto;">
+          <div class="section-title" style="font-size:11px;">Printings</div>
+          <table class="printings-table" style="font-size:11px;min-width:340px;">
+            <thead>
+              <tr>
+                <th style="font-size:10px;">Set</th>
+                <th style="font-size:10px;">Year</th>
+                <th style="font-size:10px;">Rarity</th>
+                <th style="font-size:10px;text-align:right;">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active-row">
+                <td style="font-weight:600;color:var(--text-primary);">3ED</td>
+                <td>1994</td>
+                <td>Common</td>
+                <td style="text-align:right;"><span class="printing-price" style="font-size:11px;">$2.49</span></td>
+              </tr>
+              <tr>
+                <td>A25</td>
+                <td>2018</td>
+                <td>Uncommon</td>
+                <td style="text-align:right;"><span class="printing-price" style="font-size:11px;">$1.89</span></td>
+              </tr>
+              <tr>
+                <td>STA</td>
+                <td>2021</td>
+                <td>Rare</td>
+                <td style="text-align:right;"><span class="printing-price" style="font-size:11px;">$8.99</span><span class="foil-badge" style="font-size:8px;">Foil</span></td>
+              </tr>
+              <tr>
+                <td>2X2</td>
+                <td>2022</td>
+                <td>Common</td>
+                <td style="text-align:right;"><span class="printing-price" style="font-size:11px;">$1.49</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="#" class="view-all-link" style="font-size:12px;padding:8px;">View all 12 printings &rarr;</a>
+        </div>
+      </div><!-- /mobile-tab-content -->
+
+      <!-- Mobile Related Cards -->
+      <div class="mobile-related">
+        <h3 class="mobile-related-title">You Might Also Like</h3>
+        <div class="mobile-related-scroll">
+          <div class="mobile-related-card">
+            <div class="mobile-related-card-img">Chain Lightning</div>
+            <div class="mobile-related-card-name">Chain Lightning</div>
+            <div class="mobile-related-card-price">$3.49</div>
+          </div>
+          <div class="mobile-related-card">
+            <div class="mobile-related-card-img">Shock</div>
+            <div class="mobile-related-card-name">Shock</div>
+            <div class="mobile-related-card-price">$0.15</div>
+          </div>
+          <div class="mobile-related-card">
+            <div class="mobile-related-card-img">Rift Bolt</div>
+            <div class="mobile-related-card-name">Rift Bolt</div>
+            <div class="mobile-related-card-price">$0.49</div>
+          </div>
+          <div class="mobile-related-card">
+            <div class="mobile-related-card-img">Lava Spike</div>
+            <div class="mobile-related-card-name">Lava Spike</div>
+            <div class="mobile-related-card-price">$1.99</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Bottom Buy Bar -->
+      <div class="sticky-buy-bar">
+        <div>
+          <div class="sticky-bar-price">$2.49</div>
+          <div class="sticky-bar-label">NM &middot; 3ED</div>
+        </div>
+        <button class="sticky-bar-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Add to Cart
+        </button>
+      </div>
+
+    </div><!-- /mobile-frame -->
+  </div><!-- /frame-wrapper mobile -->
+
+</div><!-- /wireframe-container -->
+
+</body>
+</html>

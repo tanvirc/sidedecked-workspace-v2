@@ -3,6 +3,14 @@ All notable changes to the SideDecked project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+### Changed
+- **Voltage Design System**: Full replacement of "Midnight Forge" (bronze-gold/dark) with "Voltage" (Electric Violet + Neon Coral) across the storefront
+  - `colors.css`: complete token rewrite — new brand palette (`--brand-primary: #8B5CF6`, `--brand-secondary: #FF7849`), Voltage dark surfaces (`#09090F` root → `#38365C` active), light mode surfaces, recalibrated rarity tokens (WCAG AA on new `--bg-surface-1`), updated game colors for new base
+  - `globals.css`: updated type scale with font-family declarations (Barlow Condensed for display/heading-xl/lg, Barlow for heading-md/sm/xs); added `.display-lg` (72px); updated `.price` to use `var(--font-mono-stats)`; `.accent-cta-btn` now uses brand CSS variables; added `.card-glow` hover effect and `@keyframes brand-pulse` / `gradient-sweep`
+  - `tailwind.config.ts`: replaced `rajdhani` font alias with `barlow-condensed` + `barlow`; added `heading` alias mapped to `--font-heading`
+  - `layout.tsx`: replaced `Rajdhani` Google Font import with `Barlow_Condensed` (wt 500–800) + `Barlow` (wt 400–600)
+  - `CardDisplay.tsx`: Gallery and Grid variants now use `.card-glow` for `0 0 24px rgba(139,92,246,0.4)` hover effect
+
 ### Added
 - **Game Selector Grid (Story 9.2)**: Homepage game tile grid letting visitors tap a TCG to land on the card browse page pre-filtered by game, with preference persisted via cookie
   - `GameSelectorGrid` (RSC) and `GameTile` (`"use client"` island): 2×2 mobile / 4-column desktop grid of card-back tiles (MTG, Pokémon, Yu-Gi-Oh!, One Piece) with game-colour overlays, Rajdhani uppercase game names, and DM Mono listing counts; `aspect-ratio: 5/7` on all breakpoints; active scale, hover translate, focus-visible outline, and `prefers-reduced-motion` suppression

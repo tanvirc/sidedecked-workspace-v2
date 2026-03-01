@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voltage Design System — Preview</title>
+  <script>if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.classList.remove('dark')</script>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN SYSTEM TOKENS
+       ============================================= */
+    :root {
+      /* Brand */
+      --brand-primary:          #7C3AED;
+      --brand-secondary:        #FF6B35;
+      --brand-primary-subtle:   #EDE9FE;
+      --brand-secondary-subtle: #FFF0EB;
+
+      /* Light mode base */
+      --bg-base:       #FAF9FF;
+      --bg-surface-1:  #FFFFFF;
+      --bg-surface-2:  #F3F0FF;
+      --bg-surface-3:  #E8E4FF;
+      --bg-surface-4:  #DDD8F5;
+      --text-primary:  #12103A;
+      --text-secondary:#3D3760;
+      --text-tertiary: #7B72A8;
+      --border-default:#DDD8F5;
+      --border-strong: #A89FE0;
+
+      /* Semantic */
+      --positive:    #10B981;
+      --negative:    #EF4444;
+      --warning:     #F59E0B;
+      --info:        #3B82F6;
+      --interactive: #7C3AED;
+
+      /* Games */
+      --game-mtg:     #7C3AED;
+      --game-pokemon: #D97706;
+      --game-ygo:     #2563EB;
+      --game-op:      #059669;
+
+      /* Rarity — MTG */
+      --rarity-mtg-common:   #6B7280;
+      --rarity-mtg-uncommon: #6B9FBF;
+      --rarity-mtg-rare:     #B8860B;
+      --rarity-mtg-mythic:   #C2410C;
+
+      /* Rarity — Pokemon */
+      --rarity-poke-common:       #6B7280;
+      --rarity-poke-ultra:        #6B7280;
+      --rarity-poke-illustration: #92400E;
+      --rarity-poke-hyper:        #92400E;
+
+      /* Rarity — YGO */
+      --rarity-ygo-common:    #6B7280;
+      --rarity-ygo-rare:      #6B7280;
+      --rarity-ygo-super:     #0369A1;
+      --rarity-ygo-ultra:     #92400E;
+      --rarity-ygo-secret:    #6D28D9;
+      --rarity-ygo-starlight: #374151;
+
+      /* Rarity — One Piece */
+      --rarity-op-common:   #6B7280;
+      --rarity-op-uncommon: #1D4ED8;
+      --rarity-op-rare:     #15803D;
+      --rarity-op-super:    #92400E;
+      --rarity-op-secret:   #374151;
+      --rarity-op-leader:   #6D28D9;
+
+      /* Typography */
+      --font-display:  'Barlow Condensed', sans-serif;
+      --font-heading:  'Barlow', sans-serif;
+      --font-body:     'Inter', sans-serif;
+      --font-mono:     'DM Mono', monospace;
+    }
+
+    .dark {
+      /* Brand (dark shifts) */
+      --brand-primary:          #8B5CF6;
+      --brand-secondary:        #FF7849;
+      --brand-primary-subtle:   #1E1A3A;
+      --brand-secondary-subtle: #2A1A12;
+
+      /* Dark mode base */
+      --bg-base:       #09090F;
+      --bg-surface-1:  #18162A;
+      --bg-surface-2:  #21203A;
+      --bg-surface-3:  #2C2A4A;
+      --bg-surface-4:  #38365C;
+      --text-primary:  #F0EEFF;
+      --text-secondary:#B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default:#2C2A4A;
+      --border-strong: #4A4680;
+
+      /* Games (dark) */
+      --game-mtg:     #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo:     #60A5FA;
+      --game-op:      #34D399;
+
+      /* Rarity — MTG (dark, recalibrated) */
+      --rarity-mtg-common:   #9CA3AF;
+      --rarity-mtg-uncommon: #93C5FD;
+      --rarity-mtg-rare:     #FCD34D;
+      --rarity-mtg-mythic:   #FB923C;
+
+      /* Rarity — Pokemon (dark) */
+      --rarity-poke-common:       #9CA3AF;
+      --rarity-poke-ultra:        #E2E8F0;
+      --rarity-poke-illustration: #FCD34D;
+      --rarity-poke-hyper:        #FFD700;
+
+      /* Rarity — YGO (dark) */
+      --rarity-ygo-common:    #9CA3AF;
+      --rarity-ygo-rare:      #E2E8F0;
+      --rarity-ygo-super:     #7DD3FC;
+      --rarity-ygo-ultra:     #FCD34D;
+      --rarity-ygo-secret:    #DDD6FE;
+      --rarity-ygo-starlight: #F8FAFC;
+
+      /* Rarity — One Piece (dark) */
+      --rarity-op-common:   #D1D5DB;
+      --rarity-op-uncommon: #93C5FD;
+      --rarity-op-rare:     #6EE7B7;
+      --rarity-op-super:    #FCD34D;
+      --rarity-op-secret:   #F0EEFF;
+      --rarity-op-leader:   #DDD6FE;
+    }
+
+    /* =============================================
+       RESET + BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.5;
+      transition: background-color 0.2s ease-out, color 0.2s ease-out;
+    }
+
+    /* =============================================
+       LAYOUT
+       ============================================= */
+    .page { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .section {
+      margin-top: 72px;
+    }
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    /* =============================================
+       MODE TOGGLE
+       ============================================= */
+    .mode-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      transition: background 0.2s ease-out, border-color 0.2s ease-out;
+    }
+    .mode-bar-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .mode-bar-title span { color: var(--brand-primary); }
+    .mode-bar-title em { color: var(--brand-secondary); font-style: normal; }
+
+    .toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+    }
+    .toggle-btn:hover {
+      background: var(--bg-surface-3);
+      border-color: var(--brand-primary);
+    }
+
+    /* =============================================
+       HERO
+       ============================================= */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      padding: 80px 56px;
+      margin-top: 40px;
+      background: linear-gradient(135deg, var(--bg-surface-1) 0%, var(--brand-primary-subtle) 50%, var(--bg-surface-1) 100%);
+      border: 1px solid var(--border-default);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .hero-gradient-orb {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-gradient-orb.primary {
+      top: -100px;
+      right: -100px;
+      background: var(--brand-primary);
+      opacity: 0.25;
+    }
+    .hero-gradient-orb.secondary {
+      bottom: -150px;
+      left: 10%;
+      background: var(--brand-secondary);
+      opacity: 0.18;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-secondary);
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--brand-primary) 60%, var(--brand-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* =============================================
+       BUTTONS
+       ============================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease-out;
+      text-decoration: none;
+    }
+
+    .btn-filled {
+      background: var(--brand-primary);
+      color: #FFFFFF;
+    }
+    .btn-filled:hover {
+      background: color-mix(in srgb, var(--brand-primary) 85%, white);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--brand-primary) 50%, transparent);
+    }
+
+    .btn-cta {
+      background: var(--brand-secondary);
+      color: #FFFFFF;
+    }
+    .btn-cta:hover {
+      background: color-mix(in srgb, var(--brand-secondary) 85%, white);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--brand-secondary) 50%, transparent);
+    }
+
+    .btn-tonal {
+      background: var(--brand-primary-subtle);
+      color: var(--brand-primary);
+    }
+    .btn-tonal:hover { background: color-mix(in srgb, var(--brand-primary) 18%, transparent); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+    .btn-outline:hover {
+      background: var(--bg-surface-2);
+      border-color: var(--border-strong);
+    }
+
+    .btn-text {
+      background: transparent;
+      color: var(--brand-primary);
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .btn-text:hover {
+      background: var(--brand-primary-subtle);
+    }
+
+    .btn-destructive {
+      background: var(--negative);
+      color: #FFFFFF;
+    }
+    .btn-destructive:hover {
+      background: color-mix(in srgb, var(--negative) 85%, black);
+    }
+
+    /* =============================================
+       BUTTON GRID
+       ============================================= */
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-row-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* =============================================
+       COLOR SWATCHES
+       ============================================= */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .swatch {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+    }
+    .swatch-color {
+      height: 56px;
+    }
+    .swatch-info {
+      padding: 8px 10px;
+      background: var(--bg-surface-1);
+    }
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .swatch-value {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    .swatch-group-label {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .swatch-group-label:first-child { margin-top: 0; }
+
+    /* =============================================
+       CARD GRID
+       ============================================= */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      border-radius: 12px;
+      padding: 20px;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      transition: all 0.15s ease-out;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 24px rgba(124, 58, 237, 0.4);
+      transform: translateY(-2px);
+    }
+    .card-aspect-ratio {
+      aspect-ratio: 2.5 / 3.5;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-placeholder-art {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      position: relative;
+    }
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .card-set {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-price {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--brand-secondary);
+    }
+
+    /* =============================================
+       RARITY BADGE
+       ============================================= */
+    .rarity-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .rarity-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .rarity-section-title {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+    .rarity-section-title:first-child { margin-top: 0; }
+
+    /* =============================================
+       GAME CHIPS
+       ============================================= */
+    .game-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .game-chip {
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border-default);
+      background: var(--bg-surface-1);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-chip::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+    }
+    .game-chip-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    .game-chip-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .game-chip-token {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* =============================================
+       TYPOGRAPHY SCALE
+       ============================================= */
+    .type-row {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .display-lg {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .display-md {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .heading-xl {
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .heading-lg {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .heading-md {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    .heading-sm {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .heading-xs {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .body-text {
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .body-sm {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .label-text {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+    .mono-text {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--brand-secondary);
+    }
+
+    /* =============================================
+       MOTION SECTION
+       ============================================= */
+    @keyframes brand-pulse {
+      0%, 100% { box-shadow: 0 0 12px rgba(124, 58, 237, 0.3); }
+      50%       { box-shadow: 0 0 28px rgba(124, 58, 237, 0.7); }
+    }
+    @keyframes gradient-sweep {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes card-flip {
+      0%   { transform: rotateY(0deg); }
+      50%  { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+
+    .motion-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .motion-demo-item {
+      padding: 24px;
+      border-radius: 12px;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+    .motion-demo-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .motion-demo-spec {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .demo-pulse-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      background: var(--brand-primary);
+      animation: brand-pulse 2s ease-in-out infinite;
+    }
+    .demo-sweep-box {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary), var(--brand-primary));
+      background-size: 200% 200%;
+      animation: gradient-sweep 3s ease infinite;
+    }
+    .demo-hover-box {
+      width: 64px;
+      height: 90px;
+      border-radius: 6px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+    }
+    .demo-hover-box:hover {
+      box-shadow: 0 0 24px rgba(124, 58, 237, 0.4);
+      border-color: var(--brand-primary);
+      transform: translateY(-2px);
+    }
+
+    /* =============================================
+       SEMANTIC SECTION
+       ============================================= */
+    .semantic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .semantic-chip {
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .semantic-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .semantic-label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .semantic-value {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* =============================================
+       SURFACE STACK
+       ============================================= */
+    .surface-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+    }
+    .surface-item {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .surface-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .surface-token {
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    /* =============================================
+       GRADIENT BANNER
+       ============================================= */
+    .gradient-banner {
+      border-radius: 12px;
+      padding: 32px 40px;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #5B21B6 40%, #9D174D 70%, var(--brand-secondary) 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gradient-banner h3 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .gradient-banner p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 4px;
+    }
+
+    /* =============================================
+       MISC HELPERS
+       ============================================= */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .full-width { grid-column: 1 / -1; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 48px 28px; }
+      .hero-title { font-size: 48px; }
+      .game-chip-grid { grid-template-columns: repeat(2, 1fr); }
+      .motion-demo-grid { grid-template-columns: 1fr; }
+      .semantic-grid { grid-template-columns: repeat(2, 1fr); }
+      .two-col { grid-template-columns: 1fr; }
+      .display-lg { font-size: 48px; }
+      .display-md { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MODE TOGGLE BAR -->
+  <div class="mode-bar">
+    <div class="mode-bar-title">
+      <span>Voltage</span> Design System <em>— Preview</em>
+    </div>
+    <button class="toggle-btn" onclick="toggleMode()" id="mode-toggle-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      Light Mode
+    </button>
+  </div>
+
+  <div class="page">
+
+    <!-- =================== HERO =================== -->
+    <section class="section">
+      <div class="section-label">01 — Hero Section</div>
+      <div class="hero">
+        <div class="hero-gradient-orb primary"></div>
+        <div class="hero-gradient-orb secondary"></div>
+        <div class="hero-content">
+          <p class="hero-eyebrow">Tournament Week — Top 8 Decklists Live</p>
+          <h1 class="hero-title display-lg">Buy Smarter.<br/>Win More.</h1>
+          <p class="hero-sub">The marketplace built for competitive players. Instant pricing, deep collection tools, and a community that knows the meta.</p>
+          <div class="hero-actions">
+            <button class="btn btn-cta">Browse Singles</button>
+            <button class="btn btn-filled">Sell Your Cards</button>
+            <button class="btn btn-outline">Explore Decks</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== CARDS =================== -->
+    <section class="section">
+      <div class="section-label">02 — Card Grid (hover for glow)</div>
+      <div class="card-grid">
+
+        <div class="card">
+          <div class="card-aspect-ratio" style="background: linear-gradient(135deg, #1E1A3A, #3B2A6E);">
+            <div class="card-placeholder-art">⚡</div>
+          </div>
+          <div class="card-name">Lightning Bolt</div>
+          <div class="card-set">Magic: The Gathering · M11</div>
+          <div class="card-footer">
+            <span class="card-price">$3.49</span>
+            <span class="rarity-badge" style="color: var(--rarity-mtg-common); background: color-mix(in srgb, var(--rarity-mtg-common) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-common) 25%, transparent);">Common</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-aspect-ratio" style="background: linear-gradient(135deg, #1A2E1A, #2E5C2E);">
+            <div class="card-placeholder-art">🌿</div>
+          </div>
+          <div class="card-name">Charizard ex</div>
+          <div class="card-set">Pokémon · Obsidian Flames</div>
+          <div class="card-footer">
+            <span class="card-price">$84.00</span>
+            <span class="rarity-badge" style="color: var(--rarity-poke-hyper); background: color-mix(in srgb, var(--rarity-poke-hyper) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-poke-hyper) 25%, transparent);">Hyper Rare</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-aspect-ratio" style="background: linear-gradient(135deg, #1A1A2E, #2A2A5C);">
+            <div class="card-placeholder-art">⚔️</div>
+          </div>
+          <div class="card-name">Blue-Eyes White Dragon</div>
+          <div class="card-set">Yu-Gi-Oh! · LOB</div>
+          <div class="card-footer">
+            <span class="card-price">$220.00</span>
+            <span class="rarity-badge" style="color: var(--rarity-ygo-secret); background: color-mix(in srgb, var(--rarity-ygo-secret) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-secret) 25%, transparent);">Secret Rare</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-aspect-ratio" style="background: linear-gradient(135deg, #1A2E2A, #1A4A3E);">
+            <div class="card-placeholder-art">⚓</div>
+          </div>
+          <div class="card-name">Monkey D. Luffy</div>
+          <div class="card-set">One Piece TCG · OP-01</div>
+          <div class="card-footer">
+            <span class="card-price">$45.00</span>
+            <span class="rarity-badge" style="color: var(--rarity-op-leader); background: color-mix(in srgb, var(--rarity-op-leader) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-leader) 25%, transparent);">Leader</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-aspect-ratio" style="background: linear-gradient(135deg, #2E1A1A, #5C2A2A);">
+            <div class="card-placeholder-art">🔮</div>
+          </div>
+          <div class="card-name">Snapcaster Mage</div>
+          <div class="card-set">Magic: The Gathering · ISD</div>
+          <div class="card-footer">
+            <span class="card-price">$18.50</span>
+            <span class="rarity-badge" style="color: var(--rarity-mtg-rare); background: color-mix(in srgb, var(--rarity-mtg-rare) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-rare) 25%, transparent);">Rare</span>
+          </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, var(--bg-surface-1), var(--brand-primary-subtle)); border-style: dashed; opacity: 0.6; cursor: default;">
+          <div class="card-aspect-ratio" style="background: var(--bg-surface-2);">
+            <div class="card-placeholder-art" style="font-size: 24px; color: var(--text-tertiary);">+ Add card</div>
+          </div>
+          <div class="card-name" style="color: var(--text-tertiary);">Your next listing</div>
+          <div class="card-set" style="color: var(--text-tertiary);">Sell in 60 seconds</div>
+          <div class="card-footer">
+            <span class="card-price" style="opacity:0">—</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================== BUTTONS =================== -->
+    <section class="section">
+      <div class="section-label">03 — Button Variants</div>
+      <div class="btn-row">
+        <span class="btn-row-label">Filled</span>
+        <button class="btn btn-filled">Primary Action</button>
+        <button class="btn btn-filled" disabled style="opacity:0.4;cursor:not-allowed;">Disabled</button>
+      </div>
+      <div class="btn-row">
+        <span class="btn-row-label">CTA</span>
+        <button class="btn btn-cta">Buy Now</button>
+        <button class="btn btn-cta">Add to Cart</button>
+      </div>
+      <div class="btn-row">
+        <span class="btn-row-label">Tonal</span>
+        <button class="btn btn-tonal">Secondary</button>
+        <button class="btn btn-tonal">View Listings</button>
+      </div>
+      <div class="btn-row">
+        <span class="btn-row-label">Outline</span>
+        <button class="btn btn-outline">Cancel</button>
+        <button class="btn btn-outline">Learn More</button>
+      </div>
+      <div class="btn-row">
+        <span class="btn-row-label">Text</span>
+        <button class="btn btn-text">View all →</button>
+        <button class="btn btn-text">See details</button>
+      </div>
+      <div class="btn-row">
+        <span class="btn-row-label">Destructive</span>
+        <button class="btn btn-destructive">Delete Listing</button>
+        <button class="btn btn-destructive">Remove All</button>
+      </div>
+    </section>
+
+    <!-- =================== TYPOGRAPHY =================== -->
+    <section class="section">
+      <div class="section-label">04 — Typography Scale</div>
+
+      <div class="type-row">
+        <div class="type-meta">display-lg · Barlow Condensed 800 · 72px / 1.05 · -0.02em</div>
+        <div class="display-lg">Tournament Season</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">display-md · Barlow Condensed 700 · 56px / 1.1 · -0.02em</div>
+        <div class="display-md">Champion's Meta</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">heading-xl · Barlow Condensed 600 · 40px / 1.15</div>
+        <div class="heading-xl">Top 8 Decklists</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">heading-lg · Barlow Condensed 600 · 32px / 1.2</div>
+        <div class="heading-lg">Featured Singles</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">heading-md · Barlow 600 · 24px / 1.25</div>
+        <div class="heading-md">Card Condition Guide</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">heading-sm · Barlow 600 · 20px / 1.3</div>
+        <div class="heading-sm">Seller Dashboard</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">heading-xs · Barlow 600 · 16px / 1.4</div>
+        <div class="heading-xs">Recently Viewed</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">body · Inter 400 · 16px / 1.6</div>
+        <div class="body-text">Find the cards you need at prices that respect your grind. SideDecked connects competitive players with trusted sellers across all major TCGs.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">body-sm · Inter 400 · 14px / 1.5</div>
+        <div class="body-sm">NM condition · Ships within 24h · Tracked shipping included</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">label · Inter 600 · 12px · 0.05em spacing</div>
+        <div class="label-text">CARD CONDITION · NEAR MINT</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">mono · DM Mono 500 · 14px (prices, stats)</div>
+        <div class="mono-text">$24.99 · +$3.41 (15.8%)</div>
+      </div>
+    </section>
+
+    <!-- =================== COLORS =================== -->
+    <section class="section">
+      <div class="section-label">05 — Color System</div>
+
+      <div class="swatch-group-label">Brand</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-primary);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">brand-primary</div>
+            <div class="swatch-value" id="bp-value">#8B5CF6</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-secondary);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">brand-secondary</div>
+            <div class="swatch-value" id="bs-value">#FF7849</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-primary-subtle);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">brand-primary-subtle</div>
+            <div class="swatch-value">#1E1A3A</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-secondary-subtle);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">brand-secondary-subtle</div>
+            <div class="swatch-value">#2A1A12</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">gradient-brand</div>
+            <div class="swatch-value">primary → secondary</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-group-label">Surfaces (dark mode)</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background: #09090F;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-base</div>
+            <div class="swatch-value">#09090F</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #18162A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-surface-1</div>
+            <div class="swatch-value">#18162A</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #21203A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-surface-2</div>
+            <div class="swatch-value">#21203A</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #2C2A4A;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-surface-3</div>
+            <div class="swatch-value">#2C2A4A</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: #38365C;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">bg-surface-4</div>
+            <div class="swatch-value">#38365C</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-group-label">Text</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--text-primary); border-bottom: 1px solid var(--border-default);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-primary</div>
+            <div class="swatch-value">#F0EEFF</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--text-secondary);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-secondary</div>
+            <div class="swatch-value">#B8B0D8</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--text-tertiary);"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">text-tertiary</div>
+            <div class="swatch-value">#7B72A8</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-group-label">Semantic</div>
+      <div class="semantic-grid">
+        <div class="semantic-chip">
+          <div class="semantic-dot" style="background: var(--positive);"></div>
+          <div class="semantic-label" style="color: var(--positive);">Positive</div>
+          <div class="semantic-value">#10B981</div>
+        </div>
+        <div class="semantic-chip">
+          <div class="semantic-dot" style="background: var(--negative);"></div>
+          <div class="semantic-label" style="color: var(--negative);">Negative</div>
+          <div class="semantic-value">#EF4444</div>
+        </div>
+        <div class="semantic-chip">
+          <div class="semantic-dot" style="background: var(--warning);"></div>
+          <div class="semantic-label" style="color: var(--warning);">Warning</div>
+          <div class="semantic-value">#F59E0B</div>
+        </div>
+        <div class="semantic-chip">
+          <div class="semantic-dot" style="background: var(--info);"></div>
+          <div class="semantic-label" style="color: var(--info);">Info</div>
+          <div class="semantic-value">#3B82F6</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== GAME COLORS =================== -->
+    <section class="section">
+      <div class="section-label">06 — Game-Specific Colors</div>
+      <div class="game-chip-grid">
+        <div class="game-chip">
+          <div class="game-chip-dot" style="background: var(--game-mtg);"></div>
+          <div class="game-chip-name" style="color: var(--game-mtg);">Magic: TG</div>
+          <div class="game-chip-token">--game-mtg</div>
+          <div class="game-chip-token" style="color: var(--game-mtg);">#A78BFA</div>
+        </div>
+        <div class="game-chip">
+          <div class="game-chip-dot" style="background: var(--game-pokemon);"></div>
+          <div class="game-chip-name" style="color: var(--game-pokemon);">Pokémon</div>
+          <div class="game-chip-token">--game-pokemon</div>
+          <div class="game-chip-token" style="color: var(--game-pokemon);">#FCD34D</div>
+        </div>
+        <div class="game-chip">
+          <div class="game-chip-dot" style="background: var(--game-ygo);"></div>
+          <div class="game-chip-name" style="color: var(--game-ygo);">Yu-Gi-Oh!</div>
+          <div class="game-chip-token">--game-ygo</div>
+          <div class="game-chip-token" style="color: var(--game-ygo);">#60A5FA</div>
+        </div>
+        <div class="game-chip">
+          <div class="game-chip-dot" style="background: var(--game-op);"></div>
+          <div class="game-chip-name" style="color: var(--game-op);">One Piece</div>
+          <div class="game-chip-token">--game-op</div>
+          <div class="game-chip-token" style="color: var(--game-op);">#34D399</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== RARITY BADGES =================== -->
+    <section class="section">
+      <div class="section-label">07 — Rarity Badges (on bg-surface-1)</div>
+      <div style="background: var(--bg-surface-1); padding: 24px; border-radius: 12px; border: 1px solid var(--border-default);">
+
+        <div class="rarity-section-title">Magic: The Gathering</div>
+        <div class="rarity-grid">
+          <span class="rarity-badge" style="color: var(--rarity-mtg-common); background: color-mix(in srgb, var(--rarity-mtg-common) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-common) 25%, transparent);">Common</span>
+          <span class="rarity-badge" style="color: var(--rarity-mtg-uncommon); background: color-mix(in srgb, var(--rarity-mtg-uncommon) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-uncommon) 25%, transparent);">Uncommon</span>
+          <span class="rarity-badge" style="color: var(--rarity-mtg-rare); background: color-mix(in srgb, var(--rarity-mtg-rare) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-rare) 25%, transparent);">Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-mtg-mythic); background: color-mix(in srgb, var(--rarity-mtg-mythic) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-mtg-mythic) 25%, transparent);">Mythic Rare</span>
+        </div>
+
+        <div class="rarity-section-title">Pokémon</div>
+        <div class="rarity-grid">
+          <span class="rarity-badge" style="color: var(--rarity-poke-common); background: color-mix(in srgb, var(--rarity-poke-common) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-poke-common) 25%, transparent);">Common</span>
+          <span class="rarity-badge" style="color: var(--rarity-poke-ultra); background: color-mix(in srgb, var(--rarity-poke-ultra) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-poke-ultra) 25%, transparent);">Ultra Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-poke-illustration); background: color-mix(in srgb, var(--rarity-poke-illustration) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-poke-illustration) 25%, transparent);">Illustration Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-poke-hyper); background: color-mix(in srgb, var(--rarity-poke-hyper) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-poke-hyper) 25%, transparent);">Hyper Rare</span>
+        </div>
+
+        <div class="rarity-section-title">Yu-Gi-Oh!</div>
+        <div class="rarity-grid">
+          <span class="rarity-badge" style="color: var(--rarity-ygo-common); background: color-mix(in srgb, var(--rarity-ygo-common) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-common) 25%, transparent);">Common</span>
+          <span class="rarity-badge" style="color: var(--rarity-ygo-rare); background: color-mix(in srgb, var(--rarity-ygo-rare) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-rare) 25%, transparent);">Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-ygo-super); background: color-mix(in srgb, var(--rarity-ygo-super) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-super) 25%, transparent);">Super Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-ygo-ultra); background: color-mix(in srgb, var(--rarity-ygo-ultra) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-ultra) 25%, transparent);">Ultra Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-ygo-secret); background: color-mix(in srgb, var(--rarity-ygo-secret) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-secret) 25%, transparent);">Secret Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-ygo-starlight); background: color-mix(in srgb, var(--rarity-ygo-starlight) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-ygo-starlight) 25%, transparent);">Starlight Rare</span>
+        </div>
+
+        <div class="rarity-section-title">One Piece TCG</div>
+        <div class="rarity-grid">
+          <span class="rarity-badge" style="color: var(--rarity-op-common); background: color-mix(in srgb, var(--rarity-op-common) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-common) 25%, transparent);">Common</span>
+          <span class="rarity-badge" style="color: var(--rarity-op-uncommon); background: color-mix(in srgb, var(--rarity-op-uncommon) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-uncommon) 25%, transparent);">Uncommon</span>
+          <span class="rarity-badge" style="color: var(--rarity-op-rare); background: color-mix(in srgb, var(--rarity-op-rare) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-rare) 25%, transparent);">Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-op-super); background: color-mix(in srgb, var(--rarity-op-super) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-super) 25%, transparent);">Super Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-op-secret); background: color-mix(in srgb, var(--rarity-op-secret) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-secret) 25%, transparent);">Secret Rare</span>
+          <span class="rarity-badge" style="color: var(--rarity-op-leader); background: color-mix(in srgb, var(--rarity-op-leader) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rarity-op-leader) 25%, transparent);">Leader</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== MOTION =================== -->
+    <section class="section">
+      <div class="section-label">08 — Motion &amp; Effects</div>
+      <div class="motion-demo-grid">
+        <div class="motion-demo-item">
+          <div class="demo-hover-box" title="Hover me!"></div>
+          <div class="motion-demo-label">Card Hover Glow</div>
+          <div class="motion-demo-spec">box-shadow: 0 0 24px rgba(124,58,237,0.4)<br/>transition: 150ms ease-out</div>
+        </div>
+        <div class="motion-demo-item">
+          <div class="demo-pulse-box"></div>
+          <div class="motion-demo-label">Brand Pulse</div>
+          <div class="motion-demo-spec">keyframe glow · brand-primary<br/>Loading states, featured cards</div>
+        </div>
+        <div class="motion-demo-item">
+          <div class="demo-sweep-box"></div>
+          <div class="motion-demo-label">Gradient Sweep</div>
+          <div class="motion-demo-spec">linear-gradient diagonal<br/>brand → secondary · Hero sections</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== GRADIENT BANNER =================== -->
+    <section class="section">
+      <div class="section-label">09 — Gradient Banner</div>
+      <div class="gradient-banner">
+        <div>
+          <h3>Join 50,000+ Players</h3>
+          <p>Buy, sell, and trade with the competitive community.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn" style="background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(8px);">Sign In</button>
+          <button class="btn" style="background: #ffffff; color: #7C3AED; font-weight: 700;">Get Started Free</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== SURFACE STACK =================== -->
+    <section class="section">
+      <div class="section-label">10 — Surface Stack</div>
+      <div class="surface-stack">
+        <div class="surface-item" style="background: #09090F;">
+          <span class="surface-name" style="color: #F0EEFF;">bg-base</span>
+          <span class="surface-token" style="color: #7B72A8;">#09090F</span>
+        </div>
+        <div class="surface-item" style="background: #18162A;">
+          <span class="surface-name" style="color: #F0EEFF;">bg-surface-1 · Cards, panels</span>
+          <span class="surface-token" style="color: #7B72A8;">#18162A</span>
+        </div>
+        <div class="surface-item" style="background: #21203A;">
+          <span class="surface-name" style="color: #F0EEFF;">bg-surface-2 · Input fields, wells</span>
+          <span class="surface-token" style="color: #7B72A8;">#21203A</span>
+        </div>
+        <div class="surface-item" style="background: #2C2A4A;">
+          <span class="surface-name" style="color: #F0EEFF;">bg-surface-3 · Hover states</span>
+          <span class="surface-token" style="color: #7B72A8;">#2C2A4A</span>
+        </div>
+        <div class="surface-item" style="background: #38365C;">
+          <span class="surface-name" style="color: #F0EEFF;">bg-surface-4 · Active selections</span>
+          <span class="surface-token" style="color: #7B72A8;">#38365C</span>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /page -->
+
+  <script>
+    function toggleMode() {
+      const html = document.documentElement;
+      const btn = document.getElementById('mode-toggle-btn');
+      const isDark = html.classList.contains('dark');
+
+      if (isDark) {
+        html.classList.remove('dark');
+        btn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          Dark Mode`;
+      } else {
+        html.classList.add('dark');
+        btn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          Light Mode`;
+      }
+    }
+  </script>
+</body>
+</html>

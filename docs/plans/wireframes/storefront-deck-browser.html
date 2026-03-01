@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Deck Browser / Discovery Wireframe (Voltage)</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: #1E1A3A;
+
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --interactive: #8B5CF6;
+
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+    }
+
+    /* =============================================
+       GLOBAL RESET + CANVAS
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060610;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       WIREFRAME CANVAS — side-by-side frames
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 80px;
+      padding: 60px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .annotation--note {
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .annotation--breakpoint {
+      color: var(--info);
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    /* =============================================
+       GLASS NAVIGATION BAR (scrolled state)
+       ============================================= */
+    .glass-nav {
+      background: rgba(24, 22, 42, 0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(44, 42, 74, 0.5);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      padding: 0 32px;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 16px;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+    .logo-accent {
+      color: #8B5CF6;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: 32px;
+    }
+    .nav-link {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link.active {
+      color: var(--text-primary);
+    }
+    .nav-search {
+      flex: 1;
+      max-width: 360px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(33, 32, 58, 0.6);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+    }
+    .nav-search svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .nav-search span {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    .nav-search .kbd {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+    }
+    .nav-cart {
+      position: relative;
+    }
+    .nav-cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* =============================================
+       HERO SECTION
+       ============================================= */
+    .hero {
+      position: relative;
+      padding: 48px 32px 40px;
+      text-align: center;
+      background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(139, 92, 246, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 40px;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .hero-subtext {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+      position: relative;
+    }
+    .hero-search {
+      max-width: 560px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(33, 32, 58, 0.7);
+      border: 1.5px solid var(--border-default);
+      border-radius: 14px;
+      padding: 14px 20px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .hero-search:hover {
+      border-color: var(--border-strong);
+    }
+    .hero-search svg {
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .hero-search span {
+      font-size: 15px;
+      color: var(--text-tertiary);
+    }
+    .hero-search .kbd {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* =============================================
+       FEATURED DECKS CAROUSEL
+       ============================================= */
+    .featured-section {
+      padding: 0 32px 40px;
+    }
+    .featured-section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+    .sparkle-icon {
+      color: var(--brand-secondary);
+    }
+    .carousel-wrap {
+      position: relative;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 24px;
+      overflow: hidden;
+    }
+    .featured-card {
+      width: 480px;
+      min-width: 480px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .featured-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15);
+    }
+    .featured-card-top {
+      height: 200px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .featured-card-top.mtg { background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(139, 92, 246, 0.08)); }
+    .featured-card-top.pokemon { background: linear-gradient(135deg, rgba(252, 211, 77, 0.2), rgba(251, 191, 36, 0.08)); }
+    .featured-card-top.ygo { background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.08)); }
+    .featured-card-top.op { background: linear-gradient(135deg, rgba(52, 211, 153, 0.2), rgba(16, 185, 129, 0.08)); }
+
+    /* Fanned card art placeholders */
+    .card-fan {
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 200px;
+      height: 140px;
+    }
+    .card-fan .card-art {
+      width: 90px;
+      height: 126px;
+      border-radius: 8px;
+      position: absolute;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    .card-fan .card-art:nth-child(1) { left: 0; transform: rotate(-12deg); z-index: 1; }
+    .card-fan .card-art:nth-child(2) { left: 50px; transform: rotate(-2deg); z-index: 2; }
+    .card-fan .card-art:nth-child(3) { left: 100px; transform: rotate(8deg); z-index: 3; }
+    .card-fan .card-art.mtg { background: linear-gradient(135deg, #6D28D9, #A78BFA); }
+    .card-fan .card-art.pokemon { background: linear-gradient(135deg, #D97706, #FCD34D); }
+    .card-fan .card-art.ygo { background: linear-gradient(135deg, #1D4ED8, #60A5FA); }
+    .card-fan .card-art.op { background: linear-gradient(135deg, #047857, #34D399); }
+
+    /* Badges */
+    .badge-featured {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--brand-secondary);
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      z-index: 10;
+    }
+    .badge-game {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      z-index: 10;
+    }
+    .badge-game.mtg { color: #1a1a2e; background: var(--game-mtg); }
+    .badge-game.pokemon { color: #1a1a2e; background: var(--game-pokemon); }
+    .badge-game.ygo { color: #1a1a2e; background: var(--game-ygo); }
+    .badge-game.op { color: #1a1a2e; background: var(--game-op); }
+
+    .featured-card-bottom {
+      padding: 20px 24px 24px;
+    }
+    .featured-deck-name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .format-chip {
+      display: inline-flex;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      padding: 3px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      margin-bottom: 12px;
+    }
+    .featured-author {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .avatar-sm {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      flex-shrink: 0;
+    }
+    .avatar-xs {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .verified-check {
+      width: 14px;
+      height: 14px;
+      color: var(--brand-primary);
+    }
+    .featured-stats {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .stat-sep {
+      color: var(--text-tertiary);
+      margin: 0 2px;
+    }
+    .stat-price {
+      font-family: var(--font-mono);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+    .featured-social {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .social-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .social-item svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Carousel nav arrows */
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(24, 22, 42, 0.9);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      cursor: pointer;
+    }
+    .carousel-arrow.left { left: -20px; }
+    .carousel-arrow.right { right: -20px; }
+    .carousel-arrow svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-secondary);
+    }
+    .carousel-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bg-surface-3);
+    }
+    .carousel-dot.active {
+      background: var(--brand-primary);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* =============================================
+       FILTER & SORT BAR
+       ============================================= */
+    .filter-section {
+      padding: 0 32px 24px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .filter-section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .game-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .game-tab {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      padding: 12px 20px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .game-tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--brand-primary);
+    }
+    .game-tab.mtg:hover, .game-tab.mtg.active { color: var(--game-mtg); border-bottom-color: var(--game-mtg); }
+    .game-tab.pokemon:hover, .game-tab.pokemon.active { color: var(--game-pokemon); border-bottom-color: var(--game-pokemon); }
+    .game-tab.ygo:hover, .game-tab.ygo.active { color: var(--game-ygo); border-bottom-color: var(--game-ygo); }
+    .game-tab.op:hover, .game-tab.op.active { color: var(--game-op); border-bottom-color: var(--game-op); }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-dropdown {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-dropdown .chevron {
+      width: 8px;
+      height: 8px;
+      border-right: 1.5px solid var(--text-tertiary);
+      border-bottom: 1.5px solid var(--text-tertiary);
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+    .filter-chip {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-default);
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+    .filter-chip svg {
+      width: 13px;
+      height: 13px;
+    }
+    .filter-spacer { flex: 1; }
+    .view-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .view-btn {
+      padding: 7px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      border-right: 1px solid var(--border-default);
+    }
+    .view-btn:last-child { border-right: none; }
+    .view-btn.active {
+      background: var(--bg-surface-3);
+      color: var(--text-primary);
+    }
+    .view-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* =============================================
+       DECK GRID
+       ============================================= */
+    .grid-section {
+      padding: 32px;
+    }
+    .grid-section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .deck-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+    .deck-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.12);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+    .deck-card-accent {
+      height: 4px;
+    }
+    .deck-card-accent.mtg { background: var(--game-mtg); }
+    .deck-card-accent.pokemon { background: var(--game-pokemon); }
+    .deck-card-accent.ygo { background: var(--game-ygo); }
+    .deck-card-accent.op { background: var(--game-op); }
+
+    .deck-card-body {
+      padding: 20px 24px 16px;
+    }
+    .deck-card-fan {
+      display: flex;
+      position: relative;
+      width: 160px;
+      height: 72px;
+      margin-bottom: 14px;
+    }
+    .deck-card-fan .mini-card {
+      width: 48px;
+      height: 67px;
+      border-radius: 5px;
+      position: absolute;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+    .deck-card-fan .mini-card:nth-child(1) { left: 0; transform: rotate(-10deg); z-index: 1; }
+    .deck-card-fan .mini-card:nth-child(2) { left: 36px; transform: rotate(-2deg); z-index: 2; }
+    .deck-card-fan .mini-card:nth-child(3) { left: 72px; transform: rotate(6deg); z-index: 3; }
+    .deck-card-fan .mini-card.mtg { background: linear-gradient(135deg, #5B21B6, #A78BFA); }
+    .deck-card-fan .mini-card.pokemon { background: linear-gradient(135deg, #B45309, #FCD34D); }
+    .deck-card-fan .mini-card.ygo { background: linear-gradient(135deg, #1E40AF, #60A5FA); }
+    .deck-card-fan .mini-card.op { background: linear-gradient(135deg, #065F46, #34D399); }
+
+    .deck-card-name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .deck-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .game-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .game-dot.mtg { background: var(--game-mtg); }
+    .game-dot.pokemon { background: var(--game-pokemon); }
+    .game-dot.ygo { background: var(--game-ygo); }
+    .game-dot.op { background: var(--game-op); }
+
+    .deck-card-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .deck-card-author span {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .deck-card-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .deck-card-stats {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-default);
+      margin-bottom: 10px;
+    }
+    .deck-stat {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .deck-stat.price { color: var(--brand-primary); font-weight: 500; }
+    .deck-stat.wr-good { color: var(--positive); }
+    .deck-stat.wr-mid { color: var(--warning); }
+    .deck-stat.wr-bad { color: var(--negative); }
+
+    .deck-card-social {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .deck-card-social .social-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .deck-card-social .social-item svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* =============================================
+       PAGINATION
+       ============================================= */
+    .pagination-section {
+      padding: 8px 32px 40px;
+    }
+    .pagination-section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pagination-info {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    .pagination-buttons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .page-btn {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      min-width: 36px;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .page-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+    .page-btn.active {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+      color: #fff;
+    }
+    .page-btn.nav-btn {
+      padding: 6px 16px;
+    }
+    .page-ellipsis {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      padding: 0 4px;
+    }
+
+    /* =============================================
+       COMMUNITY STATS BANNER
+       ============================================= */
+    .stats-banner {
+      margin: 0 32px 40px;
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: 32px 40px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      text-align: center;
+    }
+    .stats-banner-container {
+      padding: 0 32px 40px;
+    }
+    .stat-block .stat-number {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--brand-primary);
+      margin-bottom: 4px;
+    }
+    .stat-block .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* =============================================
+       MOBILE OVERRIDES
+       ============================================= */
+    .mobile-frame .glass-nav {
+      padding: 0 16px;
+    }
+    .mobile-frame .nav-inner {
+      height: auto;
+      flex-wrap: wrap;
+      padding: 10px 0;
+      gap: 0;
+    }
+    .mobile-frame .nav-row-top {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 10px;
+      height: 40px;
+    }
+    .mobile-frame .nav-row-bottom {
+      width: 100%;
+      padding-top: 8px;
+    }
+    .mobile-frame .nav-logo {
+      font-size: 18px;
+      flex: 1;
+    }
+    .mobile-frame .nav-links { display: none; }
+    .mobile-frame .nav-search {
+      flex: 1;
+      padding: 6px 10px;
+      max-width: none;
+      margin: 0;
+    }
+    .mobile-frame .nav-search span { font-size: 12px; }
+    .mobile-frame .nav-search .kbd { display: none; }
+    .nav-hamburger {
+      display: none;
+    }
+    .mobile-frame .nav-hamburger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+    .mobile-frame .nav-hamburger svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Mobile hero */
+    .mobile-frame .hero {
+      padding: 36px 20px 28px;
+    }
+    .mobile-frame .hero-headline {
+      font-size: 28px;
+    }
+    .mobile-frame .hero-subtext {
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+    .mobile-frame .hero-search {
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+    .mobile-frame .hero-search span { font-size: 13px; }
+    .mobile-frame .hero-search .kbd { display: none; }
+
+    /* Mobile featured */
+    .mobile-frame .featured-section {
+      padding: 0 16px 28px;
+    }
+    .mobile-frame .carousel-track {
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 60px;
+    }
+    .mobile-frame .featured-card {
+      width: 300px;
+      min-width: 300px;
+      scroll-snap-align: start;
+    }
+    .mobile-frame .featured-card-top {
+      height: 140px;
+    }
+    .mobile-frame .card-fan {
+      width: 150px;
+      height: 100px;
+    }
+    .mobile-frame .card-fan .card-art {
+      width: 65px;
+      height: 91px;
+    }
+    .mobile-frame .card-fan .card-art:nth-child(2) { left: 36px; }
+    .mobile-frame .card-fan .card-art:nth-child(3) { left: 72px; }
+    .mobile-frame .featured-card-bottom {
+      padding: 14px 16px 16px;
+    }
+    .mobile-frame .featured-deck-name { font-size: 16px; }
+    .mobile-frame .featured-stats { font-size: 12px; }
+    .mobile-frame .carousel-arrow { display: none; }
+
+    /* Mobile filters */
+    .mobile-frame .filter-section {
+      padding: 0 16px 16px;
+    }
+    .mobile-frame .game-tabs {
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 12px;
+    }
+    .mobile-frame .game-tab {
+      font-size: 12px;
+      padding: 8px 14px;
+    }
+    .mobile-frame .filter-row {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+    .mobile-frame .filter-dropdown {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+    .mobile-frame .filter-chip {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+    .mobile-frame .view-toggle { display: none; }
+    .mobile-frame .filter-spacer { display: none; }
+
+    /* Mobile grid */
+    .mobile-frame .grid-section {
+      padding: 20px 16px;
+    }
+    .mobile-frame .deck-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .mobile-frame .deck-card-body { padding: 14px 16px 12px; }
+    .mobile-frame .deck-card-fan {
+      width: 120px;
+      height: 56px;
+      margin-bottom: 10px;
+    }
+    .mobile-frame .deck-card-fan .mini-card {
+      width: 38px;
+      height: 53px;
+    }
+    .mobile-frame .deck-card-fan .mini-card:nth-child(2) { left: 28px; }
+    .mobile-frame .deck-card-fan .mini-card:nth-child(3) { left: 56px; }
+    .mobile-frame .deck-card-name { font-size: 15px; }
+    .mobile-frame .deck-card-desc { display: none; }
+    .mobile-frame .deck-card-stats { gap: 10px; margin-bottom: 0; }
+    .mobile-frame .deck-card-social { display: none; }
+    .mobile-frame .deck-card-social-inline {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-left: auto;
+    }
+    .desktop-frame .deck-card-social-inline { display: none; }
+
+    /* Mobile pagination */
+    .mobile-frame .pagination-section {
+      padding: 4px 16px 28px;
+    }
+    .mobile-frame .pagination-section-inner {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mobile-frame .page-btn {
+      font-size: 12px;
+      padding: 5px 10px;
+      min-width: 32px;
+    }
+
+    /* Mobile stats banner */
+    .mobile-frame .stats-banner-container {
+      padding: 0 16px 24px;
+    }
+    .mobile-frame .stats-banner {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 20px;
+      margin: 0;
+    }
+    .mobile-frame .stat-block .stat-number {
+      font-size: 20px;
+    }
+    .mobile-frame .stat-block .stat-label {
+      font-size: 11px;
+    }
+
+    /* Mobile floating filter FAB */
+    .mobile-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+      z-index: 50;
+    }
+    .mobile-fab svg {
+      width: 20px;
+      height: 20px;
+      color: #fff;
+    }
+    .desktop-frame .mobile-fab { display: none; }
+
+    /* =============================================
+       UTILITY
+       ============================================= */
+    .flex-center { display: flex; align-items: center; }
+    .gap-4 { gap: 4px; }
+    .gap-6 { gap: 6px; }
+    .gap-8 { gap: 8px; }
+    .text-positive { color: var(--positive); }
+    .text-warning { color: var(--warning); }
+
+    /* SVG icons base */
+    svg { display: inline-block; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- ===============================================
+       DESKTOP — 1440px
+       =============================================== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px</div>
+    <div class="desktop-frame">
+
+      <!-- ANNOTATION: Page-level component -->
+      <div style="padding: 8px 32px 0;">
+        <span class="annotation">&lt;DeckDiscoveryPage&gt;</span>
+      </div>
+
+      <!-- Glass Navigation Bar -->
+      <nav class="glass-nav">
+        <div class="nav-inner">
+          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
+          <div class="nav-links">
+            <a class="nav-link" href="#">Browse Cards</a>
+            <a class="nav-link active" href="#">Deck Builder</a>
+            <a class="nav-link" href="#">Marketplace</a>
+            <a class="nav-link" href="#">Sell</a>
+            <a class="nav-link" href="#">Community</a>
+          </div>
+          <div class="nav-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search cards, sets, sellers...</span>
+            <span class="kbd">&#8984;K</span>
+          </div>
+          <div class="nav-right">
+            <!-- Theme toggle -->
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <!-- Notifications bell -->
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <!-- Wishlist heart -->
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <!-- Cart bag with badge -->
+            <div class="nav-cart">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span class="nav-cart-badge">3</span>
+            </div>
+            <!-- Avatar -->
+            <div class="nav-avatar">TC</div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Section 1: Hero -->
+      <section class="hero">
+        <h1 class="hero-headline">Deck Discovery</h1>
+        <p class="hero-subtext">Explore tournament-winning builds, community favorites, and meta-defining strategies across all games</p>
+        <div class="hero-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Search decks by name, archetype, or cards...</span>
+          <span class="kbd">Ctrl K</span>
+        </div>
+      </section>
+
+      <!-- Section 2: Featured Decks Carousel -->
+      <section class="featured-section">
+        <div class="featured-section-inner">
+          <div class="section-header">
+            <span class="sparkle-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z"/></svg>
+            </span>
+            <span class="section-title">Featured This Week</span>
+            <span class="annotation">&lt;FeaturedDeckCarousel&gt;</span>
+            <span class="annotation--api annotation" style="margin-left: 8px;">GET /api/decks/featured</span>
+          </div>
+          <div class="carousel-wrap">
+            <div class="carousel-arrow left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </div>
+            <div class="carousel-track">
+
+              <!-- Featured Card 1: Mono Red Burn -->
+              <div class="featured-card">
+                <div class="featured-card-top mtg">
+                  <span class="badge-featured">Featured</span>
+                  <span class="badge-game mtg">MTG</span>
+                  <div class="card-fan">
+                    <div class="card-art mtg"></div>
+                    <div class="card-art mtg" style="opacity:0.85"></div>
+                    <div class="card-art mtg" style="opacity:0.7"></div>
+                  </div>
+                </div>
+                <div class="featured-card-bottom">
+                  <div class="featured-deck-name">Mono Red Burn</div>
+                  <span class="format-chip">Modern</span>
+                  <div class="featured-author">
+                    <div class="avatar-sm"></div>
+                    <span class="author-name">@pyromancer99</span>
+                    <svg class="verified-check" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                  </div>
+                  <div class="featured-stats">
+                    <span>60 cards</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span>Top 8 at GP Chicago</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span class="stat-price">$127</span>
+                  </div>
+                  <div class="featured-social">
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      342 likes
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      89 copies
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      1.2k views
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Featured Card 2: Charizard ex Mill -->
+              <div class="featured-card">
+                <div class="featured-card-top pokemon">
+                  <span class="badge-featured">Featured</span>
+                  <span class="badge-game pokemon">Pokemon</span>
+                  <div class="card-fan">
+                    <div class="card-art pokemon"></div>
+                    <div class="card-art pokemon" style="opacity:0.85"></div>
+                    <div class="card-art pokemon" style="opacity:0.7"></div>
+                  </div>
+                </div>
+                <div class="featured-card-bottom">
+                  <div class="featured-deck-name">Charizard ex Mill</div>
+                  <span class="format-chip">Standard</span>
+                  <div class="featured-author">
+                    <div class="avatar-sm"></div>
+                    <span class="author-name">@firetype</span>
+                    <svg class="verified-check" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                  </div>
+                  <div class="featured-stats">
+                    <span>60 cards</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span>Regional Champion</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span class="stat-price">$185</span>
+                  </div>
+                  <div class="featured-social">
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      456 likes
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      124 copies
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      2.1k views
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Featured Card 3: Blue-Eyes Chaos MAX -->
+              <div class="featured-card">
+                <div class="featured-card-top ygo">
+                  <span class="badge-featured">Featured</span>
+                  <span class="badge-game ygo">Yu-Gi-Oh!</span>
+                  <div class="card-fan">
+                    <div class="card-art ygo"></div>
+                    <div class="card-art ygo" style="opacity:0.85"></div>
+                    <div class="card-art ygo" style="opacity:0.7"></div>
+                  </div>
+                </div>
+                <div class="featured-card-bottom">
+                  <div class="featured-deck-name">Blue-Eyes Chaos MAX</div>
+                  <span class="format-chip">Advanced</span>
+                  <div class="featured-author">
+                    <div class="avatar-sm"></div>
+                    <span class="author-name">@kaibacorp</span>
+                    <svg class="verified-check" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                  </div>
+                  <div class="featured-stats">
+                    <span>40 cards</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span>YCS Top 32</span>
+                    <span class="stat-sep">&middot;</span>
+                    <span class="stat-price">$78</span>
+                  </div>
+                  <div class="featured-social">
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      567 likes
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      201 copies
+                    </span>
+                    <span class="social-item">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      3.4k views
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="carousel-arrow right">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+          <div class="carousel-dots">
+            <div class="carousel-dot active"></div>
+            <div class="carousel-dot"></div>
+            <div class="carousel-dot"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Filter & Sort Bar -->
+      <section class="filter-section">
+        <div class="filter-section-inner">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span class="annotation">&lt;DeckFilters&gt;</span>
+            <span class="annotation--api annotation">GET /api/decks?game=mtg&amp;format=modern&amp;sort=popular&amp;page=1</span>
+          </div>
+          <div class="game-tabs">
+            <div class="game-tab active">All</div>
+            <div class="game-tab mtg">MTG</div>
+            <div class="game-tab pokemon">Pokemon</div>
+            <div class="game-tab ygo">Yu-Gi-Oh!</div>
+            <div class="game-tab op">One Piece</div>
+          </div>
+          <div class="filter-row">
+            <div class="filter-dropdown">
+              All Formats
+              <span class="chevron"></span>
+            </div>
+            <div class="filter-dropdown">
+              Most Popular
+              <span class="chevron"></span>
+            </div>
+            <div style="width: 1px; height: 20px; background: var(--border-default);"></div>
+            <div class="filter-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              Tournament Proven
+            </div>
+            <div class="filter-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              Budget &lt; $50
+            </div>
+            <div class="filter-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+              Commander
+            </div>
+            <div class="filter-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              Meta
+            </div>
+            <span class="filter-spacer"></span>
+            <div class="view-toggle">
+              <div class="view-btn active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </div>
+              <div class="view-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Deck Grid -->
+      <section class="grid-section">
+        <div class="grid-section-inner">
+          <div class="deck-grid">
+
+            <!-- Deck 1: Jund Midrange -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card mtg"></div>
+                  <div class="mini-card mtg" style="opacity:0.8"></div>
+                  <div class="mini-card mtg" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Jund Midrange</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot mtg"></span>
+                  <span>MTG &middot; Modern</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@modernmaster</span>
+                </div>
+                <div class="deck-card-desc">Classic Jund shell with Ragavan and Wrenn and Six. Dominates the midrange mirrors with efficient removal and card advantage.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$342</span>
+                  <span class="deck-stat wr-good">62% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    128
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    34
+                  </span>
+                  <span class="social-item">Updated 2d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 2: Mono Red Burn -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card mtg"></div>
+                  <div class="mini-card mtg" style="opacity:0.8"></div>
+                  <div class="mini-card mtg" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Mono Red Burn</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot mtg"></span>
+                  <span>MTG &middot; Modern</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@pyromancer99</span>
+                </div>
+                <div class="deck-card-desc">Fast and aggressive burn strategy. Lightning Bolt, Eidolon of the Great Revel, and Goblin Guide lead the charge.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$127</span>
+                  <span class="deck-stat wr-good">58% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    342
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    89
+                  </span>
+                  <span class="social-item">Updated 1d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 3: Azorius Control -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card mtg"></div>
+                  <div class="mini-card mtg" style="opacity:0.8"></div>
+                  <div class="mini-card mtg" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Azorius Control</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot mtg"></span>
+                  <span>MTG &middot; Standard</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@counterspell</span>
+                </div>
+                <div class="deck-card-desc">Draw-go control with a full suite of counterspells, board wipes, and Teferi as the finisher. Patience is rewarded.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$289</span>
+                  <span class="deck-stat wr-good">55% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    87
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    22
+                  </span>
+                  <span class="social-item">Updated 5d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 4: Charizard ex Turbo -->
+            <div class="deck-card">
+              <div class="deck-card-accent pokemon"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card pokemon"></div>
+                  <div class="mini-card pokemon" style="opacity:0.8"></div>
+                  <div class="mini-card pokemon" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Charizard ex Turbo</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot pokemon"></span>
+                  <span>Pokemon &middot; Standard</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@firetype</span>
+                </div>
+                <div class="deck-card-desc">Turbo-charge Charizard ex with Arcanine's energy acceleration. Hits 330 damage by turn two with the right setup.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$185</span>
+                  <span class="deck-stat wr-good">64% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    456
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    112
+                  </span>
+                  <span class="social-item">Updated 3h ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 5: Lost Zone Box -->
+            <div class="deck-card">
+              <div class="deck-card-accent pokemon"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card pokemon"></div>
+                  <div class="mini-card pokemon" style="opacity:0.8"></div>
+                  <div class="mini-card pokemon" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Lost Zone Box</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot pokemon"></span>
+                  <span>Pokemon &middot; Standard</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@comfeyqueen</span>
+                </div>
+                <div class="deck-card-desc">Comfey-powered Lost Zone engine with flexible attackers. Cramorant and Sableye provide consistent early pressure.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$95</span>
+                  <span class="deck-stat wr-good">59% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    234
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    67
+                  </span>
+                  <span class="social-item">Updated 1d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 6: Blue-Eyes Chaos MAX -->
+            <div class="deck-card">
+              <div class="deck-card-accent ygo"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card ygo"></div>
+                  <div class="mini-card ygo" style="opacity:0.8"></div>
+                  <div class="mini-card ygo" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Blue-Eyes Chaos MAX</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot ygo"></span>
+                  <span>Yu-Gi-Oh!</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@kaibacorp</span>
+                </div>
+                <div class="deck-card-desc">Ritual-focused Blue-Eyes build centering on Chaos MAX Dragon. Impcantation engine for consistent ritual summons.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">40 cards</span>
+                  <span class="deck-stat price">$78</span>
+                  <span class="deck-stat wr-mid">51% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    567
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    201
+                  </span>
+                  <span class="social-item">Updated 4d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 7: Branded Despia -->
+            <div class="deck-card">
+              <div class="deck-card-accent ygo"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card ygo"></div>
+                  <div class="mini-card ygo" style="opacity:0.8"></div>
+                  <div class="mini-card ygo" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Branded Despia</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot ygo"></span>
+                  <span>Yu-Gi-Oh!</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@fusionplayer</span>
+                </div>
+                <div class="deck-card-desc">Branded Fusion into Lubellion combo. Mirrorjade banishes threats while Despia support grinds through resources.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">40 cards</span>
+                  <span class="deck-stat price">$145</span>
+                  <span class="deck-stat wr-good">66% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    312
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    98
+                  </span>
+                  <span class="social-item">Updated 6h ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 8: Luffy Aggro -->
+            <div class="deck-card">
+              <div class="deck-card-accent op"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card op"></div>
+                  <div class="mini-card op" style="opacity:0.8"></div>
+                  <div class="mini-card op" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Luffy Aggro</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot op"></span>
+                  <span>One Piece</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@strawhat</span>
+                </div>
+                <div class="deck-card-desc">Rush-down Luffy leader deck. Curve out with Straw Hat crew members and overwhelm before your opponent stabilizes.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">50 cards</span>
+                  <span class="deck-stat price">$62</span>
+                  <span class="deck-stat wr-good">57% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    189
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    45
+                  </span>
+                  <span class="social-item">Updated 12h ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 9: Eldrazi Ramp -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card mtg"></div>
+                  <div class="mini-card mtg" style="opacity:0.8"></div>
+                  <div class="mini-card mtg" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Eldrazi Ramp</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot mtg"></span>
+                  <span>MTG &middot; Commander</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@bigmana</span>
+                </div>
+                <div class="deck-card-desc">Colorless Eldrazi tribal with Kozilek at the helm. Sol Ring into Thran Dynamo powers out titans ahead of schedule.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">100 cards</span>
+                  <span class="deck-stat price">$520</span>
+                  <span class="deck-stat" style="color: var(--text-tertiary);">N/A</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    76
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    18
+                  </span>
+                  <span class="social-item">Updated 3d ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 10: Pikachu VMAX Control -->
+            <div class="deck-card">
+              <div class="deck-card-accent pokemon"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card pokemon"></div>
+                  <div class="mini-card pokemon" style="opacity:0.8"></div>
+                  <div class="mini-card pokemon" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Pikachu VMAX Control</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot pokemon"></span>
+                  <span>Pokemon &middot; Standard</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@shockwave</span>
+                </div>
+                <div class="deck-card-desc">Pikachu VMAX with paralysis lock strategy. Raikou V provides consistent chip damage while you control the board.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$210</span>
+                  <span class="deck-stat wr-mid">52% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    145
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    38
+                  </span>
+                  <span class="social-item">Updated 8h ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 11: Snake-Eye -->
+            <div class="deck-card">
+              <div class="deck-card-accent ygo"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card ygo"></div>
+                  <div class="mini-card ygo" style="opacity:0.8"></div>
+                  <div class="mini-card ygo" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Snake-Eye</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot ygo"></span>
+                  <span>Yu-Gi-Oh!</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@firekings</span>
+                </div>
+                <div class="deck-card-desc">Tier 1 Snake-Eye Fire King hybrid. Unbreakable boards with Apollousa and S:P Little Knight backed by Poplar plays.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">40 cards</span>
+                  <span class="deck-stat price">$167</span>
+                  <span class="deck-stat wr-good">71% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    890
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    245
+                  </span>
+                  <span class="social-item">Updated 1h ago</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deck 12: Enel Thunder -->
+            <div class="deck-card">
+              <div class="deck-card-accent op"></div>
+              <div class="deck-card-body">
+                <div class="deck-card-fan">
+                  <div class="mini-card op"></div>
+                  <div class="mini-card op" style="opacity:0.8"></div>
+                  <div class="mini-card op" style="opacity:0.6"></div>
+                </div>
+                <div class="deck-card-name">Enel Thunder</div>
+                <div class="deck-card-meta">
+                  <span class="game-dot op"></span>
+                  <span>One Piece</span>
+                </div>
+                <div class="deck-card-author">
+                  <div class="avatar-xs"></div>
+                  <span>@skypiea</span>
+                </div>
+                <div class="deck-card-desc">Enel leader with life manipulation and removal. Budget-friendly build that punishes opponents for overextending.</div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">50 cards</span>
+                  <span class="deck-stat price">$45</span>
+                  <span class="deck-stat wr-mid">54% WR</span>
+                </div>
+                <div class="deck-card-social">
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    98
+                  </span>
+                  <span class="social-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    15
+                  </span>
+                  <span class="social-item">Updated 2d ago</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Annotation for DeckCard -->
+          <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="annotation">&lt;DeckCard&gt; x12</span>
+            <span class="annotation--note annotation">Pagination via cursor-based API</span>
+            <span class="annotation--note annotation">Win rates from tournament data aggregation</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Pagination -->
+      <section class="pagination-section">
+        <div class="pagination-section-inner">
+          <span class="pagination-info">Showing 1-12 of 1,847 decks</span>
+          <div class="pagination-buttons">
+            <div class="page-btn nav-btn" style="opacity:0.4; cursor:default;">Prev</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <span class="page-ellipsis">...</span>
+            <div class="page-btn">154</div>
+            <div class="page-btn nav-btn">Next</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Community Stats Banner -->
+      <div class="stats-banner-container">
+        <div class="stats-banner">
+          <div class="stat-block">
+            <div class="stat-number">1,847</div>
+            <div class="stat-label">Public Decks</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">12,400</div>
+            <div class="stat-label">Cards Indexed</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Games Supported</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-number">Daily</div>
+            <div class="stat-label">New Decks Added</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /desktop-frame -->
+  </div>
+
+  <!-- ===============================================
+       MOBILE — 390px
+       =============================================== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+
+        <!-- Glass Navigation Bar (mobile) — two-row layout -->
+        <nav class="glass-nav">
+          <div class="nav-inner">
+            <!-- Row 1: Hamburger, Logo, Cart + Avatar -->
+            <div class="nav-row-top">
+              <div class="nav-hamburger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </div>
+              <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="nav-cart">
+                  <svg class="nav-icon" style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <span class="nav-cart-badge">3</span>
+                </div>
+                <div class="nav-avatar" style="width:28px;height:28px;font-size:10px;">TC</div>
+              </div>
+            </div>
+            <!-- Row 2: Compact search pill -->
+            <div class="nav-row-bottom">
+              <div class="nav-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Search cards, sets, sellers...</span>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Hero (mobile) -->
+        <section class="hero">
+          <h1 class="hero-headline">Deck Discovery</h1>
+          <p class="hero-subtext">Explore tournament-winning builds, community favorites, and meta-defining strategies</p>
+          <div class="hero-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search decks by name...</span>
+          </div>
+        </section>
+
+        <!-- Featured Carousel (mobile — single card with peek) -->
+        <section class="featured-section">
+          <div class="section-header">
+            <span class="sparkle-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.09 8.26L20 9.27L15.55 13.97L16.91 20L12 16.9L7.09 20L8.45 13.97L4 9.27L9.91 8.26L12 2Z"/></svg>
+            </span>
+            <span class="section-title" style="font-size:15px;">Featured This Week</span>
+          </div>
+          <div class="carousel-track">
+            <!-- Featured Card 1 (mobile) -->
+            <div class="featured-card">
+              <div class="featured-card-top mtg">
+                <span class="badge-featured" style="font-size:10px; padding:3px 10px;">Featured</span>
+                <span class="badge-game mtg" style="font-size:10px; padding:3px 10px;">MTG</span>
+                <div class="card-fan">
+                  <div class="card-art mtg"></div>
+                  <div class="card-art mtg" style="opacity:0.85"></div>
+                  <div class="card-art mtg" style="opacity:0.7"></div>
+                </div>
+              </div>
+              <div class="featured-card-bottom">
+                <div class="featured-deck-name">Mono Red Burn</div>
+                <span class="format-chip" style="font-size:10px;">Modern</span>
+                <div class="featured-author">
+                  <div class="avatar-sm" style="width:20px;height:20px;"></div>
+                  <span class="author-name" style="font-size:12px;">@pyromancer99</span>
+                </div>
+                <div class="featured-stats">
+                  <span>60 cards</span>
+                  <span class="stat-sep">&middot;</span>
+                  <span class="stat-price">$127</span>
+                  <span class="stat-sep">&middot;</span>
+                  <span>342 likes</span>
+                </div>
+              </div>
+            </div>
+            <!-- Peek of next card (mobile) -->
+            <div class="featured-card" style="opacity:0.5;">
+              <div class="featured-card-top pokemon">
+                <span class="badge-featured" style="font-size:10px; padding:3px 10px;">Featured</span>
+                <span class="badge-game pokemon" style="font-size:10px; padding:3px 10px;">Pokemon</span>
+                <div class="card-fan">
+                  <div class="card-art pokemon"></div>
+                  <div class="card-art pokemon" style="opacity:0.85"></div>
+                  <div class="card-art pokemon" style="opacity:0.7"></div>
+                </div>
+              </div>
+              <div class="featured-card-bottom">
+                <div class="featured-deck-name">Charizard ex Mill</div>
+                <span class="format-chip" style="font-size:10px;">Standard</span>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-dots" style="margin-top:14px;">
+            <div class="carousel-dot active"></div>
+            <div class="carousel-dot"></div>
+            <div class="carousel-dot"></div>
+          </div>
+        </section>
+
+        <!-- Filter Bar (mobile — horizontal scroll chips) -->
+        <section class="filter-section">
+          <div class="game-tabs">
+            <div class="game-tab active">All</div>
+            <div class="game-tab mtg">MTG</div>
+            <div class="game-tab pokemon">PKM</div>
+            <div class="game-tab ygo">YGO</div>
+            <div class="game-tab op">OP</div>
+          </div>
+          <div class="filter-row">
+            <div class="filter-dropdown">
+              Popular
+              <span class="chevron"></span>
+            </div>
+            <div class="filter-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M6 9l6 6 6-6"/></svg>
+              Tournament
+            </div>
+            <div class="filter-chip">Budget</div>
+            <div class="filter-chip">Meta</div>
+          </div>
+        </section>
+
+        <!-- Deck Grid (mobile — single column) -->
+        <section class="grid-section">
+          <div class="deck-grid">
+
+            <!-- Mobile Deck 1: Jund Midrange -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card mtg"></div>
+                      <div class="mini-card mtg" style="opacity:0.8"></div>
+                      <div class="mini-card mtg" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Jund Midrange</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot mtg"></span>
+                      <span>MTG &middot; Modern</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@modernmaster</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$342</span>
+                  <span class="deck-stat wr-good">62% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    128
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Deck 2: Mono Red Burn -->
+            <div class="deck-card">
+              <div class="deck-card-accent mtg"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card mtg"></div>
+                      <div class="mini-card mtg" style="opacity:0.8"></div>
+                      <div class="mini-card mtg" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Mono Red Burn</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot mtg"></span>
+                      <span>MTG &middot; Modern</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@pyromancer99</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$127</span>
+                  <span class="deck-stat wr-good">58% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    342
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Deck 3: Charizard ex Turbo -->
+            <div class="deck-card">
+              <div class="deck-card-accent pokemon"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card pokemon"></div>
+                      <div class="mini-card pokemon" style="opacity:0.8"></div>
+                      <div class="mini-card pokemon" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Charizard ex Turbo</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot pokemon"></span>
+                      <span>Pokemon &middot; Standard</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@firetype</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">60 cards</span>
+                  <span class="deck-stat price">$185</span>
+                  <span class="deck-stat wr-good">64% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    456
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Deck 4: Snake-Eye -->
+            <div class="deck-card">
+              <div class="deck-card-accent ygo"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card ygo"></div>
+                      <div class="mini-card ygo" style="opacity:0.8"></div>
+                      <div class="mini-card ygo" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Snake-Eye</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot ygo"></span>
+                      <span>Yu-Gi-Oh!</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@firekings</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">40 cards</span>
+                  <span class="deck-stat price">$167</span>
+                  <span class="deck-stat wr-good">71% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    890
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Deck 5: Luffy Aggro -->
+            <div class="deck-card">
+              <div class="deck-card-accent op"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card op"></div>
+                      <div class="mini-card op" style="opacity:0.8"></div>
+                      <div class="mini-card op" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Luffy Aggro</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot op"></span>
+                      <span>One Piece</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@strawhat</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">50 cards</span>
+                  <span class="deck-stat price">$62</span>
+                  <span class="deck-stat wr-good">57% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    189
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Deck 6: Branded Despia -->
+            <div class="deck-card">
+              <div class="deck-card-accent ygo"></div>
+              <div class="deck-card-body">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div>
+                    <div class="deck-card-fan">
+                      <div class="mini-card ygo"></div>
+                      <div class="mini-card ygo" style="opacity:0.8"></div>
+                      <div class="mini-card ygo" style="opacity:0.6"></div>
+                    </div>
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div class="deck-card-name">Branded Despia</div>
+                    <div class="deck-card-meta">
+                      <span class="game-dot ygo"></span>
+                      <span>Yu-Gi-Oh!</span>
+                    </div>
+                    <div class="deck-card-author">
+                      <div class="avatar-xs" style="width:16px;height:16px;"></div>
+                      <span>@fusionplayer</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="deck-card-stats">
+                  <span class="deck-stat">40 cards</span>
+                  <span class="deck-stat price">$145</span>
+                  <span class="deck-stat wr-good">66% WR</span>
+                  <span class="deck-card-social-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    312
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Pagination (mobile) -->
+        <section class="pagination-section">
+          <div class="pagination-section-inner">
+            <span class="pagination-info" style="font-size:12px;">Showing 1-12 of 1,847 decks</span>
+            <div class="pagination-buttons">
+              <div class="page-btn nav-btn" style="opacity:0.4; cursor:default;">Prev</div>
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn">3</div>
+              <span class="page-ellipsis">...</span>
+              <div class="page-btn nav-btn">Next</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Community Stats (mobile) -->
+        <div class="stats-banner-container">
+          <div class="stats-banner">
+            <div class="stat-block">
+              <div class="stat-number">1,847</div>
+              <div class="stat-label">Public Decks</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-number">12,400</div>
+              <div class="stat-label">Cards Indexed</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-number">4</div>
+              <div class="stat-label">Games</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-number">Daily</div>
+              <div class="stat-label">New Decks</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Filter FAB -->
+        <div class="mobile-fab" style="position:relative; margin: 0 auto 24px; bottom: auto; right: auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </div>
+
+      </div><!-- /mobile-inner -->
+    </div><!-- /mobile-frame -->
+  </div>
+
+</div><!-- /canvas -->
+</body>
+</html>

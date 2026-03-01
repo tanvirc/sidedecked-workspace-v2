@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Authentication Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* =============================================
+       GLOBAL RESET + CANVAS
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       CANVAS LAYOUT — side-by-side frames
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 48px;
+      padding: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+      flex-wrap: wrap;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      min-height: 900px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .annotation--breakpoint {
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .annotation--component {
+      color: var(--brand-secondary);
+      background: rgba(255, 120, 73, 0.08);
+      border-color: rgba(255, 120, 73, 0.3);
+    }
+
+    /* =============================================
+       SECTION DIVIDERS
+       ============================================= */
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 60px 0 8px;
+    }
+    .section-subtitle {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-tertiary);
+      text-align: center;
+      padding-bottom: 32px;
+    }
+
+    /* =============================================
+       SPLIT SCREEN AUTH — DESKTOP
+       ============================================= */
+    .auth-split {
+      display: flex;
+      min-height: 900px;
+      position: relative;
+    }
+
+    /* LEFT PANEL — Brand Showcase */
+    .auth-brand {
+      width: 55%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--bg-base);
+    }
+    .auth-brand__bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 45%, rgba(139, 92, 246, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 30% 70%, rgba(255, 120, 73, 0.06) 0%, transparent 60%),
+        var(--bg-base);
+      z-index: 0;
+    }
+    .auth-brand__content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 60px 48px;
+      text-align: center;
+    }
+    .auth-brand__wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 48px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-primary);
+      text-shadow: 0 0 40px rgba(139, 92, 246, 0.35);
+    }
+    .auth-brand__tagline {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    /* Floating card silhouettes */
+    .auth-brand__cards {
+      position: relative;
+      width: 320px;
+      height: 280px;
+      margin: 32px 0 24px;
+    }
+    .auth-brand__card {
+      position: absolute;
+      width: 160px;
+      height: 224px;
+      border-radius: 12px;
+      border: 2px solid;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(139, 92, 246, 0.02));
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .auth-brand__card::after {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+      border: 1px solid rgba(139, 92, 246, 0.06);
+    }
+    .auth-brand__card--1 {
+      border-color: rgba(139, 92, 246, 0.25);
+      left: 20px;
+      top: 30px;
+      transform: rotate(-12deg);
+      z-index: 1;
+    }
+    .auth-brand__card--2 {
+      border-color: rgba(255, 120, 73, 0.25);
+      left: 80px;
+      top: 10px;
+      transform: rotate(-2deg);
+      z-index: 2;
+      background: linear-gradient(135deg, rgba(255, 120, 73, 0.06), rgba(255, 120, 73, 0.02));
+    }
+    .auth-brand__card--2::after {
+      background: linear-gradient(180deg, rgba(255, 120, 73, 0.08) 0%, transparent 60%);
+      border-color: rgba(255, 120, 73, 0.06);
+    }
+    .auth-brand__card--3 {
+      border-color: rgba(96, 165, 250, 0.25);
+      left: 140px;
+      top: 35px;
+      transform: rotate(8deg);
+      z-index: 3;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.06), rgba(96, 165, 250, 0.02));
+    }
+    .auth-brand__card--3::after {
+      background: linear-gradient(180deg, rgba(96, 165, 250, 0.08) 0%, transparent 60%);
+      border-color: rgba(96, 165, 250, 0.06);
+    }
+    /* Card face lines */
+    .auth-brand__card-line {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: rgba(139, 92, 246, 0.08);
+      border-radius: 1px;
+      z-index: 4;
+    }
+    .auth-brand__card--2 .auth-brand__card-line { background: rgba(255, 120, 73, 0.08); }
+    .auth-brand__card--3 .auth-brand__card-line { background: rgba(96, 165, 250, 0.08); }
+
+    /* Trust bar */
+    .auth-brand__trust {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .auth-brand__trust-text {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .auth-brand__trust-games {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .game-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .game-dot--mtg { background: var(--game-mtg); color: var(--game-mtg); }
+    .game-dot--pokemon { background: var(--game-pokemon); color: var(--game-pokemon); }
+    .game-dot--ygo { background: var(--game-ygo); color: var(--game-ygo); }
+    .game-dot--op { background: var(--game-op); color: var(--game-op); }
+    .game-dot-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    .auth-brand__anim-note {
+      margin-top: 16px;
+    }
+
+    /* RIGHT PANEL — Auth Form */
+    .auth-form-panel {
+      width: 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface-1);
+      border-left: 1px solid var(--border-default);
+      position: relative;
+    }
+    .auth-form-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 48px;
+    }
+    .auth-form__heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 32px;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+    .auth-form__subtext {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    /* OAuth Buttons */
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .oauth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      letter-spacing: 0.01em;
+    }
+    .oauth-btn--google {
+      background: #FFFFFF;
+      color: #1F1F1F;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    .oauth-btn--discord {
+      background: #5865F2;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(88, 101, 242, 0.3);
+    }
+    .oauth-btn--apple {
+      background: #000000;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .oauth-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .oauth-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Divider */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .auth-divider__line {
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+    .auth-divider__text {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .form-input-wrap {
+      position: relative;
+    }
+    .form-input {
+      width: 100%;
+      height: 48px;
+      background: rgba(33, 32, 58, 0.6);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      padding: 0 16px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .form-input::placeholder {
+      color: var(--text-tertiary);
+    }
+    .form-input--focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+    .form-input-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      cursor: pointer;
+    }
+
+    /* Forgot password link */
+    .form-forgot {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 6px;
+      margin-bottom: 4px;
+    }
+    .form-forgot a {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Primary submit button */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 48px;
+      background: var(--brand-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+      transition: all 0.15s ease;
+      letter-spacing: 0.01em;
+    }
+
+    /* Password strength indicator */
+    .password-strength {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .password-strength__segment {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--bg-surface-3);
+    }
+    .password-strength__segment--active-1 { background: var(--negative); }
+    .password-strength__segment--active-2 { background: var(--warning); }
+    .password-strength__segment--active-3 { background: #EAB308; }
+    .password-strength__segment--active-4 { background: var(--positive); }
+    .password-strength__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      margin-top: 4px;
+    }
+    .password-strength__label--strong { color: var(--positive); }
+
+    /* Switch prompt */
+    .auth-switch {
+      text-align: center;
+      margin-top: 24px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .auth-switch a {
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Terms text */
+    .auth-terms {
+      text-align: center;
+      margin-top: 20px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    .auth-terms a {
+      color: var(--text-secondary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* =============================================
+       DEFERRED AUTH MODAL — DESKTOP
+       ============================================= */
+    .modal-overlay {
+      position: relative;
+      width: 1440px;
+      min-height: 900px;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+    .modal-overlay__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 9, 15, 0.82);
+      z-index: 10;
+    }
+    /* Background page hint */
+    .modal-overlay__page-hint {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .modal-overlay__page-hint-nav {
+      height: 64px;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+    }
+    .modal-overlay__page-hint-nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+    .modal-overlay__page-hint-body {
+      padding: 40px;
+    }
+    .modal-overlay__page-hint-card {
+      width: 300px;
+      height: 200px;
+      border-radius: 12px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+    }
+
+    /* Modal card */
+    .modal-card {
+      position: absolute;
+      z-index: 20;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      background: linear-gradient(180deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 36px 40px 32px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.08);
+    }
+    .modal-card__close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 16px;
+    }
+    .modal-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(255, 120, 73, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    .modal-card__heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    .modal-card__subtext {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .modal-card__subtext strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .modal-card .oauth-buttons {
+      margin-bottom: 16px;
+    }
+    .modal-card .oauth-btn {
+      height: 44px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    /* Ghost button */
+    .btn-ghost {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 44px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-top: 8px;
+    }
+
+    .modal-triggers {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-default);
+    }
+
+    /* =============================================
+       MOBILE AUTH
+       ============================================= */
+    .mobile-auth {
+      padding: 56px 24px 32px;
+      min-height: 844px;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-auth__logo {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .mobile-auth__logo-text {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-primary);
+      text-shadow: 0 0 24px rgba(139, 92, 246, 0.3);
+    }
+    .mobile-auth__tagline {
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    .mobile-auth__heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+    .mobile-auth__subtext {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .mobile-auth .form-input {
+      height: 44px;
+      border-radius: 10px;
+    }
+    .mobile-auth .oauth-btn {
+      height: 44px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    .mobile-auth .btn-primary {
+      height: 44px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-top: 16px;
+    }
+    .mobile-auth .form-group {
+      margin-bottom: 12px;
+    }
+    .mobile-auth .oauth-buttons {
+      margin-bottom: 20px;
+    }
+    .mobile-auth .auth-divider {
+      margin-bottom: 20px;
+    }
+    .mobile-auth .auth-switch {
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    .mobile-auth .auth-terms {
+      margin-top: 16px;
+      font-size: 10px;
+    }
+
+    /* Mobile bottom sheet modal */
+    .mobile-modal-frame {
+      position: relative;
+      min-height: 844px;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+    .mobile-modal-frame__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 9, 15, 0.75);
+      z-index: 10;
+    }
+    /* Hint content behind sheet */
+    .mobile-modal-frame__hint {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.2;
+      pointer-events: none;
+      padding: 60px 24px;
+    }
+    .mobile-modal-frame__hint-bar {
+      height: 48px;
+      background: var(--bg-surface-1);
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .mobile-modal-frame__hint-card {
+      width: 100%;
+      height: 180px;
+      background: var(--bg-surface-2);
+      border-radius: 12px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Bottom sheet */
+    .bottom-sheet {
+      position: absolute;
+      z-index: 20;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+      border-radius: 20px 20px 0 0;
+      border: 1px solid var(--border-strong);
+      border-bottom: none;
+      padding: 12px 24px 36px;
+      box-shadow: 0 -16px 60px rgba(0, 0, 0, 0.5);
+    }
+    .bottom-sheet__handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--bg-surface-4);
+      margin: 0 auto 20px;
+    }
+    .bottom-sheet__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(255, 120, 73, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      font-size: 18px;
+    }
+    .bottom-sheet__heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .bottom-sheet__subtext {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .bottom-sheet__subtext strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .bottom-sheet .oauth-buttons {
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .bottom-sheet .oauth-btn {
+      height: 42px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    .bottom-sheet .btn-ghost {
+      height: 42px;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* =============================================
+       UTILITY
+       ============================================= */
+    .row-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .annotation-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .mt-4 { margin-top: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     STATE 1: LOGIN — Desktop + Mobile
+     ================================================================ -->
+<div class="section-title">State 1 — Login</div>
+<div class="section-subtitle">Default view. Split-screen cinematic layout (desktop) / full-screen (mobile)</div>
+
+<div class="canvas">
+  <!-- DESKTOP LOGIN -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Desktop &mdash; 1440 &times; 900</span>
+    <div class="desktop-frame">
+      <div class="auth-split" data-component="AuthPage">
+
+        <!-- LEFT: Brand Showcase -->
+        <div class="auth-brand">
+          <div class="auth-brand__bg"></div>
+          <div class="auth-brand__content">
+            <div class="auth-brand__wordmark">SideDecked</div>
+            <div class="auth-brand__tagline">The marketplace for competitive players</div>
+
+            <!-- Floating card silhouettes -->
+            <div class="auth-brand__cards">
+              <div class="auth-brand__card auth-brand__card--1">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 60%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 45%; left: 20px; right: auto;"></div>
+              </div>
+              <div class="auth-brand__card auth-brand__card--2">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 70%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 50%; left: 20px; right: auto;"></div>
+              </div>
+              <div class="auth-brand__card auth-brand__card--3">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 55%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 40%; left: 20px; right: auto;"></div>
+              </div>
+            </div>
+
+            <!-- Trust bar -->
+            <div class="auth-brand__trust">
+              <div class="auth-brand__trust-text">Trusted by 10,000+ players across 4 games</div>
+              <div class="auth-brand__trust-games">
+                <span class="game-dot game-dot--mtg"></span>
+                <span class="game-dot-label">MTG</span>
+                <span class="game-dot game-dot--pokemon"></span>
+                <span class="game-dot-label">Pokemon</span>
+                <span class="game-dot game-dot--ygo"></span>
+                <span class="game-dot-label">YGO</span>
+                <span class="game-dot game-dot--op"></span>
+                <span class="game-dot-label">One Piece</span>
+              </div>
+            </div>
+
+            <div class="auth-brand__anim-note">
+              <span class="annotation">gradient-sweep animation, 8s loop</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Login Form -->
+        <div class="auth-form-panel">
+          <div class="auth-form-container">
+            <div class="annotation-row mb-16">
+              <span class="annotation--component annotation">AuthPage</span>
+              <span class="annotation">slide-left 300ms ease</span>
+            </div>
+
+            <div class="auth-form__heading">Welcome back</div>
+            <div class="auth-form__subtext">Sign in to your account</div>
+
+            <!-- OAuth Buttons -->
+            <div class="oauth-buttons" data-component="OAuthButtons">
+              <button class="oauth-btn oauth-btn--google">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                </span>
+                Continue with Google
+              </button>
+              <button class="oauth-btn oauth-btn--discord">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+                </span>
+                Continue with Discord
+              </button>
+              <button class="oauth-btn oauth-btn--apple">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+                </span>
+                Continue with Apple
+              </button>
+            </div>
+
+            <div class="annotation-row mb-12">
+              <span class="annotation--component annotation">OAuthButtons</span>
+              <span class="annotation--api annotation">OAuth2 + JWT</span>
+              <span class="annotation--api annotation">Google, Discord, Apple</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+              <div class="auth-divider__line"></div>
+              <div class="auth-divider__text">or</div>
+              <div class="auth-divider__line"></div>
+            </div>
+
+            <!-- Email Login Form -->
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <div class="form-input-wrap">
+                <input type="text" class="form-input" placeholder="you@example.com" readonly />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="form-input-wrap">
+                <input type="password" class="form-input" placeholder="Enter your password" value="••••••••••" readonly />
+                <span class="form-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </span>
+              </div>
+              <div class="form-forgot">
+                <a href="#">Forgot password?</a>
+              </div>
+            </div>
+
+            <button class="btn-primary">Sign In</button>
+
+            <div class="annotation-row mt-8">
+              <span class="annotation--api annotation">POST /api/auth/login</span>
+            </div>
+
+            <div class="auth-switch">
+              Don't have an account? <a href="#">Sign up</a>
+            </div>
+
+            <div class="auth-terms">
+              By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE LOGIN -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; 390 &times; 844</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-auth">
+          <div class="mobile-auth__logo">
+            <div class="mobile-auth__logo-text">SideDecked</div>
+          </div>
+          <div class="mobile-auth__tagline">The marketplace for competitive players</div>
+
+          <div class="annotation-row mb-12">
+            <span class="annotation--breakpoint annotation">390px breakpoint</span>
+          </div>
+
+          <div class="mobile-auth__heading">Welcome back</div>
+          <div class="mobile-auth__subtext">Sign in to your account</div>
+
+          <!-- OAuth -->
+          <div class="oauth-buttons">
+            <button class="oauth-btn oauth-btn--google">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              </span>
+              Continue with Google
+            </button>
+            <button class="oauth-btn oauth-btn--discord">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+              </span>
+              Continue with Discord
+            </button>
+            <button class="oauth-btn oauth-btn--apple">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+              </span>
+              Continue with Apple
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="auth-divider">
+            <div class="auth-divider__line"></div>
+            <div class="auth-divider__text">or</div>
+            <div class="auth-divider__line"></div>
+          </div>
+
+          <!-- Email Login -->
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-input" placeholder="you@example.com" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="form-input-wrap">
+              <input type="password" class="form-input" placeholder="Enter your password" value="••••••••••" readonly />
+              <span class="form-input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+            </div>
+            <div class="form-forgot">
+              <a href="#">Forgot password?</a>
+            </div>
+          </div>
+
+          <button class="btn-primary">Sign In</button>
+
+          <div class="auth-switch">
+            Don't have an account? <a href="#">Sign up</a>
+          </div>
+
+          <div class="auth-terms">
+            By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     STATE 2: SIGNUP — Desktop + Mobile
+     ================================================================ -->
+<div class="section-title">State 2 — Signup</div>
+<div class="section-subtitle">Account creation with password strength indicator and display name field</div>
+
+<div class="canvas">
+  <!-- DESKTOP SIGNUP -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Desktop &mdash; 1440 &times; 900</span>
+    <div class="desktop-frame">
+      <div class="auth-split">
+
+        <!-- LEFT: Brand Showcase (identical) -->
+        <div class="auth-brand">
+          <div class="auth-brand__bg"></div>
+          <div class="auth-brand__content">
+            <div class="auth-brand__wordmark">SideDecked</div>
+            <div class="auth-brand__tagline">The marketplace for competitive players</div>
+            <div class="auth-brand__cards">
+              <div class="auth-brand__card auth-brand__card--1">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 60%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 45%; left: 20px; right: auto;"></div>
+              </div>
+              <div class="auth-brand__card auth-brand__card--2">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 70%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 50%; left: 20px; right: auto;"></div>
+              </div>
+              <div class="auth-brand__card auth-brand__card--3">
+                <div class="auth-brand__card-line" style="top: 40px;"></div>
+                <div class="auth-brand__card-line" style="top: 100px; width: 55%; left: 20px; right: auto;"></div>
+                <div class="auth-brand__card-line" style="top: 130px;"></div>
+                <div class="auth-brand__card-line" style="top: 160px; width: 40%; left: 20px; right: auto;"></div>
+              </div>
+            </div>
+            <div class="auth-brand__trust">
+              <div class="auth-brand__trust-text">Trusted by 10,000+ players across 4 games</div>
+              <div class="auth-brand__trust-games">
+                <span class="game-dot game-dot--mtg"></span>
+                <span class="game-dot-label">MTG</span>
+                <span class="game-dot game-dot--pokemon"></span>
+                <span class="game-dot-label">Pokemon</span>
+                <span class="game-dot game-dot--ygo"></span>
+                <span class="game-dot-label">YGO</span>
+                <span class="game-dot game-dot--op"></span>
+                <span class="game-dot-label">One Piece</span>
+              </div>
+            </div>
+            <div class="auth-brand__anim-note">
+              <span class="annotation">gradient-sweep animation, 8s loop</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Signup Form -->
+        <div class="auth-form-panel">
+          <div class="auth-form-container">
+            <div class="annotation-row mb-16">
+              <span class="annotation--component annotation">AuthPage (signup variant)</span>
+              <span class="annotation">slide-right 300ms ease</span>
+            </div>
+
+            <div class="auth-form__heading">Create your account</div>
+            <div class="auth-form__subtext">Join thousands of competitive players</div>
+
+            <!-- OAuth Buttons -->
+            <div class="oauth-buttons" data-component="OAuthButtons">
+              <button class="oauth-btn oauth-btn--google">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                </span>
+                Continue with Google
+              </button>
+              <button class="oauth-btn oauth-btn--discord">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+                </span>
+                Continue with Discord
+              </button>
+              <button class="oauth-btn oauth-btn--apple">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+                </span>
+                Continue with Apple
+              </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+              <div class="auth-divider__line"></div>
+              <div class="auth-divider__text">or</div>
+              <div class="auth-divider__line"></div>
+            </div>
+
+            <!-- Signup Form Fields -->
+            <div class="form-group">
+              <label class="form-label">Display name</label>
+              <input type="text" class="form-input" placeholder="CompetitivePlayer99" readonly />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="text" class="form-input" placeholder="you@example.com" readonly />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="form-input-wrap">
+                <input type="password" class="form-input form-input--focus" placeholder="Create a strong password" value="••••••••••••" readonly />
+                <span class="form-input-icon" style="color: var(--brand-primary);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </span>
+              </div>
+              <!-- Password strength indicator -->
+              <div class="password-strength">
+                <div class="password-strength__segment password-strength__segment--active-1"></div>
+                <div class="password-strength__segment password-strength__segment--active-2"></div>
+                <div class="password-strength__segment password-strength__segment--active-3"></div>
+                <div class="password-strength__segment password-strength__segment--active-4"></div>
+              </div>
+              <div class="password-strength__label password-strength__label--strong">Excellent</div>
+            </div>
+
+            <button class="btn-primary">Create Account</button>
+
+            <div class="annotation-row mt-8">
+              <span class="annotation--api annotation">POST /api/auth/register</span>
+            </div>
+
+            <div class="auth-switch">
+              Already have an account? <a href="#">Sign in</a>
+            </div>
+
+            <div class="auth-terms">
+              By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE SIGNUP -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; 390 &times; 844</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-auth">
+          <div class="mobile-auth__logo">
+            <div class="mobile-auth__logo-text">SideDecked</div>
+          </div>
+          <div class="mobile-auth__tagline">The marketplace for competitive players</div>
+
+          <div class="mobile-auth__heading">Create your account</div>
+          <div class="mobile-auth__subtext">Join thousands of competitive players</div>
+
+          <!-- OAuth -->
+          <div class="oauth-buttons">
+            <button class="oauth-btn oauth-btn--google">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              </span>
+              Continue with Google
+            </button>
+            <button class="oauth-btn oauth-btn--discord">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+              </span>
+              Continue with Discord
+            </button>
+            <button class="oauth-btn oauth-btn--apple">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+              </span>
+              Continue with Apple
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="auth-divider">
+            <div class="auth-divider__line"></div>
+            <div class="auth-divider__text">or</div>
+            <div class="auth-divider__line"></div>
+          </div>
+
+          <!-- Signup Form -->
+          <div class="form-group">
+            <label class="form-label">Display name</label>
+            <input type="text" class="form-input" placeholder="CompetitivePlayer99" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-input" placeholder="you@example.com" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="form-input-wrap">
+              <input type="password" class="form-input form-input--focus" value="••••••••••••" readonly />
+              <span class="form-input-icon" style="color: var(--brand-primary);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength__segment password-strength__segment--active-1"></div>
+              <div class="password-strength__segment password-strength__segment--active-2"></div>
+              <div class="password-strength__segment password-strength__segment--active-3"></div>
+              <div class="password-strength__segment"></div>
+            </div>
+            <div class="password-strength__label" style="color: #EAB308;">Strong</div>
+          </div>
+
+          <button class="btn-primary">Create Account</button>
+
+          <div class="auth-switch">
+            Already have an account? <a href="#">Sign in</a>
+          </div>
+
+          <div class="auth-terms">
+            By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     STATE 3: DEFERRED AUTH MODAL — Desktop + Mobile
+     ================================================================ -->
+<div class="section-title">State 3 — Deferred Auth Modal</div>
+<div class="section-subtitle">Contextual prompt when unauthenticated users trigger a protected action</div>
+
+<div class="canvas">
+  <!-- DESKTOP DEFERRED AUTH -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Desktop &mdash; 1440 &times; 900 (overlay)</span>
+    <div class="desktop-frame">
+      <div class="modal-overlay" data-component="DeferredAuthModal">
+
+        <!-- Background page hint -->
+        <div class="modal-overlay__page-hint">
+          <div class="modal-overlay__page-hint-nav">
+            <span class="modal-overlay__page-hint-nav-logo">SideDecked</span>
+          </div>
+          <div class="modal-overlay__page-hint-body">
+            <div style="display: flex; gap: 24px;">
+              <div class="modal-overlay__page-hint-card"></div>
+              <div style="flex: 1;">
+                <div style="height: 20px; width: 60%; background: var(--bg-surface-3); border-radius: 6px; margin-bottom: 12px;"></div>
+                <div style="height: 14px; width: 40%; background: var(--bg-surface-2); border-radius: 4px; margin-bottom: 8px;"></div>
+                <div style="height: 14px; width: 80%; background: var(--bg-surface-2); border-radius: 4px; margin-bottom: 8px;"></div>
+                <div style="height: 14px; width: 55%; background: var(--bg-surface-2); border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backdrop -->
+        <div class="modal-overlay__backdrop"></div>
+
+        <!-- Modal Card -->
+        <div class="modal-card">
+          <div class="modal-card__close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+
+          <div class="modal-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+          </div>
+
+          <div class="annotation-row mb-12">
+            <span class="annotation--component annotation">DeferredAuthModal</span>
+          </div>
+
+          <div class="modal-card__heading">Sign in to save your deck</div>
+          <div class="modal-card__subtext">
+            Your deck <strong>Mono Red Burn</strong> is ready. Create an account to save it permanently.
+          </div>
+
+          <!-- Compact OAuth -->
+          <div class="oauth-buttons" data-component="OAuthButtons">
+            <button class="oauth-btn oauth-btn--google">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              </span>
+              Continue with Google
+            </button>
+            <button class="oauth-btn oauth-btn--discord">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+              </span>
+              Continue with Discord
+            </button>
+            <button class="oauth-btn oauth-btn--apple">
+              <span class="oauth-icon">
+                <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+              </span>
+              Continue with Apple
+            </button>
+          </div>
+
+          <button class="btn-ghost">Continue as Guest</button>
+
+          <div class="modal-triggers">
+            <span class="annotation">Triggered when: save deck, add to wishlist, checkout, follow seller</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE DEFERRED AUTH (Bottom Sheet) -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; 390 &times; 844 (bottom sheet)</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-modal-frame">
+
+          <!-- Background page hint -->
+          <div class="mobile-modal-frame__hint">
+            <div class="mobile-modal-frame__hint-bar"></div>
+            <div class="mobile-modal-frame__hint-card"></div>
+          </div>
+
+          <!-- Backdrop -->
+          <div class="mobile-modal-frame__backdrop"></div>
+
+          <!-- Bottom Sheet -->
+          <div class="bottom-sheet">
+            <div class="bottom-sheet__handle"></div>
+
+            <div class="annotation-row mb-12">
+              <span class="annotation--component annotation">DeferredAuthModal (sheet)</span>
+              <span class="annotation">slide-up 350ms ease-out</span>
+            </div>
+
+            <div class="bottom-sheet__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+            </div>
+
+            <div class="bottom-sheet__heading">Sign in to save your deck</div>
+            <div class="bottom-sheet__subtext">
+              Your deck <strong>Mono Red Burn</strong> is ready. Create an account to save it permanently.
+            </div>
+
+            <!-- OAuth -->
+            <div class="oauth-buttons">
+              <button class="oauth-btn oauth-btn--google">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                </span>
+                Continue with Google
+              </button>
+              <button class="oauth-btn oauth-btn--discord">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+                </span>
+                Continue with Discord
+              </button>
+              <button class="oauth-btn oauth-btn--apple">
+                <span class="oauth-icon">
+                  <svg viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-2.12 4.56-3.74 4.25z"/></svg>
+                </span>
+                Continue with Apple
+              </button>
+            </div>
+
+            <button class="btn-ghost">Continue as Guest</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

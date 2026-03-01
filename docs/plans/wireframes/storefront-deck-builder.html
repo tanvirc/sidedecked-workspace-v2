@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Deck Builder Wireframe (Voltage)</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: #1E1A3A;
+      --brand-secondary-subtle: #2A1A12;
+
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --interactive: #8B5CF6;
+
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+
+      /* Mana colors */
+      --mana-white: #F9FAFB;
+      --mana-blue: #3B82F6;
+      --mana-black: #1F2937;
+      --mana-red: #EF4444;
+      --mana-green: #22C55E;
+      --mana-colorless: #9CA3AF;
+    }
+
+    /* =============================================
+       RESET + BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: #060610;
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    img { display: block; max-width: 100%; }
+
+    /* =============================================
+       WIREFRAME CANVAS
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 80px;
+      padding: 60px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .annotation--note {
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .annotation--breakpoint {
+      color: var(--info);
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    /* =============================================
+       GLASS NAVIGATION BAR (workspace variant)
+       ============================================= */
+    .glass-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(24, 22, 42, 0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+      padding: 0 24px;
+    }
+    .glass-nav .nav-inner {
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 16px;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+    .logo-accent {
+      color: #8B5CF6;
+    }
+    .nav-deck-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 auto;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .nav-deck-name .pencil-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--text-tertiary);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .nav-icon-btn:hover {
+      background: var(--bg-surface-2);
+      color: var(--text-primary);
+      border-color: var(--border-default);
+    }
+    .nav-icon-btn svg { width: 18px; height: 18px; }
+    .nav-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--brand-secondary);
+      font-size: 9px;
+      font-weight: 600;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .nav-notif-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--brand-secondary);
+      border: 2px solid rgba(24, 22, 42, 0.80);
+    }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
+      margin-left: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+    .btn {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+    .btn-dropdown {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-dropdown .chevron {
+      width: 10px;
+      height: 10px;
+      border-right: 1.5px solid var(--text-tertiary);
+      border-bottom: 1.5px solid var(--text-tertiary);
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+
+    /* =============================================
+       DESKTOP — THREE-PANEL WORKSPACE
+       ============================================= */
+    .workspace {
+      display: flex;
+      height: calc(100vh - 56px);
+      min-height: 900px;
+    }
+
+    /* --- Left Panel: Card Search --- */
+    .panel-search {
+      width: 320px;
+      min-width: 320px;
+      background: var(--bg-surface-1);
+      border-right: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-search-header {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(33, 32, 58, 0.8);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      transition: border-color 0.15s;
+    }
+    .search-input-wrap:focus-within,
+    .search-input-wrap.focused {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+    .search-input-wrap svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .search-input-wrap span {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    /* Game Chips */
+    .game-chips {
+      display: flex;
+      gap: 6px;
+    }
+    .game-chip {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+      color: var(--text-tertiary);
+      background: transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .game-chip.active {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+      color: #fff;
+    }
+
+    /* Type Filter Pills */
+    .type-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .type-pill {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+      color: var(--text-tertiary);
+      background: transparent;
+    }
+    .type-pill.active {
+      background: var(--bg-surface-3);
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    /* Mana Color Filters */
+    .mana-filters {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .mana-filter {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .mana-filter .mana-inner {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+    }
+    .mana-filter.active {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+    }
+    .mana-filter-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-tertiary);
+      margin-left: 4px;
+    }
+
+    /* Search Results */
+    .search-results {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+    .search-result-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.12s;
+      height: 52px;
+    }
+    .search-result-row:hover {
+      background: var(--bg-surface-2);
+    }
+    .card-thumb {
+      width: 28px;
+      height: 40px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .card-thumb-inner {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg-surface-3), var(--bg-surface-4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-thumb-inner span {
+      font-family: var(--font-mono);
+      font-size: 7px;
+      color: var(--text-tertiary);
+    }
+    .result-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .result-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .result-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1px;
+    }
+    .result-type {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .mana-symbols {
+      display: inline-flex;
+      gap: 2px;
+      align-items: center;
+    }
+    .mana-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .mana-dot.sm {
+      width: 10px;
+      height: 10px;
+    }
+    .result-add {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      color: var(--brand-primary);
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .search-results-count {
+      padding: 10px 16px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border-default);
+      font-family: var(--font-mono);
+    }
+
+    /* --- Center Panel: Deck List --- */
+    .panel-deck {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .deck-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-default);
+      background: var(--bg-surface-1);
+      flex-wrap: wrap;
+    }
+    .deck-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .badge {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-game {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .badge-format {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+    }
+    .deck-count {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--warning);
+      margin-left: auto;
+    }
+    .visibility-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .visibility-toggle svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Deck Sections */
+    .deck-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+    .deck-section {
+      border-bottom: 1px solid var(--border-default);
+    }
+    .deck-section.sideboard {
+      background: var(--bg-surface-1);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      background: rgba(33, 32, 58, 0.4);
+      cursor: pointer;
+      user-select: none;
+    }
+    .section-arrow {
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid var(--text-tertiary);
+      border-bottom: 2px solid var(--text-tertiary);
+      transform: rotate(45deg);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-top: -2px;
+    }
+    .section-arrow.collapsed {
+      transform: rotate(-45deg);
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .section-count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* Card Rows in Deck */
+    .card-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 24px;
+      height: 40px;
+      transition: background 0.12s;
+      cursor: pointer;
+    }
+    .card-row:hover {
+      background: var(--bg-surface-2);
+    }
+    .drag-handle {
+      width: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: grab;
+      opacity: 0.3;
+      flex-shrink: 0;
+    }
+    .drag-handle span {
+      display: block;
+      width: 12px;
+      height: 1.5px;
+      background: var(--text-tertiary);
+      border-radius: 1px;
+    }
+    .card-row:hover .drag-handle {
+      opacity: 0.7;
+    }
+
+    /* Count Stepper */
+    .count-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .stepper-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      color: var(--text-tertiary);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .stepper-count {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      width: 24px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .card-row-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-row-mana {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .card-row-type {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      width: 70px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .card-row-remove {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.12s;
+      flex-shrink: 0;
+    }
+    .card-row:hover .card-row-remove {
+      opacity: 1;
+    }
+
+    /* --- Right Panel: Stats & Preview --- */
+    .panel-stats {
+      width: 300px;
+      min-width: 300px;
+      background: var(--bg-surface-1);
+      border-left: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      gap: 0;
+    }
+
+    /* Card Preview */
+    .card-preview {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .card-preview-image {
+      width: 100%;
+      aspect-ratio: 5 / 7;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(160deg, #1a0f2e, #2a1540, #1a0f2e);
+      border: 1px solid var(--border-default);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-preview-image .card-art-placeholder {
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(239, 68, 68, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 30% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        linear-gradient(160deg, #1a0f2e, #2a1540, #1a0f2e);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card-preview-image .card-art-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .card-preview-image .card-art-cost {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .card-preview-image .card-art-type {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .card-preview-image .card-art-rules {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.5;
+      max-width: 200px;
+    }
+    .card-preview-info {
+      margin-top: 10px;
+    }
+    .card-preview-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .card-preview-type {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .card-preview-rules {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* Stats Cards */
+    .stat-card {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .stat-card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    /* Mana Curve Chart */
+    .mana-curve {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 100px;
+      padding-bottom: 20px;
+      position: relative;
+    }
+    .mana-curve-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .mana-curve-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(to top, var(--bg-surface-3), var(--brand-primary));
+      min-height: 2px;
+      position: relative;
+    }
+    .mana-curve-bar .bar-count {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .mana-curve-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      position: absolute;
+      bottom: 0;
+    }
+    .mana-curve-avg {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    /* Color Distribution */
+    .color-dist-bar {
+      display: flex;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      gap: 1px;
+    }
+    .color-dist-segment {
+      height: 100%;
+    }
+    .color-dist-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .color-dist-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .color-dist-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Type Breakdown */
+    .type-breakdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .type-breakdown-item:last-child {
+      margin-bottom: 0;
+    }
+    .type-breakdown-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      width: 70px;
+      flex-shrink: 0;
+    }
+    .type-breakdown-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-surface-3);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .type-breakdown-fill {
+      height: 100%;
+      background: var(--brand-primary);
+      border-radius: 999px;
+    }
+    .type-breakdown-pct {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      width: 44px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Price Card */
+    .price-total {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--brand-primary);
+      margin-bottom: 4px;
+    }
+    .price-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 14px;
+    }
+    .btn-buy {
+      width: 100%;
+      padding: 10px;
+      background: var(--brand-secondary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .price-warning {
+      font-size: 11px;
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .price-warning .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--warning);
+      flex-shrink: 0;
+    }
+
+    /* Legality Card */
+    .legality-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .legality-row:last-child {
+      margin-bottom: 0;
+    }
+    .legality-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .legality-icon.ok {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--positive);
+    }
+    .legality-icon.warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+    .legality-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .legality-text.positive { color: var(--positive); }
+    .legality-text.warning { color: var(--warning); }
+
+    /* =============================================
+       MOBILE LAYOUT
+       ============================================= */
+    .mobile-nav {
+      background: rgba(24, 22, 42, 0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      height: 52px;
+      gap: 10px;
+      padding-top: 8px;
+    }
+    .mobile-nav .mobile-nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      color: #FFFFFF;
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+    .mobile-nav .mobile-nav-logo .logo-accent {
+      color: #8B5CF6;
+    }
+    .mobile-nav .deck-name-mobile {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-nav .btn-save-mobile {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .mobile-nav .nav-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 10px;
+    }
+
+    /* Mobile Tab Bar */
+    .mobile-tabs {
+      display: flex;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+    }
+    .mobile-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      position: relative;
+    }
+    .mobile-tab.active {
+      color: var(--brand-primary);
+    }
+    .mobile-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: var(--brand-primary);
+      border-radius: 999px;
+    }
+
+    /* Mobile Deck List */
+    .mobile-deck-body {
+      padding: 0;
+    }
+    .mobile-section-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(33, 32, 58, 0.4);
+    }
+    .mobile-section-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .mobile-section-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .mobile-card-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      height: 38px;
+    }
+    .mobile-card-row:hover {
+      background: var(--bg-surface-2);
+    }
+    .mobile-card-qty {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      width: 24px;
+      flex-shrink: 0;
+    }
+    .mobile-card-name {
+      font-size: 13px;
+      color: var(--text-primary);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .mobile-stepper-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      color: var(--text-tertiary);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+    }
+
+    /* Mobile FAB */
+    .mobile-fab {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 4px 20px rgba(139, 92, 246, 0.4),
+        0 0 40px rgba(139, 92, 246, 0.15);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* Mobile Search Tab */
+    .mobile-search-content {
+      padding: 12px 16px;
+    }
+    .mobile-search-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface-2);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .mobile-search-input svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .mobile-search-input span {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    .mobile-filter-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 8px;
+    }
+    .mobile-filter-chips::-webkit-scrollbar { display: none; }
+    .mobile-search-result {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.3);
+    }
+    .mobile-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .mobile-result-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .mobile-result-type {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .mobile-result-add {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 5px 12px;
+      cursor: pointer;
+    }
+
+    /* Mobile Stats Tab */
+    .mobile-stats-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .mobile-stat-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    /* Mobile Bottom Sheet */
+    .mobile-bottom-sheet {
+      background: var(--bg-surface-1);
+      border-top: 1px solid var(--border-default);
+      border-radius: 20px 20px 0 0;
+      padding: 0;
+      position: relative;
+    }
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--bg-surface-4);
+      border-radius: 999px;
+      margin: 10px auto;
+    }
+    .sheet-content {
+      padding: 0 16px 20px;
+      display: flex;
+      gap: 14px;
+    }
+    .sheet-card-image {
+      width: 90px;
+      height: 126px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(160deg, #1a0f2e, #2a1540);
+      border: 1px solid var(--border-default);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sheet-card-image span {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-tertiary);
+    }
+    .sheet-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sheet-card-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .sheet-card-type {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .sheet-card-rules {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+    .sheet-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+    .btn-sheet-add {
+      flex: 1;
+      padding: 10px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .btn-sheet-remove {
+      padding: 10px 16px;
+      background: transparent;
+      color: var(--negative);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    /* Mobile section labels */
+    .mobile-section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 12px 16px 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mobile-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    /* Utility */
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+    .gap-4 { gap: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .mb-4 { margin-bottom: 4px; }
+    .relative { position: relative; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===================================================
+       DESKTOP FRAME (1440px)
+       =================================================== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop 1440px</div>
+    <div class="desktop-frame">
+
+      <!-- Annotation: Component name -->
+      <div style="padding: 8px 24px 0; display: flex; gap: 8px; flex-wrap: wrap;">
+        <span class="annotation">&lt;DeckBuilder&gt;</span>
+        <span class="annotation--api annotation">GET /api/users/:userId/decks/:deckId</span>
+        <span class="annotation--note annotation">Real-time auto-save every 5s</span>
+        <span class="annotation--note annotation">Drag &amp; drop via @dnd-kit</span>
+      </div>
+
+      <!-- Glass Navigation Bar (workspace variant) -->
+      <nav class="glass-nav">
+        <div class="nav-inner">
+          <!-- Logo (far left) -->
+          <div class="nav-logo">Side<span class="logo-accent">Decked</span></div>
+          <!-- Center: editable deck name + workspace buttons -->
+          <div class="nav-deck-name">
+            <span>Mono Red Burn</span>
+            <svg class="pencil-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              <path d="m15 5 4 4"/>
+            </svg>
+          </div>
+          <div class="nav-actions">
+            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-ghost">Share</button>
+            <button class="btn btn-dropdown">Export <span class="chevron"></span></button>
+            <!-- Theme toggle -->
+            <button class="nav-icon-btn" title="Theme toggle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <!-- Notifications -->
+            <button class="nav-icon-btn" title="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="nav-notif-dot"></span>
+            </button>
+            <!-- Wishlist -->
+            <button class="nav-icon-btn" title="Wishlist">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </button>
+            <!-- Cart -->
+            <button class="nav-icon-btn" title="Cart">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span class="nav-badge">3</span>
+            </button>
+            <!-- Avatar -->
+            <div class="nav-avatar">TC</div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Three-Panel Workspace -->
+      <div class="workspace">
+
+        <!-- ========================
+             LEFT PANEL: Card Search
+             ======================== -->
+        <div class="panel-search">
+          <!-- Panel annotation -->
+          <div style="padding: 8px 12px 0; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="annotation">&lt;CardSearchPanel&gt;</span>
+            <span class="annotation--api annotation">GET /api/search?q=...&amp;game=mtg</span>
+            <span class="annotation--breakpoint annotation">320px, resizable</span>
+          </div>
+
+          <div class="panel-search-header">
+            <!-- Search Input -->
+            <div class="search-input-wrap focused">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span>Search cards...</span>
+            </div>
+
+            <!-- Game Chips -->
+            <div class="game-chips">
+              <span class="game-chip active">MTG</span>
+              <span class="game-chip">Pokemon</span>
+              <span class="game-chip">Yu-Gi-Oh</span>
+              <span class="game-chip">One Piece</span>
+            </div>
+
+            <!-- Type Filter Pills -->
+            <div class="type-filters">
+              <span class="type-pill active">All</span>
+              <span class="type-pill">Creatures</span>
+              <span class="type-pill">Instants</span>
+              <span class="type-pill">Sorceries</span>
+              <span class="type-pill">Enchantments</span>
+              <span class="type-pill">Lands</span>
+              <span class="type-pill">Artifacts</span>
+              <span class="type-pill">Planeswalkers</span>
+            </div>
+
+            <!-- Mana Color Filters -->
+            <div class="mana-filters">
+              <div class="mana-filter">
+                <div class="mana-inner" style="background: var(--mana-white); border: 1px solid rgba(255,255,255,0.2);"></div>
+              </div>
+              <div class="mana-filter">
+                <div class="mana-inner" style="background: var(--mana-blue);"></div>
+              </div>
+              <div class="mana-filter">
+                <div class="mana-inner" style="background: var(--mana-black); border: 1px solid rgba(255,255,255,0.1);"></div>
+              </div>
+              <div class="mana-filter active">
+                <div class="mana-inner" style="background: var(--mana-red);"></div>
+              </div>
+              <div class="mana-filter">
+                <div class="mana-inner" style="background: var(--mana-green);"></div>
+              </div>
+              <div class="mana-filter">
+                <div class="mana-inner" style="background: var(--mana-colorless);"></div>
+              </div>
+              <span class="mana-filter-label">Color</span>
+            </div>
+          </div>
+
+          <!-- Search Results -->
+          <div class="search-results">
+            <!-- Result 1: Lightning Bolt -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>LB</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Lightning Bolt</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Instant</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 2: Monastery Swiftspear -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>MS</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Monastery Swiftspear</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Creature &mdash; Human Monk</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 3: Goblin Guide -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>GG</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Goblin Guide</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Creature &mdash; Goblin Scout</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 4: Eidolon of the Great Revel -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>EG</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Eidolon of the Great Revel</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Enchantment Creature</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 5: Lava Spike -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>LS</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Lava Spike</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Sorcery &mdash; Arcane</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 6: Rift Bolt -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>RB</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Rift Bolt</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Sorcery</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 7: Searing Blaze -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>SB</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Searing Blaze</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Instant</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+            <!-- Result 8: Skullcrack -->
+            <div class="search-result-row">
+              <div class="card-thumb"><div class="card-thumb-inner"><span>SC</span></div></div>
+              <div class="result-info">
+                <div class="result-name">Skullcrack</div>
+                <div class="result-meta">
+                  <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+                  <span class="result-type">Instant</span>
+                </div>
+              </div>
+              <div class="result-add">+</div>
+            </div>
+          </div>
+
+          <div class="search-results-count">Showing 8 of 847 results</div>
+        </div>
+
+        <!-- ========================
+             CENTER PANEL: Deck List
+             ======================== -->
+        <div class="panel-deck">
+          <!-- Deck Header -->
+          <div class="deck-header">
+            <span class="annotation" style="margin-right: 4px;">&lt;DeckList&gt;</span>
+            <span class="annotation--api annotation">POST /api/decks/:deckId/cards</span>
+            <div style="display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 4px;">
+              <span class="deck-title">Mono Red Burn</span>
+              <span class="badge badge-game">MTG</span>
+              <span class="badge badge-format">Modern</span>
+              <span class="deck-count">58/60</span>
+              <div class="visibility-toggle" style="margin-left: auto;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>Public</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deck Body -->
+          <div class="deck-body">
+
+            <!-- Creatures (12) -->
+            <div class="deck-section">
+              <div class="section-header">
+                <div class="section-arrow"></div>
+                <span class="section-title">Creatures</span>
+                <span class="section-count">(12)</span>
+              </div>
+              <!-- 4x Monastery Swiftspear -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Monastery Swiftspear</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Creature</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Goblin Guide -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Goblin Guide</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Creature</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Eidolon of the Great Revel -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Eidolon of the Great Revel</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Creature</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+            </div>
+
+            <!-- Instants (16) -->
+            <div class="deck-section">
+              <div class="section-header">
+                <div class="section-arrow"></div>
+                <span class="section-title">Instants</span>
+                <span class="section-count">(16)</span>
+              </div>
+              <!-- 4x Lightning Bolt -->
+              <div class="card-row" style="background: rgba(139, 92, 246, 0.06);">
+                <div class="drag-handle" style="opacity: 0.7;"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name" style="color: #A78BFA;">Lightning Bolt</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Instant</span>
+                <span class="card-row-remove" style="opacity: 1;">&times;</span>
+              </div>
+              <!-- 4x Searing Blaze -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Searing Blaze</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Instant</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Skullcrack -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Skullcrack</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Instant</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Lava Spike -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Lava Spike</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Sorcery</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+            </div>
+
+            <!-- Sorceries (12) -->
+            <div class="deck-section">
+              <div class="section-header">
+                <div class="section-arrow"></div>
+                <span class="section-title">Sorceries</span>
+                <span class="section-count">(12)</span>
+              </div>
+              <!-- 4x Rift Bolt -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Rift Bolt</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Sorcery</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Chain Lightning -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Chain Lightning</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Sorcery</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Light Up the Stage -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Light Up the Stage</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Sorcery</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+            </div>
+
+            <!-- Lands (18) -->
+            <div class="deck-section">
+              <div class="section-header">
+                <div class="section-arrow"></div>
+                <span class="section-title">Lands</span>
+                <span class="section-count">(18)</span>
+              </div>
+              <!-- 10x Mountain -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">10</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Mountain</span>
+                <div class="card-row-mana"></div>
+                <span class="card-row-type">Basic Land</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 4x Inspiring Vantage -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">4</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Inspiring Vantage</span>
+                <div class="card-row-mana"></div>
+                <span class="card-row-type">Land</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 2x Fiery Islet -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">2</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Fiery Islet</span>
+                <div class="card-row-mana"></div>
+                <span class="card-row-type">Land</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 2x Sunbaked Canyon -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">2</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Sunbaked Canyon</span>
+                <div class="card-row-mana"></div>
+                <span class="card-row-type">Land</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+            </div>
+
+            <!-- Sideboard (8/15) -->
+            <div class="deck-section sideboard">
+              <div class="section-header">
+                <div class="section-arrow"></div>
+                <span class="section-title">Sideboard</span>
+                <span class="section-count">(8/15)</span>
+              </div>
+              <!-- 3x Smash to Smithereens -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">3</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Smash to Smithereens</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Instant</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 2x Roiling Vortex -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">2</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Roiling Vortex</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Enchantment</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+              <!-- 3x Searing Blood -->
+              <div class="card-row">
+                <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="count-stepper">
+                  <span class="stepper-btn">&minus;</span>
+                  <span class="stepper-count">3</span>
+                  <span class="stepper-btn">+</span>
+                </div>
+                <span class="card-row-name">Searing Blood</span>
+                <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
+                <span class="card-row-type">Instant</span>
+                <span class="card-row-remove">&times;</span>
+              </div>
+            </div>
+
+            <!-- Annotations row at bottom -->
+            <div style="padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+              <span class="annotation--note annotation">drag to reorder</span>
+              <span class="annotation--note annotation">click row to preview in right panel</span>
+              <span class="annotation--breakpoint annotation">Panel resize handles between panels</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ========================
+             RIGHT PANEL: Stats & Preview
+             ======================== -->
+        <div class="panel-stats">
+          <div style="padding: 8px 12px 0; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="annotation">&lt;DeckStats&gt;</span>
+            <span class="annotation--breakpoint annotation">300px, sticky</span>
+          </div>
+
+          <!-- Card Preview -->
+          <div class="card-preview">
+            <div style="margin-bottom: 6px;"><span class="annotation">&lt;CardPreview&gt;</span></div>
+            <div class="card-preview-image">
+              <div class="card-art-placeholder">
+                <div class="card-art-title">Lightning Bolt</div>
+                <div class="card-art-cost">
+                  <span class="mana-dot" style="background: var(--mana-red);"></span>
+                </div>
+                <div class="card-art-type">Instant</div>
+                <div class="card-art-rules">Lightning Bolt deals 3 damage to any target.</div>
+              </div>
+            </div>
+            <div class="card-preview-info">
+              <div class="card-preview-name">Lightning Bolt</div>
+              <div class="card-preview-type">Instant</div>
+              <div class="card-preview-rules">Lightning Bolt deals 3 damage to any target.</div>
+            </div>
+          </div>
+
+          <!-- Mana Curve -->
+          <div class="stat-card">
+            <div style="margin-bottom: 6px;"><span class="annotation">&lt;ManaCurveChart&gt;</span></div>
+            <div class="stat-card-title">Mana Curve</div>
+            <div class="mana-curve">
+              <!-- CMC 0 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">0</span>
+              </div>
+              <!-- CMC 1 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 85%;"><span class="bar-count">20</span></div>
+                <span class="mana-curve-label">1</span>
+              </div>
+              <!-- CMC 2 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 50%;"><span class="bar-count">12</span></div>
+                <span class="mana-curve-label">2</span>
+              </div>
+              <!-- CMC 3 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 34%;"><span class="bar-count">8</span></div>
+                <span class="mana-curve-label">3</span>
+              </div>
+              <!-- CMC 4 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">4</span>
+              </div>
+              <!-- CMC 5 -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">5</span>
+              </div>
+              <!-- CMC 6+ -->
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">6+</span>
+              </div>
+            </div>
+            <div class="mana-curve-avg">Avg CMC: 1.4</div>
+          </div>
+
+          <!-- Color Distribution -->
+          <div class="stat-card">
+            <div class="stat-card-title">Color Distribution</div>
+            <div class="color-dist-bar">
+              <div class="color-dist-segment" style="width: 95%; background: var(--mana-red); border-radius: 999px 0 0 999px;"></div>
+              <div class="color-dist-segment" style="width: 5%; background: var(--mana-colorless); border-radius: 0 999px 999px 0;"></div>
+            </div>
+            <div class="color-dist-legend">
+              <div class="color-dist-item">
+                <div class="color-dist-dot" style="background: var(--mana-red);"></div>
+                <span>Red 95%</span>
+              </div>
+              <div class="color-dist-item">
+                <div class="color-dist-dot" style="background: var(--mana-colorless);"></div>
+                <span>Colorless 5%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Type Breakdown -->
+          <div class="stat-card">
+            <div class="stat-card-title">Type Breakdown</div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Creatures</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 20%;"></div></div>
+              <span class="type-breakdown-pct">12 (20%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Instants</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 27%;"></div></div>
+              <span class="type-breakdown-pct">16 (27%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Sorceries</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 20%;"></div></div>
+              <span class="type-breakdown-pct">12 (20%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Lands</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 30%;"></div></div>
+              <span class="type-breakdown-pct">18 (30%)</span>
+            </div>
+          </div>
+
+          <!-- Price Estimate -->
+          <div class="stat-card">
+            <div class="stat-card-title">Deck Cost Estimate</div>
+            <div class="price-total">$127.45</div>
+            <div class="price-sub">Based on market prices</div>
+            <button class="btn-buy">Buy Missing Cards</button>
+            <div class="price-warning">
+              <span class="dot"></span>
+              <span>3 cards not in your collection</span>
+            </div>
+          </div>
+
+          <!-- Legality Check -->
+          <div class="stat-card">
+            <div class="stat-card-title">Legality Check</div>
+            <div class="legality-row">
+              <div class="legality-icon ok">&#10003;</div>
+              <span class="legality-text">Format: <strong>Modern</strong></span>
+            </div>
+            <div class="legality-row">
+              <div class="legality-icon ok">&#10003;</div>
+              <span class="legality-text positive">Deck is legal</span>
+            </div>
+            <div class="legality-row">
+              <div class="legality-icon warn">!</div>
+              <span class="legality-text warning">2 cards short of minimum (58/60)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       MOBILE FRAME (390px)
+       =================================================== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile 390px</div>
+
+    <!-- ===================== -->
+    <!-- MOBILE: Deck Tab View -->
+    <!-- ===================== -->
+    <div style="margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Deck Tab (default view)</span></div>
+    <div class="mobile-frame">
+      <div class="mobile-inner" style="position: relative;">
+        <!-- Mobile Nav -->
+        <div class="mobile-nav">
+          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
+          <span class="deck-name-mobile">Mono Red Burn</span>
+          <button class="btn-save-mobile">Save</button>
+          <div class="nav-avatar">TC</div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="mobile-tabs">
+          <div class="mobile-tab active">Deck</div>
+          <div class="mobile-tab">Search</div>
+          <div class="mobile-tab">Stats</div>
+        </div>
+
+        <!-- Deck Tab Content -->
+        <div class="mobile-deck-body">
+
+          <!-- Creatures -->
+          <div class="mobile-section-header">
+            <div class="section-arrow" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
+            <span class="mobile-section-title">Creatures</span>
+            <span class="mobile-section-count">(12)</span>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Monastery Swiftspear</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Goblin Guide</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Eidolon of the Great Revel</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+
+          <!-- Instants -->
+          <div class="mobile-section-header">
+            <div class="section-arrow" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
+            <span class="mobile-section-title">Instants</span>
+            <span class="mobile-section-count">(16)</span>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Lightning Bolt</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Searing Blaze</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Skullcrack</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Lava Spike</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+
+          <!-- Sorceries -->
+          <div class="mobile-section-header">
+            <div class="section-arrow" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
+            <span class="mobile-section-title">Sorceries</span>
+            <span class="mobile-section-count">(12)</span>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Rift Bolt</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Chain Lightning</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Light Up the Stage</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+
+          <!-- Lands -->
+          <div class="mobile-section-header">
+            <div class="section-arrow" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
+            <span class="mobile-section-title">Lands</span>
+            <span class="mobile-section-count">(18)</span>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">10x</span>
+            <span class="mobile-card-name">Mountain</span>
+            <span class="mana-symbols"></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name">Inspiring Vantage</span>
+            <span class="mana-symbols"></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">2x</span>
+            <span class="mobile-card-name">Fiery Islet</span>
+            <span class="mana-symbols"></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row">
+            <span class="mobile-card-qty">2x</span>
+            <span class="mobile-card-name">Sunbaked Canyon</span>
+            <span class="mana-symbols"></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+
+          <!-- Sideboard collapsed -->
+          <div class="mobile-section-header" style="background: var(--bg-surface-1);">
+            <div class="section-arrow collapsed" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
+            <span class="mobile-section-title">Sideboard</span>
+            <span class="mobile-section-count">(8/15)</span>
+          </div>
+
+          <!-- Spacing for FAB -->
+          <div style="height: 70px;"></div>
+        </div>
+
+        <!-- FAB -->
+        <div class="mobile-fab">+</div>
+      </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- MOBILE: Search Tab    -->
+    <!-- ===================== -->
+    <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Search Tab</span></div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-nav">
+          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
+          <span class="deck-name-mobile">Mono Red Burn</span>
+          <button class="btn-save-mobile">Save</button>
+          <div class="nav-avatar">TC</div>
+        </div>
+        <div class="mobile-tabs">
+          <div class="mobile-tab">Deck</div>
+          <div class="mobile-tab active">Search</div>
+          <div class="mobile-tab">Stats</div>
+        </div>
+
+        <div class="mobile-search-content">
+          <!-- Search Input -->
+          <div class="mobile-search-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span>Search cards...</span>
+          </div>
+
+          <!-- Horizontal Scroll Chips -->
+          <div class="mobile-filter-chips">
+            <span class="type-pill active" style="flex-shrink: 0;">All</span>
+            <span class="type-pill" style="flex-shrink: 0;">Creatures</span>
+            <span class="type-pill" style="flex-shrink: 0;">Instants</span>
+            <span class="type-pill" style="flex-shrink: 0;">Sorceries</span>
+            <span class="type-pill" style="flex-shrink: 0;">Enchantments</span>
+            <span class="type-pill" style="flex-shrink: 0;">Lands</span>
+          </div>
+
+          <div style="margin-bottom: 6px;"><span class="annotation--note annotation">Tap to add, long-press to preview</span></div>
+
+          <!-- Search Results -->
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">LB</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Lightning Bolt</div>
+              <div class="mobile-result-type">Instant &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">MS</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Monastery Swiftspear</div>
+              <div class="mobile-result-type">Creature &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">GG</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Goblin Guide</div>
+              <div class="mobile-result-type">Creature &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">EG</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Eidolon of the Great Revel</div>
+              <div class="mobile-result-type">Enchant Creature &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">LS</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Lava Spike</div>
+              <div class="mobile-result-type">Sorcery &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">RB</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Rift Bolt</div>
+              <div class="mobile-result-type">Sorcery &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-colorless);"></span><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-colorless);"></span><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+          <div class="mobile-search-result">
+            <div class="card-thumb" style="width: 24px; height: 34px;"><div class="card-thumb-inner"><span style="font-size: 6px;">SB</span></div></div>
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Searing Blaze</div>
+              <div class="mobile-result-type">Instant &mdash; <span class="mana-symbols"><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span><span class="mana-dot" style="width:8px;height:8px;background:var(--mana-red);"></span></span></div>
+            </div>
+            <span class="mobile-result-add">Add</span>
+          </div>
+
+          <div style="text-align: center; padding: 12px 0;">
+            <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">Showing 7 of 847 results</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- MOBILE: Stats Tab     -->
+    <!-- ===================== -->
+    <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Stats Tab</span></div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-nav">
+          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
+          <span class="deck-name-mobile">Mono Red Burn</span>
+          <button class="btn-save-mobile">Save</button>
+          <div class="nav-avatar">TC</div>
+        </div>
+        <div class="mobile-tabs">
+          <div class="mobile-tab">Deck</div>
+          <div class="mobile-tab">Search</div>
+          <div class="mobile-tab active">Stats</div>
+        </div>
+
+        <div class="mobile-stats-content">
+          <!-- Mana Curve -->
+          <div class="mobile-stat-card">
+            <div class="stat-card-title">Mana Curve</div>
+            <div class="mana-curve" style="height: 80px;">
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">0</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 85%;"><span class="bar-count">20</span></div>
+                <span class="mana-curve-label">1</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 50%;"><span class="bar-count">12</span></div>
+                <span class="mana-curve-label">2</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 34%;"><span class="bar-count">8</span></div>
+                <span class="mana-curve-label">3</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">4</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">5</span>
+              </div>
+              <div class="mana-curve-bar-wrap">
+                <div class="mana-curve-bar" style="height: 0%;"><span class="bar-count">0</span></div>
+                <span class="mana-curve-label">6+</span>
+              </div>
+            </div>
+            <div class="mana-curve-avg">Avg CMC: 1.4</div>
+          </div>
+
+          <!-- Type Breakdown -->
+          <div class="mobile-stat-card">
+            <div class="stat-card-title">Type Breakdown</div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Creatures</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 20%;"></div></div>
+              <span class="type-breakdown-pct">12 (20%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Instants</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 27%;"></div></div>
+              <span class="type-breakdown-pct">16 (27%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Sorceries</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 20%;"></div></div>
+              <span class="type-breakdown-pct">12 (20%)</span>
+            </div>
+            <div class="type-breakdown-item">
+              <span class="type-breakdown-label">Lands</span>
+              <div class="type-breakdown-bar"><div class="type-breakdown-fill" style="width: 30%;"></div></div>
+              <span class="type-breakdown-pct">18 (30%)</span>
+            </div>
+          </div>
+
+          <!-- Price Estimate -->
+          <div class="mobile-stat-card">
+            <div class="stat-card-title">Deck Cost Estimate</div>
+            <div class="price-total" style="font-size: 24px;">$127.45</div>
+            <div class="price-sub">Based on market prices</div>
+            <button class="btn-buy" style="margin-top: 10px;">Buy Missing Cards</button>
+            <div class="price-warning" style="margin-top: 6px;">
+              <span class="dot"></span>
+              <span>3 cards not in your collection</span>
+            </div>
+          </div>
+
+          <!-- Legality -->
+          <div class="mobile-stat-card">
+            <div class="stat-card-title">Legality Check</div>
+            <div class="legality-row">
+              <div class="legality-icon ok">&#10003;</div>
+              <span class="legality-text">Format: <strong>Modern</strong></span>
+            </div>
+            <div class="legality-row">
+              <div class="legality-icon ok">&#10003;</div>
+              <span class="legality-text positive">Deck is legal</span>
+            </div>
+            <div class="legality-row">
+              <div class="legality-icon warn">!</div>
+              <span class="legality-text warning">2 cards short of minimum (58/60)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- MOBILE: Card Preview Bottom Sheet -->
+    <!-- ===================== -->
+    <div style="margin-top: 40px; margin-bottom: 8px;"><span class="annotation--breakpoint annotation" style="font-size: 11px;">Card Preview Bottom Sheet</span></div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="mobile-nav">
+          <span class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></span>
+          <span class="deck-name-mobile">Mono Red Burn</span>
+          <button class="btn-save-mobile">Save</button>
+          <div class="nav-avatar">TC</div>
+        </div>
+        <div class="mobile-tabs">
+          <div class="mobile-tab">Deck</div>
+          <div class="mobile-tab active">Search</div>
+          <div class="mobile-tab">Stats</div>
+        </div>
+
+        <!-- Dimmed background content (search results behind sheet) -->
+        <div style="padding: 12px 16px; opacity: 0.3;">
+          <div class="mobile-search-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span>Search cards...</span>
+          </div>
+          <div class="mobile-search-result" style="border: none;">
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Lightning Bolt</div>
+              <div class="mobile-result-type">Instant</div>
+            </div>
+          </div>
+          <div class="mobile-search-result" style="border: none;">
+            <div class="mobile-result-info">
+              <div class="mobile-result-name">Monastery Swiftspear</div>
+              <div class="mobile-result-type">Creature</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Sheet -->
+        <div class="mobile-bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div style="padding: 0 16px 4px;"><span class="annotation--note annotation">Slide up on long-press</span></div>
+          <div class="sheet-content">
+            <div class="sheet-card-image">
+              <span>Lightning<br/>Bolt</span>
+            </div>
+            <div class="sheet-info">
+              <div class="sheet-card-name">Lightning Bolt</div>
+              <div class="sheet-card-type">Instant</div>
+              <div class="sheet-card-rules">Lightning Bolt deals 3 damage to any target.</div>
+            </div>
+          </div>
+          <div class="sheet-actions">
+            <button class="btn-sheet-add">Add to Deck</button>
+            <button class="btn-sheet-remove">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
