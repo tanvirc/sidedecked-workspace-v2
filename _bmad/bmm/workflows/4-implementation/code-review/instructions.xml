@@ -58,6 +58,16 @@
     <action>Check story file for "## UX Design Reference" section</action>
     <check if="UX Design Reference section exists AND wireframe path is specified">
       <action>Load wireframe file</action>
+
+      <!-- Load Figma design context for review reference -->
+      <action>Extract Figma File Key and Figma Node ID from UX Design Reference</action>
+      <check if="Figma File Key and Figma Node ID are present and not 'N/A'">
+        <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma reference code and screenshot for review</action>
+        <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") for visual comparison</action>
+        <action>Check Code Connect mappings: call get_code_connect_map(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}")</action>
+        <action>Set {{figma_available}} = true</action>
+      </check>
+
       <action>Check for Phase 5B UX Validation Report at _bmad-output/ux-validation/{{story_key}}/ux-validation-report.md</action>
       <check if="Phase 5B report exists">
         <action>Load the Phase 5B UX Validation Report</action>
@@ -68,6 +78,13 @@
       <check if="Phase 5B report does NOT exist">
         <action>Add to review plan:
           5. **Wireframe Compliance**: Verify UI components match wireframe layout, design tokens, and interaction patterns
+        </action>
+      </check>
+
+      <!-- Add Figma Design Compliance to review plan when Figma is available -->
+      <check if="{{figma_available}} == true">
+        <action>Add to review plan:
+          6. **Figma Design Compliance**: Verify implementation matches Figma reference code structure, token mappings, and Code Connect mappings exist
         </action>
       </check>
     </check>
@@ -111,7 +128,7 @@
       5. **Test Quality**: Are tests real assertions or placeholders?
     </action>
 
-    <!-- Wireframe Compliance Audit (UI stories only) -->
+    <!-- Wireframe Compliance Audit (UI stories only, Figma-enhanced when available) -->
     <check if="wireframe loaded">
       <action>For EACH UI component in File List:
         1. **Token Usage**: Grep for hardcoded Tailwind colors (bg-gray-*, text-gray-*, bg-blue-*, etc.) → MEDIUM finding
@@ -119,6 +136,16 @@
         3. **Interaction States**: Verify hover/focus/active states use wireframe's specified patterns → MEDIUM finding
         4. **Mobile Patterns**: Verify mobile-specific behavior (bottom sheets, responsive columns) matches wireframe → HIGH if missing
       </action>
+
+      <!-- Figma-Enhanced Audit (when Figma is available) -->
+      <check if="{{figma_available}} == true">
+        <action>For EACH UI component in File List, additional Figma checks:
+          5. **Structure Match (Figma)**: Compare JSX hierarchy against Figma reference code from get_design_context → HIGH if hierarchy differs from Figma (Figma is authoritative over HTML wireframe)
+          6. **Token Compliance (Figma)**: Compare CSS values against Figma variables from get_variable_defs → MEDIUM if values are approximate rather than exact matches
+          7. **Code Connect Verification**: Check that Code Connect mappings exist for UI components via get_code_connect_map → LOW if mappings are missing
+          8. **Visual Comparison (Figma)**: Compare Figma golden reference screenshot (figma-golden-reference.png) against implementation screenshots → note visual discrepancies
+        </action>
+      </check>
 
       <!-- Visual Diff Gate -->
       <critical>FULL-PAGE VISUAL COMPARISON: Do NOT only compare individual components in isolation</critical>

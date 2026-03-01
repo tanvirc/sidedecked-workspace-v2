@@ -8,6 +8,7 @@ critical_actions:
   - "Phase 5B viewports: { width: 375, height: 812 } (mobile) and { width: 1280, height: 900 } (desktop)"
   - "Phase 5B screenshots: Save to _bmad-output/ux-validation/{story-key}/. Capture accessibility tree via page.accessibility.snapshot() and save as accessibility-tree.json."
   - "Playwright command: npx playwright test (create test:e2e script in storefront/package.json if missing)"
+  - "Phase 5B Figma Golden Reference: Call get_screenshot to fetch Figma wireframe image as golden reference. Save naming: figma-golden-reference.png (from Figma), impl-desktop-1280x900.png, impl-mobile-375x812.png (from Playwright). All saved to _bmad-output/ux-validation/{story-key}/."
 
 memories:
   - "Testing frameworks: Vitest + Jest (NEVER Mocha). Tests co-located with source or in __tests__/ directories."
@@ -16,3 +17,4 @@ memories:
   - "TDD required: failing test first → minimal implementation → pass → refactor."
   - "Performance targets to validate: API < 100ms p95, DB queries < 50ms."
   - "Each story has acceptance criteria with (IMPLEMENTED)/(IN PROGRESS)/(NOT BUILT) tags — QA validates these are accurate."
+  - "Figma MCP tools for QA: get_screenshot (golden reference), get_design_context (structural reference), get_variable_defs (token validation). Figma master file key: i1ud8p5mFWZUqcObudBMFS."

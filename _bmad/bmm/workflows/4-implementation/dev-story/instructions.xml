@@ -175,6 +175,21 @@
       <output>🎨 **UX Wireframe Loaded** — Implementation must match wireframe layout, tokens, and interactions</output>
     </check>
 
+    <!-- Load Figma design context when available -->
+    <action>Check story file's UX Design Reference for Figma File Key and Figma Node ID</action>
+    <check if="Figma File Key and Figma Node ID are present and not 'N/A'">
+      <action>Set {{figma_file_key}} from UX Design Reference</action>
+      <action>Set {{figma_story_node_id}} from UX Design Reference</action>
+      <action>Set {{figma_available}} = true</action>
+      <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma reference code and screenshot</action>
+      <action>Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma design token definitions</action>
+      <action>Build token mapping table from Figma tokens (Figma-first). Cross-reference with HTML wireframe CSS — Figma takes precedence on conflicts:
+        | CSS Property | HTML Wireframe Value | Figma Variable | Tailwind Class | Source |
+        |---|---|---|---|---|
+      </action>
+      <output>🎨 **Figma Context Loaded** — Figma tokens are authoritative; HTML wireframe is secondary reference</output>
+    </check>
+
     <output>✅ **Context Loaded**
       Story and project context available for implementation
     </output>
@@ -308,6 +323,13 @@
         - Check render order, container nesting, and spacing between all visible sections
         - If the wireframe shows surrounding context from other stories, verify those sections still match
       </action>
+
+      <!-- Figma Compliance Checks (when Figma context available) -->
+      <check if="{{figma_available}} == true">
+        <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") for visual comparison against current implementation state</action>
+        <action>Compare component structure against Figma reference code from get_design_context — verify hierarchy matches</action>
+        <action>Verify Figma token mappings are applied correctly in the implementation</action>
+      </check>
     </check>
 
     <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
@@ -367,6 +389,13 @@
       <action>Verify layout structure matches wireframe (grid columns, spacing, nesting)</action>
       <action>Verify interaction patterns match wireframe (hover states, transitions, mobile behavior)</action>
       <action if="wireframe deviations found">DO NOT mark task complete - fix wireframe compliance first</action>
+
+      <!-- Figma Token + Structure Compliance (when Figma context available) -->
+      <check if="{{figma_available}} == true">
+        <action>Verify Figma token compliance: each CSS value in the implementation maps to the correct Figma variable from get_variable_defs</action>
+        <action>Verify Figma structural compliance: JSX component hierarchy matches Figma reference code from get_design_context</action>
+        <action if="Figma compliance deviations found">DO NOT mark task complete - fix Figma compliance first (Figma is authoritative over HTML wireframe)</action>
+      </check>
     </check>
 
     <!-- ONLY MARK COMPLETE IF ALL VALIDATION PASS -->

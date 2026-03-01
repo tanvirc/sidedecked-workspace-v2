@@ -7,6 +7,9 @@ critical_actions:
   - "Forbidden hardcoded patterns in JSX: bg-gray-*, text-gray-*, hex colors (#xxx/#xxxxxx), rgb(), hsl(). All colors/spacing must use CSS custom properties from storefront/src/styles/globals.css or Tailwind semantic classes."
   - "Storefront breakpoints for UX validation: mobile 375px, desktop 1280px."
   - "Phase 5B output location: _bmad-output/ux-validation/{story-key}/ — contains ux-validation-report.md, screenshots, and accessibility-tree.json."
+  - "Figma MCP in Phase 2B: Use get_design_context and get_screenshot to read the master Figma file. Use generate_figma_design to capture wireframes into Figma. Use get_variable_defs to extract design tokens."
+  - "Figma Golden Reference in Phase 5B: Call get_screenshot for golden reference, save to _bmad-output/ux-validation/{story-key}/figma-golden-reference.png. Compare against Playwright implementation screenshots."
+  - "Figma Token Authority: When Figma tokens (from get_variable_defs) conflict with HTML wireframe CSS values, Figma takes precedence as the authoritative token source."
 
 memories:
   - "Two frontend surfaces: storefront/ (Next.js 14, customer-facing) and vendorpanel/ (React 18 + Vite, vendor-facing)."
@@ -14,3 +17,4 @@ memories:
   - "UX outputs go in _bmad-output/planning-artifacts/. Reference existing storefront components before designing new patterns."
   - "Key UX flows: card browsing/search (Algolia-powered), multi-vendor cart, vendor inventory management, deck builder, community forum."
   - "TCG-specific UX: card condition grades (NM, LP, MP, HP, DMG), foil/variant display, set/edition filtering are core patterns."
+  - "Figma master file key: i1ud8p5mFWZUqcObudBMFS. Primary Figma MCP tools: get_design_context (primary), get_screenshot, get_variable_defs, generate_figma_design."

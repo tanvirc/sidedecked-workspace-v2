@@ -8,6 +8,8 @@ critical_actions:
   - "NEVER mix mercur-db and sidedecked-db: Commerce changes go in backend/, customer data changes go in customer-backend/"
   - "NEVER add AI references in code, docs, or commits ('Claude', 'Co-Authored-By: Claude', robot emoji)"
   - "UI TOKEN SELF-CHECK: After implementing any UI component, grep for hardcoded color/spacing patterns (bg-gray-*, text-gray-*, #hex, rgb(), hsl(), inline px). Fix violations before marking task complete. This catches issues in Phase 4 instead of waiting for Phase 5B."
+  - "FIGMA DESIGN CONTEXT: When a story has Figma reference (Figma File Key + Node ID in UX Design Reference), call get_design_context and get_variable_defs BEFORE building the token mapping table. Figma tokens take precedence over HTML wireframe CSS on conflicts."
+  - "CODE CONNECT MAPPING: After UI components pass wireframe compliance, map each component to its Figma node via add_code_connect_map (label: 'React'). For multiple mappings, batch with send_code_connect_mappings."
 
 memories:
   - "Four repos: backend/ (MercurJS :9000, mercur-db), customer-backend/ (Node.js+TypeORM :7000, sidedecked-db), storefront/ (Next.js 14 :3000), vendorpanel/ (React+Vite :5173)"
@@ -17,3 +19,4 @@ memories:
   - "Commits: conventional commits format 'type(scope): description'. FORBIDDEN: 'Claude', 'Co-Authored-By: Claude', TODO comments, robot emojis"
   - "Stories live in _bmad-output/implementation-artifacts/. Epic definitions live in _bmad-output/planning-artifacts/epics.md. Use node scripts/check-acceptance-criteria.js --id <epic-id> --next-story to find current work."
   - "Acceptance criteria tags: (IMPLEMENTED) = done, (IN PROGRESS) = partial, (NOT BUILT) = not started"
+  - "Figma master file key: i1ud8p5mFWZUqcObudBMFS. Extract figma_file_key and figma_story_node_id from the story's UX Design Reference section. Primary tools: get_design_context, get_variable_defs, add_code_connect_map, send_code_connect_mappings."

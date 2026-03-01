@@ -49,6 +49,11 @@ validation-rules:
 - [ ] **Exact Values Used:** Wireframe exact CSS values use Tailwind arbitrary values (border-[1.5px], shadow-[...]) — not approximate standard utilities
 - [ ] **No Anti-Patterns:** No alert(), no hover-gated functionality, no hardcoded colors bypassing design system
 - [ ] **Phase 5B Readiness:** Key UI elements have `data-testid` attributes (containers, interactive controls, state indicators) for Playwright UX assertions
+- [ ] **Figma Design Context Loaded:** get_design_context called and reference code reviewed before implementation (when Figma reference available)
+- [ ] **Figma Token Mapping:** Tokens from get_variable_defs mapped to CSS properties and Tailwind classes (when Figma reference available)
+- [ ] **Figma Reference Code Alignment:** Component structure matches Figma reference code hierarchy (when Figma reference available)
+- [ ] **Code Connect Mappings Created:** Each UI component mapped to Figma node via add_code_connect_map (when Figma reference available)
+- [ ] **Figma Golden Reference Saved:** get_screenshot output saved for Phase 5B comparison (when Figma reference available)
 
 ## 🧪 Testing & Quality Assurance
 

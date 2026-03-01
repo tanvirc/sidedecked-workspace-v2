@@ -25,6 +25,9 @@ variables:
   ux_wireframe_dir: "{planning_artifacts}"
   story_file_path: ""
   plan_file_path: ""
+  figma_file_key: "i1ud8p5mFWZUqcObudBMFS"
+  figma_story_node_id: ""   # Set per-story from UX Design Reference
+  figma_available: false     # Set in Phase 2B after MCP connectivity check
 
 # Superpowers skill references (for documentation - invoked at runtime)
 superpowers:
@@ -66,6 +69,7 @@ sessions:
     artifacts_saved:
       - "docs/plans/{date}-{story-key}-plan.md"
       - "_bmad-output/planning-artifacts/ux-{story-key}-wireframe.html (UI stories only)"
+      - "Figma wireframe node in file {figma_file_key} (UI stories, primary when available)"
   build:
     phases: [4, 5]
     description: "Implement story with TDD and validate with integration tests"
