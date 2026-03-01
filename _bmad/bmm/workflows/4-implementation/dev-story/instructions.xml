@@ -180,14 +180,22 @@
     <check if="Figma File Key and Figma Node ID are present and not 'N/A'">
       <action>Set {{figma_file_key}} from UX Design Reference</action>
       <action>Set {{figma_story_node_id}} from UX Design Reference</action>
-      <action>Set {{figma_available}} = true</action>
-      <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma reference code and screenshot</action>
-      <action>Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma design token definitions</action>
-      <action>Build token mapping table from Figma tokens (Figma-first). Cross-reference with HTML wireframe CSS — Figma takes precedence on conflicts:
-        | CSS Property | HTML Wireframe Value | Figma Variable | Tailwind Class | Source |
-        |---|---|---|---|---|
-      </action>
-      <output>🎨 **Figma Context Loaded** — Figma tokens are authoritative; HTML wireframe is secondary reference</output>
+      <!-- Verify MCP connectivity before trusting stored Figma fields -->
+      <action>Call get_screenshot(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to verify Figma MCP is reachable in this session</action>
+      <check if="get_screenshot succeeded">
+        <action>Set {{figma_available}} = true</action>
+        <action>Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma reference code and screenshot</action>
+        <action>Call get_variable_defs(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}") to load Figma design token definitions</action>
+        <action>Build token mapping table from Figma tokens (Figma-first). Cross-reference with HTML wireframe CSS — Figma takes precedence on conflicts:
+          | CSS Property | HTML Wireframe Value | Figma Variable | Tailwind Class | Source |
+          |---|---|---|---|---|
+        </action>
+        <output>🎨 **Figma Context Loaded** — Figma tokens are authoritative; HTML wireframe is secondary reference</output>
+      </check>
+      <check if="get_screenshot failed or MCP is unavailable">
+        <action>Set {{figma_available}} = false</action>
+        <output>⚠️ **Figma MCP Unavailable** — using HTML wireframe as sole design reference</output>
+      </check>
     </check>
 
     <output>✅ **Context Loaded**
