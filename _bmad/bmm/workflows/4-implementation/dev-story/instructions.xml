@@ -160,6 +160,18 @@
         - Interaction states (hover, focus, active, loading, empty, error)
       </action>
       <action>Store wireframe context as {{ux_wireframe_context}} for implementation reference</action>
+
+      <!-- Wireframe Token Mapping Table -->
+      <critical>BEFORE writing any component code, create a token mapping table</critical>
+      <action>Extract ALL CSS values from the wireframe and create a mapping table:
+        1. **Font families**: List each font-family used in wireframe → identify the corresponding Tailwind utility class (e.g., 'Rajdhani' → font-rajdhani). Flag any font NOT yet imported in layout.tsx.
+        2. **Font sizes**: List each font-size → map to Tailwind class or arbitrary value (e.g., 18px → text-[18px])
+        3. **Border widths**: List exact values → map to Tailwind (e.g., 1.5px → border-[1.5px])
+        4. **Box shadows**: List exact values → map to Tailwind arbitrary values when no standard utility matches
+        5. **Colors/backgrounds**: Confirm each maps to a design token CSS variable, not a hardcoded value
+      </action>
+      <action>For any wireframe value that requires a NEW font import, CSS variable, or Tailwind key — add these as prerequisite tasks BEFORE component implementation</action>
+
       <output>🎨 **UX Wireframe Loaded** — Implementation must match wireframe layout, tokens, and interactions</output>
     </check>
 
@@ -270,6 +282,32 @@
       <action>Use design-token-based Tailwind utilities (e.g., bg-card, text-foreground, border-border), or the corresponding CSS variables (e.g., var(--bg-card)), NOT generic Tailwind colors (e.g., bg-gray-800, text-gray-100)</action>
       <action>Match wireframe's component structure, layout patterns, and interaction states</action>
       <action>Verify responsive breakpoint behavior matches wireframe specifications</action>
+
+      <!-- Font Import Verification -->
+      <critical>FONT VERIFICATION: When ACs or wireframe specify a typeface, verify the FULL chain</critical>
+      <action>For each font specified in the wireframe:
+        1. Verify font is imported in layout.tsx via next/font/google (or equivalent)
+        2. Verify the CSS variable (e.g., --font-rajdhani) is injected on the body element
+        3. Verify the intermediate CSS variable (e.g., --font-heading) in colors.css references it
+        4. Verify the Tailwind fontFamily key (e.g., font-rajdhani) maps to the correct CSS variable
+        5. If ANY step in the chain is missing → add it BEFORE writing component code
+      </action>
+
+      <!-- Exact-Value-First Policy -->
+      <critical>EXACT VALUES: Use Tailwind arbitrary values when wireframe specifies exact CSS values that don't match standard utilities</critical>
+      <action>When the wireframe specifies an exact value:
+        - border-width: 1.5px → use border-[1.5px], NOT border (which is 1px)
+        - box-shadow: specific values → use shadow-[...], NOT shadow-2xl (which has different values)
+        - font-size: 18px → use text-[18px], NOT text-lg (which is 18px but verify)
+        - Only use standard Tailwind utilities when the computed value EXACTLY matches the wireframe value
+      </action>
+
+      <!-- Full-Page Context Check -->
+      <action>When implementing a component that appears on a page alongside other components:
+        - Verify the FULL PAGE layout matches the wireframe — not just the component in isolation
+        - Check render order, container nesting, and spacing between all visible sections
+        - If the wireframe shows surrounding context from other stories, verify those sections still match
+      </action>
     </check>
 
     <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>

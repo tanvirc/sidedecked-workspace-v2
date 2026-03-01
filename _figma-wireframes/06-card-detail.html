@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Page 6: Card Detail Page</title>
+<style>
+:root{--bg-base:#0C0D12;--bg-s1:#13141A;--bg-s2:#1A1C24;--bg-s3:#22242E;--bg-s4:#2A2D38;--accent:#D4A843;--accent-hover:#E0B94F;--accent-dim:rgba(212,168,67,0.15);--blue:#7C8CFF;--blue-dim:rgba(124,140,255,0.12);--green:#4ADE80;--green-dim:rgba(74,222,128,0.08);--red:#EF5350;--warn:#FBBF24;--text-1:#E8ECF1;--text-2:#8B93A6;--text-3:#4F5568;--text-price:#D4A843;--border-s:rgba(255,255,255,0.06);--border-d:rgba(255,255,255,0.10);--r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:24px;--r-full:9999px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;color:var(--text-1);background:var(--bg-base);-webkit-font-smoothing:antialiased;}
+body{padding:48px 32px;max-width:1440px;margin:0 auto;}
+.page-header{text-align:center;margin-bottom:64px;padding-bottom:32px;border-bottom:1px solid var(--border-d);}
+.page-header h1{font-size:32px;font-weight:700;}.page-header h1 span{color:var(--accent);}
+.page-header p{color:var(--text-2);margin-top:8px;}
+.frame{margin-bottom:64px;padding:32px;background:var(--bg-s1);border:1px solid var(--border-d);border-radius:var(--r-xl);}
+.frame-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue);margin-bottom:16px;padding:4px 12px;background:var(--blue-dim);border-radius:var(--r-sm);display:inline-block;}
+.frame-title{font-size:18px;font-weight:700;margin-bottom:8px;}
+.frame-desc{font-size:12px;color:var(--text-2);margin-bottom:24px;}
+.annotation{font-size:10px;color:var(--blue);font-family:monospace;margin-top:12px;padding:4px 8px;background:var(--blue-dim);border-radius:4px;display:inline-block;}
+.note{font-size:11px;color:var(--accent);background:var(--accent-dim);border:1px dashed rgba(212,168,67,0.3);border-radius:var(--r-sm);padding:8px 12px;margin-top:12px;}
+
+/* 3-column desktop layout */
+.detail-layout{display:grid;grid-template-columns:320px 1fr 340px;gap:24px;background:var(--bg-base);border:1px solid var(--border-d);border-radius:var(--r-lg);padding:24px;align-items:start;}
+
+/* Card image */
+.card-image{aspect-ratio:5/7;background:linear-gradient(135deg,#1a0a2e,#6b1fa8 50%,#e8c84a);border-radius:var(--r-lg);position:sticky;top:80px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:13px;font-weight:500;}
+
+/* Card info */
+.card-info-col{padding:0;}
+.breadcrumb{font-size:11px;color:var(--text-3);margin-bottom:16px;}
+.breadcrumb a{color:var(--blue);text-decoration:none;}
+.card-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.card-subtitle{font-size:13px;color:var(--text-2);margin-bottom:16px;}
+.game-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;margin-right:8px;}
+.game-mtg{background:rgba(155,89,208,0.25);color:#C084FC;}
+.rarity-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;}
+.rarity-mythic{background:rgba(232,93,38,0.14);color:#E85D26;}
+
+.info-section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border-s);}
+.info-section:last-child{border-bottom:none;}
+.info-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);margin-bottom:8px;}
+.oracle-text{font-size:13px;color:var(--text-2);line-height:1.6;padding:12px;background:var(--bg-s2);border-radius:var(--r-md);border:1px solid var(--border-s);}
+.legality-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.legality-pill{padding:4px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:600;text-align:center;}
+.legal{background:rgba(74,222,128,0.12);color:var(--green);}
+.banned{background:rgba(239,83,80,0.12);color:var(--red);}
+.not-legal{background:rgba(79,85,104,0.2);color:var(--text-3);}
+
+/* Print browser */
+.print-row{display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:6px;cursor:pointer;}
+.print-row:hover{border-color:rgba(124,140,255,0.3);}
+.print-row.active{border-color:var(--accent);}
+.print-thumb{width:36px;height:50px;border-radius:4px;background:linear-gradient(135deg,var(--bg-s3),var(--bg-s4));flex-shrink:0;}
+.print-name{font-size:12px;font-weight:500;}
+.print-set{font-size:10px;color:var(--text-3);}
+.print-price{font-family:monospace;font-size:12px;color:var(--text-price);margin-left:auto;}
+
+/* QuickBuy panel */
+.quick-buy{position:sticky;top:80px;background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-lg);padding:20px;overflow:hidden;}
+.qb-price{font-family:monospace;font-size:28px;font-weight:700;color:var(--text-price);margin-bottom:2px;}
+.qb-context{font-size:12px;color:var(--text-2);margin-bottom:16px;}
+.qb-label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.condition-chips{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.cond-chip{padding:6px 12px;border-radius:var(--r-sm);font-size:11px;font-weight:600;border:1px solid var(--border-d);background:var(--bg-s3);color:var(--text-2);cursor:pointer;}
+.cond-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+.cond-chip .price{font-family:monospace;font-size:10px;color:var(--text-3);display:block;margin-top:2px;}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.qty-control{display:flex;align-items:center;border:1px solid var(--border-d);border-radius:var(--r-sm);overflow:hidden;}
+.qty-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--bg-s3);color:var(--text-2);border:none;cursor:pointer;font-size:16px;font-family:inherit;}
+.qty-val{width:40px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;background:var(--bg-s2);}
+.btn-gold{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:var(--accent);color:var(--bg-base);border:none;border-radius:var(--r-sm);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;margin-bottom:8px;}
+.btn-outline-full{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:transparent;color:var(--text-1);border:1px solid var(--border-d);border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;}
+.seller-info{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);margin-top:16px;padding-top:12px;border-top:1px solid var(--border-s);}
+.seller-info strong{color:var(--text-1);}
+.stock-badge{font-size:11px;padding:2px 8px;border-radius:var(--r-sm);font-weight:600;}
+.stock-in{background:rgba(74,222,128,0.12);color:var(--green);}
+.stock-low{background:rgba(251,191,36,0.12);color:var(--warn);}
+
+/* Seller listings */
+.listing-row{display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:8px;}
+.listing-seller{flex:1;}
+.listing-seller-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.listing-seller-trust{font-size:11px;color:var(--text-2);}
+.listing-cond{padding:3px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:600;}
+.cond-nm{background:rgba(74,222,128,0.12);color:var(--green);}
+.cond-lp{background:rgba(251,191,36,0.12);color:var(--warn);}
+.listing-price{font-family:monospace;font-size:16px;font-weight:600;color:var(--text-price);text-align:right;}
+.listing-shipping{font-size:10px;color:var(--text-3);}
+.listing-btn{padding:8px 16px;background:var(--accent);color:var(--bg-base);border:none;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+
+/* Mobile */
+.phone{width:375px;background:#000;border-radius:44px;border:8px solid #1E2028;box-shadow:0 20px 60px rgba(0,0,0,0.5);overflow:hidden;margin:0 auto;}
+.phone-screen{background:var(--bg-base);max-height:780px;overflow-y:auto;scrollbar-width:none;}
+.phone-screen::-webkit-scrollbar{display:none;}
+.phone-status{display:flex;justify-content:space-between;padding:28px 20px 8px;font-size:12px;font-weight:600;}
+.m-top{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 10px;border-bottom:1px solid var(--border-s);}
+.m-sticky-bar{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(19,20,26,0.95);backdrop-filter:blur(16px);border-top:1px solid var(--border-s);}
+
+/* QuickBuy states */
+.qb-states{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;}
+.qb-state{padding:16px;background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-md);}
+.qb-state-title{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;margin-bottom:8px;}
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Card <span>Detail</span> Page</h1>
+  <p>Page 6 — The gravitational center where all journeys converge (Story 2-5)</p>
+</div>
+
+<!-- FRAME 6.1: Desktop -->
+<div class="frame">
+  <div class="frame-label">Frame 6.1 — Desktop 1280px — Card Detail (2-5)</div>
+  <div class="frame-title">Card Detail — Desktop 3-Column Layout</div>
+  <div class="frame-desc">Left (card image sticky) + Center (card info, oracle text, format legality, print browser) + Right (QuickBuyPanel sticky).</div>
+
+  <div class="detail-layout">
+    <!-- Left: Card Image -->
+    <div class="card-image">Card Art<br>MTG &middot; Mythic</div>
+
+    <!-- Center: Card Info -->
+    <div class="card-info-col">
+      <div class="breadcrumb"><a href="#">Browse</a> / <a href="#">Magic</a> / <a href="#">Modern Horizons 2</a> / Ragavan</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="game-badge game-mtg">MTG</span>
+        <span class="rarity-badge rarity-mythic">Mythic Rare</span>
+      </div>
+      <div class="card-title">Ragavan, Nimble Pilferer</div>
+      <div class="card-subtitle">Modern Horizons 2 &middot; #138 &middot; Creature &mdash; Monkey Pirate</div>
+
+      <div class="info-section">
+        <div class="info-label">Oracle Text</div>
+        <div class="oracle-text">Whenever Ragavan, Nimble Pilferer deals combat damage to a player, create a Treasure token and exile the top card of that player's library. Until end of turn, you may cast that card.<br><br>Dash {1}{R}</div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-label">Format Legality</div>
+        <div class="legality-grid">
+          <div class="legality-pill legal">Modern &#10003;</div>
+          <div class="legality-pill legal">Legacy &#10003;</div>
+          <div class="legality-pill legal">Vintage &#10003;</div>
+          <div class="legality-pill not-legal">Standard</div>
+          <div class="legality-pill legal">Commander &#10003;</div>
+          <div class="legality-pill not-legal">Pioneer</div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-label">Other Printings</div>
+        <div class="print-row active">
+          <div class="print-thumb"></div>
+          <div><div class="print-name">Modern Horizons 2</div><div class="print-set">#138 &middot; Normal</div></div>
+          <div class="print-price">from $38.50</div>
+        </div>
+        <div class="print-row">
+          <div class="print-thumb"></div>
+          <div><div class="print-name">Modern Horizons 2</div><div class="print-set">#138 &middot; Foil</div></div>
+          <div class="print-price">from $52.00</div>
+        </div>
+        <div class="print-row">
+          <div class="print-thumb"></div>
+          <div><div class="print-name">Modern Horizons 2</div><div class="print-set">#321 &middot; Extended Art</div></div>
+          <div class="print-price">from $65.00</div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-label">All Listings</div>
+        <div class="listing-row">
+          <div class="listing-seller"><div class="listing-seller-name">CardKingdom</div><div class="listing-seller-trust">99.8% &middot; 2,847 sales &middot; Toronto</div></div>
+          <span class="listing-cond cond-nm">NM</span>
+          <div><div class="listing-price">$38.50</div><div class="listing-shipping">+ $4.99 shipping</div></div>
+          <button class="listing-btn">Add to Cart</button>
+        </div>
+        <div class="listing-row">
+          <div class="listing-seller"><div class="listing-seller-name">MTG Deals</div><div class="listing-seller-trust">98.5% &middot; 1,204 sales &middot; Vancouver</div></div>
+          <span class="listing-cond cond-nm">NM</span>
+          <div><div class="listing-price">$39.99</div><div class="listing-shipping">+ $3.99 shipping</div></div>
+          <button class="listing-btn">Add to Cart</button>
+        </div>
+        <div class="listing-row">
+          <div class="listing-seller"><div class="listing-seller-name">Player_TCG_42</div><div class="listing-seller-trust">97.2% &middot; 89 sales &middot; Montreal</div></div>
+          <span class="listing-cond cond-lp">LP</span>
+          <div><div class="listing-price">$34.00</div><div class="listing-shipping">+ $2.99 shipping</div></div>
+          <button class="listing-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: QuickBuy -->
+    <div class="quick-buy">
+      <div class="qb-price">$38.50</div>
+      <div class="qb-context">3 sellers &middot; lowest NM &middot; market avg $42.00</div>
+
+      <div class="qb-label">Condition</div>
+      <div class="condition-chips">
+        <div class="cond-chip active">NM<span class="price">$38.50</span></div>
+        <div class="cond-chip">LP<span class="price">$34.00</span></div>
+        <div class="cond-chip">MP<span class="price">$28.00</span></div>
+      </div>
+
+      <div class="qb-label">Quantity</div>
+      <div class="qty-row">
+        <div class="qty-control">
+          <button class="qty-btn">&minus;</button>
+          <div class="qty-val">1</div>
+          <button class="qty-btn">+</button>
+        </div>
+        <span class="stock-badge stock-in">In Stock (8)</span>
+      </div>
+
+      <button class="btn-gold">&#128722; Add to Cart &mdash; $38.50</button>
+      <button class="btn-outline-full">&#128150; Add to Wishlist</button>
+
+      <div class="seller-info">
+        Best price from <strong>CardKingdom</strong> &middot; 99.8% positive &middot; Ships from Toronto
+      </div>
+    </div>
+  </div>
+  <div class="annotation">BFF endpoint: customer-backend /bff/cards/:id | Left (catalog): customer-backend | Right (listings, pricing): backend via BFF with circuit breaker | Printings: customer-backend /cards/:id/printings</div>
+</div>
+
+<!-- FRAME 6.2: Mobile -->
+<div class="frame">
+  <div class="frame-label">Frame 6.2 — Mobile 375px — Card Detail (2-5)</div>
+  <div class="frame-title">Card Detail — Mobile Stacked</div>
+  <div class="frame-desc">Image + info + print browser + listings + sticky bottom bar (price + Add to Cart).</div>
+
+  <div class="phone">
+    <div class="phone-screen">
+      <div class="phone-status"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+      <div class="m-top">
+        <span style="font-size:14px;color:var(--text-2)">&larr;</span>
+        <span style="font-size:14px;font-weight:600">Ragavan, Nimble Pilferer</span>
+        <span style="font-size:14px;color:var(--text-2)">&#128150;</span>
+      </div>
+      <!-- Card image -->
+      <div style="margin:12px 16px;aspect-ratio:5/7;background:linear-gradient(135deg,#1a0a2e,#6b1fa8 50%,#e8c84a);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:12px;max-height:280px">Card Art</div>
+      <!-- Info -->
+      <div style="padding:0 16px 12px">
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <span class="game-badge game-mtg" style="font-size:9px">MTG</span>
+          <span class="rarity-badge rarity-mythic" style="font-size:9px">Mythic</span>
+        </div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:2px">Ragavan, Nimble Pilferer</div>
+        <div style="font-size:11px;color:var(--text-2);margin-bottom:12px">Modern Horizons 2 &middot; #138 &middot; Creature</div>
+        <div style="font-size:12px;color:var(--text-2);padding:10px;background:var(--bg-s2);border-radius:var(--r-md);border:1px solid var(--border-s);margin-bottom:12px;line-height:1.6">Whenever Ragavan deals combat damage to a player, create a Treasure token and exile the top card of that player's library...</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px">
+          <span style="padding:3px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:600;background:rgba(74,222,128,0.12);color:var(--green)">Modern &#10003;</span>
+          <span style="padding:3px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:600;background:rgba(74,222,128,0.12);color:var(--green)">Legacy &#10003;</span>
+          <span style="padding:3px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:600;background:rgba(79,85,104,0.2);color:var(--text-3)">Standard</span>
+        </div>
+      </div>
+      <!-- Listings -->
+      <div style="padding:0 16px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Sellers (3)</div>
+        <div style="padding:10px;background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600">CardKingdom</span><span style="font-family:monospace;font-size:14px;color:var(--text-price)">$38.50</span></div>
+          <div style="font-size:10px;color:var(--text-2)">99.8% &middot; NM &middot; + $4.99 ship</div>
+        </div>
+        <div style="padding:10px;background:var(--bg-s2);border:1px solid var(--border-s);border-radius:var(--r-md);margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:600">Player_TCG_42</span><span style="font-family:monospace;font-size:14px;color:var(--text-price)">$34.00</span></div>
+          <div style="font-size:10px;color:var(--text-2)">97.2% &middot; LP &middot; + $2.99 ship</div>
+        </div>
+      </div>
+      <div style="height:80px"></div>
+      <!-- Sticky bottom bar -->
+      <div class="m-sticky-bar">
+        <div><div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--text-price)">$38.50</div><div style="font-size:10px;color:var(--text-2)">NM &middot; CardKingdom</div></div>
+        <button style="padding:12px 24px;background:var(--accent);color:var(--bg-base);border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FRAME 6.3: QuickBuy States -->
+<div class="frame">
+  <div class="frame-label">Frame 6.3 — Both — QuickBuy States (2-5)</div>
+  <div class="frame-title">QuickBuy Panel States</div>
+
+  <div class="qb-states">
+    <div class="qb-state">
+      <div class="qb-state-title">Default — NM Selected</div>
+      <div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--text-price);margin-bottom:4px">$38.50</div>
+      <div style="font-size:11px;color:var(--text-2)">3 sellers &middot; NM</div>
+      <span class="stock-badge stock-in" style="margin-top:8px;display:inline-block">In Stock (8)</span>
+    </div>
+    <div class="qb-state">
+      <div class="qb-state-title">Different Condition — LP</div>
+      <div style="font-family:monospace;font-size:20px;font-weight:700;color:var(--text-price);margin-bottom:4px">$34.00</div>
+      <div style="font-size:11px;color:var(--text-2)">1 seller &middot; LP</div>
+      <span class="stock-badge stock-low" style="margin-top:8px;display:inline-block">Low Stock (2)</span>
+    </div>
+    <div class="qb-state">
+      <div class="qb-state-title">No Listings</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-2);margin-bottom:4px">No sellers available</div>
+      <div style="font-size:11px;color:var(--text-3)">Be notified when listed</div>
+      <button style="margin-top:8px;padding:8px 16px;background:var(--blue-dim);border:1px solid rgba(124,140,255,0.3);border-radius:var(--r-sm);color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;border:none">&#128276; Notify Me</button>
+    </div>
+    <div class="qb-state">
+      <div class="qb-state-title">Loading</div>
+      <div style="height:20px;background:linear-gradient(90deg,var(--bg-s3) 25%,var(--bg-s4) 50%,var(--bg-s3) 75%);border-radius:var(--r-sm);width:60%;margin-bottom:8px"></div>
+      <div style="height:12px;background:linear-gradient(90deg,var(--bg-s3) 25%,var(--bg-s4) 50%,var(--bg-s3) 75%);border-radius:var(--r-sm);width:80%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FRAME 6.5: Degraded State -->
+<div class="frame">
+  <div class="frame-label">Frame 6.5 — Both — Degraded State (2-5)</div>
+  <div class="frame-title">Circuit Breaker — Listings Unavailable</div>
+  <div class="frame-desc">Catalog data visible, commerce data unavailable. Shows fallback message.</div>
+
+  <div style="max-width:340px;padding:20px;background:var(--bg-s2);border:1px solid var(--border-d);border-radius:var(--r-lg)">
+    <div style="text-align:center;padding:24px">
+      <div style="font-size:24px;margin-bottom:8px">&#9888;</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Listings temporarily unavailable</div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:16px">We're having trouble loading seller listings. Card information is still available.</div>
+      <button style="padding:8px 16px;background:var(--accent);color:var(--bg-base);border:none;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Try Again</button>
+    </div>
+  </div>
+  <div class="note">Circuit breaker pattern: when backend (MedusaJS) is unavailable, card catalog data from customer-backend still shows. QuickBuy panel shows this fallback.</div>
+</div>
+
+</body>
+</html>

@@ -13,6 +13,9 @@
 - [ ] Tests identified and mapped to ACs; gaps noted
 - [ ] E2E tests present and passing (`npm run test:e2e`) for any UI story
 - [ ] E2E tests cover the UX wireframe acceptance criteria flows
+- [ ] Full-page visual comparison against wireframe at mobile (390px) and desktop (1280px) widths
+- [ ] Wireframe font families verified: each typeface is imported, CSS variable chain resolves, Tailwind utility maps correctly
+- [ ] Wireframe exact values audited: no approximate Tailwind utilities where wireframe specifies exact CSS values
 - [ ] Code quality review performed on changed files
 - [ ] Security review performed on changed files and dependencies
 - [ ] Outcome decided (Approve/Changes Requested/Blocked)

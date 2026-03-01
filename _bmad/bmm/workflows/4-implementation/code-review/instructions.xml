@@ -119,6 +119,21 @@
         3. **Interaction States**: Verify hover/focus/active states use wireframe's specified patterns → MEDIUM finding
         4. **Mobile Patterns**: Verify mobile-specific behavior (bottom sheets, responsive columns) matches wireframe → HIGH if missing
       </action>
+
+      <!-- Visual Diff Gate -->
+      <critical>FULL-PAGE VISUAL COMPARISON: Do NOT only compare individual components in isolation</critical>
+      <action>Compare the FULL rendered page against the wireframe at both mobile (390px) and desktop (1280px) widths:
+        1. **Page-level layout**: Verify render order, spacing between sections, and column structure match the wireframe's full page composition
+        2. **Cross-component context**: When a wireframe includes surrounding components (e.g., hero above grid), verify ALL visible sections — not just the story's primary component
+        3. **Component boundaries**: Check that components moved between containers (e.g., trust strip inside vs. outside hero) match wireframe placement
+      </action>
+
+      <!-- Exact Value Audit -->
+      <action>For EACH CSS value specified in the wireframe (font-size, border-width, box-shadow, etc.):
+        1. **Font families**: Verify wireframe font-family declarations resolve to the same typeface in the implementation (e.g., wireframe uses 'Rajdhani' → implementation uses font-rajdhani → CSS variable → actual Rajdhani font)
+        2. **Exact values vs approximations**: Flag any case where the implementation uses a standard Tailwind utility (border, shadow-2xl) instead of matching the wireframe's exact value (border-[1.5px], shadow-[0_8px_24px_...]) → MEDIUM finding
+        3. **Font imports**: Verify any font specified in the wireframe is actually imported in layout.tsx via next/font and the CSS variable chain resolves correctly
+      </action>
     </check>
 
     <check if="total_issues_found lt 3">

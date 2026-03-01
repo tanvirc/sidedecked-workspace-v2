@@ -39,10 +39,14 @@ validation-rules:
 
 ## 🎨 UX Wireframe Compliance (when applicable)
 
+- [ ] **Wireframe Token Mapping Table Created:** Before coding, every wireframe CSS value mapped to its Tailwind equivalent; missing imports/variables flagged
 - [ ] **Design Tokens Used:** All colors, spacing, borders use project design tokens (CSS variables), NOT hardcoded Tailwind color classes
 - [ ] **Layout Matches Wireframe:** Component hierarchy, grid structure, and responsive breakpoints match the wireframe HTML
+- [ ] **Full-Page Context Verified:** Full page layout matches wireframe — not just the component in isolation; render order, spacing, and container nesting checked
 - [ ] **Interaction States Match:** Hover, focus, active, loading, empty, and error states match wireframe specifications
 - [ ] **Mobile Patterns Match:** Mobile-specific patterns (bottom sheets, touch targets, responsive columns) match wireframe
+- [ ] **Font Import Chain Verified:** Every wireframe-specified typeface is imported (layout.tsx), has CSS variable (colors.css), and has Tailwind utility (tailwind.config)
+- [ ] **Exact Values Used:** Wireframe exact CSS values use Tailwind arbitrary values (border-[1.5px], shadow-[...]) — not approximate standard utilities
 - [ ] **No Anti-Patterns:** No alert(), no hover-gated functionality, no hardcoded colors bypassing design system
 - [ ] **Phase 5B Readiness:** Key UI elements have `data-testid` attributes (containers, interactive controls, state indicators) for Playwright UX assertions
 
