@@ -3,6 +3,15 @@ All notable changes to the SideDecked project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+### Added
+- **Game Selector Grid (Story 9.2)**: Homepage game tile grid letting visitors tap a TCG to land on the card browse page pre-filtered by game, with preference persisted via cookie
+  - `GameSelectorGrid` (RSC) and `GameTile` (`"use client"` island): 2×2 mobile / 4-column desktop grid of card-back tiles (MTG, Pokémon, Yu-Gi-Oh!, One Piece) with game-colour overlays, Rajdhani uppercase game names, and DM Mono listing counts; `aspect-ratio: 5/7` on all breakpoints; active scale, hover translate, focus-visible outline, and `prefers-reduced-motion` suppression
+  - `GET /api/catalog/listing-counts` (customer-backend): returns live listing counts per game code from `catalog_skus`, Redis-cached with 30s TTL; responds 503 when DB unavailable so tiles still render without counts (AC3 graceful omission)
+  - `fetchGameListingCounts()` (storefront): fetch wrapper with `revalidate: 30`; returns `undefined` on error for graceful omission
+  - `sd_game_pref` cookie: written client-side on tile tap (SameSite=Lax, 30-day expiry); read server-side in `/cards/page.tsx` to pre-filter Algolia via `initialUiState.refinementList.game`; URL `?game=` param takes precedence over cookie (AC5)
+  - Keyboard: `Tab` focus + `Enter` identical to tile tap — cookie write + navigation (AC6)
+  - Playwright E2E spec (`e2e/story-9-2-game-selector-grid.spec.ts`): 17 tests covering all ACs with mobile/desktop viewport screenshots
+
 ### Fixed
 - **Card Detail Page wireframe compliance (Story 2-5 remediation)**: Closed three v5.1 wireframe gaps discovered under strengthened story lifecycle compliance gates
   - `QuickBuyPanel` condition chips now use per-condition color coding — NM=green (#4ADE80), LP=lime (#A3E635), MP=yellow (warning), HP=red (negative) — replacing uniform amber; disabled (out-of-stock) chips retain condition color at 30% opacity with dashed border instead of uniform gray

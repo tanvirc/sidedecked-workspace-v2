@@ -2,7 +2,7 @@
 
 **Epic:** Epic 9 — Storefront Homepage Redesign
 **Story key:** 9-2-game-selector-grid
-**Status:** implemented
+**Status:** done
 
 ## User Story
 
@@ -12,17 +12,17 @@ So that I don't have to re-select my game on every visit.
 
 ## Acceptance Criteria
 
-**AC1:** Given I am on the homepage, When I view the section below the trust strip, Then a 2x2 grid (mobile) or 4-column row (desktop) of game tiles is visible **And** each tile shows the actual card-back image from `/public/images/card-backs/` with a game-colour overlay (MTG: purple, Pokemon: yellow, YGO: gold, One Piece: red) **And** each tile displays the game name in Rajdhani uppercase font and live listing count in DM Mono **And** tile aspect ratio is 5:7 on all breakpoints.
+**AC1:** Given I am on the homepage, When I view the section below the trust strip, Then a 2x2 grid (mobile) or 4-column row (desktop) of game tiles is visible **And** each tile shows the actual card-back image from `/public/images/card-backs/` with a game-colour overlay (MTG: purple, Pokemon: yellow, YGO: gold, One Piece: red) **And** each tile displays the game name in Rajdhani uppercase font and live listing count in DM Mono **And** tile aspect ratio is 5:7 on all breakpoints. (IMPLEMENTED)
 
-**AC2:** Given the listing counts are displayed, When the customer-backend listing count service is available, Then each count reflects current live inventory for that game, Redis-cached with 30s TTL.
+**AC2:** Given the listing counts are displayed, When the customer-backend listing count service is available, Then each count reflects current live inventory for that game, Redis-cached with 30s TTL. (IMPLEMENTED)
 
-**AC3:** Given the listing count service is unavailable, When the tile renders, Then the listing count is omitted (tile still renders without count; no error shown).
+**AC3:** Given the listing count service is unavailable, When the tile renders, Then the listing count is omitted (tile still renders without count; no error shown). (IMPLEMENTED)
 
-**AC4:** Given I tap the Pokemon tile, When the tap is registered, Then a `sd_game_pref=POKEMON` cookie is set (SameSite=Lax, 30-day expiry) **And** the user is navigated to `/cards?game=POKEMON` with the Pokemon game filter pre-selected. There is no selected state on the tile — navigation is immediate.
+**AC4:** Given I tap the Pokemon tile, When the tap is registered, Then a `sd_game_pref=POKEMON` cookie is set (SameSite=Lax, 30-day expiry) **And** the user is navigated to `/cards?game=POKEMON` with the Pokemon game filter pre-selected. There is no selected state on the tile — navigation is immediate. (IMPLEMENTED)
 
-**AC5:** Given I navigate to `/cards` without an explicit `?game=` URL param (e.g., via nav link), When the page renders server-side with `sd_game_pref=POKEMON` cookie present, Then the Pokémon game filter is pre-applied via Algolia `initialUiState`. The homepage tiles show no visual pre-highlight state.
+**AC5:** Given I navigate to `/cards` without an explicit `?game=` URL param (e.g., via nav link), When the page renders server-side with `sd_game_pref=POKEMON` cookie present, Then the Pokémon game filter is pre-applied via Algolia `initialUiState`. The homepage tiles show no visual pre-highlight state. (IMPLEMENTED)
 
-**AC6:** Given I navigate to a game tile using keyboard (Tab), When I press Enter, Then the game preference is applied identically to a tap interaction (cookie set + navigate to `/cards` with game filter pre-selected).
+**AC6:** Given I navigate to a game tile using keyboard (Tab), When I press Enter, Then the game preference is applied identically to a tap interaction (cookie set + navigate to `/cards` with game filter pre-selected). (IMPLEMENTED)
 
 ## Clarifications (Phase 2 — 2026-03-01)
 
