@@ -1,5 +1,7 @@
 # SideDecked TCG Catalog API Reference
 
+> ⚠️ INCOMPLETE — This file documents only the card search endpoint. Full API reference has not been written.
+
 ## Base URL
 ```
 Production: https://api.sidedecked.com

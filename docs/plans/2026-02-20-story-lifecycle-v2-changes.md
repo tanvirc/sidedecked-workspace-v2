@@ -1,5 +1,7 @@
 # Story Lifecycle v2 — Change Summary
 
+> ⚠️ HISTORICAL — v2 changes described here are now implemented in `_bmad/bmm/workflows/4-implementation/story-lifecycle/`
+
 **Goal:** Integrate Obra Superpowers skills into the BMAD story-lifecycle workflow
 
 **Draft files:**

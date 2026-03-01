@@ -1,5 +1,7 @@
 # SideDecked TCG Catalog System - Deployment Guide
 
+> ⚠️ DEPRECATED — see [production-deployment-guide.md](production-deployment-guide.md)
+
 ## Overview
 
 This guide covers the complete deployment of the SideDecked TCG Catalog System, including infrastructure setup, configuration, monitoring, and production readiness.
