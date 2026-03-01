@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SideDecked — Page 1: Design System</title>
+<style>
+:root {
+  --bg-base: #0C0D12;
+  --bg-s1: #13141A;
+  --bg-s2: #1A1C24;
+  --bg-s3: #22242E;
+  --bg-s4: #2A2D38;
+  --accent: #D4A843;
+  --accent-hover: #E0B94F;
+  --accent-dim: rgba(212,168,67,0.15);
+  --blue: #7C8CFF;
+  --blue-hover: #9BA6FF;
+  --blue-dim: rgba(124,140,255,0.12);
+  --green: #4ADE80;
+  --red: #EF5350;
+  --warn: #FBBF24;
+  --info: #60A5FA;
+  --text-1: #E8ECF1;
+  --text-2: #8B93A6;
+  --text-3: #4F5568;
+  --text-price: #D4A843;
+  --border-s: rgba(255,255,255,0.06);
+  --border-d: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px; --r-full: 9999px;
+  --sp1: 4px; --sp2: 8px; --sp3: 12px; --sp4: 16px; --sp5: 24px; --sp6: 32px; --sp7: 48px;
+  --rarity-common: #6B6B6B;
+  --rarity-uncommon: #A8B4C0;
+  --rarity-rare: #D4A843;
+  --rarity-mythic: #E85D26;
+  --mtg-white: #F9FAF4; --mtg-blue: #0E68AB; --mtg-black: #150B00; --mtg-red: #D3202A; --mtg-green: #00733E; --mtg-colorless: #A8A8A8;
+  --pkm-common: #6B6B6B; --pkm-ultra: #C0C0C0; --pkm-illustration: #D4AF37; --pkm-hyper: #FFD700;
+  --ygo-common: #8B8B8B; --ygo-rare: #C0C0C0; --ygo-super: #4FC3F7; --ygo-ultra: #FFD700; --ygo-secret: #E0B0FF;
+  --op-common: #B0B0B0; --op-uncommon: #4A90D9; --op-rare: #4CAF50; --op-super: #FFB300; --op-secret: #1A1A1A; --op-leader: #9C27B0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-1); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+body { padding: 48px 32px; max-width: 1440px; margin: 0 auto; }
+
+/* Page header */
+.page-header { text-align: center; margin-bottom: 64px; padding-bottom: 32px; border-bottom: 1px solid var(--border-d); }
+.page-header h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+.page-header h1 span { color: var(--accent); }
+.page-header p { color: var(--text-2); margin-top: 8px; font-size: 14px; }
+
+/* Section */
+.section { margin-bottom: 64px; }
+.section-title { font-size: 20px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--border-d); display: flex; align-items: center; gap: 12px; }
+.section-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 10px; border-radius: var(--r-sm); background: var(--blue-dim); color: var(--blue); }
+.subsection { margin-top: 32px; margin-bottom: 24px; }
+.subsection-title { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Color swatches */
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.swatch { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border-d); }
+.swatch-color { height: 64px; }
+.swatch-info { padding: 8px 12px; background: var(--bg-s1); }
+.swatch-name { font-size: 11px; font-weight: 600; color: var(--text-1); }
+.swatch-hex { font-size: 11px; color: var(--text-2); font-family: 'Geist Mono', monospace; }
+.swatch-token { font-size: 10px; color: var(--text-3); font-family: 'Geist Mono', monospace; }
+
+/* Typography samples */
+.type-sample { margin-bottom: 20px; display: flex; align-items: baseline; gap: 24px; padding: 16px; background: var(--bg-s1); border-radius: var(--r-md); border: 1px solid var(--border-s); }
+.type-preview { flex: 1; }
+.type-meta { font-size: 11px; color: var(--text-3); font-family: monospace; white-space: nowrap; min-width: 200px; }
+
+/* Spacing samples */
+.spacing-row { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+.spacing-bar { height: 24px; background: var(--blue-dim); border: 1px solid rgba(124,140,255,0.3); border-radius: 4px; }
+.spacing-label { font-size: 11px; color: var(--text-2); font-family: monospace; min-width: 120px; }
+
+/* Radius samples */
+.radius-grid { display: flex; gap: 24px; flex-wrap: wrap; }
+.radius-sample { width: 80px; height: 80px; background: var(--bg-s2); border: 2px solid var(--border-d); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+.radius-label { font-size: 10px; color: var(--text-3); font-family: monospace; }
+
+/* Component rows */
+.component-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--r-sm); font-size: 13px; font-weight: 600; border: none; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.btn-gold { background: var(--accent); color: var(--bg-base); }
+.btn-gold:hover { background: var(--accent-hover); }
+.btn-blue { background: var(--blue); color: var(--bg-base); }
+.btn-blue:hover { background: var(--blue-hover); }
+.btn-outline { background: transparent; color: var(--text-1); border: 1px solid var(--border-d); }
+.btn-outline:hover { border-color: var(--text-2); }
+.btn-ghost { background: transparent; color: var(--text-2); }
+.btn-ghost:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-lg { padding: 12px 28px; font-size: 15px; }
+.btn-disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Inputs */
+.input { padding: 10px 14px; background: var(--bg-s2); border: 1px solid var(--border-d); border-radius: var(--r-md); color: var(--text-1); font-size: 14px; font-family: inherit; outline: none; width: 280px; transition: border-color 0.15s; }
+.input:focus { border-color: var(--accent); }
+.input::placeholder { color: var(--text-3); }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-sm); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.badge-common { background: rgba(107,107,107,0.18); color: var(--rarity-common); }
+.badge-uncommon { background: rgba(168,180,192,0.14); color: var(--rarity-uncommon); }
+.badge-rare { background: rgba(212,168,67,0.14); color: var(--rarity-rare); }
+.badge-mythic { background: rgba(232,93,38,0.14); color: var(--rarity-mythic); }
+.badge-green { background: rgba(74,222,128,0.12); color: var(--green); }
+.badge-red { background: rgba(239,83,80,0.12); color: var(--red); }
+.badge-warn { background: rgba(251,191,36,0.12); color: var(--warn); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); }
+
+/* Toast */
+.toast { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: var(--bg-s3); border: 1px solid var(--border-d); border-radius: var(--r-md); min-width: 320px; max-width: 420px; }
+.toast-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.toast-body { flex: 1; }
+.toast-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
+.toast-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.toast-success { border-left: 3px solid var(--green); }
+.toast-error { border-left: 3px solid var(--red); }
+.toast-warning { border-left: 3px solid var(--warn); }
+.toast-info { border-left: 3px solid var(--info); }
+
+/* Skeleton */
+.skeleton { background: linear-gradient(90deg, var(--bg-s2) 25%, var(--bg-s3) 50%, var(--bg-s2) 75%); background-size: 200% 100%; border-radius: var(--r-sm); }
+.skeleton-text { height: 14px; margin-bottom: 8px; }
+.skeleton-card { aspect-ratio: 5/7; border-radius: var(--r-md); }
+.skeleton-btn { height: 40px; width: 120px; border-radius: var(--r-sm); }
+
+/* Card display variants */
+.card-display { background: var(--bg-s2); border: 1px solid var(--border-s); border-radius: var(--r-md); overflow: hidden; }
+.card-art { aspect-ratio: 5/7; background: linear-gradient(135deg, var(--bg-s2), var(--bg-s3)); display: flex; align-items: center; justify-content: center; color: var(--text-3); font-size: 11px; position: relative; }
+.card-info { padding: 10px 12px; }
+.card-name { font-size: 12px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.card-meta { font-size: 11px; color: var(--text-2); }
+.card-price { font-family: monospace; font-size: 14px; font-weight: 500; color: var(--text-price); margin-top: 4px; }
+.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* Price tag */
+.price-tag { display: inline-flex; align-items: center; gap: 6px; font-family: monospace; }
+.price-tag .amount { font-size: 16px; font-weight: 600; color: var(--text-price); }
+.price-tag .context { font-size: 11px; color: var(--text-2); }
+
+/* Condition badge */
+.cond-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: var(--r-sm); font-size: 11px; font-weight: 600; }
+.cond-nm { background: rgba(74,222,128,0.12); color: var(--green); }
+.cond-lp { background: rgba(251,191,36,0.12); color: var(--warn); }
+.cond-mp { background: rgba(239,83,80,0.08); color: #F59E0B; }
+.cond-hp { background: rgba(239,83,80,0.12); color: var(--red); }
+.cond-dmg { background: rgba(239,83,80,0.18); color: var(--red); }
+
+/* Game badge */
+.game-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.game-mtg { background: rgba(155,89,208,0.25); color: #C084FC; }
+.game-pkm { background: rgba(245,197,24,0.20); color: #F5C518; }
+.game-ygo { background: rgba(212,168,67,0.20); color: var(--accent); }
+.game-op { background: rgba(230,57,70,0.20); color: #F87171; }
+
+/* Nav mockup */
+.nav-desktop { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(34,36,46,0.82); backdrop-filter: blur(16px); border: 1px solid var(--border-s); border-radius: var(--r-lg); }
+.nav-logo { font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 24px; font-size: 13px; color: var(--text-2); }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+.nav-icon { width: 36px; height: 36px; border-radius: var(--r-sm); background: var(--bg-s2); border: 1px solid var(--border-s); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-2); }
+.nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #E85D26); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #000; }
+
+/* Mobile nav */
+.nav-mobile-bottom { display: flex; justify-content: space-around; padding: 8px 0 12px; background: var(--bg-s1); border-top: 1px solid var(--border-s); }
+.nav-tab { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: var(--text-3); padding: 4px 12px; }
+.nav-tab.active { color: var(--accent); }
+.nav-tab-icon { font-size: 18px; }
+
+/* Hero section */
+.hero-section { padding: 48px 32px; text-align: center; background: var(--bg-s1); border-radius: var(--r-xl); border: 1px solid var(--border-s); position: relative; overflow: hidden; }
+.hero-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% -20%, rgba(212,168,67,0.08) 0%, transparent 70%); pointer-events: none; }
+.hero-h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; position: relative; }
+.hero-h1 span { color: var(--accent); }
+.hero-sub { font-size: 14px; color: var(--text-2); margin-top: 8px; max-width: 480px; margin-left: auto; margin-right: auto; position: relative; }
+
+/* Game tile */
+.game-tile { position: relative; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 5/7; border: 2px solid transparent; cursor: pointer; }
+.game-tile-bg { position: absolute; inset: 0; }
+.game-tile-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 60%); }
+.game-tile-text { position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 1; }
+.game-tile-name { font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.04em; }
+.game-tile-count { font-size: 10px; color: rgba(255,255,255,0.55); font-family: monospace; }
+.game-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 500px; }
+
+/* Trust strip */
+.trust-strip { padding: 12px 16px; background: var(--bg-s2); border: 1px solid var(--border-s); border-radius: var(--r-md); display: flex; gap: 24px; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); }
+.trust-item strong { color: var(--text-1); }
+
+/* Auth components */
+.auth-dialog { width: 400px; padding: 32px; background: var(--bg-s2); border: 1px solid var(--border-d); border-radius: var(--r-xl); }
+.auth-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.auth-desc { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+.auth-field { margin-bottom: 16px; }
+.auth-label { font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 6px; display: block; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; font-size: 11px; color: var(--text-3); text-transform: uppercase; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border-d); }
+.oauth-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; background: var(--bg-s3); border: 1px solid var(--border-d); border-radius: var(--r-md); font-size: 13px; font-weight: 500; color: var(--text-1); width: 100%; margin-bottom: 8px; cursor: pointer; font-family: inherit; }
+.oauth-btn:hover { border-color: var(--text-3); }
+
+/* Onboarding modal */
+.onboarding-modal { width: 420px; padding: 32px; background: var(--bg-s2); border: 1px solid var(--border-d); border-radius: var(--r-xl); }
+.game-checkbox { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-s3); border: 1px solid var(--border-s); border-radius: var(--r-md); margin-bottom: 8px; cursor: pointer; }
+.game-checkbox.checked { border-color: var(--accent); background: var(--accent-dim); }
+.checkbox-box { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border-d); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.game-checkbox.checked .checkbox-box { background: var(--accent); border-color: var(--accent); color: var(--bg-base); }
+
+/* Dialog overlay */
+.dialog-overlay { padding: 32px; background: rgba(0,0,0,0.6); border-radius: var(--r-xl); display: inline-flex; }
+
+/* Annotation */
+.annotation { font-size: 10px; color: var(--blue); font-family: monospace; margin-top: 8px; padding: 4px 8px; background: var(--blue-dim); border-radius: 4px; display: inline-block; }
+
+/* Search bar */
+.search-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-s2); border: 1px solid var(--border-d); border-radius: var(--r-md); max-width: 520px; margin: 16px auto 0; position: relative; }
+.search-icon { color: var(--text-3); font-size: 16px; }
+.search-placeholder { color: var(--text-3); font-size: 14px; }
+.search-kbd { font-size: 10px; color: var(--text-3); padding: 2px 6px; background: var(--bg-s3); border: 1px solid var(--border-s); border-radius: 4px; font-family: monospace; margin-left: auto; }
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Side<span>Decked</span> Design System</h1>
+  <p>Midnight Forge — Design Tokens, Components & Patterns</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1: COLORS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Tokens</span> Colors — Midnight Forge Palette</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Core Surfaces</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#0C0D12"></div><div class="swatch-info"><div class="swatch-name">Base</div><div class="swatch-hex">#0C0D12</div><div class="swatch-token">--bg-base</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#13141A"></div><div class="swatch-info"><div class="swatch-name">Surface 1</div><div class="swatch-hex">#13141A</div><div class="swatch-token">--bg-surface-1</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1A1C24"></div><div class="swatch-info"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#1A1C24</div><div class="swatch-token">--bg-surface-2</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#22242E"></div><div class="swatch-info"><div class="swatch-name">Surface 3</div><div class="swatch-hex">#22242E</div><div class="swatch-token">--bg-surface-3</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2A2D38"></div><div class="swatch-info"><div class="swatch-name">Surface 4</div><div class="swatch-hex">#2A2D38</div><div class="swatch-token">--bg-surface-4</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Accent & Interactive</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#D4A843"></div><div class="swatch-info"><div class="swatch-name">Arcane Gold</div><div class="swatch-hex">#D4A843</div><div class="swatch-token">--accent-primary</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E0B94F"></div><div class="swatch-info"><div class="swatch-name">Gold Hover</div><div class="swatch-hex">#E0B94F</div><div class="swatch-token">--accent-hover</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#7C8CFF"></div><div class="swatch-info"><div class="swatch-name">Mystic Blue</div><div class="swatch-hex">#7C8CFF</div><div class="swatch-token">--interactive</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#9BA6FF"></div><div class="swatch-info"><div class="swatch-name">Blue Hover</div><div class="swatch-hex">#9BA6FF</div><div class="swatch-token">--interactive-hover</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Semantic</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#4ADE80"></div><div class="swatch-info"><div class="swatch-name">Positive</div><div class="swatch-hex">#4ADE80</div><div class="swatch-token">--positive</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#EF5350"></div><div class="swatch-info"><div class="swatch-name">Negative</div><div class="swatch-hex">#EF5350</div><div class="swatch-token">--negative</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FBBF24"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-hex">#FBBF24</div><div class="swatch-token">--warning</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#60A5FA"></div><div class="swatch-info"><div class="swatch-name">Info</div><div class="swatch-hex">#60A5FA</div><div class="swatch-token">--info</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Text</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#E8ECF1"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-hex">#E8ECF1</div><div class="swatch-token">--text-primary</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8B93A6"></div><div class="swatch-info"><div class="swatch-name">Secondary</div><div class="swatch-hex">#8B93A6</div><div class="swatch-token">--text-secondary</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4F5568"></div><div class="swatch-info"><div class="swatch-name">Tertiary</div><div class="swatch-hex">#4F5568</div><div class="swatch-token">--text-tertiary</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D4A843"></div><div class="swatch-info"><div class="swatch-name">Price</div><div class="swatch-hex">#D4A843</div><div class="swatch-token">--text-price</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Game Rarity — MTG</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#6B6B6B"></div><div class="swatch-info"><div class="swatch-name">Common</div><div class="swatch-hex">#6B6B6B</div><div class="swatch-token">--rarity-mtg-common</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#A8B4C0"></div><div class="swatch-info"><div class="swatch-name">Uncommon</div><div class="swatch-hex">#A8B4C0</div><div class="swatch-token">--rarity-mtg-uncommon</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D4A843"></div><div class="swatch-info"><div class="swatch-name">Rare</div><div class="swatch-hex">#D4A843</div><div class="swatch-token">--rarity-mtg-rare</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E85D26"></div><div class="swatch-info"><div class="swatch-name">Mythic Rare</div><div class="swatch-hex">#E85D26</div><div class="swatch-token">--rarity-mtg-mythic</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">MTG Mana Colors</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#F9FAF4"></div><div class="swatch-info"><div class="swatch-name">White (Plains)</div><div class="swatch-hex">#F9FAF4</div><div class="swatch-token">--mtg-white</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0E68AB"></div><div class="swatch-info"><div class="swatch-name">Blue (Island)</div><div class="swatch-hex">#0E68AB</div><div class="swatch-token">--mtg-blue</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#150B00"></div><div class="swatch-info"><div class="swatch-name">Black (Swamp)</div><div class="swatch-hex">#150B00</div><div class="swatch-token">--mtg-black</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D3202A"></div><div class="swatch-info"><div class="swatch-name">Red (Mountain)</div><div class="swatch-hex">#D3202A</div><div class="swatch-token">--mtg-red</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#00733E"></div><div class="swatch-info"><div class="swatch-name">Green (Forest)</div><div class="swatch-hex">#00733E</div><div class="swatch-token">--mtg-green</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#A8A8A8"></div><div class="swatch-info"><div class="swatch-name">Colorless</div><div class="swatch-hex">#A8A8A8</div><div class="swatch-token">--mtg-colorless</div></div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Game Rarity — Pokemon / Yu-Gi-Oh! / One Piece</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#C0C0C0"></div><div class="swatch-info"><div class="swatch-name">PKM Ultra</div><div class="swatch-hex">#C0C0C0</div><div class="swatch-token">--rarity-pokemon-ultra</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D4AF37"></div><div class="swatch-info"><div class="swatch-name">PKM Illustration</div><div class="swatch-hex">#D4AF37</div><div class="swatch-token">--rarity-pokemon-illustration</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FFD700"></div><div class="swatch-info"><div class="swatch-name">PKM Hyper</div><div class="swatch-hex">#FFD700</div><div class="swatch-token">--rarity-pokemon-hyper</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4FC3F7"></div><div class="swatch-info"><div class="swatch-name">YGO Super</div><div class="swatch-hex">#4FC3F7</div><div class="swatch-token">--rarity-ygo-super</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E0B0FF"></div><div class="swatch-info"><div class="swatch-name">YGO Secret</div><div class="swatch-hex">#E0B0FF</div><div class="swatch-token">--rarity-ygo-secret</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4A90D9"></div><div class="swatch-info"><div class="swatch-name">OP Uncommon</div><div class="swatch-hex">#4A90D9</div><div class="swatch-token">--rarity-op-uncommon</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#9C27B0"></div><div class="swatch-info"><div class="swatch-name">OP Leader</div><div class="swatch-hex">#9C27B0</div><div class="swatch-token">--rarity-op-leader</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2: TYPOGRAPHY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Tokens</span> Typography</div>
+
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:32px;font-weight:700;letter-spacing:-0.02em">Display Heading</div>
+    <div class="type-meta">32px / 700 / Geist Sans<br>--type-display</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:24px;font-weight:600">Page Title</div>
+    <div class="type-meta">24px / 600 / Geist Sans<br>--type-page-title</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:20px;font-weight:600">Section Title</div>
+    <div class="type-meta">20px / 600 / Inter<br>--type-section-title</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:16px;font-weight:500">Card Title</div>
+    <div class="type-meta">16px / 500 / Inter<br>--type-card-title</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:14px;font-weight:400">Body text — the primary reading size for content, descriptions, and UI copy.</div>
+    <div class="type-meta">14px / 400 / Inter<br>--type-body</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:12px;font-weight:500;color:var(--text-2)">Label / Metadata</div>
+    <div class="type-meta">12px / 500 / Inter<br>--type-label</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-size:11px;font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em">Micro / Overline</div>
+    <div class="type-meta">11px / 500 / Inter<br>--type-micro</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-preview" style="font-family:monospace;font-size:14px;font-weight:500;color:var(--text-price)">$24.99 — Tabular Nums</div>
+    <div class="type-meta">14px / 500 / Geist Mono<br>--type-price / tnum</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: SPACING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Tokens</span> Spacing (8px base grid)</div>
+
+  <div class="spacing-row"><div class="spacing-label">sp-1: 4px</div><div class="spacing-bar" style="width:4px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-2: 8px</div><div class="spacing-bar" style="width:8px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-3: 12px</div><div class="spacing-bar" style="width:12px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-4: 16px</div><div class="spacing-bar" style="width:16px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-5: 24px</div><div class="spacing-bar" style="width:24px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-6: 32px</div><div class="spacing-bar" style="width:32px"></div></div>
+  <div class="spacing-row"><div class="spacing-label">sp-7: 48px</div><div class="spacing-bar" style="width:48px"></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4: RADII -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Tokens</span> Border Radius</div>
+  <div class="radius-grid">
+    <div class="radius-sample" style="border-radius:6px"><div class="radius-label">sm 6px</div></div>
+    <div class="radius-sample" style="border-radius:10px"><div class="radius-label">md 10px</div></div>
+    <div class="radius-sample" style="border-radius:16px"><div class="radius-label">lg 16px</div></div>
+    <div class="radius-sample" style="border-radius:24px"><div class="radius-label">xl 24px</div></div>
+    <div class="radius-sample" style="border-radius:9999px"><div class="radius-label">full</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5: ATOMIC COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Components</span> Buttons</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Primary (Gold) — CTAs, Value Actions</div>
+    <div class="component-row">
+      <button class="btn btn-gold">Add to Cart</button>
+      <button class="btn btn-gold btn-sm">Small</button>
+      <button class="btn btn-gold btn-lg">Buy Now</button>
+      <button class="btn btn-gold btn-disabled" disabled>Disabled</button>
+    </div>
+    <div class="annotation">Button variant="primary" | bg: --accent-primary | text: --text-on-accent</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Secondary (Blue) — Interactive, Navigation</div>
+    <div class="component-row">
+      <button class="btn btn-blue">View Details</button>
+      <button class="btn btn-blue btn-sm">Filter</button>
+      <button class="btn btn-blue btn-disabled" disabled>Disabled</button>
+    </div>
+    <div class="annotation">Button variant="secondary" | bg: --interactive | text: --bg-base</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Outline & Ghost</div>
+    <div class="component-row">
+      <button class="btn btn-outline">Cancel</button>
+      <button class="btn btn-ghost">Skip</button>
+      <button class="btn btn-outline btn-disabled" disabled>Disabled</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-tag">Components</span> Inputs</div>
+  <div class="component-row">
+    <input type="text" class="input" placeholder="Search cards...">
+    <input type="text" class="input" value="Charizard VMAX" style="border-color:var(--accent)">
+  </div>
+  <div class="annotation">Input | bg: --bg-surface-2 | border: --border-default | focus: --accent-primary</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-tag">Components</span> Badges</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Rarity Badges</div>
+    <div class="component-row">
+      <span class="badge badge-common">Common</span>
+      <span class="badge badge-uncommon">Uncommon</span>
+      <span class="badge badge-rare">Rare</span>
+      <span class="badge badge-mythic">Mythic</span>
+    </div>
+    <div class="annotation">RarityBadge rarity={card.rarity} game="mtg"</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Game Badges</div>
+    <div class="component-row">
+      <span class="game-badge game-mtg">MTG</span>
+      <span class="game-badge game-pkm">Pokemon</span>
+      <span class="game-badge game-ygo">Yu-Gi-Oh!</span>
+      <span class="game-badge game-op">One Piece</span>
+    </div>
+    <div class="annotation">GameBadge game={card.game}</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Condition Badges</div>
+    <div class="component-row">
+      <span class="cond-badge cond-nm">NM</span>
+      <span class="cond-badge cond-lp">LP</span>
+      <span class="cond-badge cond-mp">MP</span>
+      <span class="cond-badge cond-hp">HP</span>
+      <span class="cond-badge cond-dmg">DMG</span>
+    </div>
+    <div class="annotation">ConditionBadge condition={listing.condition}</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Semantic Badges</div>
+    <div class="component-row">
+      <span class="badge badge-green">In Stock</span>
+      <span class="badge badge-red">Out of Stock</span>
+      <span class="badge badge-warn">Low Stock</span>
+      <span class="badge badge-blue">New</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-tag">Components</span> Toast Notifications (sonner)</div>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:420px">
+    <div class="toast toast-success"><span class="toast-icon">&#10003;</span><div class="toast-body"><div class="toast-title">Added to cart</div><div class="toast-desc">Charizard VMAX (NM) &mdash; $24.99</div></div></div>
+    <div class="toast toast-error"><span class="toast-icon">&#10005;</span><div class="toast-body"><div class="toast-title">Payment failed</div><div class="toast-desc">Your card was declined. Please try a different payment method.</div></div></div>
+    <div class="toast toast-warning"><span class="toast-icon">&#9888;</span><div class="toast-body"><div class="toast-title">Low stock</div><div class="toast-desc">Only 2 copies left from this seller</div></div></div>
+    <div class="toast toast-info"><span class="toast-icon">&#8505;</span><div class="toast-body"><div class="toast-title">Price drop alert</div><div class="toast-desc">Ragavan dropped 12% since yesterday</div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-tag">Components</span> Skeleton Loading</div>
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    <div style="width:140px"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-text" style="width:80%;margin-top:8px"></div><div class="skeleton skeleton-text" style="width:50%"></div></div>
+    <div style="width:140px"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-text" style="width:90%;margin-top:8px"></div><div class="skeleton skeleton-text" style="width:60%"></div></div>
+    <div style="width:140px"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-text" style="width:70%;margin-top:8px"></div><div class="skeleton skeleton-text" style="width:45%"></div></div>
+    <div style="flex:1;max-width:300px"><div class="skeleton skeleton-text" style="width:60%"></div><div class="skeleton skeleton-text" style="width:100%"></div><div class="skeleton skeleton-text" style="width:80%"></div><div class="skeleton skeleton-text" style="width:40%;margin-top:16px"></div><div class="skeleton skeleton-btn" style="margin-top:12px"></div></div>
+  </div>
+  <div class="annotation">Card skeleton: 5:7 aspect ratio | Text skeleton | Button skeleton</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6: TCG COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">TCG Components</span> CardDisplay Variants</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Grid Variant (default browse)</div>
+    <div class="card-grid">
+      <div class="card-display">
+        <div class="card-art"><span class="game-badge game-mtg" style="position:absolute;top:8px;left:8px">MTG</span>Card Art</div>
+        <div class="card-info"><div class="card-name">Lightning Bolt</div><div class="card-meta"><span class="badge badge-common" style="font-size:9px;padding:1px 5px">Common</span></div><div class="card-price">$1.49</div></div>
+      </div>
+      <div class="card-display">
+        <div class="card-art"><span class="game-badge game-pkm" style="position:absolute;top:8px;left:8px">PKM</span>Card Art</div>
+        <div class="card-info"><div class="card-name">Charizard VMAX</div><div class="card-meta"><span class="badge badge-mythic" style="font-size:9px;padding:1px 5px">Ultra</span></div><div class="card-price">$89.99</div></div>
+      </div>
+      <div class="card-display">
+        <div class="card-art"><span class="game-badge game-ygo" style="position:absolute;top:8px;left:8px">YGO</span>Card Art</div>
+        <div class="card-info"><div class="card-name">Blue-Eyes White Dragon</div><div class="card-meta"><span class="badge badge-rare" style="font-size:9px;padding:1px 5px">Ultra</span></div><div class="card-price">$15.00</div></div>
+      </div>
+      <div class="card-display">
+        <div class="card-art"><span class="game-badge game-op" style="position:absolute;top:8px;left:8px">OP</span>Card Art</div>
+        <div class="card-info"><div class="card-name">Monkey D. Luffy</div><div class="card-meta"><span class="badge badge-rare" style="font-size:9px;padding:1px 5px">Super</span></div><div class="card-price">$32.50</div></div>
+      </div>
+    </div>
+    <div class="annotation">CardDisplay variant="grid" | Data: customer-backend /bff/cards</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Price Tags</div>
+    <div class="component-row" style="gap:32px">
+      <div><div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Compact</div><div class="price-tag"><span class="amount">$24.99</span></div></div>
+      <div><div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Inline</div><div class="price-tag"><span class="amount">$24.99</span><span class="context">3 sellers &middot; lowest NM</span></div></div>
+      <div><div style="font-size:11px;color:var(--text-3);margin-bottom:4px">Detailed</div><div class="price-tag" style="flex-direction:column;align-items:flex-start"><span class="amount">$24.99</span><span class="context">3 sellers &middot; lowest NM &middot; market avg $28.50</span></div></div>
+    </div>
+    <div class="annotation">PriceTag variant="compact|inline|detailed" | font: monospace tnum</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7: NAV COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Nav Components</span> Desktop Sticky Nav (glass effect)</div>
+  <div class="nav-desktop" style="margin-bottom:16px">
+    <div class="nav-logo">Side<span>Decked</span></div>
+    <div class="nav-links"><span>Browse</span><span>Sell</span><span>Decks</span><span>Community</span></div>
+    <div class="nav-actions">
+      <div class="search-bar" style="margin:0;width:200px;padding:8px 12px"><span class="search-icon">&#128269;</span><span class="search-placeholder" style="font-size:12px">Search...</span><span class="search-kbd">&#8984;K</span></div>
+      <div class="nav-icon">&#128276;</div>
+      <div class="nav-icon">&#128722;</div>
+      <div class="nav-avatar">TC</div>
+    </div>
+  </div>
+  <div class="annotation">DesktopNav | backdrop-filter: blur(16px) | bg: rgba(34,36,46,0.82) | sticky top: 0</div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="section-tag">Nav Components</span> Mobile Bottom Nav</div>
+  <div style="max-width:375px;border:1px solid var(--border-d);border-radius:var(--r-md);overflow:hidden">
+    <div class="nav-mobile-bottom">
+      <div class="nav-tab active"><span class="nav-tab-icon">&#127968;</span>Home</div>
+      <div class="nav-tab"><span class="nav-tab-icon">&#128269;</span>Search</div>
+      <div class="nav-tab"><span class="nav-tab-icon">&#128181;</span>Sell</div>
+      <div class="nav-tab"><span class="nav-tab-icon">&#127183;</span>Decks</div>
+      <div class="nav-tab"><span class="nav-tab-icon">&#128100;</span>Profile</div>
+    </div>
+  </div>
+  <div class="annotation">MobileBottomNav | 5 tabs: Home/Search/Sell/Decks/Profile</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8: HOMEPAGE COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Homepage Components</span> HeroSection, GameSelectorGrid, TrustStrip</div>
+
+  <div class="subsection">
+    <div class="subsection-title">HeroSection</div>
+    <div class="hero-section">
+      <div class="hero-h1">Find Your Next <span>Card</span></div>
+      <div class="hero-sub">Browse 50,000+ cards across Magic, Pokemon, Yu-Gi-Oh! and One Piece from trusted sellers.</div>
+      <div class="search-bar"><span class="search-icon">&#128269;</span><span class="search-placeholder">Search by card name, set, or number...</span><span class="search-kbd">&#8984;K</span></div>
+    </div>
+    <div class="annotation">HeroSection | Data: customer-backend /api/stats (card counts, seller counts via Redis cache)</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">GameSelectorGrid (card-back tiles)</div>
+    <div class="game-grid">
+      <div class="game-tile"><div class="game-tile-bg" style="background:linear-gradient(135deg,#1a0a2e,#6b1fa8 50%,#e8c84a)"></div><div class="game-tile-overlay"></div><div class="game-tile-text"><span class="game-tile-name">Magic</span><span class="game-tile-count">24,500 cards</span></div></div>
+      <div class="game-tile"><div class="game-tile-bg" style="background:linear-gradient(135deg,#7b2d00,#e85d26 50%,#fbbf24)"></div><div class="game-tile-overlay"></div><div class="game-tile-text"><span class="game-tile-name">Pokemon</span><span class="game-tile-count">18,200 cards</span></div></div>
+      <div class="game-tile"><div class="game-tile-bg" style="background:linear-gradient(135deg,#0a1628,#1e3a6e 50%,#6b4c9e)"></div><div class="game-tile-overlay"></div><div class="game-tile-text"><span class="game-tile-name">Yu-Gi-Oh!</span><span class="game-tile-count">12,800 cards</span></div></div>
+      <div class="game-tile"><div class="game-tile-bg" style="background:linear-gradient(135deg,#0d1f0d,#1a4a1a 50%,#4ade80)"></div><div class="game-tile-overlay"></div><div class="game-tile-text"><span class="game-tile-name">One Piece</span><span class="game-tile-count">4,100 cards</span></div></div>
+    </div>
+    <div class="annotation">GameSelectorGrid | Data: customer-backend /api/games/counts (Redis 30s TTL)</div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">TrustStrip</div>
+    <div class="trust-strip">
+      <div class="trust-item">&#9989; <strong>Buyer Protection</strong> on every order</div>
+      <div class="trust-item">&#128274; <strong>Secure Payments</strong> via Stripe Connect</div>
+      <div class="trust-item">&#128230; <strong>Tracked Shipping</strong> on all orders</div>
+    </div>
+    <div class="annotation">TrustStrip | Static text + dynamic counts from /api/games/counts</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 9: AUTH COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="section-tag">Auth Components</span> AuthGateDialog & OnboardingModal</div>
+
+  <div style="display:flex;gap:32px;flex-wrap:wrap">
+    <div>
+      <div class="subsection-title">AuthGateDialog</div>
+      <div class="dialog-overlay">
+        <div class="auth-dialog">
+          <div class="auth-title">Sign in to continue</div>
+          <div class="auth-desc">Create an account or sign in to add cards to your cart, build decks, and track prices.</div>
+          <button class="oauth-btn">&#127760; Continue with Google</button>
+          <button class="oauth-btn">&#128172; Continue with Discord</button>
+          <button class="oauth-btn">&#9632; Continue with Microsoft</button>
+          <div class="auth-divider">or</div>
+          <div class="auth-field"><label class="auth-label">Email</label><input type="text" class="input" style="width:100%" placeholder="you@example.com"></div>
+          <div class="auth-field"><label class="auth-label">Password</label><input type="password" class="input" style="width:100%" placeholder="Enter password"></div>
+          <button class="btn btn-gold" style="width:100%;margin-top:8px">Sign In</button>
+        </div>
+      </div>
+      <div class="annotation">AuthGateDialog | Stores deferred action in React state, replays after auth</div>
+    </div>
+
+    <div>
+      <div class="subsection-title">OnboardingModal</div>
+      <div class="dialog-overlay">
+        <div class="onboarding-modal">
+          <div class="auth-title" style="margin-bottom:4px">Welcome to SideDecked!</div>
+          <div class="auth-desc">Pick a display name and your favorite games to personalize your experience.</div>
+          <div class="auth-field"><label class="auth-label">Display Name</label><input type="text" class="input" style="width:100%" placeholder="Your username"></div>
+          <div style="margin-bottom:16px">
+            <label class="auth-label" style="margin-bottom:8px">Your Games</label>
+            <div class="game-checkbox checked"><div class="checkbox-box">&#10003;</div><span class="game-badge game-mtg">MTG</span> Magic: The Gathering</div>
+            <div class="game-checkbox"><div class="checkbox-box"></div><span class="game-badge game-pkm">PKM</span> Pokemon TCG</div>
+            <div class="game-checkbox checked"><div class="checkbox-box">&#10003;</div><span class="game-badge game-ygo">YGO</span> Yu-Gi-Oh!</div>
+            <div class="game-checkbox"><div class="checkbox-box"></div><span class="game-badge game-op">OP</span> One Piece TCG</div>
+          </div>
+          <div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1">Save & Continue</button><button class="btn btn-ghost">Skip</button></div>
+        </div>
+      </div>
+      <div class="annotation">OnboardingModal | PATCH customer-backend /users/profile</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
