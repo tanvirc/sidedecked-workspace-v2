@@ -762,6 +762,39 @@
          border and padding, the code MUST have the container — not just bare floated pills.
     </action>
 
+    <!-- Audit 2b: Figma Visual Property Comparison (pixel-perfect gate) -->
+    <check if="{{figma_available}} == true">
+      <action>As Sally: Perform systematic visual property comparison against Figma reference:
+        1. Call get_design_context(fileKey="{{figma_file_key}}", nodeId="{{figma_story_node_id}}", excludeScreenshot=true)
+        2. For EACH component/section in the Figma reference code, extract and compare these properties against implementation:
+           - Container: background, border (color, width, style), border-radius, padding, margin, backdrop-filter
+           - Typography: font-family, font-size, font-weight, line-height, letter-spacing, color, text-transform
+           - Layout: display, flex/grid properties, gap, width, height, aspect-ratio
+           - Interactive states: selected/active colors and borders, hover effects, disabled opacity
+           - Icons/assets: presence of SVG icons (cart, heart, arrows), gradient badges
+           - Spacing: gap between elements, section vertical spacing
+
+        3. Produce a PROPERTY DIFF TABLE:
+           | Component | Property | Figma Value | Code Value | Severity | Action |
+           Each row represents one difference. Severity:
+           - HIGH: Wrong color family, wrong font family, missing element/icon, wrong layout model
+           - MEDIUM: Wrong size (>2px off), wrong weight, wrong spacing (>4px off), wrong border-radius (>4px off)
+           - LOW: Rounding differences (≤2px), opacity differences (≤0.1), letter-spacing (≤0.5px)
+
+        4. For each HIGH/MEDIUM difference, require explicit resolution:
+           - FIX: Update implementation to match Figma (default for HIGH)
+           - ACCEPT: Intentional deviation with documented reason (requires user confirmation)
+           - DEFER: Out of scope for this story (file as tracked issue)
+
+        5. Phase 5B cannot proceed to APPROVED with any unresolved HIGH differences.
+           MEDIUM differences must be explicitly marked FIX, ACCEPT, or DEFER.
+           LOW differences are informational only.
+      </action>
+    </check>
+    <check if="{{figma_available}} == false">
+      <action>As Sally: Skip Audit 2b — Figma not available. Note in report: "Property comparison skipped (no Figma access)"</action>
+    </check>
+
     <!-- Audit 3: Playwright Computed-Style + Accessibility Tree + Visual Regression (with Figma golden reference) -->
     <check if="{{figma_available}} == true">
       <action>As Quinn: Save Figma golden reference screenshot:
@@ -808,6 +841,7 @@
     <action>As Sally: Produce a UX Validation Report:
       - CSS Token Compliance: PASS / list of violations with file:line
       - Structural Hierarchy: PASS / list of deviations with severity
+      - Figma Property Comparison: PASS / diff table with resolution status (when Figma available)
       - Accessibility Tree Review: PASS / issues found in tree structure
       - Playwright Test Results: PASS / failures (if tests were run)
       - Figma Token Cross-Reference: PASS / unmapped tokens (when Figma available)

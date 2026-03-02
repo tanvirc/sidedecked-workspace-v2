@@ -79,9 +79,10 @@ This document summarizes the current `story-lifecycle` workflow implemented in:
 - Trigger: Story has a "## UX Design Reference" section with a wireframe path (same gate as Phase 2B)
 - Leads: `ux-designer` (Sally) + `qa` (Quinn)
 - Step 17: Check for UX Design Reference / wireframe in story file — skip if absent
-- Step 18: Four-audit validation:
+- Step 18: Five-audit validation:
   1. **CSS Token Compliance** (Sally): Grep components for hardcoded colors/spacing vs. design tokens
   2. **Structural Hierarchy** (Sally): Compare JSX component hierarchy against wireframe HTML structure
+  2b. **Figma Visual Property Comparison** (Sally): Systematic property-level diff (typography, colors, spacing, border-radius, padding, icons) between Figma get_design_context reference and implementation. Produces a severity-graded diff table (HIGH/MEDIUM/LOW). HIGH must be fixed; MEDIUM must be explicitly resolved (FIX/ACCEPT/DEFER).
   3. **Playwright Computed-Style + Accessibility Tree** (Quinn): Generate `storefront/e2e/{story-key}-ux-compliance.spec.ts` with viewport tests (375px mobile, 1280px desktop), screenshots, and accessibility tree snapshots
   4. **Sally's Verdict**: UX Validation Report — APPROVED or BLOCKED
 - If BLOCKED: Dev fixes issues, re-runs quality gate, Sally re-evaluates
