@@ -8,9 +8,9 @@
 **Repos:** customer-backend/, storefront/
 **Deployment:** true — new API endpoints + storefront page changes
 **UX Wireframe:** `_bmad-output/planning-artifacts/ux-3-1-deck-creation-management-wireframe.html`
-**Figma Reference:** N/A (Figma capture not yet done)
+**Figma Reference:** https://www.figma.com/design/k5seLEn5Loi0YJ6UrJvzpr?node-id=75-2
 **Figma File Key:** k5seLEn5Loi0YJ6UrJvzpr
-**Figma Node ID:** N/A
+**Figma Node ID:** `75:2`
 
 ---
 
