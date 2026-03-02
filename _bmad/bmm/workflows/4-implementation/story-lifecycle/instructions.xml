@@ -155,7 +155,49 @@
   </step>
 
   <step n="6" goal="UX Designer: Produce wireframe (Figma-first with HTML fallback)">
+    <critical>
+      MANDATORY WIREFRAME QUALITY STANDARDS — violations will require a full rewrite.
+
+      1. STUDY EXISTING WIREFRAMES FIRST
+         Before writing a single line of HTML, read at least one existing wireframe from
+         docs/plans/wireframes/ (e.g. storefront-deck-browser.html). Match its exact structure,
+         component quality, visual density, and CSS conventions.
+
+      2. SHARED NAV — ALWAYS USE sd-nav.js (NEVER hand-roll nav HTML)
+         The storefront wireframes share a single navigation component via sd-nav.js.
+         Writing custom &lt;nav&gt; HTML is FORBIDDEN — it produces a nav that looks completely
+         different from every other wireframe.
+
+         Script tag (relative path from _bmad-output/planning-artifacts/ — not docs/plans/wireframes/):
+           &lt;script src="../../docs/plans/wireframes/sd-nav.js"&gt;&lt;/script&gt;
+
+         Desktop frame pattern (unique ID per frame in the same HTML file):
+           &lt;div id="sd-nav-root-1"&gt;&lt;/div&gt;
+           &lt;script&gt;SdNav.init({ target: '#sd-nav-root-1', activeLink: 'Deck Builder' });&lt;/script&gt;
+
+         Mobile frame pattern (unique ID per frame):
+           &lt;div id="sd-nav-mobile-2"&gt;&lt;/div&gt;
+           &lt;script&gt;SdNav.init({ target: '#sd-nav-mobile-2', mobile: true });&lt;/script&gt;
+
+         When a single HTML file contains multiple frames, each frame MUST use a distinct ID
+         (sd-nav-root-1, sd-nav-root-2, sd-nav-mobile-3, etc.) — duplicate IDs silently break rendering.
+
+      3. FIGMA CAPTURE SCRIPT — ALWAYS INCLUDE
+         Every wireframe saved to _bmad-output/planning-artifacts/ MUST include this as the
+         first &lt;script&gt; tag in &lt;head&gt;:
+           &lt;script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async&gt;&lt;/script&gt;
+
+      4. VISUAL QUALITY — MATCH THE REFERENCE WIREFRAMES
+         - Card fan art: use rotated .mini-card elements (e.g. rotate(-10deg), rotate(-2deg), rotate(6deg))
+           to create the fanned-cards visual, NOT stacked/offset cards
+         - Game accent bars: 4px top border on deck cards using game-specific CSS vars
+           (--game-mtg, --game-pokemon, --game-ygo, --game-one-piece)
+         - Inner containers: max-width: 1280px; margin: 0 auto — every frame content must use this
+         - Hover states: transform: scale(1.01) on interactive cards, cursor: pointer
+         - Typography: use Barlow Condensed for headings/labels, Barlow for body, Inter for UI controls
+    </critical>
     <action>As UX Designer (Sally):
+      - Read at least one existing wireframe from docs/plans/wireframes/ before starting
       - Reference _bmad-output/planning-artifacts/ux-design-directions.html for styling and format conventions
       - Reference ux-design-specification.md for design system, patterns, and interaction principles
       - Produce an HTML wireframe covering:
@@ -167,6 +209,7 @@
         * Empty states and loading states where relevant
       - The wireframe MUST align with the design system documented in ux-design-specification.md
         (typography, color palette, spacing, component variants, accessibility standards)
+      - Apply ALL mandatory standards from the &lt;critical&gt; block above without exception
     </action>
     <action>Save the wireframe to: _bmad-output/planning-artifacts/ux-{story-key}-wireframe.html</action>
 
