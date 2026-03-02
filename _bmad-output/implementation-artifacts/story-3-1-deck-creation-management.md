@@ -69,6 +69,20 @@ So that I can manage my deck collection across all games I play.
 - `src/components/decks/__tests__/DeckCard.test.tsx` — created
 - `src/components/decks/__tests__/NewDeckModal.test.tsx` — created
 - `src/components/decks/__tests__/DeckManagementClient.test.tsx` — created
+- `e2e/story-3-1-deck-management.spec.ts` — created (Phase 5 QA; 16 Playwright test cases)
+- `package.json` — modified (added test:e2e, test:e2e:headed, test:e2e:report scripts)
+
+### Review Follow-ups (AI — 2026-03-02)
+
+- [ ] [AI-Review][HIGH] Add `authenticateToken` middleware to `DELETE /:deckId/cards/:cardId` route — pre-existing auth bypass [customer-backend/src/routes/decks.ts:819]
+- [ ] [AI-Review][MEDIUM] Remove/replace debug `console.log` statements logging user IDs in production [customer-backend/src/routes/decks.ts:257-262, 366-375, 553-572]
+- [ ] [AI-Review][MEDIUM] `DeckManagementPage.tsx` silently swallows 401 — consider redirecting unauthenticated users to auth [storefront/src/components/decks/DeckManagementPage.tsx:10]
+- [ ] [AI-Review][MEDIUM] `DELETE /api/decks/:deckId` should return HTTP 204 not 200; update test [customer-backend/src/routes/decks.ts:889, src/tests/routes/decks.test.ts:168]
+- [ ] [AI-Review][LOW] `NewDeckModal` shows no loading/error state if `getGames` API fails [storefront/src/components/decks/NewDeckModal.tsx:60-63]
+- [ ] [AI-Review][LOW] Add `try/catch` + error toast to `handleRename` and `handleChangeFormat` [storefront/src/components/decks/DeckManagementClient.tsx:30-37]
+- [ ] [AI-Review][LOW] `DeckDto.cardCount` should be required `number` not optional [storefront/src/lib/api/customer-backend.ts:1056]
+- [ ] [AI-Review][LOW] Two TODO comments in routes/decks.ts violate no-TODO rule — open GitHub issues [customer-backend/src/routes/decks.ts:131, 444]
+- [ ] [AI-Review][LOW] Standardise API response shape (add `success` wrapper to GET /api/decks or remove from PATCH/DELETE responses)
 
 ### Change Log
 
@@ -78,6 +92,7 @@ So that I can manage my deck collection across all games I play.
 | 2026-03-02 | Dev | implementation | Story 3-1 implemented — all 9 tasks complete, quality gates pass |
 | 2026-03-02 | QA/UX | phase-5b-audit | Phase 5B UX validation: PASS — 0 HIGH, 3 MEDIUM (backlog), 10 LOW findings |
 | 2026-03-02 | Tech Writer | documentation | CHANGELOG.md, integration-architecture.md, ACs marked (IMPLEMENTED), sprint-status done |
+| 2026-03-02 | Code Review | adversarial-review | 1H (pre-existing auth bypass), 4M, 5L — M1 File List fixed; rest logged as action items |
 
 ## UX Design Reference
 
