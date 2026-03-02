@@ -22,7 +22,7 @@
     heart:     '<svg ' + SVG_ATTRS + '><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
     cart:      '<svg ' + SVG_ATTRS + '><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
     pencil:    '<svg ' + SVG_ATTRS + '><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>',
-    hamburger: '<svg ' + SVG_ATTRS + '><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+    hamburger: '<svg ' + SVG_ATTRS + '><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>',
   };
 
   /* ===========================================
@@ -40,13 +40,15 @@
     '.glass-nav {',
     '  position: sticky;',
     '  top: 0;',
-    '  z-index: 50;',
-    '  background: rgba(24, 22, 42, 0.80);',
-    '  backdrop-filter: blur(12px);',
-    '  -webkit-backdrop-filter: blur(12px);',
-    '  border-bottom: 1px solid rgba(44, 42, 74, 0.5);',
-    '  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);',
-    '  padding: 0 48px;',
+    '  z-index: 1000;',
+    '  background: rgba(24, 22, 42, 0.60);',
+    '  backdrop-filter: blur(16px);',
+    '  -webkit-backdrop-filter: blur(16px);',
+    '  border-bottom: 1px solid rgba(139, 92, 246, 0.08);',
+    '  padding: 0 32px;',
+    '  height: 64px;',
+    '  display: flex;',
+    '  align-items: center;',
     '}',
     '.glass-nav--workspace {',
     '  padding: 0 24px;',
@@ -223,21 +225,20 @@
     '  height: 8px;',
     '  border-radius: 999px;',
     '  background: var(--brand-secondary);',
-    '  border: 2px solid rgba(24, 22, 42, 0.80);',
+    '  border: 2px solid var(--bg-surface-1);',
     '}',
 
     /* --- Cart Badge --- */
     '.nav-badge {',
     '  position: absolute;',
-    '  top: 2px;',
-    '  right: 2px;',
-    '  width: 16px;',
-    '  height: 16px;',
+    '  top: 4px;',
+    '  right: 4px;',
+    '  width: 14px;',
+    '  height: 14px;',
     '  border-radius: 999px;',
-    '  background: var(--brand-primary);',
-    '  font-family: var(--font-mono);',
+    '  background: var(--brand-secondary);',
     '  font-size: 9px;',
-    '  font-weight: 700;',
+    '  font-weight: 600;',
     '  color: #fff;',
     '  display: flex;',
     '  align-items: center;',
@@ -250,22 +251,16 @@
     '  width: 32px;',
     '  height: 32px;',
     '  border-radius: 999px;',
-    '  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));',
+    '  background: linear-gradient(135deg, var(--brand-primary), #A78BFA);',
     '  margin-left: 4px;',
     '  flex-shrink: 0;',
-    '  border: 2px solid var(--brand-primary);',
-    '  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);',
     '  display: flex;',
     '  align-items: center;',
     '  justify-content: center;',
     '  font-family: var(--font-heading);',
-    '  font-size: 11px;',
-    '  font-weight: 700;',
-    '  color: #fff;',
-    '}',
-    '.nav-avatar--active {',
-    '  border-color: var(--brand-primary);',
-    '  box-shadow: 0 0 16px rgba(139, 92, 246, 0.5);',
+    '  font-size: 12px;',
+    '  font-weight: 600;',
+    '  color: #FFFFFF;',
     '}',
 
     /* --- Workspace: Deck Name --- */
@@ -317,7 +312,7 @@
     '  backdrop-filter: blur(12px);',
     '  -webkit-backdrop-filter: blur(12px);',
     '  border-bottom: 1px solid rgba(44, 42, 74, 0.5);',
-    '  padding: 0 16px;',
+    '  padding: 0 20px;',
     '  display: flex;',
     '  flex-direction: column;',
     '}',
@@ -333,9 +328,7 @@
     '  gap: 12px;',
     '}',
     '.mobile-nav-hamburger {',
-    '  width: 32px;',
-    '  height: 32px;',
-    '  border-radius: 8px;',
+    '  padding: 4px;',
     '  display: flex;',
     '  align-items: center;',
     '  justify-content: center;',
@@ -349,6 +342,8 @@
     '  font-weight: 800;',
     '  font-size: 20px;',
     '  color: #FFFFFF;',
+    '  flex: 1;',
+    '  text-align: center;',
     '}',
     '.mobile-nav-logo .logo-accent { color: #8B5CF6; }',
     '.mobile-nav-actions {',
@@ -391,7 +386,7 @@
     '  display: flex;',
     '  align-items: center;',
     '  gap: 8px;',
-    '  padding: 8px 14px;',
+    '  padding: 6px 14px;',
     '  background: var(--bg-surface-2);',
     '  border: 1px solid var(--border-default);',
     '  border-radius: 999px;',
@@ -483,13 +478,12 @@
   }
 
   function buildNavActions(config) {
-    var avatarClass = 'nav-avatar' + (config.avatarActive ? ' nav-avatar--active' : '');
     return '<div class="nav-actions">' +
       buildIconBtn('moon', 'Theme toggle') +
       buildIconBtn('bell', 'Notifications', '<span class="nav-notif-dot"></span>') +
       buildIconBtn('heart', 'Wishlist') +
       buildIconBtn('cart', 'Cart', '<span class="nav-badge">3</span>') +
-      '<div class="' + avatarClass + '">TC</div>' +
+      '<div class="nav-avatar">TC</div>' +
       '</div>';
   }
 
@@ -580,7 +574,6 @@
   }
 
   function buildMobileStandardNav(config) {
-    var avatarClass = 'mobile-nav-avatar' + (config.avatarActive ? ' nav-avatar--active' : '');
     var searchRow = '';
     if (config.searchContent !== 'none') {
       if (config.searchContent === 'expanded') {
@@ -600,15 +593,13 @@
 
     return '<nav class="glass-nav--mobile">' +
       '<div class="mobile-nav-top">' +
-      '<div class="mobile-nav-left">' +
       '<button class="mobile-nav-hamburger" title="Menu">' + ICONS.hamburger + '</button>' +
       '<div class="mobile-nav-logo">Side<span class="logo-accent">Decked</span></div>' +
-      '</div>' +
       '<div class="mobile-nav-actions">' +
       '<button class="mobile-nav-icon" title="Cart">' + ICONS.cart +
       '<span class="nav-badge" style="top:0;right:0;width:14px;height:14px;font-size:8px;">3</span>' +
       '</button>' +
-      '<div class="' + avatarClass + '">TC</div>' +
+      '<div class="mobile-nav-avatar">TC</div>' +
       '</div>' +
       '</div>' +
       searchRow +
@@ -636,7 +627,6 @@
       activeLink: null,
       searchContent: 'pill',
       searchValue: '',
-      avatarActive: false,
       deckName: '',
       annotations: [],
       mobile: false,
