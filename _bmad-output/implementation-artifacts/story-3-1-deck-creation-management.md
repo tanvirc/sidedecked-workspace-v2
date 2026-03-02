@@ -12,13 +12,13 @@ So that I can manage my deck collection across all games I play.
 
 ## Acceptance Criteria
 
-**AC1:** Given I am authenticated, When I click "New Deck" on `/decks`, Then a Modal (Dialog) opens with a game selector (4 tiles: MTG, Pokemon, Yu-Gi-Oh!, One Piece), a game-specific format dropdown, and a deck name input (non-empty, max 100 chars). On submit the deck is saved to my collection, the modal closes, and the new deck appears in my deck list with 0 cards.
+**AC1 (IMPLEMENTED):** Given I am authenticated, When I click "New Deck" on `/decks`, Then a Modal (Dialog) opens with a game selector (4 tiles: MTG, Pokemon, Yu-Gi-Oh!, One Piece), a game-specific format dropdown, and a deck name input (non-empty, max 100 chars). On submit the deck is saved to my collection, the modal closes, and the new deck appears in my deck list with 0 cards.
 
-**AC2:** Given I navigate to `/decks`, Then I see all my decks as cards showing: deck name, game badge (colour per game: MTG purple, Pokemon yellow, YGO gold, One Piece red), format, card count, and estimated cost placeholder ("—"). When I have no decks, an empty state with a "Create your first deck" prompt is shown.
+**AC2 (IMPLEMENTED):** Given I navigate to `/decks`, Then I see all my decks as cards showing: deck name, game badge (colour per game: MTG purple, Pokemon yellow, YGO gold, One Piece red), format, card count, and estimated cost placeholder ("—"). When I have no decks, an empty state with a "Create your first deck" prompt is shown.
 
-**AC3:** Given I have an existing deck, When I open its kebab menu, I can rename it (inline edit: save on Enter/blur, cancel on Escape) and change its format (same game only — game cannot be changed post-creation). When I select "Delete", the deck is hidden immediately and a 5-second undo toast appears. If I do not click "Undo" within 5 seconds, the deck is permanently deleted. If I click "Undo", the deck is restored instantly with no data loss.
+**AC3 (IMPLEMENTED):** Given I have an existing deck, When I open its kebab menu, I can rename it (inline edit: save on Enter/blur, cancel on Escape) and change its format (same game only — game cannot be changed post-creation). When I select "Delete", the deck is hidden immediately and a 5-second undo toast appears. If I do not click "Undo" within 5 seconds, the deck is permanently deleted. If I click "Undo", the deck is restored instantly with no data loss.
 
-**AC4:** Given I open a deck's kebab menu and select "Duplicate", Then a copy is created with "(Copy)" appended to the name, preserving all existing cards and ownership toggles. A toast confirms the duplication. Duplicating an empty deck is valid.
+**AC4 (IMPLEMENTED):** Given I open a deck's kebab menu and select "Duplicate", Then a copy is created with "(Copy)" appended to the name, preserving all existing cards and ownership toggles. A toast confirms the duplication. Duplicating an empty deck is valid.
 
 ## Clarifications (Phase 2 — 2026-03-02)
 
@@ -76,6 +76,8 @@ So that I can manage my deck collection across all games I play.
 |---|---|---|---|
 | 2026-03-02 | SM/BA/PM/UX | requirements | Story file created; Phase 2 clarifications applied |
 | 2026-03-02 | Dev | implementation | Story 3-1 implemented — all 9 tasks complete, quality gates pass |
+| 2026-03-02 | QA/UX | phase-5b-audit | Phase 5B UX validation: PASS — 0 HIGH, 3 MEDIUM (backlog), 10 LOW findings |
+| 2026-03-02 | Tech Writer | documentation | CHANGELOG.md, integration-architecture.md, ACs marked (IMPLEMENTED), sprint-status done |
 
 ## UX Design Reference
 

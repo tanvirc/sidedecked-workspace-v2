@@ -3,6 +3,19 @@ All notable changes to the SideDecked project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
+### Added
+- **Deck Creation & Management (Story 3-1)**: Full deck CRUD for authenticated TCG players on `/decks`
+  - `GET /api/decks`, `POST /api/decks`, `PATCH /api/decks/:id`, `DELETE /api/decks/:id`, `POST /api/decks/:id/duplicate` (customer-backend): user-scoped REST routes; all require authenticated session
+  - `Deck` TypeORM entity (sidedecked-db): `id`, `name` (varchar 100), `userId`, `gameId`, `gameCode`, `formatCode`, `cardCount`, timestamps
+  - `DeckManagementPage` (RSC) + `DeckManagementClient` (client island): deck list grid with responsive 1→4 column layout; empty-state CTA; "New Deck" button
+  - `DeckCard` component: game-colour accent bar (MTG purple, Pokémon yellow, YGO amber, One Piece red); game badge; format label; card count; cost placeholder "—"; kebab menu (Rename, Change Format, Duplicate, Delete)
+  - Inline rename: replaces deck name with pre-filled `<input>`; Enter/blur saves (max 100 chars), Escape cancels; fires `PATCH /api/decks/:id`
+  - Inline format change: panel with game-scoped format options; Save/Cancel; fires `PATCH /api/decks/:id`
+  - Soft-delete with 5s undo: optimistic removal + Sonner toast with Undo action; delayed hard-delete after 5s window
+  - Duplicate: `POST /api/decks/:id/duplicate`; copy prepended to list with 3s green highlight ring; success toast
+  - `NewDeckModal`: Radix Dialog with 4 game selector tiles, game-scoped format dropdown, deck name input (Zod validation); fires `POST /api/decks`
+  - 672/672 Vitest tests passing; 16 Playwright E2E test cases (AC1–AC4, mobile, API contract)
+
 ### Changed
 - **Voltage Design System**: Full replacement of "Midnight Forge" (bronze-gold/dark) with "Voltage" (Electric Violet + Neon Coral) across the storefront
   - `colors.css`: complete token rewrite — new brand palette (`--brand-primary: #8B5CF6`, `--brand-secondary: #FF7849`), Voltage dark surfaces (`#09090F` root → `#38365C` active), light mode surfaces, recalibrated rarity tokens (WCAG AA on new `--bg-surface-1`), updated game colors for new base
