@@ -2,7 +2,7 @@
 
 **Epic:** Epic 3 — Deck Building & Collection
 **Story key:** 3-1-deck-creation-management
-**Status:** ready-for-dev
+**Status:** done
 
 ## User Story
 
@@ -38,27 +38,44 @@ So that I can manage my deck collection across all games I play.
 
 ## Tasks
 
-- [ ] Task 1: Create `Deck` entity in customer-backend with fields: id, userId, name, game, format, cardCount (computed), createdAt [AC1, AC2]
-- [ ] Task 2: Add CRUD API routes to customer-backend: POST /api/decks, GET /api/decks (user-scoped), PATCH /api/decks/:id, DELETE /api/decks/:id, POST /api/decks/:id/duplicate [AC1–AC4]
-- [ ] Task 3: Create `/decks` page in storefront with deck list grid and empty state [AC2]
-- [ ] Task 4: Create `DeckCard` component — shows name, game badge, format, card count, cost placeholder, kebab menu [AC2, AC3, AC4]
-- [ ] Task 5: Create `NewDeckModal` (Dialog) with game selector tiles (reuse/adapt GameTile), format dropdown, name input, and validation [AC1]
-- [ ] Task 6: Implement rename flow — inline edit on deck name in DeckCard [AC3]
-- [ ] Task 7: Implement soft-delete with 5-second undo toast — delayed DELETE call to API [AC3]
-- [ ] Task 8: Implement duplicate flow — POST /api/decks/:id/duplicate, add to list with toast [AC4]
-- [ ] Task 9: Tests (unit + integration) and quality gate [All ACs]
+- [x] Task 1: Create `Deck` entity in customer-backend with fields: id, userId, name, game, format, cardCount (computed), createdAt [AC1, AC2]
+- [x] Task 2: Add CRUD API routes to customer-backend: POST /api/decks, GET /api/decks (user-scoped), PATCH /api/decks/:id, DELETE /api/decks/:id, POST /api/decks/:id/duplicate [AC1–AC4]
+- [x] Task 3: Create `/decks` page in storefront with deck list grid and empty state [AC2]
+- [x] Task 4: Create `DeckCard` component — shows name, game badge, format, card count, cost placeholder, kebab menu [AC2, AC3, AC4]
+- [x] Task 5: Create `NewDeckModal` (Dialog) with game selector tiles (reuse/adapt GameTile), format dropdown, name input, and validation [AC1]
+- [x] Task 6: Implement rename flow — inline edit on deck name in DeckCard [AC3]
+- [x] Task 7: Implement soft-delete with 5-second undo toast — delayed DELETE call to API [AC3]
+- [x] Task 8: Implement duplicate flow — POST /api/decks/:id/duplicate, add to list with toast [AC4]
+- [x] Task 9: Tests (unit + integration) and quality gate [All ACs]
 
 ## Dev Agent Record
 
 ### File List
 
-*(to be filled during implementation)*
+**customer-backend:**
+- `src/entities/Deck.ts` — modified (varchar(100) on name)
+- `src/migrations/1777200000000-NarrowDeckNameTo100.ts` — created
+- `src/routes/decks.ts` — modified (GET /, PATCH /:id, POST /:id/duplicate; fixed DELETE; GET / now includes gameCode via game relation)
+- `src/tests/routes/decks.test.ts` — created
+
+**storefront:**
+- `src/app/[locale]/(main)/decks/page.tsx` — modified (DeckBrowsingPage → DeckManagementPage)
+- `src/lib/api/customer-backend.ts` — modified (DeckDto with gameCode, getUserDecks, createDeck, patchDeck, deleteDeck, duplicateDeck)
+- `src/components/decks/DeckManagementPage.tsx` — created
+- `src/components/decks/DeckManagementClient.tsx` — created
+- `src/components/decks/DeckCard.tsx` — created
+- `src/components/decks/NewDeckModal.tsx` — created
+- `src/components/decks/__tests__/DeckManagementPage.test.tsx` — created
+- `src/components/decks/__tests__/DeckCard.test.tsx` — created
+- `src/components/decks/__tests__/NewDeckModal.test.tsx` — created
+- `src/components/decks/__tests__/DeckManagementClient.test.tsx` — created
 
 ### Change Log
 
 | Date | Author | Type | Notes |
 |---|---|---|---|
 | 2026-03-02 | SM/BA/PM/UX | requirements | Story file created; Phase 2 clarifications applied |
+| 2026-03-02 | Dev | implementation | Story 3-1 implemented — all 9 tasks complete, quality gates pass |
 
 ## UX Design Reference
 
