@@ -64,4 +64,5 @@ So that I can manage my deck collection across all games I play.
 
 Wireframe: `_bmad-output/planning-artifacts/ux-3-1-deck-creation-management-wireframe.html`
 Figma File Key: k5seLEn5Loi0YJ6UrJvzpr
-Figma Node ID: *(to be set after Phase 2B Figma capture)*
+Figma Node ID: *(captured 2026-03-02 — open Figma file, click the Story 3-1 page, get node ID from URL `?node-id=X-Y` → convert to `X:Y`)*
+Figma File URL: https://www.figma.com/design/k5seLEn5Loi0YJ6UrJvzpr
