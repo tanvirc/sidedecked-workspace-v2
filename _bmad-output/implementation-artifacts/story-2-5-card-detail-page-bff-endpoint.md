@@ -41,11 +41,6 @@ So that I can make an informed purchase decision from a single page.
 - [x] Task 6b: Build PrintBrowser component and QuickBuyPanel component [AC5, AC6, AC6a]
 - [x] Task 7: Validation and quality gate [All ACs]
 
-## UX Design Reference
-
-Wireframe: `_bmad-output/planning-artifacts/ux-story-2-5-card-detail-page-bff-endpoint-wireframe.html` (v5.1)
-UX Validation Report: `_bmad-output/ux-validation/story-2-5/ux-validation-report.md`
-
 ## Code Review Record
 
 **Review date:** 2026-03-01

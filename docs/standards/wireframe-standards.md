@@ -292,12 +292,26 @@ After creating the wireframe HTML:
 2. **Initiate capture:** Call `generate_figma_design` with:
    - `outputMode: 'existingFile'`
    - `fileKey: 'k5seLEn5Loi0YJ6UrJvzpr'` (SideDecked Storefront)
+   - `nodeId: '<epic-page-node-id>'` — **required** to target the correct epic page
 
 3. **Open capture URL** in browser with `?figmadelay=3000` to allow fonts and nav to load
 
 4. **Poll `captureId`** every 5 seconds until status is `'completed'`
 
 5. **Stop the local server** after capture completes
+
+### Per-Epic Page Targeting
+
+The Figma file is organized into per-epic pages. Always specify the target page `nodeId` when capturing wireframes. See `docs/plans/figma-page-mapping.md` for the page node ID registry.
+
+| Epic | Figma Page | Wireframes |
+|------|-----------|------------|
+| 1 | `01 — Epic 1: Auth & Profiles` | Auth, Profile, Deferred Auth |
+| 2 | `02 — Epic 2: Card Catalog` | Cards Browse, Search, Card Detail |
+| 3 | `03 — Epic 3: Deck Building` | Deck Builder, Deck Browser, Deck Viewer |
+| 9 | `09 — Epic 9: Homepage` | Homepage |
+
+Without `nodeId`, captures land on the default page. Always look up the correct node ID from the mapping document before capturing.
 
 ---
 

@@ -49,7 +49,3 @@ So that I can evaluate SideDecked and begin searching within 10 seconds without 
 **Corrective plan:** `docs/plans/2026-03-01-9-1-corrective-token-and-prototype-alignment-plan.md`
 **Coverage:** 100% statements / 100% branch / 100% functions / 100% lines (all 6 homepage components)
 
-## UX Design Reference
-
-Prototype: `_bmad-output/planning-artifacts/homepage-redesign-prototype-v1.html`
-Wireframe: `_bmad-output/planning-artifacts/ux-9-1-anonymous-homepage-hero-trust-foundation-wireframe.html` (v2 — rewritten to match prototype exactly)

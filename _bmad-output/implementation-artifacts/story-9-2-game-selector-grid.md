@@ -105,10 +105,6 @@ So that I don't have to re-select my game on every visit.
 - **[L2]** JSX story slot comments (`Story 9.4`, `Story 9.6`) in `page.tsx` — will be converted to GitHub issues
 - **[L3]** `--text-secondary` incorrect in light mode — storefront is dark-only; deferred to design system audit
 
-## UX Design Reference
-
-Wireframe: `_bmad-output/planning-artifacts/ux-9-2-game-selector-grid-wireframe.html` (v1 — post party-mode + elicitation)
-
 ## Elicitation Notes (Phase 2B — 2026-03-01)
 
 - `:active` state required for touch feedback (scale 0.97) — `:hover` does not fire on mobile
