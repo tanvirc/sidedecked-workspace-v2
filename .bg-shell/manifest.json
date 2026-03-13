@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "36a065df",
+    "label": "storefront-dev",
+    "command": "cd C:/Code/GitHub/tanvirc/sidedecked/storefront && npm run dev",
+    "cwd": "C:\\Code\\GitHub\\tanvirc\\sidedecked",
+    "startedAt": 1773403875647,
+    "processType": "server",
+    "group": "storefront",
+    "readyPattern": null,
+    "readyPort": 8000,
+    "pid": 24852
+  }
+]

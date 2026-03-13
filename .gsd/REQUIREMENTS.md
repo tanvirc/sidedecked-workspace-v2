@@ -23,8 +23,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S01
-- Validation: unmapped
-- Notes: CardBrowsingPage component exists (14,691 lines of card components). Needs visual alignment, not rebuild.
+- Validation: structural alignment verified by 719 tests (S02); visual UAT pending human comparison against wireframe at 1440px and 390px
+- Notes: CardBrowsingPage fully restructured with GameSelectorStrip, CategoryPills, PopularSetsCarousel, BrowseBreadcrumbs, ResultsBar, numbered pagination, TrendingStrip, SellerCTA. CategoryPills visual-only (no backend facets yet). TrendingStrip uses placeholder data (S04 wires live).
 
 ### R003 — Card detail page pixel-perfect
 - Class: primary-user-loop
@@ -34,8 +34,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S01
-- Validation: unmapped
-- Notes: BFF endpoint working. CardDetailPage component exists. Needs visual alignment.
+- Validation: structural alignment verified by tests (S02); glass-card blur, 4-tab mobile nav, RelatedCards section added; visual UAT pending
+- Notes: BFF endpoint working. Glass-card blur applied to info sections. Mobile tabs expanded from 1 to 4 (Details/Prices/Sellers/Printings). RelatedCards renders fallback until server data source wired.
 
 ### R004 — Search page pixel-perfect
 - Class: primary-user-loop
@@ -45,8 +45,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S01
-- Validation: unmapped
-- Notes: 11 search components exist with tests. Needs visual alignment to wireframe.
+- Validation: structural alignment verified by 14 SearchPageLayout tests (S02); breadcrumbs, query-aware results header, shared sidebar+grid; visual UAT pending
+- Notes: SearchPageLayout created with breadcrumbs (Home > Search Results > "query"), results header with live hit count, shared CardSearchGrid. Autocomplete pre-existed.
 
 ### R005 — Deck browser page pixel-perfect
 - Class: differentiator
