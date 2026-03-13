@@ -3,21 +3,22 @@ id: S03
 parent: M001
 milestone: M001
 provides:
-  - DeckBrowsingPage restructured with hero section, featured decks carousel, game tabs, 3-col deck grid with card-fan previews, numbered pagination, community stats banner
-  - DeckViewPage restructured with hero header, 3-tab navigation (Visual/List/Stats), mana curve chart, type/color distribution bars, pricing summary
-  - DeckBuilderLayout polished with glassmorphic toolbar, styled card browser panel, collapsible zone headers with count badges, wireframe-sized card thumbnails
-  - MobileDeckBuilder polished with glassmorphic header, game-colored badges, styled bottom navigation
-  - 18 new tests (9 browse page + 9 viewer page), 742 total passing
+  - DeckBrowsingPage restructured with hero, featured carousel, game tabs, 3-col grid, pagination, community stats banner
+  - DeckGridCard with card-fan preview, game accent bar, author row, stats, social counts
+  - DeckViewPage with tabbed layout (Visual/List/Stats), hero header, ManaCurveChart, type/color distributions, pricing summary
+  - DeckBuilderLayout with glassmorphic toolbar, collapsible zone headers, wireframe-sized thumbnails
+  - MobileDeckBuilder with glassmorphic header, game-colored badges, styled bottom navigation
+  - ManaCurveChart standalone reusable CSS-only bar chart component
 requires:
   - slice: S01
     provides: Voltage tokens (colors.css, globals.css), CardDisplay, PriceTag, Footer, ModernHeader, Sheet
 affects:
-  - S09 (consumes deck builder "I own this" state, "Buy Missing Cards" button, missing cards list)
+  - S09
 key_files:
+  - storefront/src/components/decks/DeckBrowsingPage.tsx
   - storefront/src/components/decks/DeckBrowserHero.tsx
   - storefront/src/components/decks/FeaturedDecksCarousel.tsx
   - storefront/src/components/decks/DeckGameTabs.tsx
-  - storefront/src/components/decks/DeckBrowsingPage.tsx
   - storefront/src/components/decks/DeckGridCard.tsx
   - storefront/src/components/decks/DeckGrid.tsx
   - storefront/src/components/decks/DeckViewPage.tsx
@@ -30,138 +31,152 @@ key_files:
   - storefront/src/components/deck-builder/DeckSurface.tsx
   - storefront/src/components/deck-builder/DeckZone.tsx
   - storefront/src/components/deck-builder/MobileDeckBuilder.tsx
+  - storefront/src/components/decks/__tests__/DeckBrowsingPage.test.tsx
+  - storefront/src/components/decks/__tests__/DeckGameTabs.test.tsx
+  - storefront/src/components/decks/__tests__/DeckViewPage.test.tsx
 key_decisions:
-  - D017: DeckSurface uses native tab bar instead of Radix Tabs — matches wireframe glassmorphic visual language
-  - D018: DeckZone collapse state is local per-zone — avoids coupling in DeckBuilderContext
-  - DeckStatsPanel computes stats from cards independently of DeckBuilderContext — viewer page is standalone
-  - Game tabs replace DeckFilters game checkboxes — wireframe's underlined tab pattern with game-specific colors
-  - Featured carousel and community stats use placeholder data — no backend API exists for these yet
+  - D017: DeckSurface uses native tab bar instead of Radix Tabs — matches viewer tab pattern
+  - D018: DeckZone collapse state is local per-zone — avoids context coupling for UI-only concern
+  - D019: DeckStatsPanel computes independently of DeckBuilderContext — viewer is read-only
+  - D020: Game tabs replace game filter checkboxes for deck browsing — matches wireframe
 patterns_established:
-  - Card-fan preview pattern: 3 fanned gradient rectangles (48×67px) at -10°/-2°/6° rotation — used in DeckGridCard, FeaturedDecksCarousel, DeckViewerHeader
-  - Game-colored accent bar: 4px colored strip at top of cards — used in DeckGridCard
-  - Glassmorphic toolbar: rgba(24,22,42,0.85) + backdrop-blur(16px) + grouped controls with 1px dividers
-  - Viewer tab pattern: sticky glassmorphic tab bar with brand-primary active indicator
+  - Card-fan preview pattern: 3 fanned gradient rectangles (48×67px) at -10°/-2°/6° rotation
+  - Glassmorphic toolbar: rgba(24,22,42,0.85) + backdrop-blur(16px) + grouped controls with 1px border separators
+  - Viewer tab pattern: sticky glassmorphic bar with brand-primary active indicator
   - Zone header pattern: uppercase 12px label + mono count badge + collapse chevron
-  - TYPE_ORDER constant for consistent card type ordering across visual/list/stats views
-  - StatCard wrapper for consistent stats section styling (bg-surface-1, border-default, uppercase title)
+  - Card type grouping: TYPE_ORDER constant for consistent ordering
+  - Game color mapping: CSS custom properties (--game-mtg, --game-pokemon, etc.)
 observability_surfaces:
-  - data-testid="deck-browser-hero", "featured-decks-carousel", "deck-game-tabs", "community-stats-banner" on browse page sections
-  - data-testid="deck-view-page", "deck-viewer-header", "deck-viewer-tabs" on viewer page
-  - data-testid="tab-visual", "tab-list", "tab-stats" on viewer tab buttons
-  - data-testid="deck-visual-view", "deck-list-view", "deck-stats-panel" on viewer tab content
+  - data-testid="deck-browser-hero" on browser hero section
+  - data-testid="featured-decks-carousel" on featured carousel
+  - data-testid="deck-game-tabs" on game tab container
+  - data-testid="deck-game-tab-{CODE}" on individual game tabs
+  - data-testid="deck-grid" on grid container
+  - data-testid="deck-grid-card" on each grid card
+  - data-testid="community-stats-banner" on stats banner
+  - data-testid="deck-view-page" on viewer container
+  - data-testid="deck-viewer-header" on viewer hero
+  - data-testid="deck-viewer-tabs" on viewer tab bar
+  - data-testid="tab-visual", "tab-list", "tab-stats" on individual tabs
+  - data-testid="deck-visual-view", "deck-list-view", "deck-stats-panel" on tab content
   - data-testid="mana-curve-chart" on ManaCurveChart
+  - data-testid="sideboard-toggle" on sideboard expand/collapse
   - data-testid="builder-toolbar" on builder header toolbar
-  - data-testid="zone-header-{zone}" on each collapsible zone in builder
-  - data-testid="deck-grid", "deck-grid-card", "deck-card-stats", "deck-grid-loading" on grid elements
+  - data-testid="zone-header-{zone}" on each builder zone header
+  - data-testid="deck-surface" on deck surface container
 drill_down_paths:
   - .gsd/milestones/M001/slices/S03/tasks/T01-SUMMARY.md
   - .gsd/milestones/M001/slices/S03/tasks/T02-SUMMARY.md
   - .gsd/milestones/M001/slices/S03/tasks/T03-SUMMARY.md
   - .gsd/milestones/M001/slices/S03/tasks/T04-SUMMARY.md
-duration: 3.75h
+duration: ~5h across 4 tasks
 verification_result: passed
-completed_at: 2026-03-13
+completed_at: 2026-03-14
 ---
 
 # S03: Deck Builder, Browser & Viewer — Pixel Perfect
 
-**All three deck-facing storefront pages restructured and polished to match their Voltage wireframes — DeckBrowsingPage with hero/carousel/game-tabs/3-col-grid, DeckViewPage with tabbed Visual/List/Stats layout and mana curve chart, DeckBuilderLayout with glassmorphic toolbar and collapsible zones. 742 tests pass, build clean.**
+**All three deck-facing storefront pages restructured and polished to match their Voltage wireframes — browser with hero/carousel/game tabs/3-col grid, viewer with tabbed Visual/List/Stats layout, builder with glassmorphic toolbar and collapsible zones. 794 tests pass, production build clean.**
 
 ## What Happened
 
-Rewrote the deck browser page from a flat filters+grid layout into a rich wireframe-matching page: hero section with radial gradient and glassmorphic search bar, featured decks carousel with card-fan art, game tabs (All/MTG/Pokémon/Yu-Gi-Oh!/One Piece) with game-colored active states, 3-column grid of DeckGridCards (card-fan preview, game accent bar, author, stats, social counts), numbered pagination, and community stats banner. Grid is responsive (3→2→1 columns). Featured carousel and stats banner use placeholder data.
+Four tasks took the three deck pages from functional flat layouts to wireframe-matching pixel-perfect structure:
 
-Rewrote the deck viewer page from a flat layout to tabbed structure: hero header with card-fan gradient, game/format badges, author row, social stats, and action buttons. Three tabs — Visual (card images grouped by type with collapsible sideboard), List (table with type-grouped rows, mana cost, price columns), Stats (ManaCurveChart CSS bar chart, color distribution stacked bar, type distribution bars, pricing summary). Stats computation is standalone from DeckBuilderContext.
+**T01 — Deck browser restructure.** DeckBrowsingPage rewritten from a simple search+filter+grid into the wireframe section order: DeckBrowserHero (radial gradient, display headline, glassmorphic search bar with Ctrl+K hint) → FeaturedDecksCarousel (horizontal scroll with 480px card-fan featured deck cards, game badges, stats, social counts, placeholder data) → DeckGameTabs (5 game-colored tabs with active border-bottom replacing the old checkbox filters) → filter row + grid + pagination + CommunityStatsBanner.
 
-Polished the deck builder: glassmorphic toolbar with grouped undo/redo and accent save button, styled card browser panel with inset shadow, DeckSurface with native two-tab bar (Zones/List) matching viewer tab pattern, DeckZone with collapsible headers (uppercase labels, mono count badges, chevron toggle), wireframe-sized card thumbnails. MobileDeckBuilder got glassmorphic header, game-colored badges via color-mix(), styled bottom navigation.
+**T02 — Deck grid cards.** DeckGridCard created with 4px game-colored accent bar, card-fan preview (3 fanned 48×67px gradient rectangles), deck name, game dot + format, author row, 2-line description, stats row (card count mono, price brand-primary, win rate color-coded), social row. DeckGrid refactored to 3-col (was 4-col), responsive 3→2→1 columns. Matching skeleton/error/empty states.
+
+**T03 — Deck viewer tabbed layout.** DeckViewPage rewritten with DeckViewerHeader (gradient hero, card-fan visual, game/format badges, author row, social stats, action buttons) and 3-tab navigation (Visual/List/Stats). DeckVisualView renders card image grid grouped by type with collapsible sideboard. DeckListView renders table with type groups, mana cost, price columns. DeckStatsPanel has ManaCurveChart (CSS-only bar chart), color distribution stacked bar, type distribution bars, pricing summary. Stats computed standalone from card array — no DeckBuilderContext dependency.
+
+**T04 — Builder polish.** DeckBuilderLayout toolbar restyled as glassmorphic bar with grouped undo/redo, import/export, accent save button. DeckSurface tabs replaced Radix with native styled buttons matching viewer tab pattern. DeckZone got collapsible headers with uppercase labels, mono count badges, chevron toggle. MobileDeckBuilder got glassmorphic header, game-colored badges, styled bottom navigation. All 794 tests pass, build clean.
 
 ## Verification
 
-- `npx vitest run` — **742 tests pass** (73 files, 0 failures, baseline was 719+)
-- `npx vitest run src/components/decks/__tests__/DeckBrowsingPage.test.tsx` — 9 tests pass
-- `npx vitest run src/components/decks/__tests__/DeckViewPage.test.tsx` — 9 tests pass
-- `npm run build` — production build succeeds, no type errors
+- `cd storefront && npx vitest run` — **794 tests pass** (76 files, 0 failures — exceeds 719 baseline)
+- `cd storefront && npx vitest run src/components/decks/__tests__/DeckBrowsingPage.test.tsx` — 10 tests pass
+- `cd storefront && npx vitest run src/components/decks/__tests__/DeckViewPage.test.tsx` — 9 tests pass
+- `cd storefront && npm run build` — production build succeeds
 - All data-testid observability surfaces confirmed present in source
-- Visual UAT deferred to human review (deck builder requires auth + running backend)
+- Visual UAT pending human comparison at 1440px and 390px breakpoints
 
 ## Requirements Advanced
 
-- R005 (Deck browser pixel-perfect) — DeckBrowsingPage restructured with hero, featured carousel, game tabs, 3-col grid, pagination, stats banner matching wireframe. Structural alignment verified by 9 tests. Visual UAT pending human comparison.
-- R006 (Deck builder pixel-perfect) — DeckBuilderLayout, DeckSurface, DeckZone, MobileDeckBuilder polished with glassmorphic toolbar, collapsible zones, wireframe-sized thumbnails. Build confirms compilation. Visual UAT pending (requires auth).
-- R007 (Deck viewer pixel-perfect) — DeckViewPage restructured with hero header, Visual/List/Stats tabs, ManaCurveChart, type/color distributions. 9 tests pass. Visual UAT pending.
+- R005 (Deck browser page pixel-perfect) — Browser page restructured with hero, featured carousel, game tabs, 3-col grid with card-fan cards, pagination, stats banner matching wireframe
+- R006 (Deck builder pixel-perfect) — Builder polished with glassmorphic toolbar, collapsible zones with count badges, wireframe-sized thumbnails, styled mobile bottom nav
+- R007 (Deck viewer pixel-perfect) — Viewer restructured with hero header, Visual/List/Stats tabs, ManaCurveChart, distributions, pricing summary
 
 ## Requirements Validated
 
-- none — visual UAT (human comparison against wireframes at 1440px and 390px) still pending for R005, R006, R007
+- None — visual UAT (human comparison against wireframes) still pending for all three requirements
 
 ## New Requirements Surfaced
 
-- none
+- None
 
 ## Requirements Invalidated or Re-scoped
 
-- none
+- None
 
 ## Deviations
 
-- DeckBrowsingPage old header (h1 "Deck Browser" + feature pills + search bar + view toggle) removed entirely — not present in wireframe, replaced by hero + featured carousel.
-- Pagination built inline in DeckBrowsingPage rather than as separate DeckPagination component — the component boundary wasn't justified for the amount of markup.
-- Viewer uses simpler single-render tab switching instead of the dual-render pattern from S02 — all three views work identically on desktop and mobile, so dual-render added complexity without benefit.
-- Pricing tab and Comments tab from wireframe not implemented — these require API endpoints that don't exist yet.
-- Radix Tabs removed from DeckSurface — replaced with native styled tab bar matching the viewer's glassmorphic pattern (D017).
+- DeckViewPage uses single-render tab switching instead of dual-render pattern (S02's mobile approach). All three views work the same on desktop and mobile, so dual-render was unnecessary.
+- Pricing tab and Comments tab from wireframe not implemented — these require API endpoints that don't exist yet. The three tabs (Visual/List/Stats) cover the core wireframe scope.
 
 ## Known Limitations
 
-- Card images in visual view show gradient placeholders until real deck data includes `image_uris` — matching wireframe's card representation.
-- Pricing column in list view shows "—" until card pricing data flows from the API.
-- Win rate, tournament results, meta position, and format legality in stats panel only render when the deck object includes those fields — currently not populated.
-- Featured decks carousel uses hardcoded placeholder data — no "featured decks" API endpoint exists.
-- Community stats banner uses hardcoded numbers — no aggregate stats API exists.
-- `color-mix()` CSS in MobileDeckBuilder game badge may not work in Safari <16.4 (fallback values present).
-- Deck builder visual UAT requires running backend + auth session — not verifiable in isolated dev.
+- Featured carousel uses placeholder data — no "featured deck" API exists yet
+- Community stats banner uses placeholder numbers — no aggregate stats endpoint
+- Card images in visual view show gradient placeholders until real deck data includes `image_uris`
+- Pricing column in list view shows "—" until card pricing data flows from API
+- Win rate, tournament results, meta position in stats panel only render when deck object includes those fields (currently unpopulated)
+- Deck builder requires authentication and running backend for visual UAT — can't verify in isolated dev
+- `color-mix()` CSS in MobileDeckBuilder may not work in Safari <16.4 (fallback values exist)
 
 ## Follow-ups
 
-- S09 needs to wire "Buy Missing Cards" button to cart optimizer and implement "I own this" toggle state management in DeckBuilderContext.
-- Pricing/Comments tabs on viewer can be added when backend API endpoints exist.
-- Featured decks carousel should be wired to real data when a curation API or popularity ranking exists.
+- S09 wires "I own this" toggle state management in DeckBuilderContext
+- S09 wires "Buy Missing Cards" button to cart optimizer
+- Featured deck API endpoint needed to replace placeholder data in FeaturedDecksCarousel
+- Aggregate stats API for CommunityStatsBanner real numbers
 
 ## Files Created/Modified
 
-- `storefront/src/components/decks/DeckBrowserHero.tsx` — Hero section with radial gradient, display headline, glassmorphic search bar
+- `storefront/src/components/decks/DeckBrowserHero.tsx` — Hero section with radial gradient, glassmorphic search bar
 - `storefront/src/components/decks/FeaturedDecksCarousel.tsx` — Horizontal scroll carousel with card-fan featured deck cards
-- `storefront/src/components/decks/DeckGameTabs.tsx` — 5 game tabs with game-colored active states
-- `storefront/src/components/decks/DeckBrowsingPage.tsx` — Rewritten with full wireframe layout (hero→featured→tabs→grid→pagination→stats)
-- `storefront/src/components/decks/DeckGridCard.tsx` — Wireframe deck card with card-fan, accent bar, stats, social
+- `storefront/src/components/decks/DeckGameTabs.tsx` — 5 game-colored filter tabs
+- `storefront/src/components/decks/DeckBrowsingPage.tsx` — Restructured to compose all wireframe sections
+- `storefront/src/components/decks/DeckGridCard.tsx` — Wireframe-matching deck card with card-fan, accent bar, stats
 - `storefront/src/components/decks/DeckGrid.tsx` — Refactored to 3-col grid with DeckGridCard, matching skeletons
-- `storefront/src/components/decks/DeckViewPage.tsx` — Rewritten with tab-based layout (Visual/List/Stats)
-- `storefront/src/components/decks/DeckViewerHeader.tsx` — Hero header with gradient, badges, author, social stats, action buttons
+- `storefront/src/components/decks/DeckViewPage.tsx` — Rewritten with tab-based layout composing header + 3 views
+- `storefront/src/components/decks/DeckViewerHeader.tsx` — Hero header with gradient bg, badges, social stats, actions
 - `storefront/src/components/decks/DeckVisualView.tsx` — Card image grid grouped by type with collapsible sideboard
-- `storefront/src/components/decks/DeckListView.tsx` — Table format decklist with type groups, mana cost, pricing
-- `storefront/src/components/decks/DeckStatsPanel.tsx` — Mana curve, color/type distributions, meta info, pricing summary
-- `storefront/src/components/decks/ManaCurveChart.tsx` — Standalone CSS-only bar chart for mana curve
-- `storefront/src/components/decks/__tests__/DeckBrowsingPage.test.tsx` — 9 tests for browse page structure
-- `storefront/src/components/decks/__tests__/DeckViewPage.test.tsx` — 9 tests for viewer page structure and tab switching
-- `storefront/src/components/deck-builder/DeckBuilderLayout.tsx` — Glassmorphic toolbar, styled panels, refined collapse toggle
-- `storefront/src/components/deck-builder/DeckSurface.tsx` — Native styled tab bar replacing Radix Tabs
-- `storefront/src/components/deck-builder/DeckZone.tsx` — Collapsible zone headers, mono count badges, wireframe card grid
-- `storefront/src/components/deck-builder/MobileDeckBuilder.tsx` — Glassmorphic header, styled bottom nav, game-colored badges
+- `storefront/src/components/decks/DeckListView.tsx` — Table-format decklist with type groups, mana cost, pricing
+- `storefront/src/components/decks/DeckStatsPanel.tsx` — Mana curve, color/type distributions, meta info, pricing
+- `storefront/src/components/decks/ManaCurveChart.tsx` — CSS-only bar chart for mana curve visualization
+- `storefront/src/components/deck-builder/DeckBuilderLayout.tsx` — Glassmorphic toolbar, styled panels
+- `storefront/src/components/deck-builder/DeckSurface.tsx` — Native tab bar replacing Radix Tabs
+- `storefront/src/components/deck-builder/DeckZone.tsx` — Collapsible headers, mono count badges, compact thumbnails
+- `storefront/src/components/deck-builder/MobileDeckBuilder.tsx` — Glassmorphic header, styled bottom nav
+- `storefront/src/components/decks/__tests__/DeckBrowsingPage.test.tsx` — 10 structural tests
+- `storefront/src/components/decks/__tests__/DeckGameTabs.test.tsx` — 6 tab tests
+- `storefront/src/components/decks/__tests__/DeckViewPage.test.tsx` — 9 viewer tests
 
 ## Forward Intelligence
 
 ### What the next slice should know
-- The card-fan pattern (3 fanned gradient rectangles) is used in DeckGridCard, FeaturedDecksCarousel, and DeckViewerHeader — if the pattern needs updates, all three must change.
-- DeckStatsPanel computes mana curve and distributions from raw card data independently of DeckBuilderContext. S09 can reuse ManaCurveChart and the computation patterns without importing builder context.
-- Game tabs use inline style `borderColor` and `color` set to CSS custom properties (e.g., `var(--game-mtg)`). This pattern differs from S02's GameSelectorStrip which uses grid layout.
+- Game color CSS custom properties (--game-mtg, --game-pokemon, etc.) are established and reusable across any game-aware component
+- ManaCurveChart is standalone and reusable — import from `@/components/decks/ManaCurveChart`
+- DeckGameTabs uses canonical codes (ALL, MTG, POKEMON, YUGIOH, OPTCG) matching backend API
+- The "Buy Missing Cards" button exists in DeckViewerHeader but is purely visual — S09 wires it
 
 ### What's fragile
-- FeaturedDecksCarousel card-fan art is 3 hardcoded gradient rectangles with fixed rotations — if real card images are used, the positioning CSS needs rework to handle actual images.
-- DeckViewPage stats computation assumes cards have `mana_cost`, `type_line`, and `colors` properties. Missing fields produce empty charts but don't error.
+- DeckStatsPanel computes stats from raw card data when `deck.stats` is missing — depends on cards having `type_line`, `colors`, and `cmc` fields. If card data shape changes, stats computation breaks silently (shows 0/empty instead of error).
+- FeaturedDecksCarousel and CommunityStatsBanner use hardcoded placeholder data — must be replaced with API calls when endpoints exist or they'll show stale fake numbers forever.
 
 ### Authoritative diagnostics
-- Test data-testid attributes on all three pages are comprehensive and documented in task summaries — use them for any future DOM queries or test assertions.
-- 742 passing tests is the new baseline for S03+. Any future slice should pass ≥742.
+- `data-testid` attributes cover every major section — use `document.querySelectorAll('[data-testid^="deck-"]')` in browser console to enumerate all deck component sections
+- Test files in `__tests__/DeckBrowsingPage.test.tsx` and `__tests__/DeckViewPage.test.tsx` mock child components — if a child changes its export name, the page test will fail immediately
 
 ### What assumptions changed
-- Original plan assumed DeckPagination and CommunityStatsBanner as separate component files — pagination was built inline, stats banner was built inline in DeckBrowsingPage. Simpler and sufficient.
-- DeckHeader.tsx was listed for T04 changes but was already well-styled — no modifications needed.
+- Assumed Radix Tabs would be used for DeckSurface — native styled buttons were simpler and more consistent with the viewer tab pattern
+- Assumed DeckViewPage would use dual-render like S02's card detail — single-render with tab switching was sufficient because all three views work identically on mobile and desktop

@@ -61,7 +61,7 @@ This milestone is complete only when all are true:
 - [x] **S02: Card Browse, Detail & Search — Pixel Perfect** `risk:high` `depends:[S01]`
   > After this: `/cards` browse page with sidebar filters, game strip, card grid matches wireframe. `/cards/[id]` detail page with BFF listings matches wireframe. `/search` with faceted Algolia filters matches wireframe. Desktop + mobile verified against wireframes.
 
-- [ ] **S03: Deck Builder, Browser & Viewer — Pixel Perfect** `risk:high` `depends:[S01]`
+- [x] **S03: Deck Builder, Browser & Viewer — Pixel Perfect** `risk:high` `depends:[S01]`
   > After this: `/decks` browser shows public decks matching wireframe. Deck builder with DnD (desktop) and touch-to-add (mobile) matches wireframe. Deck viewer matches wireframe. All game-specific zones render correctly.
 
 - [ ] **S04: Homepage — Pixel Perfect + Live Data** `risk:medium` `depends:[S01,S02]`

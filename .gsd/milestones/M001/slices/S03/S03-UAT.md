@@ -1,162 +1,142 @@
 # S03: Deck Builder, Browser & Viewer — Pixel Perfect — UAT
 
 **Milestone:** M001
-**Written:** 2026-03-13
+**Written:** 2026-03-14
 
 ## UAT Type
 
-- UAT mode: mixed (artifact-driven + live-runtime + human-experience)
-- Why this mode is sufficient: Structural correctness verified by 742 automated tests and successful build. Visual fidelity requires human comparison against wireframes at both breakpoints. Builder requires auth + running backend for live verification.
+- UAT mode: mixed (artifact-driven + human-experience)
+- Why this mode is sufficient: Structural correctness verified by 794 passing tests and successful production build. Visual fidelity requires human comparison against wireframes at both breakpoints.
 
 ## Preconditions
 
 - Storefront dev server running (`cd storefront && npm run dev`)
-- For deck builder testing: backend running with auth session (Google/Discord OAuth or dev token)
-- Wireframe files available for comparison: `docs/plans/wireframes/storefront-deck-browser.html`, `storefront-deck-viewer.html`, `storefront-deck-builder.html`
+- For deck browser/viewer: no auth required (public pages)
+- For deck builder: authenticated session required + backend running (Medusa + customer-backend)
+- Wireframes available at `docs/plans/wireframes/storefront-deck-browser.html`, `storefront-deck-viewer.html`, `storefront-deck-builder.html`
 
 ## Smoke Test
 
-Navigate to `/decks` — page should render hero section with "Deck Discovery" headline, featured deck carousel below, game tabs (All/MTG/Pokémon/Yu-Gi-Oh!/One Piece), 3-column deck grid, and community stats banner at bottom.
+Navigate to `/decks` — hero section with gradient background, featured carousel with card-fan deck cards, game tabs bar, and 3-column deck grid should render without errors. Page should feel visually rich, not a flat list.
 
 ## Test Cases
 
-### 1. Deck Browser — Hero and Featured Carousel
+### 1. Deck Browser — Desktop (1440px)
 
 1. Open `/decks` at 1440px viewport
-2. Verify hero section has radial gradient background, "Deck Discovery" display headline, subtext, glassmorphic search bar with `Ctrl K` hint
-3. Below hero, verify featured decks carousel shows 3 deck cards with card-fan art, game badges, author rows, stats, social counts
-4. Verify carousel has left/right arrow buttons
-5. **Expected:** Hero and carousel match `storefront-deck-browser.html` wireframe top sections
+2. Open `docs/plans/wireframes/storefront-deck-browser.html` desktop frame side-by-side
+3. Compare hero section: radial gradient background, "Deck Discovery" display headline, subtext, glassmorphic search bar with Ctrl+K hint
+4. Compare featured carousel: horizontal scroll with card-fan deck cards, game badges, featured badge, stats, social counts, left/right arrows
+5. Compare game tabs: All + 4 game tabs with game-colored active state (border-bottom + text)
+6. Compare deck grid: 3-column layout, each card has 4px accent bar, card-fan preview, deck name, game dot + format, author, description, stats row, social row
+7. Compare pagination: numbered page buttons with brand-primary active state, prev/next, showing count
+8. Compare community stats banner: 4-column mono numbers section at bottom
+9. **Expected:** All sections match wireframe layout, spacing, and visual hierarchy at 1440px
 
-### 2. Deck Browser — Game Tabs and Grid
+### 2. Deck Browser — Mobile (390px)
 
-1. On `/decks` at 1440px, scroll to game tabs section
-2. Verify 5 tabs: All, MTG, Pokémon, Yu-Gi-Oh!, One Piece
-3. Click "MTG" tab — verify active state shows game-colored (purple) border-bottom and text
-4. Verify deck grid below shows 3 columns of DeckGridCards
-5. Each card: 4px game-colored accent bar at top, card-fan preview (3 fanned rectangles), deck name, game dot + format, author row, description (2-line clamp), stats row, social row
-6. **Expected:** Grid cards match wireframe deck card styling. 3-col layout. Game tab colors match game identity.
+1. Open `/decks` at 390px viewport
+2. Open wireframe mobile frame side-by-side
+3. Verify hero responsive sizing (smaller headline, full-width search)
+4. Verify featured carousel horizontal scroll with hidden nav arrows
+5. Verify game tabs horizontal scroll
+6. Verify 1-column deck grid with description and social rows hidden
+7. **Expected:** Mobile layout matches wireframe — single column, horizontal scrolling tabs/carousel
 
-### 3. Deck Browser — Pagination and Stats Banner
+### 3. Deck Viewer — Desktop (1440px)
 
-1. On `/decks`, scroll to bottom of grid
-2. Verify numbered pagination with page buttons, prev/next arrows, active page in brand-primary
-3. Below pagination, verify community stats banner: 4 numbers (decks built, active brewers, cards indexed, games supported) in mono font
-4. **Expected:** Pagination and stats banner match wireframe bottom sections
+1. Navigate to `/decks/[id]` with a deck containing cards
+2. Open `storefront-deck-viewer.html` desktop frame side-by-side
+3. Compare header: card-fan visual with gradient background, deck name (display font), game/format badges, author row, social stats, action buttons
+4. Verify tab bar: Visual/List/Stats tabs with glassmorphic bar and brand-primary active indicator
+5. Click Visual tab: card image grid grouped by type, quantity badges, collapsible sideboard section
+6. Click List tab: table with type-grouped rows, mana cost column, price column, total row
+7. Click Stats tab: ManaCurveChart with bar chart, color distribution stacked bar, type distribution bars, pricing summary
+8. **Expected:** Viewer matches wireframe structure. Tab switching works smoothly. Stats render correctly.
 
-### 4. Deck Browser — Mobile Layout (390px)
+### 4. Deck Viewer — Mobile (390px)
 
-1. Resize viewport to 390px or use mobile emulation
-2. Verify hero section scales (smaller fonts)
-3. Verify game tabs scroll horizontally
-4. Verify grid is 1 column
-5. Verify deck cards hide description and social row on mobile
-6. Featured carousel cards are narrower (300px)
-7. **Expected:** Mobile layout matches wireframe mobile frames
+1. Open viewer page at 390px
+2. Verify tabs are horizontally scrollable
+3. Verify visual view shows 2-column card grid
+4. Verify list view table scrolls horizontally if needed
+5. **Expected:** Mobile layout is usable, tabs accessible, content fits viewport
 
-### 5. Deck Viewer — Header and Tabs
-
-1. Navigate to `/decks/[id]` for any existing deck
-2. Verify hero header: gradient background, deck name in display font, game/format badges, author row with avatar, social stats (likes/copies/views), action buttons (Copy Deck, Buy All, Export, Like)
-3. Verify tab bar below header: Visual / List / Stats tabs with brand-primary active indicator
-4. Default tab should be Visual
-5. **Expected:** Header and tab bar match `storefront-deck-viewer.html` wireframe
-
-### 6. Deck Viewer — Visual View
-
-1. On the Visual tab, verify cards display as image grid grouped by type (Creatures, Instants, Sorceries, etc.)
-2. Each group has a header with type name and count
-3. Cards show either actual card images or gradient placeholders with card name
-4. Quantity badges in brand-primary for cards with qty > 1
-5. Sideboard section exists (collapsed by default), click to expand
-6. **Expected:** Visual view matches wireframe card grid layout
-
-### 7. Deck Viewer — List View
-
-1. Click "List" tab
-2. Verify table with columns: Qty, Card Name, Mana Cost, Type, Price
-3. Rows grouped by type with colored header rows (brand-primary text on surface-1 bg)
-4. Total row at bottom with 2px brand-primary top border
-5. **Expected:** List view matches wireframe table format
-
-### 8. Deck Viewer — Stats Panel
-
-1. Click "Stats" tab
-2. Verify ManaCurveChart: bar chart with 0-6+ mana cost buckets, gradient bars, count labels, average CMC
-3. Verify color distribution: horizontal stacked bar with color legend
-4. Verify type distribution: horizontal bars with labels and counts
-5. Verify pricing summary card at bottom
-6. **Expected:** Stats panel matches wireframe statistics section
-
-### 9. Deck Builder — Toolbar and Zones
+### 5. Deck Builder — Desktop (1440px)
 
 1. Navigate to `/decks/builder/new` (requires auth)
-2. Verify glassmorphic header toolbar: game selector, deck name input, undo/redo buttons grouped with separator, import/export buttons, save button with brand-primary accent when dirty
-3. Verify card browser panel on left with inset shadow
-4. Verify deck surface with Zones/List tab bar (matching viewer tab visual language)
-5. Verify zone headers: uppercase labels, monospace count badges, clickable to collapse/expand
-6. **Expected:** Builder layout matches `storefront-deck-builder.html` wireframe toolbar and panel styling
+2. Open `storefront-deck-builder.html` desktop frame side-by-side
+3. Compare toolbar: glassmorphic header bar, undo/redo grouped with separator, import/export buttons, save button with accent glow
+4. Compare card browser panel: left panel with inset shadow, search functionality
+5. Compare deck surface: Zones/List tab bar matching viewer tab pattern, zone headers with uppercase labels, mono count badges, collapse chevron
+6. Collapse/expand a zone: verify chevron rotates, content hides/shows
+7. Compare card thumbnails: wireframe sizing, compact hover controls
+8. **Expected:** Builder matches wireframe toolbar, panel, and zone styling
 
-### 10. Deck Builder — Mobile
+### 6. Deck Builder — Mobile (390px)
 
-1. Open deck builder on 390px viewport
-2. Verify glassmorphic header with game badge
+1. Open builder at 390px (requires auth)
+2. Verify glassmorphic header with game-colored badge
 3. Verify bottom navigation tabs with brand-primary active indicator
-4. Verify zone cards use uppercase headers and mono count badges
-5. **Expected:** Mobile builder matches wireframe mobile frames
+4. Verify zone cards in deck view have uppercase headers and mono count badges
+5. **Expected:** Mobile builder feels polished and consistent with desktop design language
 
 ## Edge Cases
 
-### Empty Deck Grid
+### Empty Deck Browser
 
-1. Apply game tab filter that returns 0 decks
-2. **Expected:** Empty state renders with message and no broken layout
+1. Filter to a game with no decks (or clear all results)
+2. **Expected:** Empty state renders with Voltage styling, not a blank page
 
 ### Deck with No Card Images
 
-1. View a deck where cards have no `image_uris`
-2. **Expected:** Visual view shows gradient placeholders with card names (not broken images)
+1. View a deck where cards lack `image_uris`
+2. **Expected:** Gradient placeholders render in visual view (colored by card type), not broken images
 
-### Deck with No Stats
+### Mana Curve with All Same Cost
 
-1. View a deck with no `stats` object populated
-2. **Expected:** Stats panel computes from cards directly. ManaCurveChart shows bars even if all counts are 0.
+1. View a deck where all cards have the same mana cost
+2. **Expected:** ManaCurveChart renders with one tall bar and rest at zero, no layout breaks
 
-### Zone Collapse Toggle
+### Sideboard Toggle
 
-1. In deck builder, click a zone header to collapse
-2. **Expected:** Zone content hides, chevron rotates. Click again to expand.
+1. In visual view, find the sideboard section
+2. Click sideboard toggle button
+3. **Expected:** Sideboard expands/collapses with smooth transition, toggle state is clear
 
 ## Failure Signals
 
-- Hero section missing or showing old "Deck Browser" h1 heading
-- Grid showing 4 columns instead of 3 on desktop
-- Game tabs not changing color on active state
-- Viewer tabs not switching content (Visual/List/Stats)
-- ManaCurveChart not rendering bars
-- Builder toolbar showing unstyled buttons (no glassmorphic background)
-- Zone headers not collapsible
-- Mobile layout not switching to 1-column grid
-- Community stats banner missing at bottom of browse page
+- Hero section missing or flat gray background instead of radial gradient
+- Featured carousel showing empty or broken cards
+- Game tabs not responding to clicks or not showing game-colored active states
+- Deck grid showing 4 columns instead of 3 on desktop
+- Card-fan preview missing from grid cards (showing nothing where fanned cards should be)
+- Viewer tabs not switching content when clicked
+- ManaCurveChart showing no bars or broken layout
+- Builder toolbar looking like a plain header instead of glassmorphic blur
+- Zone headers not collapsible or missing count badges
+- Mobile bottom navigation missing active indicator styling
+- Any console errors on page load
 
 ## Requirements Proved By This UAT
 
-- R005 (Deck browser pixel-perfect) — UAT cases 1-4 prove structural match to wireframe at both breakpoints
-- R006 (Deck builder pixel-perfect) — UAT cases 9-10 prove toolbar, zones, and mobile alignment
-- R007 (Deck viewer pixel-perfect) — UAT cases 5-8 prove header, tabs, visual/list/stats views
+- R005 (Deck browser pixel-perfect) — browser page structurally matches wireframe at both breakpoints
+- R006 (Deck builder pixel-perfect) — builder polished to wireframe styling (toolbar, zones, thumbnails, mobile)
+- R007 (Deck viewer pixel-perfect) — viewer matches wireframe with tabbed layout, stats, distributions
 
 ## Not Proven By This UAT
 
-- "I own this" toggle and "Buy Missing Cards" flow — S09 scope
-- Real card images in visual view — depends on deck data including image_uris
-- Pricing/Comments tabs on viewer — deferred, no API endpoints
-- Live featured decks data — placeholder only
-- Win rate, tournament results, meta position in stats panel — not populated by API
+- R006 "I own this" toggle state management — deferred to S09
+- R006 "Buy Missing Cards" button wired to optimizer — deferred to S09
+- Live featured decks data — currently placeholder
+- Live community stats — currently placeholder
+- Pricing data in list view — depends on API availability
+- Win rate / tournament data in stats panel — depends on data population
 
 ## Notes for Tester
 
-- Featured carousel and community stats use placeholder data — verify layout/styling, not data accuracy.
-- Builder requires authentication. If no auth session exists, test cases 9-10 will redirect to login.
-- Card-fan art is intentionally abstract gradient rectangles — this is the wireframe's representation, not missing images.
-- `color-mix()` CSS in mobile builder game badges may render differently in Safari <16.4.
-- The stats panel's win rate/tournament sections only appear when the deck object has those fields — it's expected that they're missing with current test data.
+- Featured carousel and community stats banner show placeholder data — this is expected for S03. Real data wiring happens in later slices.
+- Deck builder pages require authentication — you need a running backend and logged-in session to access `/decks/builder/new` or `/decks/[id]/edit`.
+- Card images in visual view will show colored gradient placeholders unless the deck data includes `image_uris` on card objects — this matches the wireframe's card representation style.
+- The "Buy Missing Cards" and "Copy Deck" buttons in the viewer header are visually present but not wired to backend actions yet (S09 scope).
+- `color-mix()` CSS may not render correctly in Safari <16.4 — check MobileDeckBuilder game badges in older Safari if that's a target browser.

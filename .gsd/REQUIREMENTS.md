@@ -56,7 +56,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: M001/S01
-- Validation: structural alignment verified by 9 DeckBrowsingPage tests (S03); hero, featured carousel, game tabs, 3-col grid with card-fan cards, pagination, community stats banner all match wireframe layout; visual UAT pending human comparison at 1440px and 390px
+- Validation: structural — 10 DeckBrowsingPage tests + 6 DeckGameTabs tests verify hero, featured carousel, game tabs, 3-col grid with card-fan cards, pagination, community stats banner; 794 tests pass, production build clean; visual UAT pending human comparison at 1440px and 390px
 - Notes: DeckBrowsingPage fully restructured with DeckBrowserHero, FeaturedDecksCarousel, DeckGameTabs, DeckGridCard (card-fan preview, accent bar, stats), inline pagination, CommunityStatsBanner. Featured carousel and stats use placeholder data. Game tabs replace old DeckFilters checkboxes.
 
 ### R006 — Deck builder pixel-perfect
@@ -67,7 +67,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: M001/S01
-- Validation: structural alignment verified by build success and 742 tests (S03); glassmorphic toolbar, collapsible zones with count badges, wireframe-sized thumbnails, styled mobile bottom nav all match wireframe styling; visual UAT pending (requires auth + running backend)
+- Validation: structural — 794 tests pass, production build clean; glassmorphic toolbar, collapsible zones with count badges, wireframe-sized thumbnails, styled mobile bottom nav all match wireframe styling; visual UAT pending (requires auth + running backend)
 - Notes: DeckBuilderLayout polished with glassmorphic toolbar, DeckSurface uses native tab bar (Radix Tabs removed), DeckZone has collapsible headers with mono count badges, MobileDeckBuilder has glassmorphic header + game-colored badges. "I own this" toggle state management deferred to S09.
 
 ### R007 — Deck viewer/editor pixel-perfect
@@ -78,7 +78,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: M001/S01
-- Validation: structural alignment verified by 9 DeckViewPage tests (S03); hero header with card-fan, Visual/List/Stats tabs, ManaCurveChart, type/color distributions, pricing summary all match wireframe layout; visual UAT pending human comparison at 1440px and 390px
+- Validation: structural — 9 DeckViewPage tests verify hero header with card-fan, Visual/List/Stats tabs, ManaCurveChart, type/color distributions, pricing summary; 794 tests pass, production build clean; visual UAT pending human comparison at 1440px and 390px
 - Notes: DeckViewPage fully restructured with DeckViewerHeader, tab navigation, DeckVisualView (image grid by type), DeckListView (table format), DeckStatsPanel (mana curve, distributions). ManaCurveChart is standalone reusable. Pricing/Comments tabs deferred (no API). Stats computed independently of DeckBuilderContext.
 
 ### R008 — Homepage pixel-perfect with live data

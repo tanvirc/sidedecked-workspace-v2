@@ -1,8 +1,8 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S03 — Deck Builder, Browser & Viewer — Pixel Perfect
-**Phase:** planning
+**Active Slice:** S04 — Homepage — Pixel Perfect + Live Data
+**Phase:** executing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
 ## Milestone Registry
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Plan slice S03 (Deck Builder, Browser & Viewer — Pixel Perfect).
+Execute T01: Align all homepage components to wireframe pixel values in slice S04.
