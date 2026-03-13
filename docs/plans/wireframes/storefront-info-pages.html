@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Info Pages Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--component { color: var(--brand-secondary); background: rgba(255,120,73,0.08); border-color: rgba(255,120,73,0.3); }
+
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    .page-content { padding: 40px 48px; max-width: 960px; margin: 0 auto; }
+
+    /* INFO PAGE HEADER */
+    .info-header { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 24px; padding: 36px 40px; margin-bottom: 24px; }
+    .info-eyebrow { font-family: var(--font-heading); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; color: var(--brand-primary); margin-bottom: 12px; }
+    .info-title { font-family: var(--font-display); font-weight: 700; font-size: 48px; color: var(--text-primary); line-height: 1; margin-bottom: 12px; }
+    .info-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 640px; }
+
+    /* NAV PILLS */
+    .info-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .info-pill { padding: 8px 18px; border: 1px solid var(--border-default); border-radius: 999px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: all 0.15s; cursor: pointer; }
+    .info-pill:hover { border-color: var(--brand-primary); color: var(--text-primary); }
+    .info-pill.active { border-color: var(--brand-primary); color: var(--brand-primary); background: rgba(139,92,246,0.08); }
+
+    /* CONTENT SECTIONS */
+    .info-section { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 20px; padding: 28px 32px; margin-bottom: 16px; }
+    .info-section-title { font-family: var(--font-heading); font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
+    .info-section p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+    .info-section p:last-child { margin-bottom: 0; }
+
+    /* FAQ ACCORDION */
+    .faq-item { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
+    .faq-question { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; cursor: pointer; font-family: var(--font-heading); font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .faq-chevron { color: var(--text-tertiary); font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--brand-primary); }
+    .faq-answer { padding: 0 24px 18px; font-size: 14px; color: var(--text-secondary); line-height: 1.7; display: none; }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE */
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .info-header { padding: 24px; border-radius: 16px; }
+    .mobile-frame .info-title { font-size: 32px; }
+    .mobile-frame .info-pills { gap: 6px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; -ms-overflow-style: none; }
+    .mobile-frame .info-pills::-webkit-scrollbar { display: none; }
+    .mobile-frame .info-pill { flex-shrink: 0; font-size: 12px; padding: 6px 14px; }
+    .mobile-frame .info-section { padding: 20px; border-radius: 14px; }
+    .mobile-frame .info-section-title { font-size: 15px; }
+    .mobile-frame .faq-question { padding: 14px 18px; font-size: 14px; }
+    .mobile-frame .faq-answer { padding: 0 18px 14px; font-size: 13px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== STATE 1: ABOUT PAGE — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — About (InfoPage)</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Info Pages — About">
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({});</script>
+
+      <div class="page-content" data-component="InfoPage">
+        <div style="margin-bottom:16px;">
+          <span class="annotation--component annotation">InfoPage</span>
+          <span class="annotation">covers /about, /faq, /terms, /privacy, /contact, /terms/seller</span>
+        </div>
+
+        <div class="info-header">
+          <div class="info-eyebrow">About Us</div>
+          <div class="info-title">SideDecked</div>
+          <div class="info-desc">The premier marketplace for competitive trading card game players. Buy, sell, and trade cards across Magic: The Gathering, Pokémon, Yu-Gi-Oh!, and One Piece.</div>
+          <div class="info-pills">
+            <span class="info-pill active">About</span>
+            <span class="info-pill">FAQ</span>
+            <span class="info-pill">Terms of Service</span>
+            <span class="info-pill">Privacy Policy</span>
+            <span class="info-pill">Contact</span>
+            <span class="info-pill">Seller Terms</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-section-title">Our Mission</div>
+          <p>SideDecked was founded by competitive TCG players who were frustrated with existing marketplaces. We believe buying and selling cards should be as exciting as playing them.</p>
+          <p>Our mission is to create the most trusted, player-focused marketplace for trading card games, with fair prices, verified conditions, and a community-driven experience.</p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-section-title">What Makes Us Different</div>
+          <p>Unlike generic marketplaces, SideDecked is built specifically for the TCG community. Our platform includes card-specific data enrichment, condition verification systems, and seller reputation tracking designed for card traders.</p>
+          <p>We support Magic: The Gathering, Pokémon, Yu-Gi-Oh!, and One Piece with deep game-specific integrations including deck building, price tracking, and community features.</p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-section-title">Our Team</div>
+          <p>We are a team of competitive players, developers, and entrepreneurs united by our passion for trading card games. Based in Australia, serving the global TCG community.</p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — About (InfoPage)</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-info-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-info-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="info-header">
+            <div class="info-eyebrow">About Us</div>
+            <div class="info-title">SideDecked</div>
+            <div class="info-desc">The premier marketplace for competitive TCG players.</div>
+            <div class="info-pills">
+              <span class="info-pill active">About</span>
+              <span class="info-pill">FAQ</span>
+              <span class="info-pill">Terms</span>
+              <span class="info-pill">Privacy</span>
+              <span class="info-pill">Contact</span>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title">Our Mission</div>
+            <p>SideDecked was founded by competitive TCG players frustrated with existing marketplaces. We believe buying and selling cards should be as exciting as playing them.</p>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title">What Makes Us Different</div>
+            <p>Unlike generic marketplaces, SideDecked is built specifically for the TCG community with card-specific data, condition verification, and seller reputation tracking.</p>
+          </div>
+
+          <div class="info-section">
+            <div class="info-section-title">Our Team</div>
+            <p>A team of competitive players, developers, and entrepreneurs united by our passion for TCGs. Based in Australia, serving the global community.</p>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE SEPARATOR -->
+<div class="state-separator">
+  <div class="state-separator-line"></div>
+  <div class="state-separator-label">State 2 — FAQ Variant</div>
+  <div class="state-separator-line"></div>
+</div>
+
+<!-- ===== STATE 2: FAQ — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — FAQ (InfoPage)</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Info Pages — FAQ">
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2' });</script>
+
+      <div class="page-content" data-component="InfoPage">
+        <div class="info-header">
+          <div class="info-eyebrow">Support</div>
+          <div class="info-title">Frequently Asked Questions</div>
+          <div class="info-desc">Find answers to common questions about buying, selling, and trading on SideDecked.</div>
+          <div class="info-pills">
+            <span class="info-pill">About</span>
+            <span class="info-pill active">FAQ</span>
+            <span class="info-pill">Terms of Service</span>
+            <span class="info-pill">Privacy Policy</span>
+            <span class="info-pill">Contact</span>
+            <span class="info-pill">Seller Terms</span>
+          </div>
+        </div>
+
+        <div class="faq-item open">
+          <div class="faq-question">
+            How do I list a card for sale?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer">
+            To list a card, navigate to the Sell section and click "List a Card." You can search for any card by name, set it to the correct condition, add photos, and set your price. Our system will suggest a price based on current market data.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            What payment methods are accepted?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer" style="display:none;">
+            We accept credit/debit cards, PayPal, and bank transfers through our secure payment partner Stripe. All transactions are protected by our buyer protection program.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            How does buyer protection work?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer" style="display:none;">
+            Every purchase on SideDecked is covered by our buyer protection guarantee. If a card arrives in a different condition than described, or doesn't arrive at all, you can file a claim within 14 days.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            What games does SideDecked support?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer" style="display:none;">
+            We currently support Magic: The Gathering, Pokémon TCG, Yu-Gi-Oh!, and One Piece Card Game, with more games planned.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            How are shipping costs calculated?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer" style="display:none;">
+            Shipping costs depend on the seller's location, your delivery address, and the shipping method. Sellers set their own shipping rates.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Can I return a card after purchase?
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-answer" style="display:none;">
+            Returns are accepted within 14 days if the card condition doesn't match the listing. Contact the seller first, then open a return request if needed.
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — FAQ (InfoPage)</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-faq-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-faq-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="info-header">
+            <div class="info-eyebrow">Support</div>
+            <div class="info-title">FAQ</div>
+            <div class="info-desc">Common questions about buying and selling on SideDecked.</div>
+            <div class="info-pills">
+              <span class="info-pill">About</span>
+              <span class="info-pill active">FAQ</span>
+              <span class="info-pill">Terms</span>
+              <span class="info-pill">Privacy</span>
+              <span class="info-pill">Contact</span>
+            </div>
+          </div>
+
+          <div class="faq-item open">
+            <div class="faq-question">How do I list a card for sale?<span class="faq-chevron">▼</span></div>
+            <div class="faq-answer">Navigate to the Sell section and click "List a Card." Search for any card by name, set the condition, add photos, and set your price.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">What payment methods are accepted?<span class="faq-chevron">▼</span></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">How does buyer protection work?<span class="faq-chevron">▼</span></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">What games does SideDecked support?<span class="faq-chevron">▼</span></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">How are shipping costs calculated?<span class="faq-chevron">▼</span></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Can I return a card?<span class="faq-chevron">▼</span></div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

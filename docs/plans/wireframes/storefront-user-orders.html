@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Orders Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    /* CANVAS */
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    /* ANNOTATIONS */
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+    .annotation--breakpoint { color: var(--warning); background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+
+    /* PAGE LAYOUT */
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+
+    /* USER LAYOUT — sidebar + main */
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+
+    /* USER SIDEBAR NAV */
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; transition: all 0.15s; }
+    .user-nav-item:hover { color: var(--text-secondary); background: var(--bg-surface-2); }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+
+    /* MOBILE USER NAV — horizontal scrollable pills */
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; -ms-overflow-style: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; transition: all 0.15s; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+
+    /* PAGE HEADER */
+    .page-header { margin-bottom: 24px; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+    .tab { font-family: var(--font-heading); font-size: 14px; font-weight: 600; padding: 10px 20px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
+    /* ORDER CARD */
+    .order-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; }
+    .order-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+    .order-number { font-family: var(--font-heading); font-weight: 600; font-size: 15px; }
+    .order-date { font-size: 13px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .order-meta { display: flex; align-items: center; gap: 12px; }
+
+    /* BADGE */
+    .badge { font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; display: inline-block; }
+    .badge--processing { color: var(--warning); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .badge--shipped { color: #60A5FA; background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); }
+    .badge--delivered { color: var(--positive); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+    .badge--cancelled { color: var(--negative); background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ORDER ITEMS ROW */
+    .order-items-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .order-item-thumb { width: 48px; height: 67px; background: var(--bg-surface-3); border-radius: 6px; border: 1px solid var(--border-default); }
+    .order-seller { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+    .order-seller strong { color: var(--text-primary); font-weight: 500; }
+    .order-footer { display: flex; align-items: center; justify-content: space-between; }
+    .order-total { font-family: var(--font-heading); font-weight: 600; font-size: 16px; }
+    .order-link { font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--brand-primary); text-decoration: none; }
+
+    /* PAGINATION */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .page-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface-1); color: var(--text-tertiary); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .page-btn.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+
+    /* ORDER DETAIL */
+    .back-btn { font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); background: var(--bg-surface-2); border: 1px solid var(--border-default); padding: 8px 18px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; text-decoration: none; }
+    .order-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .order-detail-title { font-family: var(--font-display); font-weight: 700; font-size: 28px; text-transform: uppercase; }
+
+    /* DETAIL SECTIONS */
+    .detail-section { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+    .detail-section-title { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+    /* TRACKING TIMELINE */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 4px; bottom: 4px; width: 2px; background: var(--border-default); }
+    .timeline-step { position: relative; padding-bottom: 20px; padding-left: 16px; }
+    .timeline-step:last-child { padding-bottom: 0; }
+    .timeline-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg-surface-3); border: 2px solid var(--border-strong); }
+    .timeline-dot.completed { background: var(--positive); border-color: var(--positive); }
+    .timeline-dot.current { background: var(--brand-primary); border-color: var(--brand-primary); box-shadow: 0 0 8px rgba(139,92,246,0.4); }
+    .timeline-label { font-size: 14px; font-weight: 500; }
+    .timeline-date { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); margin-top: 2px; }
+
+    /* ITEM LIST */
+    .item-row { display: flex; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-default); }
+    .item-row:last-child { border-bottom: none; }
+    .item-thumb { width: 52px; height: 73px; background: var(--bg-surface-3); border-radius: 6px; border: 1px solid var(--border-default); flex-shrink: 0; }
+    .item-info { flex: 1; }
+    .item-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+    .item-meta { font-size: 12px; color: var(--text-tertiary); }
+    .item-price { font-family: var(--font-heading); font-weight: 600; font-size: 14px; }
+
+    /* INFO GRID */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .info-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px; }
+    .info-value { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+
+    /* BTN */
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+
+    /* STATE SEPARATOR */
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE OVERRIDES */
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .order-card { padding: 16px; }
+    .mobile-frame .order-card-header { flex-direction: column; align-items: flex-start; }
+    .mobile-frame .order-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .mobile-frame .info-grid { grid-template-columns: 1fr; }
+    .mobile-frame .tabs { overflow-x: auto; gap: 0; }
+    .mobile-frame .tab { font-size: 13px; padding: 8px 14px; white-space: nowrap; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP — Order List ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Order List</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Orders — List">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item active" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="OrdersPagination">
+            <div class="page-header">
+              <span class="annotation">&lt;OrdersPagination&gt;</span>
+              <h1 class="page-title">My Orders</h1>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="tabs">
+              <button class="tab active">All</button>
+              <button class="tab">Active</button>
+              <button class="tab">Completed</button>
+              <button class="tab">Cancelled</button>
+            </div>
+
+            <!-- Order Card 1 — Processing -->
+            <div class="order-card">
+              <div class="order-card-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="order-number">Order #SD-20260312-0047</span>
+                  <span class="badge badge--processing">Processing</span>
+                </div>
+                <div class="order-meta">
+                  <span class="order-date">Mar 12, 2026</span>
+                </div>
+              </div>
+              <div class="order-seller">Seller: <strong>CardVault_Pro</strong></div>
+              <div class="order-items-row">
+                <div class="order-item-thumb"></div>
+                <div class="order-item-thumb"></div>
+                <div class="order-item-thumb"></div>
+              </div>
+              <div class="order-footer">
+                <span class="order-total">$127.45</span>
+                <a href="#" class="order-link">View Details →</a>
+              </div>
+            </div>
+
+            <!-- Order Card 2 — Shipped -->
+            <div class="order-card">
+              <div class="order-card-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="order-number">Order #SD-20260310-0039</span>
+                  <span class="badge badge--shipped">Shipped</span>
+                </div>
+                <div class="order-meta">
+                  <span class="order-date">Mar 10, 2026</span>
+                </div>
+              </div>
+              <div class="order-seller">Seller: <strong>PokéDeals</strong></div>
+              <div class="order-items-row">
+                <div class="order-item-thumb"></div>
+                <div class="order-item-thumb"></div>
+              </div>
+              <div class="order-footer">
+                <span class="order-total">$89.99</span>
+                <a href="#" class="order-link">View Details →</a>
+              </div>
+            </div>
+
+            <!-- Order Card 3 — Delivered -->
+            <div class="order-card">
+              <div class="order-card-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="order-number">Order #SD-20260228-0021</span>
+                  <span class="badge badge--delivered">Delivered</span>
+                </div>
+                <div class="order-meta">
+                  <span class="order-date">Feb 28, 2026</span>
+                </div>
+              </div>
+              <div class="order-seller">Seller: <strong>YGO_Masters</strong></div>
+              <div class="order-items-row">
+                <div class="order-item-thumb"></div>
+              </div>
+              <div class="order-footer">
+                <span class="order-total">$34.50</span>
+                <a href="#" class="order-link">View Details →</a>
+              </div>
+            </div>
+
+            <!-- Order Card 4 — Cancelled -->
+            <div class="order-card">
+              <div class="order-card-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span class="order-number">Order #SD-20260220-0015</span>
+                  <span class="badge badge--cancelled">Cancelled</span>
+                </div>
+                <div class="order-meta">
+                  <span class="order-date">Feb 20, 2026</span>
+                </div>
+              </div>
+              <div class="order-seller">Seller: <strong>TCG_Haven</strong></div>
+              <div class="order-items-row">
+                <div class="order-item-thumb"></div>
+                <div class="order-item-thumb"></div>
+              </div>
+              <div class="order-footer">
+                <span class="order-total">$215.00</span>
+                <a href="#" class="order-link">View Details →</a>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" data-component="OrdersPagination">
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== STATE SEPARATOR ===== -->
+  <div class="state-separator" style="width:100%;">
+    <div class="state-separator-line"></div>
+    <div class="state-separator-label">⬇ State: Order Detail View</div>
+    <div class="state-separator-line"></div>
+  </div>
+
+  <!-- ===== DESKTOP — Order Detail ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Order Detail</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Orders — Detail">
+
+      <div id="sd-nav-root-2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root-2', annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <a class="user-nav-item active" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="OrderDetailsSection">
+            <a href="#" class="back-btn">← All Orders</a>
+            <div class="order-detail-header">
+              <div>
+                <span class="annotation">&lt;OrderDetailsSection&gt;</span>
+                <h1 class="order-detail-title">Order Set #SD-20260312-0047</h1>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span class="badge badge--processing">Processing</span>
+                <span class="order-date">Order date: Mar 12, 2026</span>
+              </div>
+            </div>
+
+            <!-- Shipping Tracking -->
+            <div class="detail-section">
+              <div class="detail-section-title">Shipping &amp; Tracking</div>
+              <div class="timeline">
+                <div class="timeline-step">
+                  <div class="timeline-dot completed"></div>
+                  <div class="timeline-label">Order Placed</div>
+                  <div class="timeline-date">Mar 12, 2026 — 2:14 PM</div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot completed"></div>
+                  <div class="timeline-label">Payment Confirmed</div>
+                  <div class="timeline-date">Mar 12, 2026 — 2:15 PM</div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot current"></div>
+                  <div class="timeline-label">Processing by Seller</div>
+                  <div class="timeline-date">Estimated ship by Mar 14, 2026</div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-label">Shipped</div>
+                  <div class="timeline-date">—</div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-label">Delivered</div>
+                  <div class="timeline-date">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Items -->
+            <div class="detail-section">
+              <div class="detail-section-title">Items (3)</div>
+              <div class="item-row">
+                <div class="item-thumb"></div>
+                <div class="item-info">
+                  <div class="item-name">Charizard ex — Obsidian Flames</div>
+                  <div class="item-meta">Near Mint · English · #006</div>
+                </div>
+                <div class="item-price">$54.99</div>
+              </div>
+              <div class="item-row">
+                <div class="item-thumb"></div>
+                <div class="item-info">
+                  <div class="item-name">Pikachu VMAX — Lost Origin</div>
+                  <div class="item-meta">Near Mint · English · #114</div>
+                </div>
+                <div class="item-price">$42.50</div>
+              </div>
+              <div class="item-row">
+                <div class="item-thumb"></div>
+                <div class="item-info">
+                  <div class="item-name">Mew ex — 151</div>
+                  <div class="item-meta">Lightly Played · English · #151</div>
+                </div>
+                <div class="item-price">$29.96</div>
+              </div>
+            </div>
+
+            <!-- Delivery & Payment -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="detail-section">
+                <div class="detail-section-title">Delivery Address</div>
+                <div class="info-value">
+                  Alex Johnson<br />
+                  742 Trading Card Lane<br />
+                  Melbourne VIC 3000<br />
+                  Australia<br />
+                  +61 412 345 678
+                </div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">Payment</div>
+                <div class="info-grid" style="grid-template-columns:1fr;">
+                  <div>
+                    <div class="info-label">Method</div>
+                    <div class="info-value">Visa ending in 4242</div>
+                  </div>
+                  <div>
+                    <div class="info-label">Subtotal</div>
+                    <div class="info-value">$127.45</div>
+                  </div>
+                  <div>
+                    <div class="info-label">Shipping</div>
+                    <div class="info-value">$8.95</div>
+                  </div>
+                  <div>
+                    <div class="info-label">Total</div>
+                    <div class="info-value" style="font-weight:600; color:var(--text-primary); font-size:16px;">$136.40</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div style="display:flex; gap:12px; margin-top:16px;">
+              <button class="btn btn-outline btn-sm">Request Return</button>
+              <button class="btn btn-outline btn-sm">Contact Seller</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE — Order List ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Order List</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Orders — List">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <!-- Mobile horizontal nav -->
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill active" href="#">Orders</a>
+            <a class="user-nav-pill" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill" href="#">Addresses</a>
+            <a class="user-nav-pill" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill" href="#">Settings</a>
+          </div>
+
+          <div class="page-header">
+            <h1 class="page-title" style="font-size:24px;">My Orders</h1>
+          </div>
+
+          <div class="tabs" style="overflow-x:auto;">
+            <button class="tab active" style="font-size:13px; padding:8px 14px; white-space:nowrap;">All</button>
+            <button class="tab" style="font-size:13px; padding:8px 14px; white-space:nowrap;">Active</button>
+            <button class="tab" style="font-size:13px; padding:8px 14px; white-space:nowrap;">Completed</button>
+            <button class="tab" style="font-size:13px; padding:8px 14px; white-space:nowrap;">Cancelled</button>
+          </div>
+
+          <div class="order-card" style="padding:16px;">
+            <div style="margin-bottom:10px;">
+              <span class="order-number" style="font-size:14px;">Order #SD-20260312-0047</span>
+              <span class="badge badge--processing" style="margin-left:8px;">Processing</span>
+            </div>
+            <div class="order-date" style="margin-bottom:8px;">Mar 12, 2026</div>
+            <div class="order-seller">Seller: <strong>CardVault_Pro</strong></div>
+            <div class="order-items-row">
+              <div class="order-item-thumb"></div>
+              <div class="order-item-thumb"></div>
+              <div class="order-item-thumb"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="order-total">$127.45</span>
+              <a href="#" class="order-link">View Details →</a>
+            </div>
+          </div>
+
+          <div class="order-card" style="padding:16px;">
+            <div style="margin-bottom:10px;">
+              <span class="order-number" style="font-size:14px;">Order #SD-20260310-0039</span>
+              <span class="badge badge--shipped" style="margin-left:8px;">Shipped</span>
+            </div>
+            <div class="order-date" style="margin-bottom:8px;">Mar 10, 2026</div>
+            <div class="order-seller">Seller: <strong>PokéDeals</strong></div>
+            <div class="order-items-row">
+              <div class="order-item-thumb"></div>
+              <div class="order-item-thumb"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="order-total">$89.99</span>
+              <a href="#" class="order-link">View Details →</a>
+            </div>
+          </div>
+
+          <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

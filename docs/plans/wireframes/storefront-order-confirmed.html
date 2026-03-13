@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Storefront Order Confirmed Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* =============================================
+       GLOBAL RESET + CANVAS
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       CANVAS LAYOUT — side-by-side frames
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 48px;
+      padding: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    /* =============================================
+       SHARED COMPONENT STYLES
+       ============================================= */
+    .btn {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: white;
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.25);
+    }
+    .btn-primary:hover {
+      background: #7C3AED;
+      box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-strong);
+    }
+    .btn-outline:hover {
+      background: rgba(139, 92, 246, 0.08);
+      border-color: var(--brand-primary);
+    }
+
+    /* --- Footer --- */
+    .footer {
+      padding: 48px 48px 32px;
+      border-top: 1px solid var(--border-default);
+    }
+    .footer-inner {
+      max-width: 1344px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text-secondary); }
+    .footer-social {
+      display: flex;
+      gap: 12px;
+    }
+    .footer-social-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      transition: all 0.15s;
+    }
+    .footer-social-icon:hover {
+      background: var(--bg-surface-3);
+      color: var(--text-secondary);
+    }
+    .footer-social-icon svg { width: 14px; height: 14px; }
+    .footer-copyright {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      max-width: 1344px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* =============================================
+       ORDER CONFIRMED PAGE
+       ============================================= */
+    .order-confirmed-page {
+      padding: 64px 48px;
+    }
+    .order-confirmed-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Success state */
+    .success-state {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.12);
+      border: 2px solid var(--positive);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
+    }
+    .success-icon svg { width: 40px; height: 40px; color: var(--positive); }
+    .success-state h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 48px;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--positive), #34D399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .order-number {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .order-number strong {
+      color: var(--text-primary);
+    }
+    .email-notice {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .email-notice strong {
+      color: var(--text-secondary);
+    }
+
+    /* Order summary card */
+    .order-summary-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .order-summary-card-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Items purchased */
+    .confirmed-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .confirmed-item:last-of-type { border-bottom: none; }
+    .confirmed-item-img {
+      width: 56px;
+      height: 78px;
+      border-radius: 10px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirmed-item-img svg { width: 22px; height: 22px; color: var(--text-tertiary); opacity: 0.4; }
+    .confirmed-item-details { flex: 1; }
+    .confirmed-item-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .confirmed-item-meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+    .confirmed-item-price {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* Info sections within card */
+    .order-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-default);
+    }
+    .order-info-section h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+    .order-info-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .order-info-value strong { color: var(--text-primary); }
+
+    /* Payment summary row */
+    .payment-summary {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-default);
+    }
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .payment-row .label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .payment-row .value {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .payment-row.total {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-default);
+    }
+    .payment-row.total .label {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+    .payment-row.total .value {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* Estimated delivery */
+    .delivery-estimate {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: rgba(16, 185, 129, 0.06);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+    .delivery-estimate svg { width: 20px; height: 20px; color: var(--positive); flex-shrink: 0; }
+    .delivery-estimate span { font-size: 14px; color: var(--text-secondary); }
+    .delivery-estimate strong { color: var(--text-primary); }
+
+    /* CTA buttons */
+    .order-ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    /* =============================================
+       MOBILE OVERRIDES
+       ============================================= */
+    .mobile-frame .order-confirmed-page { padding: 32px 20px; }
+    .mobile-frame .success-icon { width: 64px; height: 64px; }
+    .mobile-frame .success-icon svg { width: 32px; height: 32px; }
+    .mobile-frame .success-state h1 { font-size: 32px; }
+    .mobile-frame .order-number { font-size: 14px; }
+    .mobile-frame .email-notice { font-size: 13px; }
+    .mobile-frame .order-summary-card { padding: 20px; }
+    .mobile-frame .order-info-grid { grid-template-columns: 1fr; gap: 16px; }
+    .mobile-frame .confirmed-item-img { width: 44px; height: 62px; }
+    .mobile-frame .confirmed-item-name { font-size: 13px; }
+    .mobile-frame .order-ctas { flex-direction: column; }
+    .mobile-frame .order-ctas .btn { justify-content: center; }
+
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .footer-copyright { margin-top: 16px; }
+
+    /* Hide annotations on mobile */
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- =========================================
+       DESKTOP — 1440px
+       ========================================= -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px</div>
+    <div class="desktop-frame" data-frame-name="Desktop — 1440px">
+
+      <!-- NAV -->
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({
+        annotations: [
+          { text: '&lt;ModernHeader&gt;', position: 'left' }
+        ]
+      });</script>
+
+      <!-- ORDER CONFIRMED -->
+      <div class="order-confirmed-page" data-component="OrderConfirmedSection">
+        <div class="order-confirmed-inner">
+
+          <!-- Success state -->
+          <div class="success-state">
+            <span class="annotation" style="position:relative; top:-8px;">&lt;OrderConfirmedSection&gt;</span>
+            <div class="success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <h1>Order Confirmed!</h1>
+            <div class="order-number">Order <strong>#SD-20260314-7A3F</strong></div>
+            <p class="email-notice">
+              We&rsquo;ve sent a confirmation email to <strong>john@example.com</strong>.<br/>
+              You&rsquo;ll receive tracking info once your items ship.
+            </p>
+          </div>
+
+          <!-- Order summary card -->
+          <div class="order-summary-card">
+            <div class="order-summary-card-title">
+              Order Summary
+              <span class="annotation annotation--api">GET /api/orders/:id</span>
+            </div>
+
+            <!-- Items purchased -->
+            <div class="confirmed-item">
+              <div class="confirmed-item-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="confirmed-item-details">
+                <div class="confirmed-item-name">Ragavan, Nimble Pilferer</div>
+                <div class="confirmed-item-meta">CardKingdom Pro &bull; NM &bull; Qty: 1</div>
+              </div>
+              <div class="confirmed-item-price">$58.99</div>
+            </div>
+
+            <div class="confirmed-item">
+              <div class="confirmed-item-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="confirmed-item-details">
+                <div class="confirmed-item-name">The One Ring</div>
+                <div class="confirmed-item-meta">CardKingdom Pro &bull; LP &bull; Qty: 1</div>
+              </div>
+              <div class="confirmed-item-price">$42.99</div>
+            </div>
+
+            <div class="confirmed-item">
+              <div class="confirmed-item-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="confirmed-item-details">
+                <div class="confirmed-item-name">Ash Blossom &amp; Joyous Spring</div>
+                <div class="confirmed-item-meta">CardKingdom Pro &bull; NM &bull; Qty: 1</div>
+              </div>
+              <div class="confirmed-item-price">$14.75</div>
+            </div>
+
+            <div class="confirmed-item">
+              <div class="confirmed-item-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="confirmed-item-details">
+                <div class="confirmed-item-name">Charizard ex</div>
+                <div class="confirmed-item-meta">Pok&eacute;Collector_Sam &bull; NM &bull; Qty: 1</div>
+              </div>
+              <div class="confirmed-item-price">$42.50</div>
+            </div>
+
+            <div class="confirmed-item">
+              <div class="confirmed-item-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </div>
+              <div class="confirmed-item-details">
+                <div class="confirmed-item-name">Pikachu VMAX</div>
+                <div class="confirmed-item-meta">Pok&eacute;Collector_Sam &bull; MP &bull; Qty: 1</div>
+              </div>
+              <div class="confirmed-item-price">$22.30</div>
+            </div>
+
+            <!-- Shipping & seller info -->
+            <div class="order-info-grid">
+              <div class="order-info-section">
+                <h3>Shipping To</h3>
+                <div class="order-info-value">
+                  <strong>John Doe</strong><br/>
+                  123 Main St<br/>
+                  New York, NY 10001<br/>
+                  United States
+                </div>
+              </div>
+              <div class="order-info-section">
+                <h3>Sellers</h3>
+                <div class="order-info-value">
+                  <strong>CardKingdom Pro</strong> — Standard Shipping<br/>
+                  <strong>Pok&eacute;Collector_Sam</strong> — Standard Shipping
+                </div>
+              </div>
+              <div class="order-info-section">
+                <h3>Payment</h3>
+                <div class="order-info-value">
+                  <strong>Visa</strong> ending in 4242<br/>
+                  Billed to John Doe
+                </div>
+              </div>
+              <div class="order-info-section">
+                <h3>Contact</h3>
+                <div class="order-info-value">
+                  john@example.com<br/>
+                  +1 (555) 000-0000
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment summary -->
+            <div class="payment-summary">
+              <div class="payment-row">
+                <span class="label">Subtotal</span>
+                <span class="value">$181.53</span>
+              </div>
+              <div class="payment-row">
+                <span class="label">Shipping (CardKingdom Pro)</span>
+                <span class="value">$5.99</span>
+              </div>
+              <div class="payment-row">
+                <span class="label">Shipping (Pok&eacute;Collector_Sam)</span>
+                <span class="value">$4.99</span>
+              </div>
+              <div class="payment-row">
+                <span class="label">Tax</span>
+                <span class="value">$15.47</span>
+              </div>
+              <div class="payment-row total">
+                <span class="label">Total Paid</span>
+                <span class="value">$207.98</span>
+              </div>
+            </div>
+
+            <!-- Delivery estimate -->
+            <div class="delivery-estimate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="6" y="4.5" rx="2"/><path d="m3 7 3-2.5"/><path d="m21 7-3-2.5"/><path d="M12 12v4"/><path d="M8 16h8"/></svg>
+              <span>Estimated delivery: <strong>March 20–24, 2026</strong></span>
+            </div>
+          </div>
+
+          <!-- CTA buttons -->
+          <div class="order-ctas">
+            <a href="#" class="btn btn-primary">View Order Details</a>
+            <a href="#" class="btn btn-outline">Continue Shopping</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">FAQ</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+          </div>
+          <div class="footer-social">
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- =========================================
+       MOBILE — 390px
+       ========================================= -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile &mdash; 390px</div>
+    <div class="mobile-frame" data-frame-name="Mobile — 390px">
+      <div class="mobile-inner">
+
+        <!-- NAV -->
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true });</script>
+
+        <!-- ORDER CONFIRMED (mobile) -->
+        <div class="order-confirmed-page" data-component="OrderConfirmedSection">
+          <div class="order-confirmed-inner">
+
+            <div class="success-state">
+              <div class="success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <h1>Order Confirmed!</h1>
+              <div class="order-number">Order <strong>#SD-20260314-7A3F</strong></div>
+              <p class="email-notice">
+                Confirmation sent to <strong>john@example.com</strong>
+              </p>
+            </div>
+
+            <div class="order-summary-card">
+              <div class="order-summary-card-title">Order Summary</div>
+
+              <div class="confirmed-item">
+                <div class="confirmed-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                <div class="confirmed-item-details">
+                  <div class="confirmed-item-name">Ragavan</div>
+                  <div class="confirmed-item-meta">CardKingdom Pro &bull; NM</div>
+                </div>
+                <div class="confirmed-item-price">$58.99</div>
+              </div>
+              <div class="confirmed-item">
+                <div class="confirmed-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                <div class="confirmed-item-details">
+                  <div class="confirmed-item-name">The One Ring</div>
+                  <div class="confirmed-item-meta">CardKingdom Pro &bull; LP</div>
+                </div>
+                <div class="confirmed-item-price">$42.99</div>
+              </div>
+              <div class="confirmed-item">
+                <div class="confirmed-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                <div class="confirmed-item-details">
+                  <div class="confirmed-item-name">Ash Blossom</div>
+                  <div class="confirmed-item-meta">CardKingdom Pro &bull; NM</div>
+                </div>
+                <div class="confirmed-item-price">$14.75</div>
+              </div>
+              <div class="confirmed-item">
+                <div class="confirmed-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                <div class="confirmed-item-details">
+                  <div class="confirmed-item-name">Charizard ex</div>
+                  <div class="confirmed-item-meta">Pok&eacute;Collector &bull; NM</div>
+                </div>
+                <div class="confirmed-item-price">$42.50</div>
+              </div>
+              <div class="confirmed-item">
+                <div class="confirmed-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                <div class="confirmed-item-details">
+                  <div class="confirmed-item-name">Pikachu VMAX</div>
+                  <div class="confirmed-item-meta">Pok&eacute;Collector &bull; MP</div>
+                </div>
+                <div class="confirmed-item-price">$22.30</div>
+              </div>
+
+              <div class="order-info-grid">
+                <div class="order-info-section">
+                  <h3>Shipping To</h3>
+                  <div class="order-info-value">
+                    <strong>John Doe</strong><br/>
+                    123 Main St, New York, NY 10001
+                  </div>
+                </div>
+                <div class="order-info-section">
+                  <h3>Payment</h3>
+                  <div class="order-info-value">
+                    <strong>Visa</strong> &bull;&bull;&bull;&bull; 4242
+                  </div>
+                </div>
+              </div>
+
+              <div class="payment-summary">
+                <div class="payment-row"><span class="label">Subtotal</span><span class="value">$181.53</span></div>
+                <div class="payment-row"><span class="label">Shipping</span><span class="value">$10.98</span></div>
+                <div class="payment-row"><span class="label">Tax</span><span class="value">$15.47</span></div>
+                <div class="payment-row total"><span class="label">Total</span><span class="value">$207.98</span></div>
+              </div>
+
+              <div class="delivery-estimate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="6" y="4.5" rx="2"/><path d="m3 7 3-2.5"/><path d="m21 7-3-2.5"/><path d="M12 12v4"/><path d="M8 16h8"/></svg>
+                <span>Est. delivery: <strong>Mar 20–24</strong></span>
+              </div>
+            </div>
+
+            <div class="order-ctas">
+              <a href="#" class="btn btn-primary">View Order Details</a>
+              <a href="#" class="btn btn-outline">Continue Shopping</a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links">
+              <a href="#">About</a>
+              <a href="#">FAQ</a>
+              <a href="#">Terms</a>
+              <a href="#">Privacy</a>
+              <a href="#">Contact</a>
+            </div>
+            <div class="footer-social">
+              <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+              <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+              <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+            </div>
+          </div>
+          <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

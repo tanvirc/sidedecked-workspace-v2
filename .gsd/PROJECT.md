@@ -19,7 +19,7 @@ The deck-to-cart pipeline: a player builds a deck, marks cards they own, and buy
 
 **What works:** Card detail BFF, Algolia search with autocomplete/facets, deck CRUD, deck builder with DnD/touch, social auth routes (but missing Google/Discord providers), Stripe Connect seller onboarding, consumer-seller listings/orders/payouts, storefront tests passing.
 
-**What doesn't exist yet:** Cart optimizer algorithm/UI, 3-step listing wizard, live OAuth end-to-end test (providers registered but credentials not configured), pixel-perfect wireframe alignment for remaining pages, wireframes for ~32 pages.
+**What doesn't exist yet:** Cart optimizer algorithm/UI, 3-step listing wizard, live OAuth end-to-end test (providers registered but credentials not configured), pixel-perfect wireframe alignment for remaining pages.
 
 ## Architecture / Key Patterns
 

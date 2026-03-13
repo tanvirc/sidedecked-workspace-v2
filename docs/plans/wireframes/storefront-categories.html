@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Categories Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--component { color: var(--brand-secondary); background: rgba(255,120,73,0.08); border-color: rgba(255,120,73,0.3); }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
+    .page-subtitle { font-size: 15px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.5; }
+
+    /* BREADCRUMBS */
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 13px; color: var(--text-tertiary); }
+    .breadcrumbs a { color: var(--text-tertiary); text-decoration: none; }
+    .breadcrumbs a:hover { color: var(--text-secondary); }
+    .breadcrumbs span.current { color: var(--text-primary); font-weight: 500; }
+
+    /* CATEGORY CARDS GRID */
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .cat-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 16px; padding: 28px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+    .cat-card:hover { border-color: var(--brand-primary); box-shadow: 0 0 24px rgba(139,92,246,0.1); }
+    .cat-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--bg-surface-3); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .cat-icon--purple { background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.08)); }
+    .cat-icon--orange { background: linear-gradient(135deg, rgba(255,120,73,0.2), rgba(255,120,73,0.08)); }
+    .cat-icon--blue { background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(96,165,250,0.08)); }
+    .cat-icon--green { background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.08)); }
+    .cat-name { font-family: var(--font-heading); font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .cat-count { font-size: 13px; color: var(--text-tertiary); }
+
+    /* SIDEBAR FILTER (for category detail) */
+    .browse-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; }
+    .sidebar { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; height: min-content; }
+    .sidebar-title { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+    .filter-group { margin-bottom: 20px; }
+    .filter-label { font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+    .filter-option { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--text-tertiary); cursor: pointer; }
+    .filter-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border-strong); background: var(--bg-surface-2); flex-shrink: 0; }
+    .filter-checkbox.checked { background: var(--brand-primary); border-color: var(--brand-primary); }
+    .filter-range { display: flex; align-items: center; gap: 8px; }
+    .filter-range-input { width: 80px; height: 36px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 8px; padding: 0 10px; font-size: 13px; color: var(--text-primary); text-align: center; }
+    .filter-range-sep { color: var(--text-tertiary); font-size: 12px; }
+    .filter-select { width: 100%; height: 36px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 8px; padding: 0 10px; font-size: 13px; color: var(--text-primary); }
+
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .product-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+    .product-card:hover { border-color: var(--brand-primary); }
+    .product-img { width: 100%; aspect-ratio: 3/4; background: var(--bg-surface-3); }
+    .product-body { padding: 14px; }
+    .product-name { font-family: var(--font-heading); font-size: 14px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .product-price { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--brand-primary); }
+    .product-condition { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* PAGINATION */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .page-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface-1); color: var(--text-tertiary); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .page-btn.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+
+    /* CAT DETAIL HEADER */
+    .cat-detail-header { margin-bottom: 32px; }
+    .cat-detail-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-top: 8px; max-width: 600px; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE */
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mobile-frame .cat-card { padding: 20px 16px; }
+    .mobile-frame .cat-icon { width: 48px; height: 48px; font-size: 22px; }
+    .mobile-frame .browse-layout { grid-template-columns: 1fr; gap: 16px; }
+    .mobile-frame .sidebar { display: none; }
+    .mobile-filter-btn { display: none; }
+    .mobile-frame .mobile-filter-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 40px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 10px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 16px; cursor: pointer; }
+    .mobile-frame .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mobile-frame .product-name { font-size: 13px; }
+    .mobile-frame .product-price { font-size: 14px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== STATE 1: CATEGORIES INDEX — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Categories Index</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Categories — Index">
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Marketplace' });</script>
+
+      <div class="page-content" data-component="AlgoliaProductsListing">
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <span class="annotation--component annotation">AlgoliaProductsListing</span>
+        </div>
+        <div class="page-title">Browse Categories</div>
+        <div class="page-subtitle">Explore cards and products by category across all supported games.</div>
+
+        <div class="cat-grid">
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--purple">🃏</div>
+            <div class="cat-name">Singles</div>
+            <div class="cat-count">12,450 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--orange">📦</div>
+            <div class="cat-name">Sealed Product</div>
+            <div class="cat-count">3,280 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--blue">🎴</div>
+            <div class="cat-name">Bundles & Lots</div>
+            <div class="cat-count">1,890 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--green">🛡️</div>
+            <div class="cat-name">Accessories</div>
+            <div class="cat-count">2,340 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--purple">⭐</div>
+            <div class="cat-name">Graded Cards</div>
+            <div class="cat-count">890 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--orange">🎯</div>
+            <div class="cat-name">Playsets</div>
+            <div class="cat-count">1,120 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--blue">📋</div>
+            <div class="cat-name">Deck Cores</div>
+            <div class="cat-count">670 products</div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-icon cat-icon--green">🎁</div>
+            <div class="cat-name">Mystery Packs</div>
+            <div class="cat-count">420 products</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Categories Index</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-cat-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-cat-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="page-title">Browse Categories</div>
+          <div class="page-subtitle">Explore cards and products by category.</div>
+
+          <div class="cat-grid">
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--purple">🃏</div>
+              <div class="cat-name">Singles</div>
+              <div class="cat-count">12,450</div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--orange">📦</div>
+              <div class="cat-name">Sealed</div>
+              <div class="cat-count">3,280</div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--blue">🎴</div>
+              <div class="cat-name">Bundles</div>
+              <div class="cat-count">1,890</div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--green">🛡️</div>
+              <div class="cat-name">Accessories</div>
+              <div class="cat-count">2,340</div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--purple">⭐</div>
+              <div class="cat-name">Graded</div>
+              <div class="cat-count">890</div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-icon cat-icon--orange">🎯</div>
+              <div class="cat-name">Playsets</div>
+              <div class="cat-count">1,120</div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE SEPARATOR -->
+<div class="state-separator">
+  <div class="state-separator-line"></div>
+  <div class="state-separator-label">State 2 — Category Detail</div>
+  <div class="state-separator-line"></div>
+</div>
+
+<!-- ===== STATE 2: CATEGORY DETAIL — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Category Detail</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Categories — Detail">
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2', activeLink: 'Marketplace' });</script>
+
+      <div class="page-content" data-component="ProductListing">
+        <div class="breadcrumbs">
+          <a href="#">Home</a> <span>/</span> <a href="#">Categories</a> <span>/</span> <span class="current">Singles</span>
+        </div>
+        <div class="cat-detail-header">
+          <div class="page-title">Singles</div>
+          <div class="cat-detail-desc">Individual trading cards from all supported games. Browse and filter by game, price range, condition, and more.</div>
+          <div style="margin-top:8px;">
+            <span class="annotation--component annotation">ProductListing</span>
+            <span class="annotation--api annotation">Algolia search index</span>
+          </div>
+        </div>
+
+        <div class="browse-layout">
+          <div class="sidebar">
+            <div class="sidebar-title">Filters</div>
+            <div class="filter-group">
+              <div class="filter-label">Game</div>
+              <div class="filter-option"><div class="filter-checkbox checked"></div> Magic: The Gathering</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Pokémon</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Yu-Gi-Oh!</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> One Piece</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Price Range</div>
+              <div class="filter-range">
+                <input class="filter-range-input" value="$0" readonly />
+                <span class="filter-range-sep">to</span>
+                <input class="filter-range-input" value="$500" readonly />
+              </div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Condition</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Near Mint</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Lightly Played</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Moderately Played</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Heavily Played</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Sort By</div>
+              <select class="filter-select">
+                <option>Most Recent</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="product-grid">
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Beta)</div><div class="product-meta">MTG · Vintage</div><div class="product-price">$4,200.00</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Charizard Base Set Holo</div><div class="product-meta">Pokémon · Gen 1</div><div class="product-price">$350.00</div><div class="product-condition">Lightly Played</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Blue-Eyes White Dragon</div><div class="product-meta">YGO · Classic</div><div class="product-price">$89.99</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Monkey D. Luffy Leader</div><div class="product-meta">One Piece · OP01</div><div class="product-price">$45.00</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Force of Will</div><div class="product-meta">MTG · Alliances</div><div class="product-price">$120.00</div><div class="product-condition">Moderately Played</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Pikachu VMAX Rainbow</div><div class="product-meta">Pokémon · SWSH</div><div class="product-price">$280.00</div><div class="product-condition">Near Mint</div></div></div>
+            </div>
+            <div class="pagination">
+              <div class="page-btn">‹</div>
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn">3</div>
+              <div class="page-btn">…</div>
+              <div class="page-btn">12</div>
+              <div class="page-btn">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Category Detail</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-cat-d-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-cat-d-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="breadcrumbs"><a href="#">Home</a> <span>/</span> <a href="#">Categories</a> <span>/</span> <span class="current">Singles</span></div>
+          <div class="page-title">Singles</div>
+          <div class="cat-detail-desc" style="margin-bottom:16px;">Individual trading cards from all supported games.</div>
+          <button class="mobile-filter-btn">☰ Filters & Sort</button>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Beta)</div><div class="product-meta">MTG</div><div class="product-price">$4,200.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Charizard Holo</div><div class="product-meta">Pokémon</div><div class="product-price">$350.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Blue-Eyes W. Dragon</div><div class="product-meta">YGO</div><div class="product-price">$89.99</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Luffy Leader</div><div class="product-meta">One Piece</div><div class="product-price">$45.00</div></div></div>
+          </div>
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

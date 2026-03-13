@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Messages Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+
+    /* MESSAGES — TalkJS-style layout */
+    .messages-container { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; overflow: hidden; display: grid; grid-template-columns: 320px 1fr; min-height: 520px; }
+    .conv-list { border-right: 1px solid var(--border-default); overflow-y: auto; }
+    .conv-list-header { padding: 16px 20px; border-bottom: 1px solid var(--border-default); font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; }
+    .conv-item { display: flex; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border-default); cursor: pointer; transition: background 0.1s; }
+    .conv-item:hover { background: var(--bg-surface-2); }
+    .conv-item.active { background: rgba(139,92,246,0.08); border-left: 3px solid var(--brand-primary); }
+    .conv-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface-3); border: 1px solid var(--border-default); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--text-tertiary); }
+    .conv-info { flex: 1; min-width: 0; }
+    .conv-name { font-family: var(--font-heading); font-size: 14px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conv-preview { font-size: 13px; color: var(--text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conv-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .conv-time { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .conv-unread { width: 18px; height: 18px; border-radius: 50%; background: var(--brand-primary); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+    /* CHAT PANEL */
+    .chat-panel { display: flex; flex-direction: column; }
+    .chat-header { padding: 16px 24px; border-bottom: 1px solid var(--border-default); display: flex; align-items: center; gap: 12px; }
+    .chat-header-name { font-family: var(--font-heading); font-weight: 600; font-size: 15px; }
+    .chat-header-status { font-size: 12px; color: var(--positive); }
+    .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .msg { max-width: 70%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
+    .msg--them { background: var(--bg-surface-2); border: 1px solid var(--border-default); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg--me { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 10px; color: var(--text-tertiary); margin-top: 4px; font-family: var(--font-mono); }
+    .chat-input { padding: 16px 24px; border-top: 1px solid var(--border-default); display: flex; gap: 12px; align-items: center; }
+    .chat-input-field { flex: 1; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 16px; color: var(--text-primary); font-size: 14px; font-family: var(--font-body); }
+    .chat-send-btn { width: 40px; height: 40px; border-radius: 10px; background: var(--brand-primary); border: none; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* MOBILE MESSAGES — conversation list only */
+    .messages-mobile { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; overflow: hidden; }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Messages</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Messages">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item" href="#">Orders</a>
+            <a class="user-nav-item active" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="UserMessagesSection">
+            <span class="annotation" style="margin-bottom:16px; display:inline-block;">&lt;UserMessagesSection&gt; — TalkJS Inbox</span>
+
+            <div class="messages-container">
+              <!-- Conversation List -->
+              <div class="conv-list">
+                <div class="conv-list-header">
+                  Conversations
+                  <span style="font-size:12px; color:var(--text-tertiary);">3 total</span>
+                </div>
+
+                <div class="conv-item active">
+                  <div class="conv-avatar">CV</div>
+                  <div class="conv-info">
+                    <div class="conv-name">CardVault_Pro</div>
+                    <div class="conv-preview">Thanks for the order! I'll ship it today.</div>
+                  </div>
+                  <div class="conv-meta">
+                    <span class="conv-time">2m ago</span>
+                    <span class="conv-unread">1</span>
+                  </div>
+                </div>
+
+                <div class="conv-item">
+                  <div class="conv-avatar">PD</div>
+                  <div class="conv-info">
+                    <div class="conv-name">PokéDeals</div>
+                    <div class="conv-preview">Tracking number is AU1234567890</div>
+                  </div>
+                  <div class="conv-meta">
+                    <span class="conv-time">1h ago</span>
+                  </div>
+                </div>
+
+                <div class="conv-item">
+                  <div class="conv-avatar">YM</div>
+                  <div class="conv-info">
+                    <div class="conv-name">YGO_Masters</div>
+                    <div class="conv-preview">Yes, the card is still available in NM.</div>
+                  </div>
+                  <div class="conv-meta">
+                    <span class="conv-time">2d ago</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active Conversation -->
+              <div class="chat-panel">
+                <div class="chat-header">
+                  <div class="conv-avatar" style="width:36px; height:36px; font-size:12px;">CV</div>
+                  <div>
+                    <div class="chat-header-name">CardVault_Pro</div>
+                    <div class="chat-header-status">● Online</div>
+                  </div>
+                </div>
+
+                <div class="chat-messages">
+                  <div class="msg msg--them">
+                    <div>Hi! I just got your order for the Charizard ex. Quick question — would you like me to add a top-loader for extra protection?</div>
+                    <div class="msg-time">10:32 AM</div>
+                  </div>
+                  <div class="msg msg--me">
+                    <div>Yes please! That would be great. How much extra?</div>
+                    <div class="msg-time">10:35 AM</div>
+                  </div>
+                  <div class="msg msg--them">
+                    <div>No extra charge — I include them free on orders over $50. I'll ship it today 👍</div>
+                    <div class="msg-time">10:36 AM</div>
+                  </div>
+                  <div class="msg msg--them">
+                    <div>Thanks for the order! I'll ship it today.</div>
+                    <div class="msg-time">10:37 AM</div>
+                  </div>
+                </div>
+
+                <div class="chat-input">
+                  <input class="chat-input-field" type="text" placeholder="Type a message..." />
+                  <button class="chat-send-btn">→</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE — Conversation List View ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Conversation List</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Messages — List">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill" href="#">Orders</a>
+            <a class="user-nav-pill active" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill" href="#">Addresses</a>
+            <a class="user-nav-pill" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill" href="#">Settings</a>
+          </div>
+
+          <div class="messages-mobile">
+            <div class="conv-list-header">
+              Messages
+              <span style="font-size:12px; color:var(--text-tertiary);">3</span>
+            </div>
+
+            <div class="conv-item active" style="border-left:3px solid var(--brand-primary);">
+              <div class="conv-avatar" style="width:36px; height:36px; font-size:12px;">CV</div>
+              <div class="conv-info">
+                <div class="conv-name" style="font-size:13px;">CardVault_Pro</div>
+                <div class="conv-preview" style="font-size:12px;">Thanks for the order! I'll ship it today.</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">2m</span>
+                <span class="conv-unread">1</span>
+              </div>
+            </div>
+
+            <div class="conv-item">
+              <div class="conv-avatar" style="width:36px; height:36px; font-size:12px;">PD</div>
+              <div class="conv-info">
+                <div class="conv-name" style="font-size:13px;">PokéDeals</div>
+                <div class="conv-preview" style="font-size:12px;">Tracking number is AU1234567890</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">1h</span>
+              </div>
+            </div>
+
+            <div class="conv-item">
+              <div class="conv-avatar" style="width:36px; height:36px; font-size:12px;">YM</div>
+              <div class="conv-info">
+                <div class="conv-name" style="font-size:13px;">YGO_Masters</div>
+                <div class="conv-preview" style="font-size:12px;">Yes, the card is still available in NM.</div>
+              </div>
+              <div class="conv-meta">
+                <span class="conv-time">2d</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

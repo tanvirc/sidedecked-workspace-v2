@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Seller Storefront Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--component { color: var(--brand-secondary); background: rgba(255,120,73,0.08); border-color: rgba(255,120,73,0.3); }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+
+    /* SELLER HEADER */
+    .seller-cover { width: 100%; height: 180px; background: linear-gradient(135deg, var(--bg-surface-2), var(--bg-surface-3)); border-radius: 16px 16px 0 0; position: relative; overflow: hidden; border: 1px solid var(--border-default); border-bottom: none; }
+    .seller-cover::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 100% at 50% 100%, rgba(139,92,246,0.12), transparent); }
+    .seller-profile { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-top: none; border-radius: 0 0 16px 16px; padding: 0 32px 28px; margin-bottom: 32px; }
+    .seller-profile-row { display: flex; align-items: flex-end; gap: 24px; margin-top: -40px; margin-bottom: 16px; }
+    .seller-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--bg-surface-3); border: 4px solid var(--bg-surface-1); flex-shrink: 0; position: relative; z-index: 2; }
+    .seller-name-row { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; }
+    .seller-name { font-family: var(--font-display); font-weight: 700; font-size: 28px; text-transform: uppercase; letter-spacing: -0.01em; }
+    .seller-trust-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--positive); }
+    .seller-since { font-size: 13px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .seller-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+    .seller-stat { background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 18px; text-align: center; }
+    .seller-stat-value { font-family: var(--font-heading); font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .seller-stat-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+    .tab { font-family: var(--font-heading); font-size: 15px; font-weight: 600; padding: 12px 24px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .product-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+    .product-card:hover { border-color: var(--brand-primary); }
+    .product-img { width: 100%; aspect-ratio: 3/4; background: var(--bg-surface-3); }
+    .product-body { padding: 14px; }
+    .product-name { font-family: var(--font-heading); font-size: 14px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .product-price { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--brand-primary); }
+    .product-condition { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* REVIEWS */
+    .review-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; }
+    .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .review-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface-3); border: 1px solid var(--border-default); flex-shrink: 0; }
+    .review-buyer { font-family: var(--font-heading); font-size: 14px; font-weight: 600; }
+    .review-date { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .review-stars { color: var(--warning); font-size: 14px; letter-spacing: 2px; margin-bottom: 8px; }
+    .review-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .page-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface-1); color: var(--text-tertiary); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .page-btn.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE */
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .seller-cover { height: 120px; border-radius: 12px 12px 0 0; }
+    .mobile-frame .seller-profile { padding: 0 20px 20px; }
+    .mobile-frame .seller-profile-row { gap: 16px; margin-top: -32px; }
+    .mobile-frame .seller-avatar { width: 72px; height: 72px; }
+    .mobile-frame .seller-name { font-size: 22px; }
+    .mobile-frame .seller-stats { gap: 8px; }
+    .mobile-frame .seller-stat { padding: 8px 12px; }
+    .mobile-frame .seller-stat-value { font-size: 15px; }
+    .mobile-frame .seller-stat-label { font-size: 10px; }
+    .mobile-frame .tabs { overflow-x: auto; gap: 0; }
+    .mobile-frame .tab { font-size: 14px; padding: 10px 18px; white-space: nowrap; }
+    .mobile-frame .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mobile-frame .product-name { font-size: 13px; }
+    .mobile-frame .product-price { font-size: 14px; }
+    .mobile-frame .review-card { padding: 16px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== PRODUCTS TAB — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Seller Storefront (Products)</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Seller Storefront — Products">
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({});</script>
+
+      <div class="page-content">
+        <div style="margin-bottom:16px;">
+          <span class="annotation--component annotation">SellerPageHeader</span>
+          <span class="annotation--component annotation">SellerTabs</span>
+          <span class="annotation--api annotation">GET /store/sellers/:handle</span>
+        </div>
+
+        <!-- SELLER HEADER -->
+        <div class="seller-cover" data-component="SellerPageHeader"></div>
+        <div class="seller-profile">
+          <div class="seller-profile-row">
+            <div class="seller-avatar"></div>
+            <div>
+              <div class="seller-name-row">
+                <div class="seller-name">VintageCardKing</div>
+                <div class="seller-trust-badge">⭐ 4.9 Trust Score</div>
+              </div>
+              <div class="seller-since">Member since January 2024</div>
+            </div>
+          </div>
+          <div class="seller-stats">
+            <div class="seller-stat"><div class="seller-stat-value">1,240</div><div class="seller-stat-label">Total Sales</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">348</div><div class="seller-stat-label">Items Listed</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">98%</div><div class="seller-stat-label">Response Rate</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">1.2 days</div><div class="seller-stat-label">Avg Ship Time</div></div>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs" data-component="SellerTabs">
+          <button class="tab active">Products</button>
+          <button class="tab">Reviews</button>
+        </div>
+
+        <!-- PRODUCTS GRID -->
+        <div class="product-grid">
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Beta)</div><div class="product-meta">MTG · Vintage</div><div class="product-price">$4,200.00</div><div class="product-condition">Near Mint</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Charizard Base Set Holo</div><div class="product-meta">Pokémon · Gen 1</div><div class="product-price">$350.00</div><div class="product-condition">Lightly Played</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Blue-Eyes White Dragon</div><div class="product-meta">YGO · Classic</div><div class="product-price">$89.99</div><div class="product-condition">Near Mint</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Force of Will</div><div class="product-meta">MTG · Alliances</div><div class="product-price">$120.00</div><div class="product-condition">Moderately Played</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Mox Sapphire (UNL)</div><div class="product-meta">MTG · Power Nine</div><div class="product-price">$3,100.00</div><div class="product-condition">Near Mint</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Pikachu VMAX Rainbow</div><div class="product-meta">Pokémon · SWSH</div><div class="product-price">$280.00</div><div class="product-condition">Near Mint</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Ancestral Recall</div><div class="product-meta">MTG · Beta</div><div class="product-price">$6,800.00</div><div class="product-condition">Lightly Played</div></div></div>
+          <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Dark Magician PSA 10</div><div class="product-meta">YGO · LOB</div><div class="product-price">$1,450.00</div><div class="product-condition">Gem Mint</div></div></div>
+        </div>
+
+        <div class="pagination">
+          <div class="page-btn">‹</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">…</div>
+          <div class="page-btn">12</div>
+          <div class="page-btn">›</div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Seller Storefront (Products)</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-sell-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-sell-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="seller-cover"></div>
+          <div class="seller-profile">
+            <div class="seller-profile-row">
+              <div class="seller-avatar"></div>
+              <div>
+                <div class="seller-name-row">
+                  <div class="seller-name">VintageCardKing</div>
+                </div>
+                <div class="seller-trust-badge" style="margin-bottom:4px;">⭐ 4.9</div>
+                <div class="seller-since">Member since Jan 2024</div>
+              </div>
+            </div>
+            <div class="seller-stats">
+              <div class="seller-stat"><div class="seller-stat-value">1,240</div><div class="seller-stat-label">Sales</div></div>
+              <div class="seller-stat"><div class="seller-stat-value">348</div><div class="seller-stat-label">Listed</div></div>
+              <div class="seller-stat"><div class="seller-stat-value">98%</div><div class="seller-stat-label">Response</div></div>
+              <div class="seller-stat"><div class="seller-stat-value">1.2d</div><div class="seller-stat-label">Ship Time</div></div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active">Products</button>
+            <button class="tab">Reviews</button>
+          </div>
+
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Beta)</div><div class="product-meta">MTG</div><div class="product-price">$4,200.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Charizard Holo</div><div class="product-meta">Pokémon</div><div class="product-price">$350.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Blue-Eyes W. Dragon</div><div class="product-meta">YGO</div><div class="product-price">$89.99</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Force of Will</div><div class="product-meta">MTG</div><div class="product-price">$120.00</div></div></div>
+          </div>
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE SEPARATOR -->
+<div class="state-separator">
+  <div class="state-separator-line"></div>
+  <div class="state-separator-label">State 2 — Reviews Tab</div>
+  <div class="state-separator-line"></div>
+</div>
+
+<!-- ===== REVIEWS TAB — Desktop + Mobile ===== -->
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Seller Storefront (Reviews)</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Seller Storefront — Reviews">
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2' });</script>
+
+      <div class="page-content">
+        <div class="seller-cover"></div>
+        <div class="seller-profile">
+          <div class="seller-profile-row">
+            <div class="seller-avatar"></div>
+            <div>
+              <div class="seller-name-row">
+                <div class="seller-name">VintageCardKing</div>
+                <div class="seller-trust-badge">⭐ 4.9 Trust Score</div>
+              </div>
+              <div class="seller-since">Member since January 2024</div>
+            </div>
+          </div>
+          <div class="seller-stats">
+            <div class="seller-stat"><div class="seller-stat-value">1,240</div><div class="seller-stat-label">Total Sales</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">348</div><div class="seller-stat-label">Items Listed</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">98%</div><div class="seller-stat-label">Response Rate</div></div>
+            <div class="seller-stat"><div class="seller-stat-value">1.2 days</div><div class="seller-stat-label">Avg Ship Time</div></div>
+          </div>
+        </div>
+
+        <div class="tabs" data-component="SellerTabs">
+          <button class="tab">Products</button>
+          <button class="tab active">Reviews</button>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar"></div>
+            <div><div class="review-buyer">CompetitivePlayer99</div><div class="review-date">Feb 28, 2026</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Amazing seller! Card arrived in perfect condition, exactly as described. Fast shipping and great communication. Would definitely buy from again.</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar"></div>
+            <div><div class="review-buyer">MTGCollector42</div><div class="review-date">Feb 25, 2026</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Great prices on vintage cards. The Beta Mox was even better than described. Highly recommend this seller.</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar"></div>
+            <div><div class="review-buyer">PokemonTrader</div><div class="review-date">Feb 20, 2026</div></div>
+          </div>
+          <div class="review-stars">★★★★☆</div>
+          <div class="review-text">Card was in good condition, shipping took a bit longer than expected but overall a good experience.</div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-avatar"></div>
+            <div><div class="review-buyer">DuelistKing</div><div class="review-date">Feb 15, 2026</div></div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <div class="review-text">Perfect transaction. Card was double-sleeved and packaged with care. Will be a repeat customer.</div>
+        </div>
+
+        <div class="pagination">
+          <div class="page-btn">‹</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">›</div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Seller Storefront (Reviews)</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-sell-r-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-sell-r-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="seller-cover"></div>
+          <div class="seller-profile">
+            <div class="seller-profile-row">
+              <div class="seller-avatar"></div>
+              <div>
+                <div class="seller-name-row"><div class="seller-name">VintageCardKing</div></div>
+                <div class="seller-trust-badge" style="margin-bottom:4px;">⭐ 4.9</div>
+                <div class="seller-since">Member since Jan 2024</div>
+              </div>
+            </div>
+            <div class="seller-stats">
+              <div class="seller-stat"><div class="seller-stat-value">1,240</div><div class="seller-stat-label">Sales</div></div>
+              <div class="seller-stat"><div class="seller-stat-value">348</div><div class="seller-stat-label">Listed</div></div>
+              <div class="seller-stat"><div class="seller-stat-value">98%</div><div class="seller-stat-label">Response</div></div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab">Products</button>
+            <button class="tab active">Reviews</button>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header"><div class="review-avatar"></div><div><div class="review-buyer">CompetitivePlayer99</div><div class="review-date">Feb 28, 2026</div></div></div>
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">Amazing seller! Card arrived in perfect condition. Fast shipping and great communication.</div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header"><div class="review-avatar"></div><div><div class="review-buyer">MTGCollector42</div><div class="review-date">Feb 25, 2026</div></div></div>
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">Great prices on vintage cards. Highly recommend.</div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header"><div class="review-avatar"></div><div><div class="review-buyer">PokemonTrader</div><div class="review-date">Feb 20, 2026</div></div></div>
+            <div class="review-stars">★★★★☆</div>
+            <div class="review-text">Good condition card, shipping took a bit longer than expected.</div>
+          </div>
+
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

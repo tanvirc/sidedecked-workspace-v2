@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Seller Reputation Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* CANVAS */
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    /* ANNOTATIONS */
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+
+    /* PAGE LAYOUT */
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 36px; letter-spacing: -0.02em; }
+    .page-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .breadcrumb { font-size: 13px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
+    .breadcrumb .sep { margin: 0 6px; }
+
+    /* TRUST SCORE HERO */
+    .trust-hero { display: grid; grid-template-columns: 240px 1fr; gap: 32px; margin-bottom: 32px; padding: 32px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .trust-gauge { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .trust-gauge-ring { width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(var(--brand-primary) 0deg, var(--brand-primary) calc(var(--score) * 3.6deg), var(--bg-surface-3) calc(var(--score) * 3.6deg)); display: flex; align-items: center; justify-content: center; position: relative; }
+    .trust-gauge-inner { width: 140px; height: 140px; border-radius: 50%; background: var(--bg-surface-1); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .trust-score-number { font-family: var(--font-display); font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .trust-score-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
+    .trust-breakdown { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-content: center; }
+    .trust-factor { padding: 12px 16px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; }
+    .trust-factor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .trust-factor-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .trust-factor-value { font-size: 12px; font-family: var(--font-mono); color: var(--text-primary); }
+    .trust-factor-bar { height: 4px; background: var(--bg-surface-3); border-radius: 999px; overflow: hidden; }
+    .trust-factor-fill { height: 100%; border-radius: 999px; background: var(--brand-primary); }
+    .trust-factor-fill--high { background: var(--positive); }
+    .trust-factor-fill--mid { background: var(--warning); }
+
+    /* TIER PROGRESS */
+    .tier-section { margin-bottom: 32px; padding: 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tier-label { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+    .tier-current { font-family: var(--font-heading); font-weight: 700; font-size: 14px; padding: 4px 14px; border-radius: 999px; }
+    .tier--silver { color: #94A3B8; background: rgba(148,163,184,0.12); border: 1px solid rgba(148,163,184,0.3); }
+    .tier--gold { color: #FBBF24; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3); }
+    .tier-bar-bg { height: 8px; background: var(--bg-surface-3); border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+    .tier-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-primary), #A78BFA); border-radius: 999px; }
+    .tier-labels { display: flex; justify-content: space-between; }
+    .tier-milestone { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .tier-milestone.current { color: var(--brand-primary); font-weight: 600; }
+
+    /* RESPONSE RATE */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { padding: 20px 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .stat-card-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 8px; }
+    .stat-card-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; }
+    .stat-card-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; font-family: var(--font-mono); }
+
+    /* REVIEWS LIST */
+    .reviews-section { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; overflow: hidden; margin-bottom: 32px; }
+    .reviews-title { font-family: var(--font-heading); font-weight: 600; font-size: 16px; padding: 20px 24px; border-bottom: 1px solid var(--border-default); display: flex; align-items: center; justify-content: space-between; }
+    .review-item { padding: 20px 24px; border-bottom: 1px solid var(--border-default); }
+    .review-item:last-child { border-bottom: none; }
+    .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .review-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface-3); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 14px; font-weight: 700; color: var(--text-tertiary); }
+    .review-meta { flex: 1; }
+    .review-buyer { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .review-date { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .review-stars { color: var(--warning); font-size: 13px; letter-spacing: 1px; }
+    .review-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .review-response { margin-top: 12px; padding: 12px 16px; background: var(--bg-surface-2); border-left: 3px solid var(--brand-primary); border-radius: 0 8px 8px 0; }
+    .review-response-label { font-size: 11px; font-weight: 600; color: var(--brand-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .review-response-text { font-size: 13px; color: var(--text-secondary); }
+
+    /* BADGE */
+    .badge { font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; display: inline-block; }
+
+    /* BUTTONS */
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+    .btn-ghost { background: transparent; color: var(--text-tertiary); border: none; font-size: 12px; padding: 4px 8px; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; font-size: 12px; color: var(--text-tertiary); margin-top: 24px; max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE OVERRIDES */
+    .mobile-inner .page-content { padding: 20px 16px; }
+    .mobile-inner .trust-hero { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+    .mobile-inner .trust-gauge-ring { width: 140px; height: 140px; }
+    .mobile-inner .trust-gauge-inner { width: 108px; height: 108px; }
+    .mobile-inner .trust-score-number { font-size: 36px; }
+    .mobile-inner .trust-breakdown { grid-template-columns: 1fr; }
+    .mobile-inner .trust-gauge { align-items: center; }
+    .mobile-inner .stats-row { grid-template-columns: 1fr; gap: 12px; }
+    .mobile-inner .stat-card-value { font-size: 22px; }
+    .mobile-inner .page-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .mobile-inner .page-title { font-size: 24px; }
+    .mobile-inner .review-header { gap: 8px; }
+    .mobile-inner .review-avatar { width: 30px; height: 30px; font-size: 12px; }
+    .mobile-inner .footer { padding: 24px 16px; }
+    .mobile-inner .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+    .mobile-inner .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Reputation</div>
+    <div class="desktop-frame" data-component="ReputationDashboard">
+
+      <!-- NAV -->
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Sell', annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <span class="annotation" style="margin-bottom: 8px;">&lt;ReputationDashboard&gt;</span>
+        <span class="annotation annotation--api">GET /api/seller/:id/reputation</span>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+          <a href="#">Seller Dashboard</a><span class="sep">/</span><span style="color: var(--text-primary); font-weight: 500;">Reputation</span>
+        </div>
+
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <div class="page-title">Seller Reputation</div>
+            <div class="page-subtitle">Track and improve your trust score and seller rating</div>
+          </div>
+          <a href="#" class="btn btn-outline btn-sm">&#8592; Back to Dashboard</a>
+        </div>
+
+        <!-- Trust Score Hero -->
+        <div class="trust-hero">
+          <div class="trust-gauge">
+            <div class="trust-gauge-ring" style="--score: 78;">
+              <div class="trust-gauge-inner">
+                <div class="trust-score-number">780</div>
+                <div class="trust-score-label">Trust Score</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trust-breakdown">
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Rating</span>
+                <span class="trust-factor-value">172 / 200</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 86%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Sales Volume</span>
+                <span class="trust-factor-value">105 / 150</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill" style="width: 70%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Performance</span>
+                <span class="trust-factor-value">168 / 200</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 84%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Verification</span>
+                <span class="trust-factor-value">120 / 150</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill" style="width: 80%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Experience</span>
+                <span class="trust-factor-value">75 / 100</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--mid" style="width: 75%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Dispute Rate</span>
+                <span class="trust-factor-value">92 / 100</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 92%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Consistency</span>
+                <span class="trust-factor-value">78 / 100</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--mid" style="width: 78%;"></div></div>
+            </div>
+            <div class="trust-factor">
+              <div class="trust-factor-header">
+                <span class="trust-factor-name">Recent Activity</span>
+                <span class="trust-factor-value">70 / 100</span>
+              </div>
+              <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--mid" style="width: 70%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier Progress -->
+        <div class="tier-section">
+          <div class="tier-header">
+            <span class="tier-label">Tier Progress</span>
+            <span class="tier-current tier--silver">Silver</span>
+          </div>
+          <div class="tier-bar-bg">
+            <div class="tier-bar-fill" style="width: 72%;"></div>
+          </div>
+          <div class="tier-labels">
+            <span class="tier-milestone">Bronze</span>
+            <span class="tier-milestone current">Silver</span>
+            <span class="tier-milestone">Gold</span>
+            <span class="tier-milestone">Plat</span>
+          </div>
+        </div>
+
+        <!-- Quick Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-label">Overall Rating</div>
+            <div class="stat-card-value">4.8 &#9733;</div>
+            <div class="stat-card-sub">156 reviews</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Response Rate</div>
+            <div class="stat-card-value" style="color: var(--positive);">96%</div>
+            <div class="stat-card-sub">Avg 2.4h reply time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Ship Accuracy</div>
+            <div class="stat-card-value" style="color: var(--positive);">99%</div>
+            <div class="stat-card-sub">Items as described</div>
+          </div>
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="reviews-section" data-component="ReviewManagement">
+          <div class="reviews-title">
+            <span>Recent Reviews</span>
+            <button class="btn btn-ghost">View All &#8594;</button>
+          </div>
+
+          <div class="review-item">
+            <div class="review-header">
+              <div class="review-avatar">JK</div>
+              <div class="review-meta">
+                <div class="review-buyer">Jake K.</div>
+                <div class="review-date">Mar 10, 2026</div>
+              </div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">Card arrived in perfect condition, exactly as described. Fast shipping and great communication throughout.</div>
+            <div class="review-response">
+              <div class="review-response-label">Your Response</div>
+              <div class="review-response-text">Thanks Jake! Glad the Ragavan made it safely. Enjoy the Modern games!</div>
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-header">
+              <div class="review-avatar">SM</div>
+              <div class="review-meta">
+                <div class="review-buyer">Sarah M.</div>
+                <div class="review-date">Mar 6, 2026</div>
+              </div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            </div>
+            <div class="review-text">Good seller. Card was LP as listed. Packaging was decent but could use more protection for higher-value cards.</div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-header">
+              <div class="review-avatar">TC</div>
+              <div class="review-meta">
+                <div class="review-buyer">Tommy C.</div>
+                <div class="review-date">Feb 28, 2026</div>
+              </div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">Lightning fast shipping! The Charizard ex was in even better condition than expected. Will buy again.</div>
+            <div class="review-response">
+              <div class="review-response-label">Your Response</div>
+              <div class="review-response-text">Thanks Tommy! Always happy when cards arrive better than expected. 🔥</div>
+            </div>
+          </div>
+
+          <div class="review-item">
+            <div class="review-header">
+              <div class="review-avatar">RL</div>
+              <div class="review-meta">
+                <div class="review-buyer">Rachel L.</div>
+                <div class="review-date">Feb 20, 2026</div>
+              </div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">Excellent transaction. Card matched photos exactly and was double-sleeved for protection.</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Reputation</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner" data-component="ReputationDashboard">
+
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, activeLink: 'Sell' });</script>
+
+        <div class="page-content">
+          <div class="breadcrumb">
+            <a href="#">Dashboard</a><span class="sep">/</span><span style="color: var(--text-primary); font-weight: 500;">Reputation</span>
+          </div>
+
+          <div class="page-header">
+            <div class="page-title">Reputation</div>
+          </div>
+
+          <!-- Trust Score — compact mobile -->
+          <div class="trust-hero">
+            <div class="trust-gauge">
+              <div class="trust-gauge-ring" style="--score: 78;">
+                <div class="trust-gauge-inner">
+                  <div class="trust-score-number">780</div>
+                  <div class="trust-score-label">Trust Score</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="trust-breakdown">
+              <div class="trust-factor">
+                <div class="trust-factor-header">
+                  <span class="trust-factor-name">Rating</span>
+                  <span class="trust-factor-value">172/200</span>
+                </div>
+                <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 86%;"></div></div>
+              </div>
+              <div class="trust-factor">
+                <div class="trust-factor-header">
+                  <span class="trust-factor-name">Volume</span>
+                  <span class="trust-factor-value">105/150</span>
+                </div>
+                <div class="trust-factor-bar"><div class="trust-factor-fill" style="width: 70%;"></div></div>
+              </div>
+              <div class="trust-factor">
+                <div class="trust-factor-header">
+                  <span class="trust-factor-name">Performance</span>
+                  <span class="trust-factor-value">168/200</span>
+                </div>
+                <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 84%;"></div></div>
+              </div>
+              <div class="trust-factor">
+                <div class="trust-factor-header">
+                  <span class="trust-factor-name">Disputes</span>
+                  <span class="trust-factor-value">92/100</span>
+                </div>
+                <div class="trust-factor-bar"><div class="trust-factor-fill trust-factor-fill--high" style="width: 92%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tier -->
+          <div class="tier-section">
+            <div class="tier-header">
+              <span class="tier-label">Tier</span>
+              <span class="tier-current tier--silver">Silver</span>
+            </div>
+            <div class="tier-bar-bg">
+              <div class="tier-bar-fill" style="width: 72%;"></div>
+            </div>
+            <div class="tier-labels">
+              <span class="tier-milestone">Bronze</span>
+              <span class="tier-milestone current">Silver</span>
+              <span class="tier-milestone">Gold</span>
+              <span class="tier-milestone">Plat</span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card-label">Rating</div>
+              <div class="stat-card-value">4.8 &#9733;</div>
+              <div class="stat-card-sub">156 reviews</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Response Rate</div>
+              <div class="stat-card-value" style="color: var(--positive);">96%</div>
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div class="reviews-section" data-component="ReviewManagement">
+            <div class="reviews-title">
+              <span>Reviews</span>
+              <button class="btn btn-ghost">All &#8594;</button>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">JK</div>
+                <div class="review-meta">
+                  <div class="review-buyer">Jake K.</div>
+                  <div class="review-date">Mar 10</div>
+                </div>
+                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              </div>
+              <div class="review-text">Card arrived in perfect condition, exactly as described. Fast shipping.</div>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">SM</div>
+                <div class="review-meta">
+                  <div class="review-buyer">Sarah M.</div>
+                  <div class="review-date">Mar 6</div>
+                </div>
+                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+              </div>
+              <div class="review-text">Good seller. Card was LP as listed. Packaging could use more protection.</div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links"><a href="#">About</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright">&copy; 2026 SideDecked.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

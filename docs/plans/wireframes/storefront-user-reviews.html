@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Reviews Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+    .tab { font-family: var(--font-heading); font-size: 14px; font-weight: 600; padding: 10px 20px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
+    /* REVIEW ITEM — to write */
+    .review-item { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 20px; margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; }
+    .review-thumb { width: 56px; height: 78px; background: var(--bg-surface-3); border-radius: 8px; border: 1px solid var(--border-default); flex-shrink: 0; }
+    .review-body { flex: 1; }
+    .review-card-name { font-family: var(--font-heading); font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+    .review-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .star-row { display: flex; gap: 4px; margin-bottom: 8px; }
+    .star { width: 24px; height: 24px; color: var(--text-tertiary); font-size: 20px; cursor: pointer; }
+    .star.filled { color: var(--warning); }
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+
+    /* WRITTEN REVIEW */
+    .written-review { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 20px; margin-bottom: 12px; }
+    .written-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+    .written-stars { display: flex; gap: 2px; color: var(--warning); font-size: 16px; }
+    .written-date { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .written-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+    .seller-response { background: var(--bg-surface-2); border-left: 3px solid var(--brand-primary); padding: 12px 16px; border-radius: 0 10px 10px 0; }
+    .seller-response-label { font-size: 11px; color: var(--brand-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .seller-response-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .review-item { flex-direction: column; gap: 12px; padding: 16px; }
+    .mobile-frame .review-thumb { width: 48px; height: 67px; }
+    .mobile-frame .tabs { overflow-x: auto; gap: 0; }
+    .mobile-frame .tab { font-size: 13px; padding: 8px 14px; white-space: nowrap; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Reviews</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Reviews">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item active" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="ReviewsToWrite">
+            <span class="annotation">&lt;ReviewsToWrite&gt; / &lt;ReviewsWritten&gt;</span>
+            <h1 class="page-title">Reviews</h1>
+
+            <div class="tabs">
+              <button class="tab active">Reviews to Write</button>
+              <button class="tab">Reviews Written</button>
+            </div>
+
+            <!-- To-write items -->
+            <div class="review-item">
+              <div class="review-thumb"></div>
+              <div class="review-body">
+                <div class="review-card-name">Charizard ex — Obsidian Flames</div>
+                <div class="review-meta">Seller: CardVault_Pro · Ordered Mar 10, 2026</div>
+                <div class="star-row">
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                </div>
+                <button class="btn btn-primary btn-sm">Write Review</button>
+              </div>
+            </div>
+
+            <div class="review-item">
+              <div class="review-thumb"></div>
+              <div class="review-body">
+                <div class="review-card-name">Pikachu VMAX — Lost Origin</div>
+                <div class="review-meta">Seller: PokéDeals · Ordered Mar 8, 2026</div>
+                <div class="star-row">
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                </div>
+                <button class="btn btn-primary btn-sm">Write Review</button>
+              </div>
+            </div>
+
+            <div class="review-item">
+              <div class="review-thumb"></div>
+              <div class="review-body">
+                <div class="review-card-name">Blue-Eyes White Dragon — LOB</div>
+                <div class="review-meta">Seller: YGO_Masters · Ordered Feb 28, 2026</div>
+                <div class="star-row">
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                  <span class="star">☆</span>
+                </div>
+                <button class="btn btn-primary btn-sm">Write Review</button>
+              </div>
+            </div>
+
+            <!-- Written reviews (shown when "Reviews Written" tab active) -->
+            <div style="display:none;" data-state="reviews-written">
+              <div class="written-review">
+                <div class="written-header">
+                  <div class="review-thumb"></div>
+                  <div style="flex:1;">
+                    <div class="review-card-name">Mew ex — 151</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div class="written-stars">★★★★★</div>
+                      <span class="written-date">Feb 20, 2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="written-text">Card arrived in perfect condition, well-packaged with top-loader and bubble wrap. Seller shipped same day. Exactly as described — crisp edges, no whitening.</div>
+                <div class="seller-response">
+                  <div class="seller-response-label">Seller Response — TCG_Haven</div>
+                  <div class="seller-response-text">Thanks for the kind words! Glad the card arrived safely. Enjoy the collection!</div>
+                </div>
+              </div>
+
+              <div class="written-review">
+                <div class="written-header">
+                  <div class="review-thumb"></div>
+                  <div style="flex:1;">
+                    <div class="review-card-name">Monkey D. Luffy — Romance Dawn</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div class="written-stars">★★★★☆</div>
+                      <span class="written-date">Feb 10, 2026</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="written-text">Good card, slight edge wear that wasn't mentioned in listing. Still happy with purchase overall. Shipping was fast (2 days).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Reviews</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Reviews">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill" href="#">Orders</a>
+            <a class="user-nav-pill" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill" href="#">Addresses</a>
+            <a class="user-nav-pill active" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill" href="#">Settings</a>
+          </div>
+
+          <h1 class="page-title" style="font-size:24px;">Reviews</h1>
+
+          <div class="tabs" style="overflow-x:auto;">
+            <button class="tab active" style="font-size:13px; padding:8px 14px; white-space:nowrap;">To Write</button>
+            <button class="tab" style="font-size:13px; padding:8px 14px; white-space:nowrap;">Written</button>
+          </div>
+
+          <div class="review-item" style="flex-direction:column; gap:12px; padding:16px;">
+            <div style="display:flex; gap:12px;">
+              <div class="review-thumb" style="width:48px; height:67px;"></div>
+              <div>
+                <div class="review-card-name" style="font-size:14px;">Charizard ex</div>
+                <div class="review-meta">CardVault_Pro · Mar 10</div>
+              </div>
+            </div>
+            <div class="star-row">
+              <span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span>
+            </div>
+            <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Write Review</button>
+          </div>
+
+          <div class="review-item" style="flex-direction:column; gap:12px; padding:16px;">
+            <div style="display:flex; gap:12px;">
+              <div class="review-thumb" style="width:48px; height:67px;"></div>
+              <div>
+                <div class="review-card-name" style="font-size:14px;">Pikachu VMAX</div>
+                <div class="review-meta">PokéDeals · Mar 8</div>
+              </div>
+            </div>
+            <div class="star-row">
+              <span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span>
+            </div>
+            <button class="btn btn-primary btn-sm" style="align-self:flex-start;">Write Review</button>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

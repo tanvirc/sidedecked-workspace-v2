@@ -138,14 +138,14 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R013 — Wireframe creation for remaining pages
 - Class: quality-attribute
-- Status: active
-- Description: HTML wireframes created for all ~32 storefront pages that don't have one (cart, checkout, sell pages, user account pages, order pages, etc.) following Voltage patterns and sd-nav.js shared component.
+- Status: validated
+- Description: HTML wireframes created for all remaining storefront pages (cart, checkout, sell pages, user account pages, order pages, etc.) following Voltage patterns and sd-nav.js shared component.
 - Why it matters: Can't align pages pixel-perfect without an authoritative design target.
 - Source: user
 - Primary owning slice: M001/S06
 - Supporting slices: M001/S01
-- Validation: unmapped
-- Notes: 9 wireframes exist. ~32 pages need wireframes. Group by page family for efficiency.
+- Validation: 33 wireframes exist (9 existing + 24 new). `verify-wireframes.sh` confirms token consistency, capture.js presence, sd-nav correctness (5/5 checks pass). All wireframes include desktop (1440px) + mobile (390px) frames, data-component React mappings, and identical `:root` Voltage tokens.
+- Notes: Wireframes grouped by layout family: commerce (3), seller (5), user-account (8), misc (8). Auth-adjacent pages (verify-email, reset-password) use minimal chrome without sd-nav. Community page shows "Coming Soon" state (R036 deferred).
 
 ### R014 — Seller pages visual alignment
 - Class: primary-user-loop
@@ -271,13 +271,13 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 ### R025 — Figma export of all wireframes
 - Class: operability
 - Status: active
-- Description: All HTML wireframes (existing 9 + generated ~32) exported to Figma via MCP html-to-design tool.
+- Description: All HTML wireframes (existing 9 + generated 24, 33 total) exported to Figma via MCP html-to-design tool.
 - Why it matters: Figma is the shared design source of truth for ongoing work.
 - Source: user
 - Primary owning slice: M001/S06
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Wireframes include Figma capture.js script. Figma MCP needs auth setup.
+- Validation: blocked — Figma MCP auth fails with 405 (mcporter SSE/HTTP transport mismatch). All 33 wireframes include capture.js and are ready for export. Export log at `.gsd/milestones/M001/slices/S06/figma-export-log.md`.
+- Notes: Three resolution paths: update mcporter for HTTP MCP support, use Claude Desktop/Cursor with native Figma MCP, or use Figma REST API directly. HTML wireframes remain authoritative per D003.
 
 ## Deferred
 
@@ -420,7 +420,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R010 | continuity | active | M001/S05 | M001/S01 | unmapped |
 | R011 | launchability | active | M001/S05 | none | unmapped |
 | R012 | launchability | active | M001/S05 | none | unmapped |
-| R013 | quality-attribute | active | M001/S06 | M001/S01 | unmapped |
+| R013 | quality-attribute | validated | M001/S06 | M001/S01 | 33 wireframes, verify-wireframes.sh 5/5 pass |
 | R014 | primary-user-loop | active | M001/S07 | M001/S01, M001/S06 | unmapped |
 | R015 | continuity | active | M001/S07 | M001/S01, M001/S06 | unmapped |
 | R016 | primary-user-loop | active | M001/S07 | M001/S01, M001/S06 | unmapped |
@@ -432,7 +432,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R022 | launchability | active | M001/S04 | M001/S02 | structural — API client + fallback + 11 tests |
 | R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
 | R024 | quality-attribute | active | M001/S01 | all | unmapped |
-| R025 | operability | active | M001/S06 | none | unmapped |
+| R025 | operability | active | M001/S06 | none | blocked — Figma MCP auth 405 error |
 | R030 | launchability | deferred | none | none | unmapped |
 | R031 | primary-user-loop | deferred | none | none | unmapped |
 | R032 | compliance/security | deferred | none | none | unmapped |
@@ -447,7 +447,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 24
-- Mapped to slices: 24
-- Validated: 1
+- Active requirements: 23
+- Mapped to slices: 23
+- Validated: 2
 - Unmapped active requirements: 0

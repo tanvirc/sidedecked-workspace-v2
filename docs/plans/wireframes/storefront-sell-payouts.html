@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Seller Payouts Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* CANVAS */
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    /* ANNOTATIONS */
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+    .annotation--breakpoint { color: var(--warning); background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+
+    /* PAGE LAYOUT */
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 36px; letter-spacing: -0.02em; }
+    .breadcrumb { font-size: 13px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text-secondary); }
+    .breadcrumb .sep { margin: 0 6px; }
+
+    /* BALANCE CARDS */
+    .balance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .balance-card { padding: 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .balance-card-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 8px; }
+    .balance-card-value { font-family: var(--font-display); font-size: 32px; font-weight: 700; }
+    .balance-card-value--positive { color: var(--positive); }
+    .balance-card-value--warning { color: var(--warning); }
+    .balance-card-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; font-family: var(--font-mono); }
+
+    /* STRIPE BANNER */
+    .stripe-banner { padding: 20px 24px; background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(99,102,241,0.06)); border: 1px solid var(--border-default); border-radius: 14px; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .stripe-banner-text { font-size: 14px; color: var(--text-secondary); }
+    .stripe-banner-text strong { color: var(--text-primary); }
+
+    /* TABLE */
+    .table-container { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; overflow: hidden; margin-bottom: 32px; }
+    .table-title { font-family: var(--font-heading); font-weight: 600; font-size: 16px; padding: 20px 24px; border-bottom: 1px solid var(--border-default); }
+    .table-header-row { display: flex; padding: 12px 24px; border-bottom: 1px solid var(--border-default); background: var(--bg-surface-2); }
+    .table-header-row span { font-family: var(--font-heading); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+    .table-row { display: flex; padding: 16px 24px; border-bottom: 1px solid var(--border-default); align-items: center; }
+    .table-row:last-child { border-bottom: none; }
+    .col-date { flex: 1; }
+    .col-amount { flex: 0.8; }
+    .col-status { flex: 0.8; }
+    .col-method { flex: 1; }
+    .table-cell { font-size: 14px; color: var(--text-secondary); }
+    .table-cell--strong { color: var(--text-primary); font-weight: 500; }
+
+    /* QUALIFICATION */
+    .qual-section { padding: 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; margin-bottom: 32px; }
+    .qual-title { font-family: var(--font-heading); font-weight: 600; font-size: 14px; color: var(--text-primary); margin-bottom: 4px; }
+    .qual-desc { font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px; }
+    .qual-meters { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .qual-meter-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .qual-meter-bar { height: 6px; background: var(--bg-surface-3); border-radius: 999px; overflow: hidden; }
+    .qual-meter-fill { height: 100%; border-radius: 999px; background: var(--brand-primary); }
+    .qual-meter-fill--complete { background: var(--positive); }
+
+    /* BADGE */
+    .badge { font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; display: inline-block; }
+    .badge--completed { color: var(--positive); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+    .badge--pending { color: var(--warning); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .badge--processing { color: var(--brand-primary); background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); }
+    .badge--failed { color: var(--negative); background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); }
+
+    /* BUTTONS */
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+
+    /* SETTINGS SECTION */
+    .settings-section { padding: 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; margin-bottom: 24px; }
+    .settings-title { font-family: var(--font-heading); font-weight: 600; font-size: 16px; margin-bottom: 16px; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-default); }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+    .setting-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+    .setting-value { font-size: 14px; color: var(--text-secondary); font-family: var(--font-mono); }
+    .input-field { padding: 8px 14px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); font-family: var(--font-body); font-size: 14px; width: 120px; }
+
+    /* STATE SEPARATOR */
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); }
+    .footer-copyright { text-align: center; font-size: 12px; color: var(--text-tertiary); margin-top: 24px; max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE OVERRIDES */
+    .mobile-inner .page-content { padding: 20px 16px; }
+    .mobile-inner .balance-grid { grid-template-columns: 1fr; gap: 12px; }
+    .mobile-inner .balance-card-value { font-size: 24px; }
+    .mobile-inner .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .mobile-inner .qual-meters { grid-template-columns: 1fr; }
+    .mobile-inner .stripe-banner { flex-direction: column; text-align: center; }
+    .mobile-inner .table-header-row span { font-size: 10px; }
+    .mobile-inner .table-row { padding: 12px 16px; }
+    .mobile-inner .table-cell { font-size: 12px; }
+    .mobile-inner .footer { padding: 24px 16px; }
+    .mobile-inner .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+    .mobile-inner .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .mobile-inner .settings-section { padding: 16px; }
+    .mobile-inner .setting-row { flex-direction: column; gap: 8px; align-items: flex-start; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP: BALANCE + HISTORY STATE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Payouts: Balance + History</div>
+    <div class="desktop-frame" data-component="PayoutDashboard">
+
+      <!-- NAV -->
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Sell', annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <span class="annotation" style="margin-bottom: 8px;">&lt;PayoutDashboard&gt;</span>
+        <span class="annotation annotation--api">GET /api/seller/payouts · GET /api/seller/financial-summary</span>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+          <a href="#">Seller Dashboard</a><span class="sep">/</span><span style="color: var(--text-primary); font-weight: 500;">Payouts</span>
+        </div>
+
+        <!-- Header -->
+        <div class="page-header">
+          <div class="page-title">Payouts</div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline btn-sm">Payout Settings</button>
+            <button class="btn btn-primary">Request Payout</button>
+          </div>
+        </div>
+
+        <!-- Stripe Connect Banner -->
+        <div class="stripe-banner" data-component="PayoutSetupBanner">
+          <div class="stripe-banner-text">
+            <strong>&#9889; Stripe Connect Active</strong><br />
+            Your payout account is connected and verified. Payouts are processed within 2 business days.
+          </div>
+          <span class="badge badge--completed">Connected</span>
+        </div>
+
+        <!-- Balance Cards -->
+        <div class="balance-grid" data-component="BalanceCards">
+          <div class="balance-card">
+            <div class="balance-card-label">Available Balance</div>
+            <div class="balance-card-value balance-card-value--positive">$1,245.80</div>
+            <div class="balance-card-sub">Ready for payout</div>
+          </div>
+          <div class="balance-card">
+            <div class="balance-card-label">Pending</div>
+            <div class="balance-card-value balance-card-value--warning">$342.50</div>
+            <div class="balance-card-sub">Processing (2-3 days)</div>
+          </div>
+          <div class="balance-card">
+            <div class="balance-card-label">Total Earned</div>
+            <div class="balance-card-value">$8,647.30</div>
+            <div class="balance-card-sub">Since Nov 2024</div>
+          </div>
+        </div>
+
+        <!-- Qualification Progress -->
+        <div class="qual-section">
+          <div class="qual-title">Seller Qualification Progress</div>
+          <div class="qual-desc">Reach these milestones to unlock daily payouts and remove the 10% reserve hold.</div>
+          <div class="qual-meters">
+            <div>
+              <div class="qual-meter-label"><span>Completed Sales</span><span style="font-family: var(--font-mono);">28 / 30</span></div>
+              <div class="qual-meter-bar"><div class="qual-meter-fill" style="width: 93%;"></div></div>
+            </div>
+            <div>
+              <div class="qual-meter-label"><span>Days on Platform</span><span style="font-family: var(--font-mono);">45 / 30 &#10003;</span></div>
+              <div class="qual-meter-bar"><div class="qual-meter-fill qual-meter-fill--complete" style="width: 100%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payout History Table -->
+        <div class="table-container" data-component="PayoutHistory">
+          <div class="table-title">Payout History</div>
+          <div class="table-header-row">
+            <span class="col-date">Date</span>
+            <span class="col-amount">Amount</span>
+            <span class="col-status">Status</span>
+            <span class="col-method">Method</span>
+          </div>
+          <div class="table-row">
+            <span class="col-date table-cell table-cell--strong">Mar 8, 2026</span>
+            <span class="col-amount table-cell table-cell--strong">$620.00</span>
+            <span class="col-status"><span class="badge badge--completed">Completed</span></span>
+            <span class="col-method table-cell">Stripe → Bank ****4821</span>
+          </div>
+          <div class="table-row">
+            <span class="col-date table-cell table-cell--strong">Feb 22, 2026</span>
+            <span class="col-amount table-cell table-cell--strong">$485.50</span>
+            <span class="col-status"><span class="badge badge--completed">Completed</span></span>
+            <span class="col-method table-cell">Stripe → Bank ****4821</span>
+          </div>
+          <div class="table-row">
+            <span class="col-date table-cell table-cell--strong">Feb 8, 2026</span>
+            <span class="col-amount table-cell table-cell--strong">$342.00</span>
+            <span class="col-status"><span class="badge badge--completed">Completed</span></span>
+            <span class="col-method table-cell">Stripe → Bank ****4821</span>
+          </div>
+          <div class="table-row">
+            <span class="col-date table-cell table-cell--strong">Jan 25, 2026</span>
+            <span class="col-amount table-cell table-cell--strong">$178.30</span>
+            <span class="col-status"><span class="badge badge--processing">Processing</span></span>
+            <span class="col-method table-cell">Stripe → Bank ****4821</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== STATE SEPARATOR ===== -->
+  <div class="state-separator" style="width: 100%;">
+    <div class="state-separator-line"></div>
+    <div class="state-separator-label">&#128260; State 2 — Payout Settings</div>
+    <div class="state-separator-line"></div>
+  </div>
+
+  <!-- ===== DESKTOP: SETTINGS STATE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Payouts: Settings</div>
+    <div class="desktop-frame" data-component="PayoutDashboard">
+
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2', activeLink: 'Sell' });</script>
+
+      <div class="page-content">
+        <div class="breadcrumb">
+          <a href="#">Seller Dashboard</a><span class="sep">/</span><a href="#">Payouts</a><span class="sep">/</span><span style="color: var(--text-primary); font-weight: 500;">Settings</span>
+        </div>
+
+        <div class="page-header">
+          <div class="page-title">Payout Settings</div>
+        </div>
+
+        <!-- Stripe Connect Section -->
+        <div class="settings-section">
+          <div class="settings-title">Stripe Connect</div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Connected Account</div>
+              <div class="setting-desc">acct_1NqB...9Xyz — Verified</div>
+            </div>
+            <span class="badge badge--completed">Active</span>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Default Bank Account</div>
+              <div class="setting-desc">Commonwealth Bank ****4821</div>
+            </div>
+            <button class="btn btn-outline btn-sm">Change</button>
+          </div>
+        </div>
+
+        <!-- Payout Preferences -->
+        <div class="settings-section">
+          <div class="settings-title">Payout Preferences</div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Payout Schedule</div>
+              <div class="setting-desc">How often automatic payouts are processed</div>
+            </div>
+            <div class="setting-value">Weekly</div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Minimum Payout Threshold</div>
+              <div class="setting-desc">Minimum balance required to trigger a payout</div>
+            </div>
+            <input class="input-field" type="text" value="$50.00" />
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Payout Currency</div>
+              <div class="setting-desc">All payouts will be converted to this currency</div>
+            </div>
+            <div class="setting-value">AUD</div>
+          </div>
+        </div>
+
+        <!-- Reserve Policy -->
+        <div class="settings-section">
+          <div class="settings-title">Reserve Policy</div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Current Reserve Rate</div>
+              <div class="setting-desc">Percentage held until seller qualification is met</div>
+            </div>
+            <div class="setting-value" style="color: var(--warning);">10%</div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Reserve Release</div>
+              <div class="setting-desc">Reserved funds are released 7 days after delivery confirmation</div>
+            </div>
+            <div class="setting-value">7 days</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Payouts</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner" data-component="PayoutDashboard">
+
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, activeLink: 'Sell' });</script>
+
+        <div class="page-content">
+          <div class="breadcrumb">
+            <a href="#">Dashboard</a><span class="sep">/</span><span style="color: var(--text-primary); font-weight: 500;">Payouts</span>
+          </div>
+
+          <div class="page-header">
+            <div class="page-title" style="font-size: 24px;">Payouts</div>
+            <button class="btn btn-primary btn-sm">Request Payout</button>
+          </div>
+
+          <!-- Balance Cards — stacked on mobile -->
+          <div class="balance-grid" data-component="BalanceCards">
+            <div class="balance-card">
+              <div class="balance-card-label">Available Balance</div>
+              <div class="balance-card-value balance-card-value--positive">$1,245.80</div>
+              <div class="balance-card-sub">Ready for payout</div>
+            </div>
+            <div class="balance-card">
+              <div class="balance-card-label">Pending</div>
+              <div class="balance-card-value balance-card-value--warning">$342.50</div>
+            </div>
+            <div class="balance-card">
+              <div class="balance-card-label">Total Earned</div>
+              <div class="balance-card-value">$8,647.30</div>
+            </div>
+          </div>
+
+          <!-- Qualification -->
+          <div class="qual-section">
+            <div class="qual-title">Qualification</div>
+            <div class="qual-meters">
+              <div>
+                <div class="qual-meter-label"><span>Sales</span><span>28/30</span></div>
+                <div class="qual-meter-bar"><div class="qual-meter-fill" style="width: 93%;"></div></div>
+              </div>
+              <div>
+                <div class="qual-meter-label"><span>Days</span><span>45/30 &#10003;</span></div>
+                <div class="qual-meter-bar"><div class="qual-meter-fill qual-meter-fill--complete" style="width: 100%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payout History -->
+          <div class="table-container" data-component="PayoutHistory">
+            <div class="table-title">History</div>
+            <div class="table-header-row">
+              <span class="col-date">Date</span>
+              <span class="col-amount">Amount</span>
+              <span class="col-status">Status</span>
+            </div>
+            <div class="table-row">
+              <span class="col-date table-cell">Mar 8</span>
+              <span class="col-amount table-cell table-cell--strong">$620</span>
+              <span class="col-status"><span class="badge badge--completed">Done</span></span>
+            </div>
+            <div class="table-row">
+              <span class="col-date table-cell">Feb 22</span>
+              <span class="col-amount table-cell table-cell--strong">$485</span>
+              <span class="col-status"><span class="badge badge--completed">Done</span></span>
+            </div>
+            <div class="table-row">
+              <span class="col-date table-cell">Jan 25</span>
+              <span class="col-amount table-cell table-cell--strong">$178</span>
+              <span class="col-status"><span class="badge badge--processing">Processing</span></span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links"><a href="#">About</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright">&copy; 2026 SideDecked.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

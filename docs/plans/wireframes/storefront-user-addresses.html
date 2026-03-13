@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Addresses Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; transition: all 0.15s; }
+    .user-nav-item:hover { color: var(--text-secondary); background: var(--bg-surface-2); }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+    .page-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; }
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+    .btn-ghost { background: transparent; color: var(--text-tertiary); border: none; font-size: 12px; padding: 4px 8px; }
+
+    /* ADDRESS GRID */
+    .address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .address-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; position: relative; }
+    .address-card.default { border-color: var(--brand-primary); }
+    .address-default-badge { position: absolute; top: 12px; right: 12px; font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; color: var(--brand-primary); background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); }
+    .address-name { font-family: var(--font-heading); font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+    .address-line { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .address-phone { font-size: 13px; color: var(--text-tertiary); margin-top: 8px; font-family: var(--font-mono); }
+    .address-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .add-address-card { background: var(--bg-surface-1); border: 2px dashed var(--border-default); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; cursor: pointer; transition: all 0.15s; min-height: 200px; }
+    .add-address-card:hover { border-color: var(--brand-primary); background: rgba(139,92,246,0.04); }
+    .add-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-tertiary); margin-bottom: 12px; }
+    .add-label { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .address-grid { grid-template-columns: 1fr; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Addresses</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Addresses">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item active" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="Addresses">
+            <div class="page-header">
+              <div>
+                <span class="annotation">&lt;Addresses&gt;</span>
+                <h1 class="page-title">Addresses</h1>
+              </div>
+            </div>
+
+            <div class="address-grid">
+              <!-- Default Address -->
+              <div class="address-card default">
+                <span class="address-default-badge">Default</span>
+                <div class="address-name">Alex Johnson</div>
+                <div class="address-line">
+                  742 Trading Card Lane<br />
+                  Melbourne VIC 3000<br />
+                  Australia
+                </div>
+                <div class="address-phone">+61 412 345 678</div>
+                <div class="address-actions">
+                  <button class="btn btn-outline btn-sm">Edit</button>
+                  <button class="btn btn-ghost btn-sm">Delete</button>
+                </div>
+              </div>
+
+              <!-- Second Address -->
+              <div class="address-card">
+                <div class="address-name">Alex Johnson — Work</div>
+                <div class="address-line">
+                  101 Collins Street, Level 22<br />
+                  Melbourne VIC 3000<br />
+                  Australia
+                </div>
+                <div class="address-phone">+61 398 765 432</div>
+                <div class="address-actions">
+                  <button class="btn btn-outline btn-sm">Edit</button>
+                  <button class="btn btn-ghost btn-sm">Delete</button>
+                  <button class="btn btn-ghost btn-sm">Set Default</button>
+                </div>
+              </div>
+
+              <!-- Third Address -->
+              <div class="address-card">
+                <div class="address-name">Parents' House</div>
+                <div class="address-line">
+                  58 Eucalyptus Drive<br />
+                  Geelong VIC 3220<br />
+                  Australia
+                </div>
+                <div class="address-phone">+61 352 123 456</div>
+                <div class="address-actions">
+                  <button class="btn btn-outline btn-sm">Edit</button>
+                  <button class="btn btn-ghost btn-sm">Delete</button>
+                  <button class="btn btn-ghost btn-sm">Set Default</button>
+                </div>
+              </div>
+
+              <!-- Add New Address -->
+              <div class="add-address-card">
+                <div class="add-icon">+</div>
+                <div class="add-label">Add New Address</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Addresses</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Addresses">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill" href="#">Orders</a>
+            <a class="user-nav-pill" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill active" href="#">Addresses</a>
+            <a class="user-nav-pill" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill" href="#">Settings</a>
+          </div>
+
+          <div class="page-header">
+            <h1 class="page-title" style="font-size:24px;">Addresses</h1>
+          </div>
+
+          <div class="address-grid" style="grid-template-columns:1fr;">
+            <div class="address-card default">
+              <span class="address-default-badge">Default</span>
+              <div class="address-name">Alex Johnson</div>
+              <div class="address-line">742 Trading Card Lane<br />Melbourne VIC 3000<br />Australia</div>
+              <div class="address-phone">+61 412 345 678</div>
+              <div class="address-actions">
+                <button class="btn btn-outline btn-sm">Edit</button>
+                <button class="btn btn-ghost btn-sm">Delete</button>
+              </div>
+            </div>
+
+            <div class="address-card">
+              <div class="address-name">Alex Johnson — Work</div>
+              <div class="address-line">101 Collins Street, Level 22<br />Melbourne VIC 3000<br />Australia</div>
+              <div class="address-phone">+61 398 765 432</div>
+              <div class="address-actions">
+                <button class="btn btn-outline btn-sm">Edit</button>
+                <button class="btn btn-ghost btn-sm">Delete</button>
+              </div>
+            </div>
+
+            <div class="add-address-card" style="min-height:140px; padding:24px;">
+              <div class="add-icon">+</div>
+              <div class="add-label">Add New Address</div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

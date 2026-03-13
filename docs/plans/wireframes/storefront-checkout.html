@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Storefront Checkout Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* =============================================
+       GLOBAL RESET + CANVAS
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       CANVAS LAYOUT — side-by-side frames
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 48px;
+      padding: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .annotation--breakpoint {
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* =============================================
+       SHARED COMPONENT STYLES
+       ============================================= */
+    .btn {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: white;
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.25);
+    }
+    .btn-primary:hover {
+      background: #7C3AED;
+      box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+    }
+
+    /* =============================================
+       CHECKOUT MINIMAL HEADER
+       ============================================= */
+    .checkout-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border-default);
+      position: relative;
+    }
+    .checkout-back {
+      position: absolute;
+      left: 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .checkout-back:hover {
+      border-color: var(--brand-primary);
+      color: var(--text-primary);
+    }
+    .checkout-back svg { width: 16px; height: 16px; }
+    .checkout-logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      background: linear-gradient(135deg, var(--brand-primary), #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* =============================================
+       PROGRESS INDICATOR
+       ============================================= */
+    .checkout-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 24px 48px 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .progress-dot.active {
+      background: var(--brand-primary);
+      color: white;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
+    }
+    .progress-dot.completed {
+      background: var(--positive);
+      color: white;
+    }
+    .progress-dot.upcoming {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      color: var(--text-tertiary);
+    }
+    .progress-label {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .progress-label.active { color: var(--text-primary); }
+    .progress-line {
+      width: 60px;
+      height: 2px;
+      background: var(--border-default);
+      margin: 0 12px;
+      flex-shrink: 0;
+    }
+    .progress-line.completed { background: var(--positive); }
+
+    /* =============================================
+       CHECKOUT LAYOUT
+       ============================================= */
+    .checkout-page {
+      padding: 32px 48px 64px;
+    }
+    .checkout-page-inner {
+      max-width: 1344px;
+      margin: 0 auto;
+    }
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 48px;
+      align-items: flex-start;
+      margin-top: 32px;
+    }
+
+    /* Checkout sections */
+    .checkout-section {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .checkout-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .checkout-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-step-num.completed {
+      background: var(--positive);
+    }
+    .section-step-num.upcoming {
+      background: var(--bg-surface-3);
+      color: var(--text-tertiary);
+    }
+    .checkout-section h2 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .edit-btn {
+      font-size: 13px;
+      color: var(--brand-primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    /* Form fields */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-field.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-family: var(--font-heading);
+    }
+    .form-field input, .form-field select {
+      padding: 10px 14px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+    }
+    .form-field input::placeholder { color: var(--text-tertiary); }
+    .form-field input:focus, .form-field select:focus {
+      border-color: var(--brand-primary);
+    }
+    .form-field select {
+      appearance: none;
+      cursor: pointer;
+    }
+    .save-btn {
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .save-btn:hover {
+      border-color: var(--brand-primary);
+      background: var(--bg-surface-3);
+    }
+
+    /* Shipping method radio cards */
+    .shipping-seller-group {
+      margin-bottom: 16px;
+    }
+    .shipping-seller-label {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    .shipping-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg-surface-2);
+      border: 1.5px solid var(--border-default);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .shipping-option:hover { border-color: var(--border-strong); }
+    .shipping-option.selected {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.06);
+    }
+    .radio-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .radio-dot.active {
+      border-color: var(--brand-primary);
+    }
+    .radio-dot.active::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+    }
+    .shipping-option-info { flex: 1; }
+    .shipping-option-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .shipping-option-est {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .shipping-option-price {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Payment - Stripe placeholder */
+    .stripe-placeholder {
+      padding: 20px;
+      background: var(--bg-surface-2);
+      border: 1.5px dashed var(--border-default);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stripe-placeholder-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.10);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      color: var(--brand-primary);
+    }
+    .stripe-placeholder-icon svg { width: 22px; height: 22px; }
+    .stripe-placeholder-title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .stripe-placeholder-sub {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .stripe-card-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .stripe-field {
+      padding: 12px 14px;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+    .stripe-field.full { grid-column: 1 / -1; }
+
+    /* Order review sidebar */
+    .order-review {
+      position: sticky;
+      top: 80px;
+    }
+    .review-card {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .review-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+    .review-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .review-item:last-of-type { border-bottom: none; }
+    .review-item-img {
+      width: 48px;
+      height: 67px;
+      border-radius: 8px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .review-item-img svg { width: 18px; height: 18px; color: var(--text-tertiary); opacity: 0.4; }
+    .review-item-details { flex: 1; }
+    .review-item-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    .review-item-seller {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .review-item-price {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .review-totals {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-default);
+    }
+    .review-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .review-row .label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .review-row .value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+    .review-row.total {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-default);
+    }
+    .review-row.total .label {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .review-row.total .value {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .place-order-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: var(--brand-primary);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.25);
+    }
+    .place-order-btn:hover {
+      background: #7C3AED;
+      box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+    }
+
+    /* =============================================
+       MOBILE OVERRIDES
+       ============================================= */
+    .mobile-frame .checkout-header { padding: 14px 20px; }
+    .mobile-frame .checkout-back {
+      left: 16px;
+      padding: 6px 10px;
+      font-size: 0;
+    }
+    .mobile-frame .checkout-back svg { width: 18px; height: 18px; }
+    .mobile-frame .checkout-logo { font-size: 18px; }
+
+    .mobile-frame .checkout-progress { padding: 16px 20px 0; }
+    .mobile-frame .progress-label { font-size: 11px; }
+    .mobile-frame .progress-line { width: 24px; margin: 0 6px; }
+    .mobile-frame .progress-dot { width: 24px; height: 24px; font-size: 11px; }
+
+    .mobile-frame .checkout-page { padding: 16px 20px 40px; }
+    .mobile-frame .checkout-layout {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .mobile-frame .checkout-section { padding: 20px; }
+    .mobile-frame .form-grid { grid-template-columns: 1fr; }
+    .mobile-frame .checkout-section h2 { font-size: 16px; }
+    .mobile-frame .order-review { position: static; }
+    .mobile-frame .review-card { padding: 20px; }
+    .mobile-frame .stripe-card-fields { grid-template-columns: 1fr; }
+
+    /* Hide annotations on mobile */
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- =========================================
+       DESKTOP — 1440px
+       ========================================= -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px</div>
+    <div class="desktop-frame" data-frame-name="Desktop — 1440px">
+
+      <!-- CHECKOUT MINIMAL HEADER (no sd-nav) -->
+      <header class="checkout-header">
+        <a class="checkout-back" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Back to cart
+        </a>
+        <div class="checkout-logo">SideDecked</div>
+        <span class="annotation" style="position:absolute; right:32px;">(checkout) layout — no nav, no footer</span>
+      </header>
+
+      <!-- PROGRESS INDICATOR -->
+      <div class="checkout-progress">
+        <div class="progress-step">
+          <div class="progress-dot active">1</div>
+          <span class="progress-label active">Address</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-dot upcoming">2</div>
+          <span class="progress-label">Shipping</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-dot upcoming">3</div>
+          <span class="progress-label">Payment</span>
+        </div>
+      </div>
+
+      <!-- CHECKOUT PAGE -->
+      <div class="checkout-page">
+        <div class="checkout-page-inner">
+          <div class="checkout-layout">
+
+            <!-- LEFT: Checkout steps -->
+            <div>
+
+              <!-- STEP 1: Address -->
+              <div class="checkout-section" data-component="CartAddressSection">
+                <div class="checkout-section-header">
+                  <div class="checkout-section-title">
+                    <div class="section-step-num">1</div>
+                    <h2>Shipping Address</h2>
+                  </div>
+                  <span class="annotation">&lt;CartAddressSection&gt;</span>
+                </div>
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>First Name</label>
+                    <input type="text" placeholder="John" readonly />
+                  </div>
+                  <div class="form-field">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Doe" readonly />
+                  </div>
+                  <div class="form-field full-width">
+                    <label>Email</label>
+                    <input type="email" placeholder="john@example.com" readonly />
+                  </div>
+                  <div class="form-field full-width">
+                    <label>Address</label>
+                    <input type="text" placeholder="123 Main St" readonly />
+                  </div>
+                  <div class="form-field">
+                    <label>City</label>
+                    <input type="text" placeholder="New York" readonly />
+                  </div>
+                  <div class="form-field">
+                    <label>State / Province</label>
+                    <input type="text" placeholder="NY" readonly />
+                  </div>
+                  <div class="form-field">
+                    <label>Postal Code</label>
+                    <input type="text" placeholder="10001" readonly />
+                  </div>
+                  <div class="form-field">
+                    <label>Country</label>
+                    <select disabled><option>United States</option></select>
+                  </div>
+                  <div class="form-field full-width">
+                    <label>Phone</label>
+                    <input type="tel" placeholder="+1 (555) 000-0000" readonly />
+                  </div>
+                </div>
+                <button class="save-btn">Save &amp; Continue</button>
+              </div>
+
+              <!-- STEP 2: Shipping Methods (per seller) -->
+              <div class="checkout-section" data-component="CartShippingMethodsSection">
+                <div class="checkout-section-header">
+                  <div class="checkout-section-title">
+                    <div class="section-step-num upcoming">2</div>
+                    <h2>Shipping Method</h2>
+                  </div>
+                  <span class="annotation">&lt;CartShippingMethodsSection&gt;</span>
+                </div>
+
+                <!-- Seller 1 shipping -->
+                <div class="shipping-seller-group">
+                  <div class="shipping-seller-label">CardKingdom Pro</div>
+                  <div class="shipping-option selected">
+                    <div class="radio-dot active"></div>
+                    <div class="shipping-option-info">
+                      <div class="shipping-option-name">Standard Shipping</div>
+                      <div class="shipping-option-est">5–7 business days</div>
+                    </div>
+                    <div class="shipping-option-price">$5.99</div>
+                  </div>
+                  <div class="shipping-option">
+                    <div class="radio-dot"></div>
+                    <div class="shipping-option-info">
+                      <div class="shipping-option-name">Express Shipping</div>
+                      <div class="shipping-option-est">2–3 business days</div>
+                    </div>
+                    <div class="shipping-option-price">$12.99</div>
+                  </div>
+                </div>
+
+                <!-- Seller 2 shipping -->
+                <div class="shipping-seller-group">
+                  <div class="shipping-seller-label">Pok&eacute;Collector_Sam</div>
+                  <div class="shipping-option selected">
+                    <div class="radio-dot active"></div>
+                    <div class="shipping-option-info">
+                      <div class="shipping-option-name">Standard Shipping</div>
+                      <div class="shipping-option-est">5–8 business days</div>
+                    </div>
+                    <div class="shipping-option-price">$4.99</div>
+                  </div>
+                  <div class="shipping-option">
+                    <div class="radio-dot"></div>
+                    <div class="shipping-option-info">
+                      <div class="shipping-option-name">Tracked Priority</div>
+                      <div class="shipping-option-est">3–4 business days</div>
+                    </div>
+                    <div class="shipping-option-price">$9.99</div>
+                  </div>
+                </div>
+
+                <button class="save-btn">Continue to Payment</button>
+              </div>
+
+              <!-- STEP 3: Payment -->
+              <div class="checkout-section" data-component="CartPaymentSection">
+                <div class="checkout-section-header">
+                  <div class="checkout-section-title">
+                    <div class="section-step-num upcoming">3</div>
+                    <h2>Payment</h2>
+                  </div>
+                  <span class="annotation">&lt;CartPaymentSection&gt;</span>
+                  <span class="annotation annotation--api">Stripe Elements</span>
+                </div>
+
+                <div class="stripe-placeholder">
+                  <div class="stripe-placeholder-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  </div>
+                  <div class="stripe-placeholder-title">Credit or Debit Card</div>
+                  <div class="stripe-placeholder-sub">Powered by Stripe</div>
+                  <div class="stripe-card-fields">
+                    <div class="stripe-field full">Card number</div>
+                    <div class="stripe-field">MM / YY</div>
+                    <div class="stripe-field">CVC</div>
+                  </div>
+                </div>
+
+                <button class="save-btn" style="margin-top:20px;">Continue to Review</button>
+              </div>
+
+            </div>
+
+            <!-- RIGHT: Order review -->
+            <div class="order-review" data-component="CartReview">
+              <div class="review-card">
+                <div class="review-title">Order Review</div>
+
+                <div class="review-item">
+                  <div class="review-item-img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  </div>
+                  <div class="review-item-details">
+                    <div class="review-item-name">Ragavan, Nimble Pilferer</div>
+                    <div class="review-item-seller">CardKingdom Pro &bull; Qty: 1</div>
+                  </div>
+                  <div class="review-item-price">$58.99</div>
+                </div>
+
+                <div class="review-item">
+                  <div class="review-item-img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  </div>
+                  <div class="review-item-details">
+                    <div class="review-item-name">The One Ring</div>
+                    <div class="review-item-seller">CardKingdom Pro &bull; Qty: 1</div>
+                  </div>
+                  <div class="review-item-price">$42.99</div>
+                </div>
+
+                <div class="review-item">
+                  <div class="review-item-img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  </div>
+                  <div class="review-item-details">
+                    <div class="review-item-name">Ash Blossom &amp; Joyous Spring</div>
+                    <div class="review-item-seller">CardKingdom Pro &bull; Qty: 1</div>
+                  </div>
+                  <div class="review-item-price">$14.75</div>
+                </div>
+
+                <div class="review-item">
+                  <div class="review-item-img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  </div>
+                  <div class="review-item-details">
+                    <div class="review-item-name">Charizard ex</div>
+                    <div class="review-item-seller">Pok&eacute;Collector_Sam &bull; Qty: 1</div>
+                  </div>
+                  <div class="review-item-price">$42.50</div>
+                </div>
+
+                <div class="review-item">
+                  <div class="review-item-img">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  </div>
+                  <div class="review-item-details">
+                    <div class="review-item-name">Pikachu VMAX</div>
+                    <div class="review-item-seller">Pok&eacute;Collector_Sam &bull; Qty: 1</div>
+                  </div>
+                  <div class="review-item-price">$22.30</div>
+                </div>
+
+                <div class="review-totals">
+                  <div class="review-row">
+                    <span class="label">Subtotal</span>
+                    <span class="value">$181.53</span>
+                  </div>
+                  <div class="review-row">
+                    <span class="label">Shipping (CardKingdom Pro)</span>
+                    <span class="value">$5.99</span>
+                  </div>
+                  <div class="review-row">
+                    <span class="label">Shipping (Pok&eacute;Collector)</span>
+                    <span class="value">$4.99</span>
+                  </div>
+                  <div class="review-row">
+                    <span class="label">Tax</span>
+                    <span class="value">$15.47</span>
+                  </div>
+                  <div class="review-row total">
+                    <span class="label">Total</span>
+                    <span class="value">$207.98</span>
+                  </div>
+                </div>
+
+                <button class="place-order-btn">Place Order</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- NO FOOTER (checkout layout) -->
+
+    </div>
+  </div>
+
+  <!-- =========================================
+       MOBILE — 390px
+       ========================================= -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile &mdash; 390px</div>
+    <div class="mobile-frame" data-frame-name="Mobile — 390px">
+      <div class="mobile-inner">
+
+        <!-- CHECKOUT MINIMAL HEADER (mobile) -->
+        <header class="checkout-header">
+          <a class="checkout-back" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </a>
+          <div class="checkout-logo">SideDecked</div>
+        </header>
+
+        <!-- PROGRESS INDICATOR (mobile) -->
+        <div class="checkout-progress">
+          <div class="progress-step">
+            <div class="progress-dot active">1</div>
+            <span class="progress-label active">Address</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step">
+            <div class="progress-dot upcoming">2</div>
+            <span class="progress-label">Ship</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step">
+            <div class="progress-dot upcoming">3</div>
+            <span class="progress-label">Pay</span>
+          </div>
+        </div>
+
+        <!-- CHECKOUT PAGE (mobile) -->
+        <div class="checkout-page">
+          <div class="checkout-page-inner">
+            <div class="checkout-layout">
+
+              <div>
+                <!-- STEP 1: Address (mobile) -->
+                <div class="checkout-section" data-component="CartAddressSection">
+                  <div class="checkout-section-header">
+                    <div class="checkout-section-title">
+                      <div class="section-step-num">1</div>
+                      <h2>Shipping Address</h2>
+                    </div>
+                  </div>
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <label>First Name</label>
+                      <input type="text" placeholder="John" readonly />
+                    </div>
+                    <div class="form-field">
+                      <label>Last Name</label>
+                      <input type="text" placeholder="Doe" readonly />
+                    </div>
+                    <div class="form-field full-width">
+                      <label>Email</label>
+                      <input type="email" placeholder="john@example.com" readonly />
+                    </div>
+                    <div class="form-field full-width">
+                      <label>Address</label>
+                      <input type="text" placeholder="123 Main St" readonly />
+                    </div>
+                    <div class="form-field full-width">
+                      <label>City</label>
+                      <input type="text" placeholder="New York" readonly />
+                    </div>
+                    <div class="form-field full-width">
+                      <label>Postal Code</label>
+                      <input type="text" placeholder="10001" readonly />
+                    </div>
+                    <div class="form-field full-width">
+                      <label>Country</label>
+                      <select disabled><option>United States</option></select>
+                    </div>
+                    <div class="form-field full-width">
+                      <label>Phone</label>
+                      <input type="tel" placeholder="+1 (555) 000-0000" readonly />
+                    </div>
+                  </div>
+                  <button class="save-btn">Save &amp; Continue</button>
+                </div>
+
+                <!-- STEP 2: Shipping (mobile) -->
+                <div class="checkout-section" data-component="CartShippingMethodsSection">
+                  <div class="checkout-section-header">
+                    <div class="checkout-section-title">
+                      <div class="section-step-num upcoming">2</div>
+                      <h2>Shipping</h2>
+                    </div>
+                  </div>
+                  <div class="shipping-seller-group">
+                    <div class="shipping-seller-label">CardKingdom Pro</div>
+                    <div class="shipping-option selected">
+                      <div class="radio-dot active"></div>
+                      <div class="shipping-option-info">
+                        <div class="shipping-option-name">Standard</div>
+                        <div class="shipping-option-est">5–7 days</div>
+                      </div>
+                      <div class="shipping-option-price">$5.99</div>
+                    </div>
+                    <div class="shipping-option">
+                      <div class="radio-dot"></div>
+                      <div class="shipping-option-info">
+                        <div class="shipping-option-name">Express</div>
+                        <div class="shipping-option-est">2–3 days</div>
+                      </div>
+                      <div class="shipping-option-price">$12.99</div>
+                    </div>
+                  </div>
+                  <div class="shipping-seller-group">
+                    <div class="shipping-seller-label">Pok&eacute;Collector</div>
+                    <div class="shipping-option selected">
+                      <div class="radio-dot active"></div>
+                      <div class="shipping-option-info">
+                        <div class="shipping-option-name">Standard</div>
+                        <div class="shipping-option-est">5–8 days</div>
+                      </div>
+                      <div class="shipping-option-price">$4.99</div>
+                    </div>
+                  </div>
+                  <button class="save-btn">Continue</button>
+                </div>
+
+                <!-- STEP 3: Payment (mobile) -->
+                <div class="checkout-section" data-component="CartPaymentSection">
+                  <div class="checkout-section-header">
+                    <div class="checkout-section-title">
+                      <div class="section-step-num upcoming">3</div>
+                      <h2>Payment</h2>
+                    </div>
+                  </div>
+                  <div class="stripe-placeholder">
+                    <div class="stripe-placeholder-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    </div>
+                    <div class="stripe-placeholder-title">Card</div>
+                    <div class="stripe-placeholder-sub">Powered by Stripe</div>
+                    <div class="stripe-card-fields">
+                      <div class="stripe-field full">Card number</div>
+                      <div class="stripe-field">MM / YY</div>
+                      <div class="stripe-field">CVC</div>
+                    </div>
+                  </div>
+                  <button class="save-btn" style="margin-top:16px;">Review Order</button>
+                </div>
+              </div>
+
+              <!-- Order review (mobile — stacked below) -->
+              <div class="order-review" data-component="CartReview">
+                <div class="review-card">
+                  <div class="review-title">Order Review</div>
+                  <div class="review-item">
+                    <div class="review-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                    <div class="review-item-details">
+                      <div class="review-item-name">Ragavan</div>
+                      <div class="review-item-seller">CardKingdom Pro</div>
+                    </div>
+                    <div class="review-item-price">$58.99</div>
+                  </div>
+                  <div class="review-item">
+                    <div class="review-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                    <div class="review-item-details">
+                      <div class="review-item-name">The One Ring</div>
+                      <div class="review-item-seller">CardKingdom Pro</div>
+                    </div>
+                    <div class="review-item-price">$42.99</div>
+                  </div>
+                  <div class="review-item">
+                    <div class="review-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                    <div class="review-item-details">
+                      <div class="review-item-name">Ash Blossom</div>
+                      <div class="review-item-seller">CardKingdom Pro</div>
+                    </div>
+                    <div class="review-item-price">$14.75</div>
+                  </div>
+                  <div class="review-item">
+                    <div class="review-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                    <div class="review-item-details">
+                      <div class="review-item-name">Charizard ex</div>
+                      <div class="review-item-seller">Pok&eacute;Collector</div>
+                    </div>
+                    <div class="review-item-price">$42.50</div>
+                  </div>
+                  <div class="review-item">
+                    <div class="review-item-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                    <div class="review-item-details">
+                      <div class="review-item-name">Pikachu VMAX</div>
+                      <div class="review-item-seller">Pok&eacute;Collector</div>
+                    </div>
+                    <div class="review-item-price">$22.30</div>
+                  </div>
+
+                  <div class="review-totals">
+                    <div class="review-row"><span class="label">Subtotal</span><span class="value">$181.53</span></div>
+                    <div class="review-row"><span class="label">Shipping</span><span class="value">$10.98</span></div>
+                    <div class="review-row"><span class="label">Tax</span><span class="value">$15.47</span></div>
+                    <div class="review-row total"><span class="label">Total</span><span class="value">$207.98</span></div>
+                  </div>
+                  <button class="place-order-btn">Place Order</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- NO FOOTER (checkout layout) -->
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

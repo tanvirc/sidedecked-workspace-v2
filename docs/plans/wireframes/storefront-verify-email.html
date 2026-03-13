@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Verify Email Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    /* CANVAS */
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; min-height: 900px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    /* ANNOTATIONS */
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--component { color: var(--brand-secondary); background: rgba(255,120,73,0.08); border-color: rgba(255,120,73,0.3); }
+
+    /* STATE SEPARATOR */
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    /* CENTERED AUTH PAGE */
+    .verify-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 900px; padding: 48px; position: relative; }
+    .verify-page::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%); pointer-events: none; }
+    .verify-page > * { position: relative; z-index: 1; }
+
+    .verify-logo { font-family: var(--font-display); font-weight: 800; font-size: 36px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-primary); text-shadow: 0 0 40px rgba(139,92,246,0.3); margin-bottom: 48px; }
+    .verify-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 20px; padding: 48px 56px; text-align: center; max-width: 440px; width: 100%; }
+
+    /* Spinner */
+    .spinner { width: 56px; height: 56px; border: 3px solid var(--bg-surface-3); border-top-color: var(--brand-primary); border-radius: 50%; margin: 0 auto 24px; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .verify-text { font-family: var(--font-heading); font-size: 18px; font-weight: 600; color: var(--text-secondary); }
+
+    /* Success state */
+    .check-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(16,185,129,0.12); border: 2px solid var(--positive); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .check-icon svg { width: 32px; height: 32px; color: var(--positive); }
+    .verify-heading { font-family: var(--font-display); font-weight: 700; font-size: 32px; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 8px; }
+    .verify-subtext { font-size: 15px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6; }
+
+    .btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: 14px 32px; background: var(--brand-primary); color: white; border: none; border-radius: 14px; font-family: var(--font-body); font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(139,92,246,0.3); }
+
+    /* MOBILE */
+    .mobile-frame .verify-page { min-height: 844px; padding: 80px 28px 48px; }
+    .mobile-frame .verify-logo { font-size: 28px; margin-bottom: 40px; }
+    .mobile-frame .verify-card { padding: 36px 28px; }
+    .mobile-frame .verify-heading { font-size: 26px; }
+    .mobile-frame .verify-subtext { font-size: 14px; }
+    .mobile-frame .btn-primary { width: 100%; padding: 12px 24px; font-size: 14px; border-radius: 12px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== STATE 1: VERIFYING — Desktop + Mobile ===== -->
+<div class="canvas">
+
+  <!-- DESKTOP — Verifying -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Verifying</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Verify Email — Verifying">
+      <div class="verify-page" data-component="VerifyEmailPage">
+        <div class="verify-logo">SideDecked</div>
+        <div class="verify-card">
+          <div class="spinner"></div>
+          <div class="verify-text">Verifying your email…</div>
+          <div style="margin-top:16px;">
+            <span class="annotation">auto-verifies via token in URL query param</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE — Verifying -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Verifying</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="verify-page">
+          <div class="verify-logo">SideDecked</div>
+          <div class="verify-card">
+            <div class="spinner"></div>
+            <div class="verify-text">Verifying your email…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE SEPARATOR -->
+<div class="state-separator">
+  <div class="state-separator-line"></div>
+  <div class="state-separator-label">State 2 — Verified</div>
+  <div class="state-separator-line"></div>
+</div>
+
+<!-- ===== STATE 2: VERIFIED — Desktop + Mobile ===== -->
+<div class="canvas">
+
+  <!-- DESKTOP — Verified -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Verified</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Verify Email — Verified">
+      <div class="verify-page" data-component="VerifyEmailPage">
+        <div class="verify-logo">SideDecked</div>
+        <div class="verify-card">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="verify-heading">Email Verified!</div>
+          <div class="verify-subtext">Your account is now active. You're ready to start trading cards.</div>
+          <button class="btn-primary">Continue to SideDecked</button>
+          <div style="margin-top:16px;">
+            <span class="annotation--component annotation">VerifyEmailPage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE — Verified -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Verified</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="verify-page">
+          <div class="verify-logo">SideDecked</div>
+          <div class="verify-card">
+            <div class="check-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="verify-heading">Email Verified!</div>
+            <div class="verify-subtext">Your account is now active. You're ready to start trading cards.</div>
+            <button class="btn-primary">Continue to SideDecked</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

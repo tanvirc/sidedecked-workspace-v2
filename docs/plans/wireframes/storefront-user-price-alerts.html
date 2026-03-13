@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Price Alerts Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+    .page-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; }
+
+    /* ALERT LIST */
+    .alert-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; display: flex; gap: 16px; align-items: center; }
+    .alert-thumb { width: 52px; height: 73px; background: var(--bg-surface-3); border-radius: 8px; border: 1px solid var(--border-default); flex-shrink: 0; }
+    .alert-info { flex: 1; min-width: 0; }
+    .alert-card-name { font-family: var(--font-heading); font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+    .alert-set { font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; }
+    .alert-prices { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .alert-price-item { display: flex; flex-direction: column; gap: 1px; }
+    .alert-price-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .alert-price-value { font-family: var(--font-heading); font-weight: 600; font-size: 15px; }
+    .alert-price-value--current { color: var(--text-secondary); }
+    .alert-price-value--threshold { color: var(--brand-primary); }
+
+    /* ALERT TYPE BADGE */
+    .alert-type { font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+    .alert-type--below { color: var(--positive); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+    .alert-type--above { color: var(--warning); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .alert-type--drop { color: var(--negative); background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); }
+    .alert-type--stock { color: #60A5FA; background: rgba(96,165,250,0.12); border: 1px solid rgba(96,165,250,0.3); }
+
+    /* TOGGLE */
+    .toggle-switch { width: 40px; height: 22px; border-radius: 11px; background: var(--bg-surface-3); position: relative; cursor: pointer; flex-shrink: 0; }
+    .toggle-switch.on { background: var(--brand-primary); }
+    .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform 0.15s; }
+    .toggle-switch.on::after { transform: translateX(18px); }
+
+    .alert-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .delete-btn { width: 32px; height: 32px; border-radius: 8px; background: transparent; border: 1px solid var(--border-default); color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .delete-btn:hover { border-color: var(--negative); color: var(--negative); }
+
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 80px 24px; }
+    .empty-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; color: var(--text-tertiary); }
+    .empty-title { font-family: var(--font-display); font-weight: 700; font-size: 24px; text-transform: uppercase; margin-bottom: 8px; }
+    .empty-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .alert-card { flex-wrap: wrap; padding: 16px; }
+    .mobile-frame .alert-prices { gap: 12px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Price Alerts</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Price Alerts">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item" href="#">Settings</a>
+          </nav>
+
+          <div data-component="EnhancedPriceAlerts">
+            <div class="page-header">
+              <div>
+                <span class="annotation">&lt;EnhancedPriceAlerts&gt;</span>
+                <h1 class="page-title">Price Alerts</h1>
+              </div>
+              <button class="btn btn-primary">+ Create Alert</button>
+            </div>
+
+            <!-- Alert 1 — Active, Price Drop -->
+            <div class="alert-card">
+              <div class="alert-thumb"></div>
+              <div class="alert-info">
+                <div class="alert-card-name">Charizard ex</div>
+                <div class="alert-set">Obsidian Flames · #006</div>
+                <div class="alert-prices">
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Current</span>
+                    <span class="alert-price-value alert-price-value--current">$54.99</span>
+                  </div>
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Alert When</span>
+                    <span class="alert-price-value alert-price-value--threshold">≤ $45.00</span>
+                  </div>
+                  <span class="alert-type alert-type--below">Below</span>
+                </div>
+              </div>
+              <div class="alert-actions">
+                <div class="toggle-switch on"></div>
+                <button class="delete-btn">🗑</button>
+              </div>
+            </div>
+
+            <!-- Alert 2 — Active, Back in Stock -->
+            <div class="alert-card">
+              <div class="alert-thumb"></div>
+              <div class="alert-info">
+                <div class="alert-card-name">Black Lotus</div>
+                <div class="alert-set">Alpha · #232</div>
+                <div class="alert-prices">
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Current</span>
+                    <span class="alert-price-value alert-price-value--current">—</span>
+                  </div>
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Alert When</span>
+                    <span class="alert-price-value alert-price-value--threshold">Back in Stock</span>
+                  </div>
+                  <span class="alert-type alert-type--stock">Stock</span>
+                </div>
+              </div>
+              <div class="alert-actions">
+                <div class="toggle-switch on"></div>
+                <button class="delete-btn">🗑</button>
+              </div>
+            </div>
+
+            <!-- Alert 3 — Paused -->
+            <div class="alert-card" style="opacity:0.6;">
+              <div class="alert-thumb"></div>
+              <div class="alert-info">
+                <div class="alert-card-name">Pikachu VMAX</div>
+                <div class="alert-set">Lost Origin · #114</div>
+                <div class="alert-prices">
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Current</span>
+                    <span class="alert-price-value alert-price-value--current">$42.50</span>
+                  </div>
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Alert When</span>
+                    <span class="alert-price-value alert-price-value--threshold">≤ $35.00</span>
+                  </div>
+                  <span class="alert-type alert-type--below">Below</span>
+                </div>
+              </div>
+              <div class="alert-actions">
+                <div class="toggle-switch"></div>
+                <button class="delete-btn">🗑</button>
+              </div>
+            </div>
+
+            <!-- Alert 4 — Triggered/Price Drop -->
+            <div class="alert-card">
+              <div class="alert-thumb"></div>
+              <div class="alert-info">
+                <div class="alert-card-name">Mew ex</div>
+                <div class="alert-set">151 · #151</div>
+                <div class="alert-prices">
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Current</span>
+                    <span class="alert-price-value alert-price-value--current">$29.96</span>
+                  </div>
+                  <div class="alert-price-item">
+                    <span class="alert-price-label">Alert When</span>
+                    <span class="alert-price-value alert-price-value--threshold">-20% Drop</span>
+                  </div>
+                  <span class="alert-type alert-type--drop">Price Drop</span>
+                </div>
+              </div>
+              <div class="alert-actions">
+                <div class="toggle-switch on"></div>
+                <button class="delete-btn">🗑</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Price Alerts</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Price Alerts">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill" href="#">Orders</a>
+            <a class="user-nav-pill" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill" href="#">Addresses</a>
+            <a class="user-nav-pill" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill" href="#">Settings</a>
+          </div>
+
+          <div class="page-header">
+            <h1 class="page-title" style="font-size:24px;">Price Alerts</h1>
+            <button class="btn btn-primary" style="font-size:13px; padding:8px 18px;">+ Create</button>
+          </div>
+
+          <div class="alert-card" style="flex-wrap:wrap; padding:16px;">
+            <div class="alert-thumb" style="width:44px; height:62px;"></div>
+            <div class="alert-info" style="min-width:0;">
+              <div class="alert-card-name" style="font-size:14px;">Charizard ex</div>
+              <div class="alert-set">Obsidian Flames</div>
+              <div class="alert-prices" style="gap:12px;">
+                <div class="alert-price-item">
+                  <span class="alert-price-label">Now</span>
+                  <span class="alert-price-value alert-price-value--current" style="font-size:14px;">$54.99</span>
+                </div>
+                <div class="alert-price-item">
+                  <span class="alert-price-label">Alert</span>
+                  <span class="alert-price-value alert-price-value--threshold" style="font-size:14px;">≤ $45.00</span>
+                </div>
+                <span class="alert-type alert-type--below">Below</span>
+              </div>
+            </div>
+            <div class="alert-actions" style="margin-left:auto;">
+              <div class="toggle-switch on"></div>
+            </div>
+          </div>
+
+          <div class="alert-card" style="flex-wrap:wrap; padding:16px;">
+            <div class="alert-thumb" style="width:44px; height:62px;"></div>
+            <div class="alert-info" style="min-width:0;">
+              <div class="alert-card-name" style="font-size:14px;">Black Lotus</div>
+              <div class="alert-set">Alpha</div>
+              <div class="alert-prices" style="gap:12px;">
+                <div class="alert-price-item">
+                  <span class="alert-price-label">Now</span>
+                  <span class="alert-price-value alert-price-value--current" style="font-size:14px;">—</span>
+                </div>
+                <span class="alert-type alert-type--stock">Stock</span>
+              </div>
+            </div>
+            <div class="alert-actions" style="margin-left:auto;">
+              <div class="toggle-switch on"></div>
+            </div>
+          </div>
+
+          <div class="alert-card" style="flex-wrap:wrap; padding:16px; opacity:0.6;">
+            <div class="alert-thumb" style="width:44px; height:62px;"></div>
+            <div class="alert-info" style="min-width:0;">
+              <div class="alert-card-name" style="font-size:14px;">Pikachu VMAX</div>
+              <div class="alert-set">Lost Origin</div>
+              <div class="alert-prices" style="gap:12px;">
+                <div class="alert-price-item">
+                  <span class="alert-price-label">Now</span>
+                  <span class="alert-price-value alert-price-value--current" style="font-size:14px;">$42.50</span>
+                </div>
+                <div class="alert-price-item">
+                  <span class="alert-price-label">Alert</span>
+                  <span class="alert-price-value alert-price-value--threshold" style="font-size:14px;">≤ $35.00</span>
+                </div>
+                <span class="alert-type alert-type--below">Below</span>
+              </div>
+            </div>
+            <div class="alert-actions" style="margin-left:auto;">
+              <div class="toggle-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

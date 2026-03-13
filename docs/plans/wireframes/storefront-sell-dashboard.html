@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Seller Dashboard Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* CANVAS */
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    /* ANNOTATIONS */
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+    .annotation--breakpoint { color: var(--warning); background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+
+    /* PAGE LAYOUT */
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 36px; letter-spacing: -0.02em; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid var(--border-default); padding-bottom: 0; }
+    .tab { font-family: var(--font-heading); font-size: 14px; font-weight: 600; padding: 10px 20px; color: var(--text-tertiary); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+    .tab:hover { color: var(--text-secondary); }
+    .tab.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
+    /* STAT CARDS */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { padding: 20px 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .stat-card-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 8px; }
+    .stat-card-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; }
+    .stat-card-value--positive { color: var(--positive); }
+    .stat-card-change { font-size: 12px; color: var(--positive); margin-top: 4px; font-family: var(--font-mono); }
+
+    /* TIER PROGRESS */
+    .tier-section { margin-bottom: 32px; padding: 24px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; }
+    .tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .tier-label { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+    .tier-current { font-family: var(--font-heading); font-weight: 700; font-size: 14px; padding: 4px 14px; border-radius: 999px; }
+    .tier--bronze { color: #F59E0B; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .tier--silver { color: #94A3B8; background: rgba(148,163,184,0.12); border: 1px solid rgba(148,163,184,0.3); }
+    .tier--gold { color: #FBBF24; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3); }
+    .tier--platinum { color: #22D3EE; background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.3); }
+    .tier-bar-bg { height: 8px; background: var(--bg-surface-3); border-radius: 999px; overflow: hidden; margin-bottom: 12px; }
+    .tier-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-primary), #A78BFA); border-radius: 999px; transition: width 0.4s ease; }
+    .tier-labels { display: flex; justify-content: space-between; }
+    .tier-milestone { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+    .tier-milestone.current { color: var(--brand-primary); font-weight: 600; }
+
+    /* TABLE */
+    .table-container { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; overflow: hidden; margin-bottom: 32px; }
+    .table-header-row { display: flex; padding: 12px 24px; border-bottom: 1px solid var(--border-default); background: var(--bg-surface-2); }
+    .table-header-row span { font-family: var(--font-heading); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+    .table-row { display: flex; padding: 16px 24px; border-bottom: 1px solid var(--border-default); align-items: center; }
+    .table-row:last-child { border-bottom: none; }
+    .col-order { flex: 1.2; }
+    .col-buyer { flex: 1; }
+    .col-item { flex: 1.5; }
+    .col-amount { flex: 0.8; }
+    .col-status { flex: 0.8; }
+    .col-date { flex: 0.8; }
+    .table-cell { font-size: 14px; color: var(--text-secondary); }
+    .table-cell--strong { color: var(--text-primary); font-weight: 500; }
+
+    /* LISTING TABLE */
+    .col-thumb { flex: 0.4; }
+    .col-title { flex: 1.5; }
+    .col-condition { flex: 0.7; }
+    .col-price { flex: 0.7; }
+    .col-listing-status { flex: 0.8; }
+    .col-actions { flex: 0.8; text-align: right; }
+    .listing-thumb { width: 48px; height: 67px; background: var(--bg-surface-3); border-radius: 6px; border: 1px solid var(--border-default); }
+
+    /* BADGE */
+    .badge { font-family: var(--font-heading); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; display: inline-block; }
+    .badge--shipped { color: var(--positive); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+    .badge--pending { color: var(--warning); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .badge--active { color: var(--positive); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+    .badge--sold { color: var(--brand-primary); background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); }
+    .badge--inactive { color: var(--text-tertiary); background: var(--bg-surface-3); border: 1px solid var(--border-default); }
+
+    /* QUICK ACTIONS */
+    .quick-actions { display: flex; gap: 12px; }
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+    .btn-ghost { background: transparent; color: var(--text-tertiary); border: none; font-size: 12px; padding: 4px 8px; }
+
+    /* STATE SEPARATOR */
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); }
+    .footer-social-icon svg { width: 14px; height: 14px; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE */
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .page-title { font-size: 28px; }
+    .mobile-frame .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .mobile-frame .stat-card { padding: 16px; }
+    .mobile-frame .stat-card-value { font-size: 22px; }
+    .mobile-frame .tabs { overflow-x: auto; gap: 0; }
+    .mobile-frame .tab { font-size: 13px; padding: 8px 14px; white-space: nowrap; }
+    .mobile-frame .table-container { overflow-x: auto; }
+    .mobile-frame .table-header-row, .mobile-frame .table-row { min-width: 600px; }
+    .mobile-frame .quick-actions { flex-wrap: wrap; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .footer-copyright { margin-top: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP — Overview Tab ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px &mdash; Overview Tab</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Sell Dashboard — Overview">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Sell', annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content" data-component="ConsumerSellerDashboard">
+        <div class="page-header">
+          <div>
+            <span class="annotation">&lt;ConsumerSellerDashboard&gt;</span>
+            <h1 class="page-title">Seller Dashboard</h1>
+          </div>
+          <div class="quick-actions">
+            <a href="#" class="btn btn-primary">+ List a Card</a>
+            <a href="#" class="btn btn-outline">View Storefront</a>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <button class="tab active">Overview</button>
+          <button class="tab">Listings</button>
+          <button class="tab">Sales</button>
+          <button class="tab">Profile</button>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-label">Active Listings</div>
+            <div class="stat-card-value">24</div>
+            <div class="stat-card-change">+3 this week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Total Sales</div>
+            <div class="stat-card-value">156</div>
+            <div class="stat-card-change">+12 this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Revenue</div>
+            <div class="stat-card-value stat-card-value--positive">$4,280</div>
+            <div class="stat-card-change">+18% vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Avg Rating</div>
+            <div class="stat-card-value">4.8 &#9733;</div>
+            <div class="stat-card-change">from 89 reviews</div>
+          </div>
+        </div>
+
+        <!-- TIER PROGRESS -->
+        <div class="tier-section">
+          <div class="tier-header">
+            <span class="tier-label">Seller Tier Progress</span>
+            <span class="tier-current tier--silver">Silver</span>
+          </div>
+          <div class="tier-bar-bg">
+            <div class="tier-bar-fill" style="width: 62%;"></div>
+          </div>
+          <div class="tier-labels">
+            <span class="tier-milestone">Bronze</span>
+            <span class="tier-milestone current">Silver &#10003;</span>
+            <span class="tier-milestone">Gold — 38 pts away</span>
+            <span class="tier-milestone">Platinum</span>
+          </div>
+        </div>
+
+        <!-- RECENT ORDERS TABLE -->
+        <div class="section-label" style="font-family:var(--font-heading);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:16px;">
+          Recent Orders
+          <span class="annotation annotation--api">GET /api/seller/orders</span>
+        </div>
+        <div class="table-container">
+          <div class="table-header-row">
+            <span class="col-order">Order</span>
+            <span class="col-buyer">Buyer</span>
+            <span class="col-item">Item</span>
+            <span class="col-amount">Amount</span>
+            <span class="col-status">Status</span>
+            <span class="col-date">Date</span>
+          </div>
+          <div class="table-row">
+            <span class="col-order table-cell table-cell--strong">#SD-1842</span>
+            <span class="col-buyer table-cell">CardMaster99</span>
+            <span class="col-item table-cell table-cell--strong">Ragavan, Nimble Pilferer</span>
+            <span class="col-amount table-cell">$58.99</span>
+            <span class="col-status"><span class="badge badge--shipped">Shipped</span></span>
+            <span class="col-date table-cell">Mar 12</span>
+          </div>
+          <div class="table-row">
+            <span class="col-order table-cell table-cell--strong">#SD-1838</span>
+            <span class="col-buyer table-cell">DeckBrew</span>
+            <span class="col-item table-cell table-cell--strong">Charizard ex</span>
+            <span class="col-amount table-cell">$42.50</span>
+            <span class="col-status"><span class="badge badge--pending">Pending</span></span>
+            <span class="col-date table-cell">Mar 11</span>
+          </div>
+          <div class="table-row">
+            <span class="col-order table-cell table-cell--strong">#SD-1835</span>
+            <span class="col-buyer table-cell">NimblePilfer</span>
+            <span class="col-item table-cell table-cell--strong">Ash Blossom &amp; Joyous Spring</span>
+            <span class="col-amount table-cell">$14.75</span>
+            <span class="col-status"><span class="badge badge--shipped">Shipped</span></span>
+            <span class="col-date table-cell">Mar 10</span>
+          </div>
+          <div class="table-row">
+            <span class="col-order table-cell table-cell--strong">#SD-1831</span>
+            <span class="col-buyer table-cell">StrawHatTCG</span>
+            <span class="col-item table-cell table-cell--strong">Monkey D. Luffy (Leader)</span>
+            <span class="col-amount table-cell">$31.00</span>
+            <span class="col-status"><span class="badge badge--shipped">Shipped</span></span>
+            <span class="col-date table-cell">Mar 9</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+          <div class="footer-social">
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== STATE SEPARATOR ===== -->
+  <div style="width:100%; flex-basis:100%;">
+    <div class="state-separator">
+      <div class="state-separator-line"></div>
+      <div class="state-separator-label">STATE 2 — Listings Tab</div>
+      <div class="state-separator-line"></div>
+    </div>
+  </div>
+
+  <!-- ===== DESKTOP — Listings Tab ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px &mdash; Listings Tab</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Sell Dashboard — Listings">
+
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2', activeLink: 'Sell' });</script>
+
+      <div class="page-content" data-component="ConsumerSellerDashboard">
+        <div class="page-header">
+          <h1 class="page-title">Seller Dashboard</h1>
+          <div class="quick-actions">
+            <a href="#" class="btn btn-primary">+ List a Card</a>
+            <a href="#" class="btn btn-outline">View Storefront</a>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab">Overview</button>
+          <button class="tab active">Listings</button>
+          <button class="tab">Sales</button>
+          <button class="tab">Profile</button>
+        </div>
+
+        <!-- LISTINGS TABLE -->
+        <div class="table-container">
+          <div class="table-header-row">
+            <span class="col-thumb">&nbsp;</span>
+            <span class="col-title">Card</span>
+            <span class="col-condition">Condition</span>
+            <span class="col-price">Price</span>
+            <span class="col-listing-status">Status</span>
+            <span class="col-actions">Actions</span>
+          </div>
+          <div class="table-row">
+            <span class="col-thumb"><div class="listing-thumb"></div></span>
+            <span class="col-title table-cell table-cell--strong">Ragavan, Nimble Pilferer</span>
+            <span class="col-condition table-cell">NM</span>
+            <span class="col-price table-cell">$58.99</span>
+            <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
+            <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
+          </div>
+          <div class="table-row">
+            <span class="col-thumb"><div class="listing-thumb"></div></span>
+            <span class="col-title table-cell table-cell--strong">Charizard ex</span>
+            <span class="col-condition table-cell">LP</span>
+            <span class="col-price table-cell">$42.50</span>
+            <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
+            <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
+          </div>
+          <div class="table-row">
+            <span class="col-thumb"><div class="listing-thumb"></div></span>
+            <span class="col-title table-cell table-cell--strong">The One Ring</span>
+            <span class="col-condition table-cell">NM</span>
+            <span class="col-price table-cell">$74.99</span>
+            <span class="col-listing-status"><span class="badge badge--sold">Sold</span></span>
+            <span class="col-actions"><button class="btn btn-sm btn-outline">Relist</button></span>
+          </div>
+          <div class="table-row">
+            <span class="col-thumb"><div class="listing-thumb"></div></span>
+            <span class="col-title table-cell table-cell--strong">Ash Blossom &amp; Joyous Spring</span>
+            <span class="col-condition table-cell">MP</span>
+            <span class="col-price table-cell">$12.00</span>
+            <span class="col-listing-status"><span class="badge badge--inactive">Inactive</span></span>
+            <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Activate</button></span>
+          </div>
+          <div class="table-row">
+            <span class="col-thumb"><div class="listing-thumb"></div></span>
+            <span class="col-title table-cell table-cell--strong">Pikachu VMAX</span>
+            <span class="col-condition table-cell">NM</span>
+            <span class="col-price table-cell">$22.30</span>
+            <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
+            <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+          <div class="footer-social">
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE — Overview Tab ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile &mdash; 390px &mdash; Overview</div>
+    <div class="mobile-frame" data-frame-name="Mobile — Sell Dashboard — Overview">
+      <div class="mobile-inner">
+
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, activeLink: 'Sell' });</script>
+
+        <div class="page-content" data-component="ConsumerSellerDashboard">
+          <div class="page-header" style="flex-direction:column;align-items:flex-start;gap:12px;">
+            <h1 class="page-title">Seller Dashboard</h1>
+            <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">+ List a Card</a>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active">Overview</button>
+            <button class="tab">Listings</button>
+            <button class="tab">Sales</button>
+            <button class="tab">Profile</button>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">Active Listings</div>
+              <div class="stat-card-value">24</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Total Sales</div>
+              <div class="stat-card-value">156</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Revenue</div>
+              <div class="stat-card-value stat-card-value--positive">$4,280</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Avg Rating</div>
+              <div class="stat-card-value">4.8 &#9733;</div>
+            </div>
+          </div>
+
+          <div class="tier-section">
+            <div class="tier-header">
+              <span class="tier-label">Tier Progress</span>
+              <span class="tier-current tier--silver">Silver</span>
+            </div>
+            <div class="tier-bar-bg">
+              <div class="tier-bar-fill" style="width: 62%;"></div>
+            </div>
+            <div class="tier-labels">
+              <span class="tier-milestone">Bronze</span>
+              <span class="tier-milestone current">Silver</span>
+              <span class="tier-milestone">Gold</span>
+              <span class="tier-milestone">Plat</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header-row">
+              <span class="col-order">Order</span>
+              <span class="col-item">Item</span>
+              <span class="col-amount">Amt</span>
+              <span class="col-status">Status</span>
+            </div>
+            <div class="table-row">
+              <span class="col-order table-cell table-cell--strong">#1842</span>
+              <span class="col-item table-cell table-cell--strong">Ragavan</span>
+              <span class="col-amount table-cell">$58.99</span>
+              <span class="col-status"><span class="badge badge--shipped">Shipped</span></span>
+            </div>
+            <div class="table-row">
+              <span class="col-order table-cell table-cell--strong">#1838</span>
+              <span class="col-item table-cell table-cell--strong">Charizard ex</span>
+              <span class="col-amount table-cell">$42.50</span>
+              <span class="col-status"><span class="badge badge--pending">Pending</span></span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

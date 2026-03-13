@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Collections Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--component { color: var(--brand-secondary); background: rgba(255,120,73,0.08); border-color: rgba(255,120,73,0.3); }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+
+    /* COLLECTION HEADER */
+    .collection-banner { width: 100%; height: 200px; background: linear-gradient(135deg, var(--bg-surface-2), var(--bg-surface-3)); border-radius: 16px; margin-bottom: 24px; position: relative; overflow: hidden; border: 1px solid var(--border-default); }
+    .collection-banner::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(139,92,246,0.15), transparent); }
+    .collection-info { margin-bottom: 32px; }
+    .collection-title { font-family: var(--font-display); font-weight: 700; font-size: 36px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
+    .collection-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.5; max-width: 600px; margin-bottom: 8px; }
+    .collection-count { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); }
+
+    /* BROWSE LAYOUT */
+    .browse-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; }
+    .sidebar { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; height: min-content; }
+    .sidebar-title { font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+    .filter-group { margin-bottom: 20px; }
+    .filter-label { font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+    .filter-option { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; color: var(--text-tertiary); cursor: pointer; }
+    .filter-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border-strong); background: var(--bg-surface-2); flex-shrink: 0; }
+    .filter-checkbox.checked { background: var(--brand-primary); border-color: var(--brand-primary); }
+    .filter-range { display: flex; align-items: center; gap: 8px; }
+    .filter-range-input { width: 80px; height: 36px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 8px; padding: 0 10px; font-size: 13px; color: var(--text-primary); text-align: center; }
+    .filter-range-sep { color: var(--text-tertiary); font-size: 12px; }
+    .filter-select { width: 100%; height: 36px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 8px; padding: 0 10px; font-size: 13px; color: var(--text-primary); }
+
+    /* PRODUCT GRID */
+    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .product-card { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+    .product-card:hover { border-color: var(--brand-primary); }
+    .product-img { width: 100%; aspect-ratio: 3/4; background: var(--bg-surface-3); }
+    .product-body { padding: 14px; }
+    .product-name { font-family: var(--font-heading); font-size: 14px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+    .product-price { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--brand-primary); }
+    .product-condition { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .page-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--bg-surface-1); color: var(--text-tertiary); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .page-btn.active { background: var(--brand-primary); color: white; border-color: var(--brand-primary); }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .collection-banner { height: 140px; border-radius: 12px; }
+    .mobile-frame .collection-title { font-size: 28px; }
+    .mobile-frame .browse-layout { grid-template-columns: 1fr; gap: 16px; }
+    .mobile-frame .sidebar { display: none; }
+    .mobile-filter-btn { display: none; }
+    .mobile-frame .mobile-filter-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 40px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 10px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 16px; cursor: pointer; }
+    .mobile-frame .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mobile-frame .product-name { font-size: 13px; }
+    .mobile-frame .product-price { font-size: 14px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Collection</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Collection">
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({});</script>
+
+      <div class="page-content">
+        <div class="collection-banner" data-component="CollectionHeader"></div>
+        <div class="collection-info">
+          <div class="collection-title">Vintage Staples</div>
+          <div class="collection-desc">A curated collection of the most iconic and sought-after cards from the early days of trading card games. Essential pieces for any serious collector.</div>
+          <div class="collection-count">248 items in this collection</div>
+          <div style="margin-top:8px;">
+            <span class="annotation--component annotation">CollectionHeader</span>
+            <span class="annotation--component annotation">ProductListing</span>
+          </div>
+        </div>
+
+        <div class="browse-layout" data-component="ProductListing">
+          <div class="sidebar">
+            <div class="sidebar-title">Filters</div>
+            <div class="filter-group">
+              <div class="filter-label">Game</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Magic: The Gathering</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Pokémon</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Yu-Gi-Oh!</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> One Piece</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Price Range</div>
+              <div class="filter-range">
+                <input class="filter-range-input" value="$0" readonly />
+                <span class="filter-range-sep">to</span>
+                <input class="filter-range-input" value="$1000" readonly />
+              </div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Condition</div>
+              <div class="filter-option"><div class="filter-checkbox checked"></div> Near Mint</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Lightly Played</div>
+              <div class="filter-option"><div class="filter-checkbox"></div> Moderately Played</div>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Sort By</div>
+              <select class="filter-select"><option>Price: High to Low</option></select>
+            </div>
+          </div>
+
+          <div>
+            <div class="product-grid">
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Alpha)</div><div class="product-meta">MTG · Power Nine</div><div class="product-price">$28,500.00</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Ancestral Recall</div><div class="product-meta">MTG · Power Nine</div><div class="product-price">$6,800.00</div><div class="product-condition">Lightly Played</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">1st Ed Charizard Holo</div><div class="product-meta">Pokémon · Base Set</div><div class="product-price">$4,200.00</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Time Walk</div><div class="product-meta">MTG · Power Nine</div><div class="product-price">$3,900.00</div><div class="product-condition">Near Mint</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Mox Sapphire</div><div class="product-meta">MTG · Power Nine</div><div class="product-price">$3,100.00</div><div class="product-condition">Moderately Played</div></div></div>
+              <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Dark Magician PSA 10</div><div class="product-meta">YGO · LOB</div><div class="product-price">$1,450.00</div><div class="product-condition">Gem Mint</div></div></div>
+            </div>
+            <div class="pagination">
+              <div class="page-btn">‹</div>
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn">3</div>
+              <div class="page-btn">…</div>
+              <div class="page-btn">8</div>
+              <div class="page-btn">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Collection</div>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div id="sd-nav-coll-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-coll-m', mobile: true });</script>
+
+        <div class="page-content">
+          <div class="collection-banner"></div>
+          <div class="collection-info">
+            <div class="collection-title">Vintage Staples</div>
+            <div class="collection-desc">Iconic and sought-after cards from the early days of TCGs.</div>
+            <div class="collection-count">248 items</div>
+          </div>
+
+          <button class="mobile-filter-btn">☰ Filters & Sort</button>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Black Lotus (Alpha)</div><div class="product-meta">MTG</div><div class="product-price">$28,500.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Ancestral Recall</div><div class="product-meta">MTG</div><div class="product-price">$6,800.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">1st Ed Charizard</div><div class="product-meta">Pokémon</div><div class="product-price">$4,200.00</div></div></div>
+            <div class="product-card"><div class="product-img"></div><div class="product-body"><div class="product-name">Time Walk</div><div class="product-meta">MTG</div><div class="product-price">$3,900.00</div></div></div>
+          </div>
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Seller Upgrade Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .annotation--api { color: var(--positive); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+
+    /* HERO CTA */
+    .upgrade-hero { position: relative; padding: 80px 48px 64px; text-align: center; overflow: hidden; }
+    .upgrade-hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 1000px; height: 600px; background: radial-gradient(ellipse, rgba(139,92,246,0.15) 0%, rgba(255,120,73,0.06) 40%, transparent 70%); pointer-events: none; }
+    .upgrade-hero-inner { position: relative; max-width: 720px; margin: 0 auto; }
+    .upgrade-hero h1 { font-family: var(--font-display); font-weight: 800; font-size: 56px; line-height: 1; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .upgrade-hero h1 span { background: linear-gradient(135deg, #8B5CF6, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .upgrade-hero-sub { font-size: 18px; color: var(--text-secondary); line-height: 1.6; max-width: 520px; margin: 0 auto 40px; }
+
+    /* BENEFITS GRID */
+    .benefits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 720px; margin: 0 auto 48px; }
+    .benefit-card { padding: 28px 24px; background: rgba(24,22,42,0.5); backdrop-filter: blur(8px); border: 1px solid var(--border-default); border-radius: 16px; text-align: left; }
+    .benefit-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(139,92,246,0.10); border: 1px solid rgba(139,92,246,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; color: var(--brand-primary); }
+    .benefit-icon svg { width: 22px; height: 22px; }
+    .benefit-title { font-family: var(--font-heading); font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+    .benefit-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 15px; padding: 14px 32px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 0 24px rgba(139,92,246,0.25); }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+
+    /* UPGRADE FORM STATE */
+    .upgrade-form-page { padding: 48px; display: flex; justify-content: center; }
+    .upgrade-form-container { max-width: 560px; width: 100%; }
+    .upgrade-form-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; margin-bottom: 8px; }
+    .upgrade-form-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 12px 16px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; color: var(--text-primary); font-family: var(--font-body); font-size: 14px; }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-select { width: 100%; padding: 12px 16px; background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; color: var(--text-primary); font-family: var(--font-body); font-size: 14px; appearance: none; }
+
+    .checkbox-row { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 12px; margin-bottom: 24px; }
+    .checkbox-box { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border-strong); flex-shrink: 0; margin-top: 2px; }
+    .checkbox-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .checkbox-text a { color: var(--brand-primary); text-decoration: underline; }
+
+    /* STATE SEPARATOR */
+    .state-separator { display: flex; align-items: center; gap: 16px; margin: 48px 0; padding: 0 48px; }
+    .state-separator-line { flex: 1; height: 1px; border-top: 2px dashed var(--border-strong); }
+    .state-separator-label { font-family: var(--font-mono); font-size: 12px; color: var(--brand-secondary); background: rgba(255,120,73,0.08); border: 1px dashed rgba(255,120,73,0.3); padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+
+    /* FOOTER */
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); }
+    .footer-social-icon svg { width: 14px; height: 14px; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    /* MOBILE */
+    .mobile-frame .upgrade-hero { padding: 48px 20px 40px; }
+    .mobile-frame .upgrade-hero h1 { font-size: 38px; }
+    .mobile-frame .upgrade-hero-sub { font-size: 15px; margin-bottom: 28px; }
+    .mobile-frame .benefits-grid { grid-template-columns: 1fr; gap: 12px; }
+    .mobile-frame .benefit-card { padding: 20px; }
+    .mobile-frame .upgrade-form-page { padding: 24px 20px; }
+    .mobile-frame .upgrade-form-title { font-size: 26px; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .footer-copyright { margin-top: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP — Benefits CTA ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px &mdash; Benefits CTA</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Upgrade — Benefits">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ activeLink: 'Sell', annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <section class="upgrade-hero" data-component="CustomerToSellerUpgrade">
+        <div class="upgrade-hero-inner">
+          <span class="annotation">&lt;CustomerToSellerUpgrade&gt; — State 1: Benefits CTA</span>
+          <h1>Start Selling on <span>SideDecked</span></h1>
+          <p class="upgrade-hero-sub">Turn your collection into cash. List cards in minutes, get paid fast, and build your reputation as a trusted seller.</p>
+
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              </div>
+              <div class="benefit-title">No Listing Fees</div>
+              <div class="benefit-desc">List as many cards as you want — we only take a small commission when you sell.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="benefit-title">Instant Payouts</div>
+              <div class="benefit-desc">Get paid directly to your bank account via Stripe Connect. No waiting, no hassle.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+              </div>
+              <div class="benefit-title">Built-in Buyer Protection</div>
+              <div class="benefit-desc">Every transaction is covered. Buyers trust SideDecked sellers, which means more sales for you.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              </div>
+              <div class="benefit-title">Market Pricing Tools</div>
+              <div class="benefit-desc">See real-time market data, price competitively, and track your performance with analytics.</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="font-size:17px;padding:16px 40px;">Become a Seller &rarr;</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+          <div class="footer-social">
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- STATE SEPARATOR -->
+  <div style="width:100%;flex-basis:100%;"><div class="state-separator"><div class="state-separator-line"></div><div class="state-separator-label">STATE 2 — Upgrade Form</div><div class="state-separator-line"></div></div></div>
+
+  <!-- ===== DESKTOP — Upgrade Form ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop &mdash; 1440px &mdash; Upgrade Form</div>
+    <div class="desktop-frame" data-frame-name="Desktop — Upgrade — Form">
+
+      <div id="sd-nav-root2"></div>
+      <script>SdNav.init({ target: '#sd-nav-root2', activeLink: 'Sell' });</script>
+
+      <div class="upgrade-form-page" data-component="CustomerToSellerUpgrade">
+        <div class="upgrade-form-container">
+          <span class="annotation">&lt;CustomerToSellerUpgrade&gt; — State 2: Upgrade Form</span>
+          <h2 class="upgrade-form-title">Complete Your Seller Setup</h2>
+          <p class="upgrade-form-desc">Fill in a few details to start listing cards. You can update these anytime from your seller profile.</p>
+
+          <div class="form-group">
+            <label class="form-label">Display Name / Business Name</label>
+            <input class="form-input" type="text" placeholder="e.g. CardKingdom, TopDeckTrades..." readonly />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Short Description</label>
+            <textarea class="form-input form-textarea" placeholder="Tell buyers about your store — what games you specialize in, how you ship, etc." readonly></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payout Method</label>
+            <select class="form-select" disabled>
+              <option>Stripe Connect (Bank Transfer)</option>
+            </select>
+            <span class="annotation annotation--api" style="margin-top:8px;">POST /api/seller/stripe-connect</span>
+          </div>
+
+          <div class="checkbox-row">
+            <div class="checkbox-box"></div>
+            <div class="checkbox-text">I agree to the <a href="#">Seller Terms of Service</a> and <a href="#">Marketplace Policies</a>. I understand that SideDecked charges a commission on each sale.</div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:16px;">Complete Setup &rarr;</button>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+          <div class="footer-social">
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+            <div class="footer-social-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE — Benefits CTA ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile &mdash; 390px &mdash; Benefits CTA</div>
+    <div class="mobile-frame" data-frame-name="Mobile — Upgrade — Benefits">
+      <div class="mobile-inner">
+        <div id="sd-nav-mobile"></div>
+        <script>SdNav.init({ target: '#sd-nav-mobile', mobile: true, activeLink: 'Sell' });</script>
+
+        <section class="upgrade-hero" data-component="CustomerToSellerUpgrade">
+          <div class="upgrade-hero-inner">
+            <h1>Start Selling on <span>SideDecked</span></h1>
+            <p class="upgrade-hero-sub">Turn your collection into cash. List in minutes, get paid fast.</p>
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                <div class="benefit-title">No Listing Fees</div>
+                <div class="benefit-desc">List freely — pay only when you sell.</div>
+              </div>
+              <div class="benefit-card">
+                <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <div class="benefit-title">Instant Payouts</div>
+                <div class="benefit-desc">Direct to your bank via Stripe Connect.</div>
+              </div>
+              <div class="benefit-card">
+                <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg></div>
+                <div class="benefit-title">Buyer Protection</div>
+                <div class="benefit-desc">Every transaction is covered.</div>
+              </div>
+              <div class="benefit-card">
+                <div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+                <div class="benefit-title">Pricing Tools</div>
+                <div class="benefit-desc">Real-time market data and analytics.</div>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">Become a Seller &rarr;</button>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links"><a href="#">About</a><a href="#">FAQ</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright">&copy; 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

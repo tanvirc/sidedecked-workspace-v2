@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — User Settings Wireframe</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #060608; font-family: var(--font-body); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+    .canvas { display: flex; gap: 48px; padding: 48px; align-items: flex-start; justify-content: center; min-height: 100vh; flex-wrap: wrap; }
+    .frame-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .frame-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); letter-spacing: 0.05em; background: var(--bg-surface-2); padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border-default); }
+    .desktop-frame { width: 1440px; background: var(--bg-base); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-default); box-shadow: 0 0 80px rgba(139,92,246,0.06); }
+    .mobile-frame { width: 390px; background: var(--bg-base); border-radius: 40px; overflow: hidden; border: 3px solid var(--bg-surface-3); box-shadow: 0 0 60px rgba(139,92,246,0.06); position: relative; }
+    .mobile-frame::before { content: ''; display: block; width: 120px; height: 28px; background: var(--bg-base); border-radius: 0 0 20px 20px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 100; border: 3px solid var(--bg-surface-3); border-top: none; }
+    .mobile-inner { overflow: hidden; border-radius: 37px; }
+    .annotation { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; pointer-events: none; }
+    .page-content { padding: 48px; max-width: 1344px; margin: 0 auto; }
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .user-nav { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 8px 0; height: min-content; }
+    .user-nav-item { display: block; padding: 10px 24px; font-family: var(--font-heading); font-size: 14px; font-weight: 500; color: var(--text-tertiary); text-decoration: none; cursor: pointer; }
+    .user-nav-item.active { color: var(--brand-primary); background: rgba(139,92,246,0.08); font-weight: 600; }
+    .user-nav-separator { height: 1px; background: var(--border-default); margin: 8px 0; }
+    .user-nav-mobile { display: none; overflow-x: auto; gap: 8px; padding-bottom: 16px; margin-bottom: 16px; scrollbar-width: none; }
+    .user-nav-mobile::-webkit-scrollbar { display: none; }
+    .user-nav-pill { flex-shrink: 0; padding: 8px 18px; font-family: var(--font-heading); font-size: 13px; font-weight: 500; color: var(--text-tertiary); background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+    .user-nav-pill.active { color: var(--brand-primary); background: rgba(139,92,246,0.12); border-color: var(--brand-primary); font-weight: 600; }
+    .page-title { font-family: var(--font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 24px; }
+
+    /* SETTINGS SECTIONS */
+    .settings-section { background: var(--bg-surface-1); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+    .settings-section-title { font-family: var(--font-heading); font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .form-input { background: var(--bg-surface-2); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 14px; color: var(--text-primary); font-size: 14px; font-family: var(--font-body); }
+    .form-input::placeholder { color: var(--text-tertiary); }
+    .avatar-upload { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+    .avatar-circle { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-surface-3); border: 2px solid var(--border-default); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 24px; flex-shrink: 0; }
+    .avatar-actions { display: flex; flex-direction: column; gap: 4px; }
+    .btn { font-family: var(--font-heading); font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-primary { background: var(--brand-primary); color: white; }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-default); }
+    .btn-sm { font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+
+    /* TOGGLE */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-default); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 14px; color: var(--text-secondary); }
+    .toggle-switch { width: 40px; height: 22px; border-radius: 11px; background: var(--bg-surface-3); position: relative; cursor: pointer; flex-shrink: 0; }
+    .toggle-switch.on { background: var(--brand-primary); }
+    .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform 0.15s; }
+    .toggle-switch.on::after { transform: translateX(18px); }
+
+    /* GAME BADGES */
+    .game-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .game-badge { font-family: var(--font-heading); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 999px; cursor: pointer; border: 1px solid; }
+    .game-badge--mtg { color: var(--game-mtg); background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.3); }
+    .game-badge--mtg.active { background: rgba(167,139,250,0.25); border-color: var(--game-mtg); }
+    .game-badge--pokemon { color: var(--game-pokemon); background: rgba(252,211,77,0.12); border-color: rgba(252,211,77,0.3); }
+    .game-badge--pokemon.active { background: rgba(252,211,77,0.25); border-color: var(--game-pokemon); }
+    .game-badge--ygo { color: var(--game-ygo); background: rgba(96,165,250,0.12); border-color: rgba(96,165,250,0.3); }
+    .game-badge--ygo.active { background: rgba(96,165,250,0.25); border-color: var(--game-ygo); }
+    .game-badge--op { color: var(--game-op); background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.3); }
+    .game-badge--op.active { background: rgba(52,211,153,0.25); border-color: var(--game-op); }
+
+    .footer { padding: 48px 48px 32px; border-top: 1px solid var(--border-default); }
+    .footer-inner { max-width: 1344px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 18px; background: linear-gradient(135deg, var(--brand-primary), #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; }
+    .footer-copyright { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-tertiary); max-width: 1344px; margin-left: auto; margin-right: auto; }
+
+    .mobile-frame .page-content { padding: 24px 20px; }
+    .mobile-frame .user-layout { grid-template-columns: 1fr; gap: 0; }
+    .mobile-frame .user-nav { display: none; }
+    .mobile-frame .user-nav-mobile { display: flex; }
+    .mobile-frame .page-title { font-size: 24px; }
+    .mobile-frame .form-row { grid-template-columns: 1fr; }
+    .mobile-frame .footer { padding: 32px 20px 24px; }
+    .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    .mobile-frame .annotation { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Desktop — 1440px — Settings</div>
+    <div class="desktop-frame" data-frame-name="Desktop — User Settings">
+
+      <div id="sd-nav-root"></div>
+      <script src="sd-nav.js"></script>
+      <script>SdNav.init({ annotations: [{ text: '&lt;ModernHeader&gt;', position: 'left' }] });</script>
+
+      <div class="page-content">
+        <div class="user-layout" data-component="UserNavigation">
+          <nav class="user-nav">
+            <span class="annotation" style="margin: 8px 16px; display: block;">&lt;UserNavigation&gt;</span>
+            <a class="user-nav-item" href="#">Orders</a>
+            <a class="user-nav-item" href="#">Messages</a>
+            <a class="user-nav-item" href="#">Returns</a>
+            <a class="user-nav-item" href="#">Addresses</a>
+            <a class="user-nav-item" href="#">Reviews</a>
+            <a class="user-nav-item" href="#">Wishlist</a>
+            <div class="user-nav-separator"></div>
+            <a class="user-nav-item active" href="#">Settings</a>
+          </nav>
+
+          <div>
+            <h1 class="page-title">Settings</h1>
+
+            <!-- Section 1: Profile Details -->
+            <div class="settings-section" data-component="ProfileDetails">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;ProfileDetails&gt;</span>
+                Profile Details
+              </div>
+              <div class="avatar-upload">
+                <div class="avatar-circle">AJ</div>
+                <div class="avatar-actions">
+                  <button class="btn btn-outline btn-sm">Upload Photo</button>
+                  <span style="font-size:11px; color:var(--text-tertiary);">JPG, PNG — max 2 MB</span>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Display Name</label>
+                  <input class="form-input" type="text" value="Alex Johnson" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input class="form-input" type="email" value="alex@example.com" />
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm">Save Changes</button>
+            </div>
+
+            <!-- Section 2: Password -->
+            <div class="settings-section" data-component="ProfilePassword">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;ProfilePassword&gt;</span>
+                Password
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Current Password</label>
+                  <input class="form-input" type="password" placeholder="••••••••" />
+                </div>
+                <div class="form-group" style="visibility:hidden;"><!-- spacer --></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">New Password</label>
+                  <input class="form-input" type="password" placeholder="••••••••" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confirm New Password</label>
+                  <input class="form-input" type="password" placeholder="••••••••" />
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm">Update Password</button>
+            </div>
+
+            <!-- Section 3: Public Profile -->
+            <div class="settings-section" data-component="PublicProfile">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;PublicProfile&gt;</span>
+                Public Profile
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <label class="form-label">Bio</label>
+                <textarea class="form-input" rows="3" style="resize:vertical;" placeholder="Tell other collectors about yourself...">Collector since 2018. Mainly Pokémon and MTG.</textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Twitter / X</label>
+                  <input class="form-input" type="text" placeholder="@handle" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Discord</label>
+                  <input class="form-input" type="text" placeholder="username#1234" />
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm">Save Profile</button>
+            </div>
+
+            <!-- Section 4: User Preferences -->
+            <div class="settings-section" data-component="UserPreferences">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;UserPreferences&gt;</span>
+                User Preferences
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Theme</label>
+                  <select class="form-input">
+                    <option>Dark (Default)</option>
+                    <option>Light</option>
+                    <option>System</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Currency</label>
+                  <select class="form-input">
+                    <option>USD — US Dollar</option>
+                    <option>AUD — Australian Dollar</option>
+                    <option>EUR — Euro</option>
+                    <option>GBP — British Pound</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Language</label>
+                  <select class="form-input">
+                    <option>English</option>
+                    <option>Japanese</option>
+                    <option>German</option>
+                  </select>
+                </div>
+                <div class="form-group" style="visibility:hidden;"></div>
+              </div>
+              <button class="btn btn-primary btn-sm">Save Preferences</button>
+            </div>
+
+            <!-- Section 5: Game Preferences -->
+            <div class="settings-section" data-component="GamePreferences">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;GamePreferences&gt;</span>
+                Game Preferences
+              </div>
+              <p style="font-size:13px; color:var(--text-secondary); margin-bottom:8px;">Select the games you collect or play. This personalizes your browse experience.</p>
+              <div class="game-badges">
+                <span class="game-badge game-badge--mtg active">Magic: The Gathering</span>
+                <span class="game-badge game-badge--pokemon active">Pokémon TCG</span>
+                <span class="game-badge game-badge--ygo">Yu-Gi-Oh!</span>
+                <span class="game-badge game-badge--op">One Piece TCG</span>
+              </div>
+            </div>
+
+            <!-- Section 6: Notification Preferences -->
+            <div class="settings-section" data-component="NotificationPreferences">
+              <div class="settings-section-title">
+                <span class="annotation">&lt;NotificationPreferences&gt;</span>
+                Notification Preferences
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; gap:0; font-size:12px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; padding:0 0 8px; border-bottom:1px solid var(--border-default);">
+                <span>Category</span>
+                <span style="text-align:center; width:60px;">Email</span>
+                <span style="text-align:center; width:60px;">Push</span>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-default);">
+                <span style="font-size:14px; color:var(--text-secondary);">Order Updates</span>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-default);">
+                <span style="font-size:14px; color:var(--text-secondary);">Price Alerts</span>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch" style="margin:0 auto;"></div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-default);">
+                <span style="font-size:14px; color:var(--text-secondary);">Messages</span>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-default);">
+                <span style="font-size:14px; color:var(--text-secondary);">Promotions</span>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch" style="margin:0 auto;"></div></div>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch" style="margin:0 auto;"></div></div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr auto auto; align-items:center; padding:12px 0;">
+                <span style="font-size:14px; color:var(--text-secondary);">Seller Activity</span>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch on" style="margin:0 auto;"></div></div>
+                <div style="text-align:center; width:60px;"><div class="toggle-switch" style="margin:0 auto;"></div></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div class="footer-logo">SideDecked</div>
+          <div class="footer-links"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+        </div>
+        <div class="footer-copyright">© 2026 SideDecked. All rights reserved.</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Mobile — 390px — Settings</div>
+    <div class="mobile-frame" data-frame-name="Mobile — User Settings">
+      <div class="mobile-inner">
+        <div id="sd-nav-root-m"></div>
+        <script>SdNav.init({ target: '#sd-nav-root-m', variant: 'mobile', annotations: [] });</script>
+
+        <div class="page-content">
+          <div class="user-nav-mobile" style="display:flex;" data-component="UserNavigation">
+            <a class="user-nav-pill" href="#">Orders</a>
+            <a class="user-nav-pill" href="#">Messages</a>
+            <a class="user-nav-pill" href="#">Returns</a>
+            <a class="user-nav-pill" href="#">Addresses</a>
+            <a class="user-nav-pill" href="#">Reviews</a>
+            <a class="user-nav-pill" href="#">Wishlist</a>
+            <a class="user-nav-pill active" href="#">Settings</a>
+          </div>
+
+          <h1 class="page-title" style="font-size:24px;">Settings</h1>
+
+          <div class="settings-section">
+            <div class="settings-section-title">Profile Details</div>
+            <div class="avatar-upload">
+              <div class="avatar-circle" style="width:48px; height:48px; font-size:18px;">AJ</div>
+              <button class="btn btn-outline btn-sm">Upload</button>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">Display Name</label>
+              <input class="form-input" type="text" value="Alex Johnson" />
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" value="alex@example.com" />
+            </div>
+            <button class="btn btn-primary btn-sm">Save</button>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-title">Password</div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">Current Password</label>
+              <input class="form-input" type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">New Password</label>
+              <input class="form-input" type="password" placeholder="••••••••" />
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label">Confirm</label>
+              <input class="form-input" type="password" placeholder="••••••••" />
+            </div>
+            <button class="btn btn-primary btn-sm">Update</button>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-title">Game Preferences</div>
+            <div class="game-badges">
+              <span class="game-badge game-badge--mtg active">MTG</span>
+              <span class="game-badge game-badge--pokemon active">Pokémon</span>
+              <span class="game-badge game-badge--ygo">YGO</span>
+              <span class="game-badge game-badge--op">One Piece</span>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-title">Notifications</div>
+            <div class="toggle-row">
+              <span class="toggle-label">Order Updates</span>
+              <div class="toggle-switch on"></div>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Price Alerts</span>
+              <div class="toggle-switch on"></div>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Messages</span>
+              <div class="toggle-switch on"></div>
+            </div>
+            <div class="toggle-row">
+              <span class="toggle-label">Promotions</span>
+              <div class="toggle-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer" style="padding:32px 20px 24px;">
+          <div class="footer-inner" style="flex-direction:column; gap:20px; text-align:center;">
+            <div class="footer-logo">SideDecked</div>
+            <div class="footer-links" style="flex-wrap:wrap; justify-content:center; gap:16px;"><a href="#">About</a><a href="#">Help</a><a href="#">Terms</a><a href="#">Privacy</a></div>
+          </div>
+          <div class="footer-copyright" style="margin-top:16px;">© 2026 SideDecked. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
