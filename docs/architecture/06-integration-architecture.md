@@ -149,6 +149,45 @@ AlgoliaSearchResults
 - Storefront fetches counts via `fetchGameListingCounts()` with `{ next: { revalidate: 30 } }` (matches Redis TTL)
 - Cookie has no `HttpOnly` flag — intentionally client-writable
 
+### 13. Deck CRUD API — Authenticated Deck Management (Story 3-1)
+
+The `/decks` page fetches and mutates deck data through customer-backend. All routes require an authenticated session (cookie-forwarded by the storefront server component or client API calls).
+
+**Endpoints** (`customer-backend :7000`, route prefix `/api/decks`):
+
+| Method | Path | Purpose | Response |
+|---|---|---|---|
+| `GET` | `/api/decks` | Fetch all decks for the authenticated user | `{ decks: DeckDto[] }` 200 |
+| `POST` | `/api/decks` | Create a new deck | `{ deck: DeckDto }` 201 |
+| `PATCH` | `/api/decks/:id` | Rename deck or change format | `{ deck: DeckDto }` 200 |
+| `DELETE` | `/api/decks/:id` | Hard-delete a deck | 204 |
+| `POST` | `/api/decks/:id/duplicate` | Duplicate a deck (copy cards) | `{ deck: DeckDto }` 201 |
+
+**DeckDto shape** (storefront contract):
+```typescript
+interface DeckDto {
+  id: string
+  name: string           // max 100 chars
+  userId: string
+  gameId: string
+  gameCode: string       // MTG | POKEMON | YGO | ONE_PIECE
+  formatCode: string | null
+  formatId: string | null
+  cardCount: number      // computed (0 at creation)
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+}
+```
+
+**Key properties:**
+- Scope: user-scoped — `WHERE userId = :userId` enforced in every route (BR1)
+- Auth: forwarded session cookie; unauthenticated requests return 401
+- Game immutability: `gameId`/`gameCode` cannot be changed after creation (only `name`/`formatCode` patchable)
+- Soft delete is client-side only: optimistic removal on click, delayed `DELETE` fires after 5s undo window
+- Duplication: deep-copies deck cards (if any); appends "(Copy)" to name server-side
+- Storefront client: `src/lib/api/customer-backend.ts` — `getUserDecks`, `createDeck`, `patchDeck`, `deleteDeck`, `duplicateDeck`
+
 ### 3. Commerce to Customer Domain Integration
 
 #### Authentication Flow
