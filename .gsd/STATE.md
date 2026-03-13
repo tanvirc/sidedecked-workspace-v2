@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S05 — Auth, Profile & OAuth Providers
+**Active Slice:** S06 — Wireframe Generation & Figma Export
 **Phase:** planning
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Plan slice S05 (Auth, Profile & OAuth Providers).
+Plan slice S06 (Wireframe Generation & Figma Export).
