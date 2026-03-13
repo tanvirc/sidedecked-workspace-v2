@@ -55,22 +55,22 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [x] **S01: Voltage Design System Foundation** `risk:medium` `depends:[]`
+- [ ] **S01: Voltage Design System Foundation** `risk:medium` `depends:[]`
   > After this: Shared nav, footer, card display, skeleton, and price tag components render with Voltage tokens on any page. Last alert() replaced with sonner toast. Typography and token consistency verified.
 
-- [x] **S02: Card Browse, Detail & Search — Pixel Perfect** `risk:high` `depends:[S01]`
+- [ ] **S02: Card Browse, Detail & Search — Pixel Perfect** `risk:high` `depends:[S01]`
   > After this: `/cards` browse page with sidebar filters, game strip, card grid matches wireframe. `/cards/[id]` detail page with BFF listings matches wireframe. `/search` with faceted Algolia filters matches wireframe. Desktop + mobile verified against wireframes.
 
-- [x] **S03: Deck Builder, Browser & Viewer — Pixel Perfect** `risk:high` `depends:[S01]`
+- [ ] **S03: Deck Builder, Browser & Viewer — Pixel Perfect** `risk:high` `depends:[S01]`
   > After this: `/decks` browser shows public decks matching wireframe. Deck builder with DnD (desktop) and touch-to-add (mobile) matches wireframe. Deck viewer matches wireframe. All game-specific zones render correctly.
 
-- [x] **S04: Homepage — Pixel Perfect + Live Data** `risk:medium` `depends:[S01,S02]`
+- [ ] **S04: Homepage — Pixel Perfect + Live Data** `risk:medium` `depends:[S01,S02]`
   > After this: Homepage matches wireframe with live trending strip showing real card prices, game selector with real listing counts from customer-backend, trust section, seller CTA. Desktop + mobile.
 
-- [x] **S05: Auth, Profile & OAuth Providers** `risk:medium` `depends:[S01]`
+- [ ] **S05: Auth, Profile & OAuth Providers** `risk:medium` `depends:[S01]`
   > After this: Auth pages match wireframe. User can sign in via Google or Discord OAuth, get a JWT valid on both backends, and see their profile page matching wireframe. Session persists across browser restarts.
 
-- [x] **S06: Wireframe Generation & Figma Export** `risk:medium` `depends:[S01]`
+- [ ] **S06: Wireframe Generation & Figma Export** `risk:medium` `depends:[S01]`
   > After this: HTML wireframes exist for all ~32 remaining storefront pages (cart, checkout, sell pages, user account pages, order pages, etc.) following Voltage patterns with sd-nav.js. All wireframes (41 total) exported to Figma.
 
 - [ ] **S07: Remaining Pages — Visual Alignment** `risk:medium` `depends:[S01,S06]`

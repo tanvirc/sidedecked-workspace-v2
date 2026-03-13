@@ -21,14 +21,14 @@
 
 ## Tasks
 
-- [x] **T01: Rewrite Footer, fix PriceTag tabular figures, and audit shared components** `est:2h`
+- [ ] **T01: Rewrite Footer, fix PriceTag tabular figures, and audit shared components** `est:2h`
   - Why: The Footer is completely wrong vs the wireframe (3-column `bg-primary` grid vs minimal one-row bar). PriceTag doesn't use tabular figures despite a `.price` CSS class existing for exactly that. These are the two real code changes in S01; the rest is verification.
   - Files: `storefront/src/components/organisms/Footer/Footer.tsx`, `storefront/src/data/footerLinks.ts`, `storefront/src/components/tcg/PriceTag.tsx`
   - Do: (1) Rewrite Footer.tsx to match wireframe: border-top separator, no bg-primary, single row with gradient logo text (SideDeckedLogo), 5 inline links, 3 social icon links (Discord/X/GitHub using Lucide icons), copyright. Use Voltage tokens exclusively. (2) Update footerLinks.ts to export the wireframe's 5 links + 3 social links. (3) Add tabular-nums styling to PriceTag's price display spans — either apply `.price` CSS class or add inline `font-family: var(--font-mono-stats)` + `font-feature-settings: 'tnum'`. (4) Add JSDoc to PriceTag documenting that `price` expects dollar values. (5) Scan all S01 shared components for hardcoded light-mode colors; fix any found.
   - Verify: `cd storefront && npx vitest run` passes 672+ tests. Visual inspection of Footer structure in code matches wireframe spec. `grep -rn "bg-white\|bg-gray-\|text-gray-"` on shared component files returns zero.
   - Done when: Footer matches wireframe spec, PriceTag uses tabular figures, zero hardcoded colors in shared components.
 
-- [x] **T02: Add Footer tests and run full verification** `est:1h`
+- [ ] **T02: Add Footer tests and run full verification** `est:1h`
   - Why: The Footer rewrite needs test coverage. Full suite run confirms nothing broke. Token/typography audit needs explicit sign-off.
   - Files: `storefront/src/components/organisms/Footer/__tests__/Footer.test.tsx`
   - Do: (1) Write Footer tests: renders gradient logo, renders all 5 nav links with correct hrefs, renders 3 social icons with correct external hrefs + `target="_blank"`, renders copyright with current year, has no `bg-primary` class, has border-top separator. (2) Run full test suite. (3) Verify colors.css token completeness: `.dark` block has no gaps vs `:root`. (4) Verify globals.css typography classes are present (display, heading, label scales). (5) Confirm zero `window.alert()`/`confirm()`/`prompt()` calls via grep.
