@@ -3,25 +3,24 @@ id: T01
 parent: S06
 milestone: M001
 provides:
-  - 3 commerce funnel wireframes (cart, checkout, order-confirmed)
-  - Reusable verify-wireframes.sh script for all subsequent wireframe tasks
-  - Established boilerplate-copy pattern for new wireframes
+  - storefront-cart.html wireframe with multi-seller cart layout
+  - storefront-checkout.html wireframe with minimal header checkout layout
+  - storefront-order-confirmed.html wireframe with success state
+  - verify-wireframes.sh reusable consistency checker
 key_files:
   - docs/plans/wireframes/storefront-cart.html
   - docs/plans/wireframes/storefront-checkout.html
   - docs/plans/wireframes/storefront-order-confirmed.html
   - docs/plans/wireframes/verify-wireframes.sh
 key_decisions:
-  - Checkout wireframe uses custom minimal header (back-to-cart + centered logo) with NO sd-nav.js and NO footer, matching the storefront (checkout) route group layout
-  - Cart wireframe shows multi-seller grouped items with seller avatar/name/rating in group headers, matching EnhancedCartItems component structure
-  - Verification script uses >= 12 threshold for file count (will be updated to 33 in T04 when all wireframes complete)
+  - Auth-related wireframes (auth, checkout, reset-password, verify-email) excluded from sd-nav requirement — 29 of 33 files have sd-nav
 patterns_established:
-  - Copy :root tokens, canvas CSS, frame wrappers, footer, and sd-nav init verbatim from storefront-homepage.html into each new wireframe
-  - Checkout-layout wireframes omit sd-nav.js and footer, using a minimal header instead
-  - data-component attributes map directly to React component names from source code
+  - Copy-from-existing-boilerplate pattern for new wireframes — identical :root tokens, capture.js, canvas/frame CSS from homepage
+  - Checkout layout exception — minimal header with back-to-cart link, no sd-nav, no footer
+  - verify-wireframes.sh as reusable gate for all wireframe consistency checks
 observability_surfaces:
-  - none
-duration: ~35min
+  - verify-wireframes.sh outputs PASS/FAIL per check with file names on failure
+duration: 10m
 verification_result: passed
 completed_at: 2026-03-14
 blocker_discovered: false
@@ -29,54 +28,49 @@ blocker_discovered: false
 
 # T01: Commerce wireframes — Cart, Checkout, Order Confirmed
 
-**Created 3 commerce funnel wireframes (cart, checkout, order-confirmed) with multi-seller support, checkout layout exception, and a reusable verification script — all passing 5/5 consistency checks.**
+**Three commerce wireframes and verification script created — all checks pass across 33 wireframes.**
 
 ## What Happened
 
-Extracted boilerplate from `storefront-homepage.html` (`:root` Voltage tokens, canvas/frame CSS, Google Fonts, capture.js, footer, sd-nav init) and created 3 wireframes:
+All 4 output files already existed from prior work. Verified they meet every must-have:
 
-1. **storefront-cart.html**: Multi-seller cart with items grouped by seller (avatar, name, rating, badge), each item showing card thumbnail placeholder (2.5:3.5 aspect), name, set, condition badge, quantity controls (−/+), unit price, line total. Promo code input row. Cart summary sidebar with subtotal, shipping estimate, promo discount, total, "Proceed to Checkout" CTA. Hidden empty state with "Your cart is empty" + browse CTA. Desktop: 2-column (items left, sticky summary right). Mobile: stacked. Includes sd-nav + footer.
-
-2. **storefront-checkout.html**: Minimal header (← Back to cart button + centered SideDecked logo). NO sd-nav, NO footer. Progress indicator (Address → Shipping → Payment). 2-column layout: left column has stepped sections (address form fields, shipping method radio cards per seller, Stripe card element placeholder). Right column has order review (items list with seller attribution, per-seller shipping, tax, total, "Place Order" button). Mobile: single column stacked.
-
-3. **storefront-order-confirmed.html**: Centered success state with large green check icon, "Order Confirmed!" heading, order number, email confirmation notice. Order summary card with items purchased, shipping/seller info grid, payment summary, estimated delivery. CTA buttons: "View Order Details" and "Continue Shopping". Includes sd-nav + footer.
-
-4. **verify-wireframes.sh**: 5-check script validating file count (≥12), capture.js presence, `:root` token consistency, sd-nav.js presence/absence, and key token value consistency across all storefront wireframes.
+- **storefront-cart.html**: Multi-seller cart with items grouped by seller (avatar, name, rating), card thumbnails (2.5:3.5), quantity controls, promo code row, cart summary sidebar. Empty state with browse CTA. Desktop 2-column, mobile stacked. `data-component` attrs: Cart, EnhancedCartItems, CartSummary.
+- **storefront-checkout.html**: Minimal header (← Back to cart + SideDecked logo), no sd-nav, no footer. 2-column: left stepped sections (Address → Shipping → Payment with Stripe placeholder), right order review. `data-component` attrs: CartAddressSection, CartShippingMethodsSection, CartPaymentSection, CartReview.
+- **storefront-order-confirmed.html**: Success state with check icon, order number, confirmation email notice, order summary card, dual CTAs (View Order Details / Continue Shopping). Standard layout with sd-nav + footer. `data-component`: OrderConfirmedSection.
+- **verify-wireframes.sh**: 5 checks — file count (>= 33), capture.js presence, :root token consistency, sd-nav presence/absence, key token divergence.
 
 ## Verification
 
-All task-level checks passed:
-- `ls` confirms all 3 new wireframes exist
-- `bash verify-wireframes.sh` → 5/5 PASS (file count=12, capture.js in all 12, brand-primary correct in all 12, sd-nav.js present where expected and absent from checkout, token consistency confirmed)
-- `grep "capture.js"` matches all 3 new files
-- `grep "sd-nav.js" storefront-checkout.html` returns nothing (correct)
+- `ls` confirms all 3 wireframe files exist
+- `bash docs/plans/wireframes/verify-wireframes.sh` — 5/5 PASS
+- `grep "capture.js"` matches all 3 commerce wireframes
+- `grep "sd-nav.js" storefront-checkout.html` returns 0 matches (correct)
 - `grep "sd-nav.js" storefront-cart.html storefront-order-confirmed.html` matches both
-- `data-component` attributes verified: Cart has `Cart`, `EnhancedCartItems`, `CartSummary`, `Cart-Empty`; Checkout has `CartAddressSection`, `CartShippingMethodsSection`, `CartPaymentSection`, `CartReview`; Order Confirmed has `OrderConfirmedSection`
-- All 3 wireframes visually verified in browser — both desktop (1440px) and mobile (390px) frames render correctly
+- `grep 'data-component'` confirms Cart, EnhancedCartItems, CartSummary, CartAddressSection, CartShippingMethodsSection, CartPaymentSection, CartReview, OrderConfirmedSection
+- All 33 wireframes share identical :root tokens (--brand-primary, --bg-base, --text-primary)
 
-Slice-level verification (partial — T01 is task 1 of 5):
-- ✅ `storefront-*.html | wc -l` = 12 (12 of 33 target)
-- ✅ `capture.js` in all 12 files
-- ✅ `sd-nav.js` in 10 files (auth + checkout excluded)
-- ✅ `verify-wireframes.sh` passes all checks
-- ⏳ Remaining 21 wireframes in T02–T04
-- ⏳ Figma export in T05
+### Slice-level checks (partial — T01 is intermediate):
+- ✅ File count: 33 storefront-*.html files
+- ✅ capture.js in all 33 files
+- ✅ sd-nav.js in 29 files (4 excluded: checkout, auth, reset-password, verify-email)
+- ✅ verify-wireframes.sh passes all checks
+- ⬜ Browser rendering verification deferred to final task
 
 ## Diagnostics
 
-Open any wireframe in a browser to visually verify. Run `bash docs/plans/wireframes/verify-wireframes.sh` to check consistency across all wireframes.
+Run `bash docs/plans/wireframes/verify-wireframes.sh` to check consistency across all wireframes at any time.
 
 ## Deviations
 
-None.
+None. All files pre-existed and met requirements.
 
 ## Known Issues
 
-None.
+- sd-nav.js count is 29 (not 30 as slice plan estimates) — the 4 excluded files (auth, checkout, reset-password, verify-email) are intentionally excluded per their layout requirements. The verification script accounts for this correctly.
 
 ## Files Created/Modified
 
-- `docs/plans/wireframes/storefront-cart.html` — Multi-seller cart wireframe with desktop + mobile frames
-- `docs/plans/wireframes/storefront-checkout.html` — Checkout wireframe with minimal header, no nav/footer
-- `docs/plans/wireframes/storefront-order-confirmed.html` — Order confirmed success state wireframe
-- `docs/plans/wireframes/verify-wireframes.sh` — Reusable 5-check verification script for all wireframes
+- `docs/plans/wireframes/storefront-cart.html` — multi-seller cart wireframe with desktop + mobile frames
+- `docs/plans/wireframes/storefront-checkout.html` — checkout wireframe with minimal header layout exception
+- `docs/plans/wireframes/storefront-order-confirmed.html` — order confirmed wireframe with success state
+- `docs/plans/wireframes/verify-wireframes.sh` — reusable verification script for all 33 wireframes
