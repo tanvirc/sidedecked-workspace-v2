@@ -1,8 +1,8 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S02 — Card Browse, Detail & Search — Pixel Perfect
-**Phase:** executing
+**Active Slice:** S03 — Deck Builder, Browser & Viewer — Pixel Perfect
+**Phase:** planning
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
 ## Milestone Registry
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Execute T01: Restructure browse page with wireframe layout and shared components in slice S02.
+Plan slice S03 (Deck Builder, Browser & Viewer — Pixel Perfect).
