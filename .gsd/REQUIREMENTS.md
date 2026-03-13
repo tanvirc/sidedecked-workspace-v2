@@ -89,8 +89,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: M001/S01, M001/S02
-- Validation: unmapped
-- Notes: HeroSection, GameSelectorGrid, TrustSection, SellerCTABanner components exist. Trending strip slot exists but unwired.
+- Validation: structural alignment verified by 46 homepage tests (S04); all six sections pixel-aligned to wireframe values; TrendingStrip wired with curated fallback + live API client; visual UAT pending human comparison at 1440px and 390px
+- Notes: All six sections render with exact wireframe padding/margins/typography. fetchTrendingCards() API client created with 5-min cache. TRENDING_PLACEHOLDER (8 curated cards with real images) renders when API returns no data. GameSelectorGrid already wired to live listing counts.
 
 ### R009 — Auth pages pixel-perfect
 - Class: launchability
@@ -243,8 +243,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: inferred
 - Primary owning slice: M001/S04
 - Supporting slices: M001/S02
-- Validation: unmapped
-- Notes: TrendingStrip component slot exists on homepage. Needs API endpoint and data wiring.
+- Validation: structural — fetchTrendingCards() API client created with 5-min revalidation and 5s timeout; TrendingStrip renders 8-card curated fallback with real images when API returns no data; 11 tests cover fallback/API/coverage scenarios; live data flows automatically when endpoint is implemented
+- Notes: fetchTrendingCards() follows fetchGameListingCounts() pattern. TRENDING_PLACEHOLDER provides 8 curated cards with real images (2 per game). Component never returns null.
 
 ### R023 — Toast migration complete
 - Class: quality-attribute
@@ -415,7 +415,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R005 | differentiator | active | M001/S03 | M001/S01 | unmapped |
 | R006 | differentiator | active | M001/S03 | M001/S01 | unmapped |
 | R007 | differentiator | active | M001/S03 | M001/S01 | unmapped |
-| R008 | launchability | active | M001/S04 | M001/S01, M001/S02 | unmapped |
+| R008 | launchability | active | M001/S04 | M001/S01, M001/S02 | structural — 46 tests, pixel-aligned; visual UAT pending |
 | R009 | launchability | active | M001/S05 | M001/S01 | unmapped |
 | R010 | continuity | active | M001/S05 | M001/S01 | unmapped |
 | R011 | launchability | active | M001/S05 | none | unmapped |
@@ -429,7 +429,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R019 | differentiator | active | M001/S09 | M001/S01, M001/S03 | unmapped |
 | R020 | differentiator | active | M001/S09 | M001/S02, M001/S03, M001/S08 | unmapped |
 | R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | unmapped |
-| R022 | launchability | active | M001/S04 | M001/S02 | unmapped |
+| R022 | launchability | active | M001/S04 | M001/S02 | structural — API client + fallback + 11 tests |
 | R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
 | R024 | quality-attribute | active | M001/S01 | all | unmapped |
 | R025 | operability | active | M001/S06 | none | unmapped |
