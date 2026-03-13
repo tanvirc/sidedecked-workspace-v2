@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S05 — Auth, Profile & OAuth Providers
+**Active Slice:** S06 — Wireframe Generation & Figma Export
 **Phase:** executing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Execute T01: Build cinematic split-screen auth pages in (auth) route group in slice S05.
+Execute T01: Commerce wireframes — Cart, Checkout, Order Confirmed in slice S06.

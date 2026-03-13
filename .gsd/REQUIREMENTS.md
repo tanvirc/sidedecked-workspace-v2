@@ -100,8 +100,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: M001/S01
-- Validation: structural — 22 AuthPage tests verify split-screen layout (55/45 desktop, full-screen mobile), brand panel content (wordmark, tagline, game dots, trust text), login/register form fields and OAuth buttons, Voltage token compliance (file scan); visual UAT pending human comparison at 1440px and 390px
-- Notes: Auth pages moved to (auth) route group at /login and /register (no nav/footer). Desktop: cinematic split-screen with AuthBrandPanel (floating cards, gradient animation). Mobile: full-screen with compact logo. AuthGateDialog rewritten as glassmorphic modal (desktop) + bottom sheet (mobile) with 15 tests.
+- Validation: structural — 22 AuthPage tests verify split-screen layout (55/45 desktop, full-screen mobile), brand panel content (wordmark, tagline, game dots, trust text), login/register form fields and OAuth buttons, Voltage token compliance (file scan); 15 AuthGateDialog tests verify glassmorphic modal + bottom sheet; 794 total tests pass; visual UAT pending human comparison at 1440px and 390px
+- Notes: Auth pages moved to (auth) route group at /login and /register (no nav/footer). Desktop: cinematic split-screen with AuthBrandPanel (floating cards, gradient animation). Mobile: full-screen with compact logo. AuthGateDialog rewritten as glassmorphic modal (desktop) + bottom sheet (mobile) with 15 tests. S05 complete.
 
 ### R010 — Profile page pixel-perfect
 - Class: continuity
@@ -111,8 +111,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: M001/S01
-- Validation: structural — 23 ProfilePage tests verify hero banner (avatar, display name, username, joined date, game badges, stat chips), 4-tab layout with hash routing (Collection/Decks/Activity/Settings), settings tab composing all 6 existing settings components, empty state placeholders, Voltage compliance; visual UAT pending human comparison at 1440px and 390px
-- Notes: Profile page fully rebuilt at /user with ProfileHero (radial gradient, avatar with gradient border, game badges, stat chips) and ProfileTabs (hash-based routing). Settings tab composes existing components. Collection/Decks/Activity show placeholder empty states.
+- Validation: structural — 23 ProfilePage tests verify hero banner (avatar, display name, username, joined date, game badges, stat chips), 4-tab layout with hash routing (Collection/Decks/Activity/Settings), settings tab composing all 6 existing settings components, empty state placeholders, Voltage compliance; 794 total tests pass; visual UAT pending human comparison at 1440px and 390px
+- Notes: Profile page fully rebuilt at /user with ProfileHero (radial gradient, avatar with gradient border, game badges, stat chips) and ProfileTabs (hash-based routing). Settings tab composes existing components. Collection/Decks/Activity show placeholder empty states. S05 complete.
 
 ### R011 — Google OAuth provider
 - Class: launchability
@@ -122,8 +122,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: structural — Google auth provider (`@medusajs/medusa/auth-google`) verified registered in medusa-config.ts; generic callback route handles Google provider; storefront OAuth buttons wired; live end-to-end flow requires Google API credentials configured as env vars
-- Notes: Provider registration confirmed in S05. Callback route at [auth_provider]/callback/route.ts handles all OAuth providers generically. Live flow testing deferred until API credentials are configured.
+- Validation: structural — Google auth provider (`@medusajs/medusa/auth-google`) verified registered in medusa-config.ts; generic callback route handles Google provider; storefront OAuth buttons wired in AuthPage and AuthGateDialog; 794 total tests pass; live end-to-end flow requires Google API credentials configured as env vars
+- Notes: Provider registration confirmed in S05. Callback route at [auth_provider]/callback/route.ts handles all OAuth providers generically. Live flow testing deferred until API credentials are configured. S05 complete.
 
 ### R012 — Discord OAuth provider
 - Class: launchability
@@ -133,8 +133,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: structural — Discord auth module (`./src/modules/discord-auth`) verified registered in medusa-config.ts; generic callback route handles Discord provider; storefront OAuth buttons wired; live end-to-end flow requires Discord API credentials configured as env vars
-- Notes: Provider registration confirmed in S05. Migration exists (Migration20260222_AddDiscordProvider.ts). Live flow testing deferred until API credentials are configured.
+- Validation: structural — Discord auth module (`./src/modules/discord-auth`) verified registered in medusa-config.ts; generic callback route handles Discord provider; storefront OAuth buttons wired in AuthPage and AuthGateDialog; 794 total tests pass; live end-to-end flow requires Discord API credentials configured as env vars
+- Notes: Provider registration confirmed in S05. Migration exists (Migration20260222_AddDiscordProvider.ts). Live flow testing deferred until API credentials are configured. S05 complete.
 
 ### R013 — Wireframe creation for remaining pages
 - Class: quality-attribute
