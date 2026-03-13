@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S04 — Homepage — Pixel Perfect + Live Data
+**Active Slice:** S05 — Auth, Profile & OAuth Providers
 **Phase:** executing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Execute T01: Align all homepage components to wireframe pixel values in slice S04.
+Execute T01: Build cinematic split-screen auth pages in (auth) route group in slice S05.

@@ -64,7 +64,7 @@ This milestone is complete only when all are true:
 - [x] **S03: Deck Builder, Browser & Viewer — Pixel Perfect** `risk:high` `depends:[S01]`
   > After this: `/decks` browser shows public decks matching wireframe. Deck builder with DnD (desktop) and touch-to-add (mobile) matches wireframe. Deck viewer matches wireframe. All game-specific zones render correctly.
 
-- [ ] **S04: Homepage — Pixel Perfect + Live Data** `risk:medium` `depends:[S01,S02]`
+- [x] **S04: Homepage — Pixel Perfect + Live Data** `risk:medium` `depends:[S01,S02]`
   > After this: Homepage matches wireframe with live trending strip showing real card prices, game selector with real listing counts from customer-backend, trust section, seller CTA. Desktop + mobile.
 
 - [ ] **S05: Auth, Profile & OAuth Providers** `risk:medium` `depends:[S01]`
