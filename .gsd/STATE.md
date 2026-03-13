@@ -2,7 +2,7 @@
 
 **Active Milestone:** M001 — MVP Core Loop
 **Active Slice:** S04 — Homepage — Pixel Perfect + Live Data
-**Phase:** executing
+**Phase:** summarizing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
 ## Milestone Registry
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Execute T02: Wire TrendingStrip to live data with curated fallback and integrate into homepage in slice S04.
+All tasks done in S04. Write slice summary and complete slice.
