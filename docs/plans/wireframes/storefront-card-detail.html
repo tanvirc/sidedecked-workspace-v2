@@ -1429,11 +1429,30 @@
               Add to Cart
             </button>
 
-            <!-- Wishlist -->
-            <button class="btn-wishlist">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              Save to Wishlist
-            </button>
+            <!-- Secondary Actions Row -->
+            <div style="display: flex; gap: 8px; margin-top: -4px;">
+              <!-- Wishlist -->
+              <button class="btn-wishlist" style="flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Wishlist
+              </button>
+              <!-- Add to Deck -->
+              <button class="btn-wishlist" style="flex: 1; color: var(--brand-primary); border-color: rgba(139, 92, 246, 0.3);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Add to Deck
+              </button>
+            </div>
+
+            <!-- Sell This Card -->
+            <a href="/sell/list?card=lightning-bolt" style="display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-heading); font-size: 12px; color: var(--text-tertiary); text-decoration: none; padding: 6px 0; transition: color 0.15s;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Have this card? Sell it →
+            </a>
+
+            <div style="margin-bottom: 4px; display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="annotation-inline" style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-primary); background: rgba(139,92,246,0.08); border: 1px dashed rgba(139,92,246,0.3); padding: 2px 6px; border-radius: 4px;">"Add to Deck" → dropdown of user's decks</span>
+              <span class="annotation-inline" style="font-family: var(--font-mono); font-size: 10px; color: var(--positive); background: rgba(16,185,129,0.08); border: 1px dashed rgba(16,185,129,0.3); padding: 2px 6px; border-radius: 4px;">"Sell it" → prefills listing wizard step 1</span>
+            </div>
 
             <!-- Marketplace Listings -->
             <div class="listings-header" style="position:relative;">
@@ -1621,6 +1640,18 @@
         <button class="mobile-add-cart">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           Add to Cart
+        </button>
+      </div>
+      <!-- Secondary mobile actions -->
+      <div style="display: flex; gap: 8px; padding: 0 16px 12px;">
+        <button style="flex: 1; padding: 8px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: var(--font-heading); font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          ♡ Wishlist
+        </button>
+        <button style="flex: 1; padding: 8px; background: transparent; border: 1px solid rgba(139,92,246,0.3); border-radius: var(--radius-sm); color: var(--brand-primary); font-family: var(--font-heading); font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          + Add to Deck
+        </button>
+        <button style="flex: 1; padding: 8px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-tertiary); font-family: var(--font-heading); font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          $ Sell
         </button>
       </div>
 

@@ -655,6 +655,227 @@
       opacity: 1;
     }
 
+    /* =============================================
+       "I OWN THIS" TOGGLE — COLLECTION AWARENESS
+       ============================================= */
+    .own-toggle {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-default);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 11px;
+      transition: all 0.15s;
+      color: transparent;
+    }
+    .own-toggle:hover {
+      border-color: var(--positive);
+    }
+    .own-toggle.owned {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--positive);
+      color: var(--positive);
+    }
+    .own-toggle.partial {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+    .card-row.owned-row {
+      opacity: 0.55;
+    }
+    .card-row.owned-row .card-row-name {
+      text-decoration: line-through;
+      text-decoration-color: rgba(16, 185, 129, 0.4);
+    }
+
+    /* Missing badge in deck count */
+    .deck-missing {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--brand-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .deck-missing .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand-secondary);
+    }
+
+    /* =============================================
+       CART OPTIMIZER PANEL (slides in right panel)
+       ============================================= */
+    .optimizer-panel {
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .optimizer-header {
+      padding: 14px 16px;
+      background: rgba(255, 120, 73, 0.06);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .optimizer-title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .optimizer-mode-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .optimizer-mode {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 4px 10px;
+      color: var(--text-tertiary);
+      background: transparent;
+      cursor: pointer;
+      border: none;
+    }
+    .optimizer-mode.active {
+      background: var(--brand-secondary);
+      color: #fff;
+    }
+    .optimizer-seller-group {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(44, 42, 74, 0.3);
+    }
+    .optimizer-seller-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .optimizer-seller-rating {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--positive);
+    }
+    .optimizer-seller-cards {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .optimizer-seller-subtotal {
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+    }
+    .optimizer-total {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .optimizer-total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .optimizer-total-row.grand {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 4px;
+    }
+    .optimizer-savings {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      margin-top: 6px;
+    }
+    .btn-buy-all {
+      width: 100%;
+      padding: 12px;
+      background: var(--brand-secondary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      margin-top: 10px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Mobile ownership indicator */
+    .mobile-own-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .mobile-own-dot.owned { background: var(--positive); }
+    .mobile-own-dot.missing { background: var(--brand-secondary); }
+
+    /* Mobile sticky buy bar */
+    .mobile-buy-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--bg-surface-1);
+      border-top: 1px solid var(--border-default);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 20;
+    }
+    .mobile-buy-info {
+      flex: 1;
+    }
+    .mobile-buy-count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--brand-secondary);
+    }
+    .mobile-buy-price {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .mobile-buy-btn {
+      padding: 10px 18px;
+      background: var(--brand-secondary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     /* --- Right Panel: Stats & Preview --- */
     .panel-stats {
       width: 300px;
@@ -1469,6 +1690,7 @@
               <span class="badge badge-game">MTG</span>
               <span class="badge badge-format">Modern</span>
               <span class="deck-count">58/60</span>
+              <span class="deck-missing"><span class="dot"></span> 16 missing</span>
               <div class="visibility-toggle" style="margin-left: auto;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span>Public</span>
@@ -1486,9 +1708,15 @@
                 <span class="section-title">Creatures</span>
                 <span class="section-count">(12)</span>
               </div>
-              <!-- 4x Monastery Swiftspear -->
-              <div class="card-row">
+              <!-- Annotation: I Own This toggle states -->
+              <div style="padding: 4px 24px 2px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="annotation--note annotation">tap ✓ to toggle: owned → partial (qty picker) → needed</span>
+                <span class="annotation">3 states: ✓ owned (dimmed) · ½ partial · ☐ needed</span>
+              </div>
+              <!-- 4x Monastery Swiftspear — OWNED (dimmed) -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1499,9 +1727,10 @@
                 <span class="card-row-type">Creature</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Goblin Guide -->
-              <div class="card-row">
+              <!-- 4x Goblin Guide — OWNED (dimmed) -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1512,9 +1741,10 @@
                 <span class="card-row-type">Creature</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Eidolon of the Great Revel -->
+              <!-- 4x Eidolon of the Great Revel — NEEDED (not owned) -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1534,35 +1764,39 @@
                 <span class="section-title">Instants</span>
                 <span class="section-count">(16)</span>
               </div>
-              <!-- 4x Lightning Bolt -->
-              <div class="card-row" style="background: rgba(139, 92, 246, 0.06);">
+              <!-- 4x Lightning Bolt — SELECTED ROW (previewing) + OWNED -->
+              <div class="card-row owned-row" style="background: rgba(139, 92, 246, 0.06);">
                 <div class="drag-handle" style="opacity: 0.7;"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
                   <span class="stepper-btn">+</span>
                 </div>
-                <span class="card-row-name" style="color: #A78BFA;">Lightning Bolt</span>
+                <span class="card-row-name" style="color: #A78BFA; text-decoration: line-through; text-decoration-color: rgba(16, 185, 129, 0.4);">Lightning Bolt</span>
                 <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
                 <span class="card-row-type">Instant</span>
                 <span class="card-row-remove" style="opacity: 1;">&times;</span>
               </div>
-              <!-- 4x Searing Blaze -->
+              <!-- 4x Searing Blaze — PARTIAL (own 2, need 2) -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle partial" title="Own 2 of 4">½</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
                   <span class="stepper-btn">+</span>
                 </div>
                 <span class="card-row-name">Searing Blaze</span>
+                <span style="font-family: var(--font-mono); font-size: 10px; color: var(--warning); flex-shrink: 0;">own 2 / need 2</span>
                 <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
                 <span class="card-row-type">Instant</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Skullcrack -->
+              <!-- 4x Skullcrack — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1573,9 +1807,10 @@
                 <span class="card-row-type">Instant</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Lava Spike -->
+              <!-- 4x Lava Spike — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1595,22 +1830,24 @@
                 <span class="section-title">Sorceries</span>
                 <span class="section-count">(12)</span>
               </div>
-              <!-- 4x Rift Bolt -->
-              <div class="card-row">
+              <!-- 4x Rift Bolt — OWNED -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
                   <span class="stepper-btn">+</span>
                 </div>
-                <span class="card-row-name">Rift Bolt</span>
+                <span class="card-row-name" style="text-decoration: line-through; text-decoration-color: rgba(16, 185, 129, 0.4);">Rift Bolt</span>
                 <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
                 <span class="card-row-type">Sorcery</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Chain Lightning -->
+              <!-- 4x Chain Lightning — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1621,9 +1858,10 @@
                 <span class="card-row-type">Sorcery</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Light Up the Stage -->
+              <!-- 4x Light Up the Stage — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
@@ -1643,35 +1881,38 @@
                 <span class="section-title">Lands</span>
                 <span class="section-count">(18)</span>
               </div>
-              <!-- 10x Mountain -->
-              <div class="card-row">
+              <!-- 10x Mountain — OWNED (basics, everyone has these) -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">10</span>
                   <span class="stepper-btn">+</span>
                 </div>
-                <span class="card-row-name">Mountain</span>
+                <span class="card-row-name" style="text-decoration: line-through; text-decoration-color: rgba(16, 185, 129, 0.4);">Mountain</span>
                 <div class="card-row-mana"></div>
                 <span class="card-row-type">Basic Land</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 4x Inspiring Vantage -->
-              <div class="card-row">
+              <!-- 4x Inspiring Vantage — OWNED -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">4</span>
                   <span class="stepper-btn">+</span>
                 </div>
-                <span class="card-row-name">Inspiring Vantage</span>
+                <span class="card-row-name" style="text-decoration: line-through; text-decoration-color: rgba(16, 185, 129, 0.4);">Inspiring Vantage</span>
                 <div class="card-row-mana"></div>
                 <span class="card-row-type">Land</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 2x Fiery Islet -->
+              <!-- 2x Fiery Islet — NEEDED (rare lands) -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">2</span>
@@ -1682,9 +1923,10 @@
                 <span class="card-row-type">Land</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 2x Sunbaked Canyon -->
+              <!-- 2x Sunbaked Canyon — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">2</span>
@@ -1704,22 +1946,24 @@
                 <span class="section-title">Sideboard</span>
                 <span class="section-count">(8/15)</span>
               </div>
-              <!-- 3x Smash to Smithereens -->
-              <div class="card-row">
+              <!-- 3x Smash to Smithereens — OWNED -->
+              <div class="card-row owned-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle owned" title="I own this">✓</div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">3</span>
                   <span class="stepper-btn">+</span>
                 </div>
-                <span class="card-row-name">Smash to Smithereens</span>
+                <span class="card-row-name" style="text-decoration: line-through; text-decoration-color: rgba(16, 185, 129, 0.4);">Smash to Smithereens</span>
                 <div class="card-row-mana"><span class="mana-dot sm" style="background: var(--mana-colorless);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></div>
                 <span class="card-row-type">Instant</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 2x Roiling Vortex -->
+              <!-- 2x Roiling Vortex — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">2</span>
@@ -1730,9 +1974,10 @@
                 <span class="card-row-type">Enchantment</span>
                 <span class="card-row-remove">&times;</span>
               </div>
-              <!-- 3x Searing Blood -->
+              <!-- 3x Searing Blood — NEEDED -->
               <div class="card-row">
                 <div class="drag-handle"><span></span><span></span><span></span></div>
+                <div class="own-toggle" title="Mark as owned"></div>
                 <div class="count-stepper">
                   <span class="stepper-btn">&minus;</span>
                   <span class="stepper-count">3</span>
@@ -1872,15 +2117,94 @@
             </div>
           </div>
 
-          <!-- Price Estimate -->
+          <!-- Collection & Purchase Section -->
           <div class="stat-card">
-            <div class="stat-card-title">Deck Cost Estimate</div>
-            <div class="price-total">$127.45</div>
-            <div class="price-sub">Based on market prices</div>
-            <button class="btn-buy">Buy Missing Cards</button>
-            <div class="price-warning">
-              <span class="dot"></span>
-              <span>3 cards not in your collection</span>
+            <div style="margin-bottom: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="annotation">&lt;CollectionStatus&gt;</span>
+              <span class="annotation--api annotation">GET /api/users/:id/collection/check</span>
+            </div>
+            <div class="stat-card-title">Collection Status</div>
+            <!-- Owned / Missing breakdown bar -->
+            <div style="display: flex; height: 6px; border-radius: 999px; overflow: hidden; gap: 1px; margin-bottom: 8px;">
+              <div style="width: 72%; background: var(--positive); border-radius: 999px 0 0 999px;"></div>
+              <div style="width: 28%; background: var(--brand-secondary); border-radius: 0 999px 999px 0;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 12px;">
+              <span style="color: var(--positive); font-family: var(--font-mono);">✓ 42 owned</span>
+              <span style="color: var(--brand-secondary); font-family: var(--font-mono);">● 16 missing</span>
+            </div>
+            <!-- Price breakdown -->
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">
+              <span>Full deck value</span>
+              <span style="font-family: var(--font-mono); color: var(--text-tertiary);">$127.45</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+              <span>Missing cards cost</span>
+              <span style="font-family: var(--font-mono); color: var(--text-primary); font-weight: 600;">$45.20</span>
+            </div>
+            <div class="price-sub" style="margin-bottom: 10px;">from ~3 sellers · lowest NM prices</div>
+            <button class="btn-buy" style="position: relative;">
+              Buy 16 Missing Cards · $45.20
+            </button>
+            <div style="margin-top: 6px; display: flex; gap: 6px;">
+              <span class="annotation--note annotation">Opens cart optimizer panel</span>
+            </div>
+          </div>
+
+          <!-- Cart Optimizer Results (shown after "Buy Missing Cards" tap) -->
+          <div class="stat-card" style="padding: 0; border: 1px solid var(--brand-secondary); border-radius: var(--radius-lg); overflow: hidden;">
+            <div style="padding: 6px 12px 0; display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="annotation">&lt;CartOptimizerPanel&gt;</span>
+              <span class="annotation--note annotation">slides in after "Buy Missing" tap</span>
+            </div>
+            <div class="optimizer-header">
+              <span class="optimizer-title">Cart Optimizer</span>
+              <div class="optimizer-mode-toggle">
+                <span class="optimizer-mode active">Cheapest</span>
+                <span class="optimizer-mode">Fewest</span>
+                <span class="optimizer-mode">Best</span>
+              </div>
+            </div>
+            <!-- Seller Group 1 -->
+            <div class="optimizer-seller-group">
+              <div class="optimizer-seller-name">
+                CardKingdom Pro
+                <span class="optimizer-seller-rating">★ 4.8 · 412 sales</span>
+              </div>
+              <div class="optimizer-seller-cards">Eidolon ×4, Skullcrack ×4, Lava Spike ×4</div>
+              <div class="optimizer-seller-subtotal">
+                <span>12 cards + $2.99 ship</span>
+                <span style="font-weight: 600;">$34.87</span>
+              </div>
+            </div>
+            <!-- Seller Group 2 -->
+            <div class="optimizer-seller-group">
+              <div class="optimizer-seller-name">
+                MTGDeals
+                <span class="optimizer-seller-rating">★ 4.3 · 89 sales</span>
+              </div>
+              <div class="optimizer-seller-cards">Searing Blaze ×2, Rift Bolt ×2</div>
+              <div class="optimizer-seller-subtotal">
+                <span>4 cards + $1.50 ship</span>
+                <span style="font-weight: 600;">$10.33</span>
+              </div>
+            </div>
+            <!-- Total -->
+            <div class="optimizer-total">
+              <div class="optimizer-total-row">
+                <span>Cards (16)</span>
+                <span>$40.71</span>
+              </div>
+              <div class="optimizer-total-row">
+                <span>Shipping (2 sellers)</span>
+                <span>$4.49</span>
+              </div>
+              <div class="optimizer-total-row grand">
+                <span>Total</span>
+                <span>$45.20</span>
+              </div>
+              <div class="optimizer-savings">You save $8.20 vs. buying from one seller</div>
+              <button class="btn-buy-all">Buy All · $45.20</button>
             </div>
           </div>
 
@@ -1932,15 +2256,31 @@
         <!-- Deck Tab Content -->
         <div class="mobile-deck-body">
 
+          <!-- Annotation: Mobile ownership -->
+          <div style="padding: 4px 16px;">
+            <span class="annotation--note annotation" style="font-size: 9px;">● green = owned · ● orange = missing · tap dot to toggle</span>
+          </div>
+
           <!-- Creatures -->
           <div class="mobile-section-header">
             <div class="section-arrow" style="width: 8px; height: 8px; border-width: 1.5px;"></div>
             <span class="mobile-section-title">Creatures</span>
             <span class="mobile-section-count">(12)</span>
           </div>
-          <div class="mobile-card-row">
+          <div class="mobile-card-row" style="opacity: 0.55;">
+            <span class="mobile-own-dot owned"></span>
             <span class="mobile-card-qty">4x</span>
-            <span class="mobile-card-name">Monastery Swiftspear</span>
+            <span class="mobile-card-name" style="text-decoration: line-through; text-decoration-color: rgba(16,185,129,0.4);">Monastery Swiftspear</span>
+            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
+            <div class="mobile-stepper">
+              <span class="mobile-stepper-btn">&minus;</span>
+              <span class="mobile-stepper-btn">+</span>
+            </div>
+          </div>
+          <div class="mobile-card-row" style="opacity: 0.55;">
+            <span class="mobile-own-dot owned"></span>
+            <span class="mobile-card-qty">4x</span>
+            <span class="mobile-card-name" style="text-decoration: line-through; text-decoration-color: rgba(16,185,129,0.4);">Goblin Guide</span>
             <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
             <div class="mobile-stepper">
               <span class="mobile-stepper-btn">&minus;</span>
@@ -1948,15 +2288,7 @@
             </div>
           </div>
           <div class="mobile-card-row">
-            <span class="mobile-card-qty">4x</span>
-            <span class="mobile-card-name">Goblin Guide</span>
-            <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
-            <div class="mobile-stepper">
-              <span class="mobile-stepper-btn">&minus;</span>
-              <span class="mobile-stepper-btn">+</span>
-            </div>
-          </div>
-          <div class="mobile-card-row">
+            <span class="mobile-own-dot missing"></span>
             <span class="mobile-card-qty">4x</span>
             <span class="mobile-card-name">Eidolon of the Great Revel</span>
             <span class="mana-symbols"><span class="mana-dot sm" style="background: var(--mana-red);"></span><span class="mana-dot sm" style="background: var(--mana-red);"></span></span>
@@ -2093,12 +2425,21 @@
             <span class="mobile-section-count">(8/15)</span>
           </div>
 
-          <!-- Spacing for FAB -->
+          <!-- Spacing for buy bar -->
           <div style="height: 70px;"></div>
         </div>
 
-        <!-- FAB -->
-        <div class="mobile-fab">+</div>
+        <!-- Sticky Buy Bar (replaces FAB when missing cards exist) -->
+        <div class="mobile-buy-bar">
+          <div class="mobile-buy-info">
+            <div class="mobile-buy-count">16 cards missing</div>
+            <div class="mobile-buy-price">~$45.20</div>
+          </div>
+          <button class="mobile-buy-btn">Buy Missing</button>
+        </div>
+
+        <!-- FAB for adding cards (shown when no missing cards context) -->
+        <div class="mobile-fab" style="bottom: 80px;">+</div>
       </div>
     </div>
 

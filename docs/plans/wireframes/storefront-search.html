@@ -1030,6 +1030,13 @@
       color: var(--positive);
       font-weight: 500;
     }
+  
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
+
   </style>
 </head>
 <body>

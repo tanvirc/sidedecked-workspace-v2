@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S07 — Remaining Pages — Visual Alignment
+**Active Slice:** S08 — 3-Step Seller Listing Wizard
 **Phase:** planning
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Plan slice S07 (Remaining Pages — Visual Alignment).
+Plan slice S08 (3-Step Seller Listing Wizard).

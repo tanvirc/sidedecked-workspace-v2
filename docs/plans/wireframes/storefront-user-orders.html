@@ -181,6 +181,14 @@
     .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
     .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
     .mobile-frame .annotation { display: none; }
+
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    .order-card:hover { border-color: var(--border-strong); transition: border-color 0.15s ease; }
+    .page-btn:hover { background: var(--bg-surface-2); }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
   </style>
 </head>
 <body>
@@ -320,6 +328,19 @@
               <button class="page-btn">→</button>
             </div>
           </div>
+
+          <!-- Empty State: No Orders -->
+          <div style="margin-top: 24px;">
+            <div style="text-align: center; padding: 4px 16px 16px; border: 2px dashed var(--border-default); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-secondary); background: rgba(255,120,73,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 16px; margin-top: -12px;">⇣ State: No Orders</div>
+              <div style="text-align: center; padding: 60px 24px;">
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px;">📦</div>
+                <div style="font-family: var(--font-display); font-weight: 700; font-size: 24px; text-transform: uppercase; margin-bottom: 8px;">No Orders Yet</div>
+                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">When you buy cards, your orders will appear here with tracking and buyer protection details.</div>
+                <a href="/cards" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; background: var(--brand-primary); color: #fff; font-family: var(--font-heading); font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none;">Browse Cards</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -432,6 +453,44 @@
                   <div class="item-meta">Lightly Played · English · #151</div>
                 </div>
                 <div class="item-price">$29.96</div>
+              </div>
+            </div>
+
+            <!-- Buyer Protection / Escrow -->
+            <div class="detail-section" style="border-color: rgba(139, 92, 246, 0.2); background: linear-gradient(135deg, var(--bg-surface-1), rgba(139, 92, 246, 0.03));">
+              <div class="detail-section-title" style="display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Buyer Protection
+              </div>
+              <!-- 3-step escrow flow -->
+              <div style="display: flex; align-items: flex-start; gap: 0; margin-bottom: 12px;">
+                <!-- Step 1: Payment held -->
+                <div style="flex: 1; text-align: center; position: relative;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--positive); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 14px; color: #fff;">✓</div>
+                  <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">Payment Held</div>
+                  <div style="font-size: 10px; color: var(--text-tertiary); line-height: 1.4;">Your $136.40 is held<br>securely in escrow</div>
+                </div>
+                <!-- connector -->
+                <div style="width: 60px; height: 2px; background: var(--positive); margin-top: 18px; flex-shrink: 0;"></div>
+                <!-- Step 2: Verify delivery -->
+                <div style="flex: 1; text-align: center; position: relative;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--brand-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 14px; color: #fff; box-shadow: 0 0 12px rgba(139,92,246,0.4);">2</div>
+                  <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">Verify Delivery</div>
+                  <div style="font-size: 10px; color: var(--text-tertiary); line-height: 1.4;">Confirm cards match<br>description &amp; condition</div>
+                </div>
+                <!-- connector -->
+                <div style="width: 60px; height: 2px; background: var(--border-default); margin-top: 18px; flex-shrink: 0;"></div>
+                <!-- Step 3: Seller paid -->
+                <div style="flex: 1; text-align: center; position: relative;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface-3); border: 2px solid var(--border-strong); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 14px; color: var(--text-tertiary);">3</div>
+                  <div style="font-family: var(--font-heading); font-size: 12px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 2px;">Seller Paid</div>
+                  <div style="font-size: 10px; color: var(--text-tertiary); line-height: 1.4;">Funds released to<br>seller after confirmation</div>
+                </div>
+              </div>
+              <!-- Status message -->
+              <div style="background: rgba(139, 92, 246, 0.06); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary);">
+                <span style="font-size: 16px;">🛡️</span>
+                <span>Your payment is protected. If the cards don't match the listing, you can open a dispute within 48 hours of delivery.</span>
               </div>
             </div>
 

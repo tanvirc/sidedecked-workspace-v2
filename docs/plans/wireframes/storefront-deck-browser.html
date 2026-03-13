@@ -731,6 +731,44 @@
     .deck-stat.wr-good { color: var(--positive); }
     .deck-stat.wr-mid { color: var(--warning); }
     .deck-stat.wr-bad { color: var(--negative); }
+    /* Collection-aware ownership badge (shown when user is authenticated) */
+    .deck-ownership {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      margin-top: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.06);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      width: fit-content;
+    }
+    .deck-ownership-bar {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--bg-surface-3);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .deck-ownership-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--positive);
+    }
+    .deck-ownership-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .deck-ownership-cost {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--brand-secondary);
+      margin-left: auto;
+    }
 
     .deck-card-social {
       display: flex;
@@ -1267,6 +1305,11 @@
       <!-- Section 4: Deck Grid -->
       <section class="grid-section">
         <div class="grid-section-inner">
+          <div style="margin-bottom: 12px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="annotation--component annotation" style="font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: #fff; background: var(--brand-primary); padding: 3px 8px; border-radius: 4px;">&lt;DeckOwnershipBadge&gt;</span>
+            <span class="annotation" style="font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: #fff; background: var(--info); padding: 3px 8px; border-radius: 4px;">Only shown when user is authenticated + has collection data</span>
+            <span class="annotation" style="font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: #fff; background: var(--positive); padding: 3px 8px; border-radius: 4px;">GET /api/users/:id/collection/deck-overlap?deckIds[]=...</span>
+          </div>
           <div class="deck-grid">
 
             <!-- Deck 1: Jund Midrange -->
@@ -1292,6 +1335,12 @@
                   <span class="deck-stat">60 cards</span>
                   <span class="deck-stat price">$342</span>
                   <span class="deck-stat wr-good">62% WR</span>
+                </div>
+                <!-- Ownership badge — authenticated user view -->
+                <div class="deck-ownership">
+                  <div class="deck-ownership-bar"><div class="deck-ownership-fill" style="width: 82%;"></div></div>
+                  <span class="deck-ownership-text">Own 49/60</span>
+                  <span class="deck-ownership-cost">~$68 to complete</span>
                 </div>
                 <div class="deck-card-social">
                   <span class="social-item">
@@ -1330,6 +1379,12 @@
                   <span class="deck-stat">60 cards</span>
                   <span class="deck-stat price">$127</span>
                   <span class="deck-stat wr-good">58% WR</span>
+                </div>
+                <!-- Ownership badge — user owns most of this budget deck -->
+                <div class="deck-ownership">
+                  <div class="deck-ownership-bar"><div class="deck-ownership-fill" style="width: 70%;"></div></div>
+                  <span class="deck-ownership-text">Own 42/60</span>
+                  <span class="deck-ownership-cost">~$45 to complete</span>
                 </div>
                 <div class="deck-card-social">
                   <span class="social-item">

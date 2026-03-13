@@ -73,7 +73,7 @@ This milestone is complete only when all are true:
 - [x] **S06: Wireframe Generation & Figma Export** `risk:medium` `depends:[S01]`
   > After this: HTML wireframes exist for all ~32 remaining storefront pages (cart, checkout, sell pages, user account pages, order pages, etc.) following Voltage patterns with sd-nav.js. All wireframes (41 total) exported to Figma.
 
-- [ ] **S07: Remaining Pages — Visual Alignment** `risk:medium` `depends:[S01,S06]`
+- [x] **S07: Remaining Pages — Visual Alignment** `risk:medium` `depends:[S01,S06]`
   > After this: Seller pages, user account pages, commerce pages, and all other storefront pages align to their generated wireframes on desktop + mobile. Every page in the storefront renders consistently with Voltage tokens.
 
 - [ ] **S08: 3-Step Seller Listing Wizard** `risk:high` `depends:[S01,S05]`

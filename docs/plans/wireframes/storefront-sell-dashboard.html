@@ -167,6 +167,15 @@
     .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
     .mobile-frame .footer-copyright { margin-top: 16px; }
     .mobile-frame .annotation { display: none; }
+
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    .table-row:hover { background: var(--bg-surface-2); transition: background 0.15s ease; }
+    .stat-card:hover { border-color: var(--border-strong); transition: border-color 0.15s ease; }
+    .tab:hover { color: var(--text-primary); }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
   </style>
 </head>
 <body>
@@ -343,53 +352,107 @@
 
         <!-- LISTINGS TABLE -->
         <div class="table-container">
+          <!-- First sale celebration banner (shown after first completed sale) -->
+          <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(255, 120, 73, 0.08)); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 14px; padding: 20px 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 32px;">🎉</div>
+            <div style="flex: 1;">
+              <div style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Congrats on your first sale!</div>
+              <div style="font-size: 13px; color: var(--text-secondary);">The One Ring sold for $74.99. Your payout of $67.49 will arrive in 3-5 business days after the buyer confirms delivery.</div>
+            </div>
+            <button style="background: none; border: none; color: var(--text-tertiary); font-size: 18px; cursor: pointer; padding: 4px;">✕</button>
+          </div>
+
+          <div class="table-container">
           <div class="table-header-row">
             <span class="col-thumb">&nbsp;</span>
             <span class="col-title">Card</span>
             <span class="col-condition">Condition</span>
-            <span class="col-price">Price</span>
+            <span class="col-price">Your Price</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary);">Market</span>
             <span class="col-listing-status">Status</span>
             <span class="col-actions">Actions</span>
           </div>
+          <!-- Ragavan: priced competitively (below market) -->
           <div class="table-row">
             <span class="col-thumb"><div class="listing-thumb"></div></span>
             <span class="col-title table-cell table-cell--strong">Ragavan, Nimble Pilferer</span>
             <span class="col-condition table-cell">NM</span>
             <span class="col-price table-cell">$58.99</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 12px; color: var(--positive);" title="Your price is competitive">$62.00 ↓</span>
             <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
             <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
           </div>
+          <!-- Charizard: priced above market -->
           <div class="table-row">
             <span class="col-thumb"><div class="listing-thumb"></div></span>
             <span class="col-title table-cell table-cell--strong">Charizard ex</span>
             <span class="col-condition table-cell">LP</span>
-            <span class="col-price table-cell">$42.50</span>
+            <span class="col-price table-cell" style="color: var(--warning);">$42.50</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 12px; color: var(--warning);" title="Your price is above market">$38.00 ↑</span>
             <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
             <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
           </div>
+          <!-- The One Ring: sold -->
           <div class="table-row">
             <span class="col-thumb"><div class="listing-thumb"></div></span>
             <span class="col-title table-cell table-cell--strong">The One Ring</span>
             <span class="col-condition table-cell">NM</span>
             <span class="col-price table-cell">$74.99</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary);">—</span>
             <span class="col-listing-status"><span class="badge badge--sold">Sold</span></span>
             <span class="col-actions"><button class="btn btn-sm btn-outline">Relist</button></span>
           </div>
+          <!-- Ash Blossom: inactive, significantly below market -->
           <div class="table-row">
             <span class="col-thumb"><div class="listing-thumb"></div></span>
             <span class="col-title table-cell table-cell--strong">Ash Blossom &amp; Joyous Spring</span>
             <span class="col-condition table-cell">MP</span>
             <span class="col-price table-cell">$12.00</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 12px; color: var(--positive);" title="Your price is well below market">$15.50 ↓</span>
             <span class="col-listing-status"><span class="badge badge--inactive">Inactive</span></span>
             <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Activate</button></span>
           </div>
+          <!-- Pikachu: at market price -->
           <div class="table-row">
             <span class="col-thumb"><div class="listing-thumb"></div></span>
             <span class="col-title table-cell table-cell--strong">Pikachu VMAX</span>
             <span class="col-condition table-cell">NM</span>
             <span class="col-price table-cell">$22.30</span>
+            <span style="flex: 0.8; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);" title="At market price">$22.50 ≈</span>
             <span class="col-listing-status"><span class="badge badge--active">Active</span></span>
             <span class="col-actions"><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-ghost">Deactivate</button></span>
+          </div>
+        </div>
+
+        <!-- Empty State: New Seller (0 listings) -->
+        <div style="margin-top: 24px; padding: 0 48px;">
+          <div style="text-align: center; padding: 4px 16px 16px; border: 2px dashed var(--border-default); border-radius: 14px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-secondary); background: rgba(255,120,73,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 16px; margin-top: -12px;">⇣ State: New Seller — 0 Listings</div>
+            <div style="text-align: center; padding: 60px 24px;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px;">💰</div>
+              <div style="font-family: var(--font-display); font-weight: 700; font-size: 24px; text-transform: uppercase; margin-bottom: 8px;">Ready to Start Selling?</div>
+              <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">List your first card in under 2 minutes. No listing fees — you only pay when it sells.</div>
+              <a href="/sell/list" style="display: inline-flex; align-items: center; gap: 6px; padding: 12px 28px; background: var(--brand-primary); color: #fff; font-family: var(--font-heading); font-size: 15px; font-weight: 600; border-radius: 10px; text-decoration: none;">+ List Your First Card</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton State: Listings Loading -->
+        <div style="margin-top: 24px; padding: 0 48px;">
+          <div style="text-align: center; padding: 4px 16px 16px; border: 2px dashed var(--border-default); border-radius: 14px;">
+            <div style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-secondary); background: rgba(255,120,73,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 16px; margin-top: -12px;">⇣ State: Listings Loading</div>
+            <style>
+              @keyframes skel-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+              .skel-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border-default); }
+              .skel-thumb { width: 48px; height: 67px; border-radius: 6px; background: linear-gradient(90deg, var(--bg-surface-2) 25%, var(--bg-surface-3) 50%, var(--bg-surface-2) 75%); background-size: 400% 100%; animation: skel-pulse 1.8s ease-in-out infinite; flex-shrink: 0; }
+              .skel-line { height: 12px; border-radius: 4px; background: linear-gradient(90deg, var(--bg-surface-2) 25%, var(--bg-surface-3) 50%, var(--bg-surface-2) 75%); background-size: 400% 100%; animation: skel-pulse 1.8s ease-in-out infinite; }
+              .skel-line-short { width: 80px; } .skel-line-med { width: 160px; } .skel-line-long { width: 200px; }
+            </style>
+            <div style="padding: 8px 0;">
+              <div class="skel-row"><div class="skel-thumb"></div><div class="skel-line skel-line-long"></div><div class="skel-line skel-line-short"></div><div class="skel-line skel-line-short"></div></div>
+              <div class="skel-row"><div class="skel-thumb"></div><div class="skel-line skel-line-long"></div><div class="skel-line skel-line-short"></div><div class="skel-line skel-line-short"></div></div>
+              <div class="skel-row"><div class="skel-thumb"></div><div class="skel-line skel-line-med"></div><div class="skel-line skel-line-short"></div><div class="skel-line skel-line-short"></div></div>
+            </div>
           </div>
         </div>
       </div>

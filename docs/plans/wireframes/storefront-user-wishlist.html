@@ -97,6 +97,16 @@
     .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
     .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
     .mobile-frame .annotation { display: none; }
+  
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    .table-row:hover, .order-card:hover, .return-card:hover, .review-item:hover, .payout-row:hover, .listing-row:hover { background: var(--bg-surface-2); transition: background 0.15s ease; }
+    .product-card:hover, .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: all 0.2s ease; }
+    .page-btn:hover { background: var(--bg-surface-2); }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
+
   </style>
 </head>
 <body>
@@ -212,6 +222,19 @@
                     <button class="btn btn-primary btn-sm">Add to Cart</button>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state (shown when wishlist has 0 items) -->
+          <div style="margin-top: 24px; padding: 16px 0;">
+            <div style="text-align: center; padding: 4px 16px 16px; border: 2px dashed var(--border-default); border-radius: 14px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-secondary); background: rgba(255,120,73,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 16px; margin-top: -12px;">⇣ State: Empty Wishlist</div>
+              <div class="empty-state">
+                <div class="empty-icon">♡</div>
+                <div class="empty-title">No Wishlisted Cards Yet</div>
+                <div class="empty-desc">Save cards you're watching — we'll track prices and alert you when they drop.</div>
+                <a href="/cards" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; background: var(--brand-primary); color: #fff; font-family: var(--font-heading); font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none;">Browse Cards</a>
               </div>
             </div>
           </div>

@@ -115,6 +115,16 @@
     .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
     .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
     .mobile-frame .annotation { display: none; }
+  
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    .table-row:hover, .order-card:hover, .return-card:hover, .review-item:hover, .payout-row:hover, .listing-row:hover { background: var(--bg-surface-2); transition: background 0.15s ease; }
+    .product-card:hover, .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: all 0.2s ease; }
+    .page-btn:hover { background: var(--bg-surface-2); }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
+
   </style>
 </head>
 <body>

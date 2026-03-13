@@ -133,6 +133,16 @@
     .mobile-frame .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
     .mobile-frame .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
     .mobile-frame .annotation { display: none; }
+  
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    .table-row:hover, .order-card:hover, .return-card:hover, .review-item:hover, .payout-row:hover, .listing-row:hover { background: var(--bg-surface-2); transition: background 0.15s ease; }
+    .product-card:hover, .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: all 0.2s ease; }
+    .page-btn:hover { background: var(--bg-surface-2); }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
+
   </style>
 </head>
 <body>
@@ -215,6 +225,18 @@
                 <div class="return-thumb"></div>
               </div>
               <a href="#" class="return-link">View Details →</a>
+            </div>
+
+            <!-- Empty State: No Returns -->
+            <div style="margin-top: 24px;">
+              <div style="text-align: center; padding: 4px 16px 16px; border: 2px dashed var(--border-default); border-radius: 14px;">
+                <div style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-secondary); background: rgba(255,120,73,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 16px; margin-top: -12px;">⇣ State: No Returns</div>
+                <div style="text-align: center; padding: 48px 24px;">
+                  <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-surface-2); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px;">✓</div>
+                  <div style="font-family: var(--font-display); font-weight: 700; font-size: 22px; text-transform: uppercase; margin-bottom: 6px;">No Returns</div>
+                  <div style="font-size: 13px; color: var(--text-secondary); max-width: 360px; margin: 0 auto;">You haven't filed any returns. If a card doesn't match its listing, you can open a return within 48 hours of delivery.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

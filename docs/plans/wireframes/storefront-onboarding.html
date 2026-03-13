@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Post-Auth Onboarding Wireframe (Voltage)</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: rgba(139, 92, 246, 0.12);
+      --brand-secondary-subtle: rgba(255, 120, 73, 0.12);
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --info: #60A5FA;
+      --interactive: #8B5CF6;
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+    }
+
+    /* =============================================
+       GLOBAL RESET + CANVAS
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060608;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       CANVAS LAYOUT
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 48px;
+      padding: 48px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+      flex-wrap: wrap;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+    .dim {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+      margin-left: 8px;
+    }
+
+    /* =============================================
+       DESKTOP FRAME
+       ============================================= */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* =============================================
+       MOBILE FRAME
+       ============================================= */
+    .mobile-frame {
+      width: 390px;
+      min-height: 844px;
+      background: var(--bg-base);
+      border: 3px solid var(--border-strong);
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 18px 18px;
+      z-index: 50;
+      border: 3px solid var(--border-strong);
+      border-top: none;
+    }
+
+    /* =============================================
+       ANNOTATION BADGES
+       ============================================= */
+    .annotation {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      line-height: 1.3;
+      display: inline-flex;
+    }
+    .annotation { background: var(--brand-secondary); }
+    .annotation--api { background: var(--positive); }
+    .annotation--note { background: var(--info); }
+    .annotation--component { background: var(--brand-primary); }
+    .annotation--break { background: var(--warning); color: #000; }
+    .mobile-frame .annotation { display: none; }
+
+    /* =============================================
+       ONBOARDING LAYOUT
+       ============================================= */
+    .onboard-page {
+      min-height: 780px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      position: relative;
+    }
+
+    /* Progress indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--bg-surface-3);
+      transition: all 0.3s;
+    }
+    .step-dot.active {
+      background: var(--brand-primary);
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+    }
+    .step-dot.done {
+      background: var(--positive);
+    }
+    .step-line {
+      width: 32px;
+      height: 2px;
+      background: var(--bg-surface-3);
+    }
+    .step-line.done {
+      background: var(--positive);
+    }
+
+    /* Content card */
+    .onboard-card {
+      width: 100%;
+      max-width: 640px;
+      background: var(--bg-surface-1);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      text-align: center;
+    }
+
+    .onboard-title {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .onboard-subtitle {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    /* Game selector cards */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .game-card {
+      background: var(--bg-surface-2);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 24px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .game-card:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-surface-3);
+    }
+    .game-card.selected {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.12);
+    }
+
+    .game-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .game-name {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .game-desc {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .game-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-default);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.2s;
+    }
+    .game-card.selected .game-check {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+      color: #fff;
+    }
+
+    /* Import options */
+    .import-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .import-option {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .import-option:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-surface-3);
+    }
+    .import-option.selected {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .import-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .import-info {
+      flex: 1;
+    }
+
+    .import-name {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .import-desc {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .import-arrow {
+      color: var(--text-tertiary);
+      font-size: 16px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    }
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-skip {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px 16px;
+      margin-top: 12px;
+      transition: color 0.2s;
+    }
+    .btn-skip:hover {
+      color: var(--text-secondary);
+    }
+
+    /* Welcome state */
+    .welcome-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 24px;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin: 24px 0;
+    }
+
+    .welcome-stat {
+      text-align: center;
+    }
+
+    .welcome-stat-value {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--brand-primary);
+    }
+
+    .welcome-stat-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    .welcome-cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .welcome-cta {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .welcome-cta:hover {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .welcome-cta-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .welcome-cta-label {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .welcome-cta-desc {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Game tags in welcome */
+    .game-tags {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .game-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .game-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* Error recovery */
+    .import-error {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--negative);
+    }
+
+    .import-progress {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: var(--bg-surface-3);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--brand-primary);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* =============================================
+       MOBILE-SPECIFIC OVERRIDES
+       ============================================= */
+    .mobile-frame .onboard-page {
+      padding: 80px 24px 40px;
+      min-height: 844px;
+    }
+    .mobile-frame .onboard-card {
+      padding: 28px 20px;
+      max-width: 100%;
+    }
+    .mobile-frame .onboard-title {
+      font-size: 26px;
+    }
+    .mobile-frame .onboard-subtitle {
+      font-size: 13px;
+    }
+    .mobile-frame .game-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mobile-frame .game-card {
+      padding: 16px 12px;
+      gap: 8px;
+    }
+    .mobile-frame .game-icon {
+      width: 44px;
+      height: 44px;
+      font-size: 13px;
+    }
+    .mobile-frame .game-name {
+      font-size: 13px;
+    }
+    .mobile-frame .game-desc {
+      display: none;
+    }
+    .mobile-frame .import-option {
+      padding: 12px 14px;
+      gap: 12px;
+    }
+    .mobile-frame .import-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 12px;
+    }
+    .mobile-frame .welcome-cta-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .mobile-frame .welcome-stats {
+      gap: 16px;
+    }
+    .mobile-frame .welcome-stat-value {
+      font-size: 22px;
+    }
+    .mobile-frame .step-indicator {
+      margin-bottom: 24px;
+    }
+  
+    /* ---- Hover States ---- */
+    .btn:hover, .btn-outline:hover { filter: brightness(1.15); transition: all 0.15s ease; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); transition: all 0.15s ease; }
+    .btn-ghost:hover { background: rgba(139, 92, 246, 0.1); transition: background 0.15s ease; }
+    a:hover { color: var(--brand-primary); transition: color 0.15s ease; }
+
+  </style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- ===== STEP 1: GAME SELECTION — DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 1 &mdash; Game Selection <span class="dim">Desktop 1440px</span></div>
+    <div class="desktop-frame" data-frame-name="Desktop — Step 1 — Game Selection">
+      <div class="onboard-page">
+
+        <!-- Annotations -->
+        <div style="position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <span class="annotation--component annotation">&lt;OnboardingWizard&gt;</span>
+          <span class="annotation--api annotation">POST /api/users/:id/preferences</span>
+          <span class="annotation--note annotation">Shown once after first OAuth sign-up</span>
+        </div>
+
+        <!-- Progress -->
+        <div class="step-indicator">
+          <div class="step-dot active"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="onboard-title">What Do You Play?</div>
+          <div class="onboard-subtitle">
+            Pick the games you're into. We'll personalize your experience &mdash; prices, trending cards, and deck content tuned to your games.
+          </div>
+
+          <!-- Game cards — 2×2 grid, MTG + Pokemon selected -->
+          <div class="game-grid">
+            <!-- MTG — selected -->
+            <div class="game-card selected">
+              <div class="game-icon" style="background: rgba(167, 139, 250, 0.15); color: var(--game-mtg);">MTG</div>
+              <div class="game-name">Magic: The Gathering</div>
+              <div class="game-desc">Modern, Standard, Commander &amp; more</div>
+              <div class="game-check">✓</div>
+            </div>
+            <!-- Pokemon — selected -->
+            <div class="game-card selected">
+              <div class="game-icon" style="background: rgba(252, 211, 77, 0.15); color: var(--game-pokemon);">PKM</div>
+              <div class="game-name">Pokémon TCG</div>
+              <div class="game-desc">Scarlet &amp; Violet, vintage, promos</div>
+              <div class="game-check">✓</div>
+            </div>
+            <!-- Yu-Gi-Oh — not selected -->
+            <div class="game-card">
+              <div class="game-icon" style="background: rgba(96, 165, 250, 0.15); color: var(--game-ygo);">YGO</div>
+              <div class="game-name">Yu-Gi-Oh!</div>
+              <div class="game-desc">TCG singles, structure decks, staples</div>
+              <div class="game-check"></div>
+            </div>
+            <!-- One Piece — not selected -->
+            <div class="game-card">
+              <div class="game-icon" style="background: rgba(52, 211, 153, 0.15); color: var(--game-op);">OP</div>
+              <div class="game-name">One Piece Card Game</div>
+              <div class="game-desc">Leaders, events, alt arts</div>
+              <div class="game-check"></div>
+            </div>
+          </div>
+
+          <button class="btn-primary">Continue</button>
+          <button class="btn-skip">Skip for now &mdash; show me everything</button>
+
+          <div style="margin-top: 16px;">
+            <span class="annotation--note annotation">Skip = no game filter applied; all games shown everywhere</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 1: GAME SELECTION — MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 1 &mdash; Game Selection <span class="dim">Mobile 390px</span></div>
+    <div class="mobile-frame" data-frame-name="Mobile — Step 1 — Game Selection">
+      <div class="onboard-page">
+        <div class="step-indicator">
+          <div class="step-dot active"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="onboard-title">What Do You Play?</div>
+          <div class="onboard-subtitle">
+            Pick your games. We'll tune everything to match.
+          </div>
+
+          <div class="game-grid">
+            <div class="game-card selected">
+              <div class="game-icon" style="background: rgba(167, 139, 250, 0.15); color: var(--game-mtg);">MTG</div>
+              <div class="game-name">Magic: The Gathering</div>
+              <div class="game-check">✓</div>
+            </div>
+            <div class="game-card selected">
+              <div class="game-icon" style="background: rgba(252, 211, 77, 0.15); color: var(--game-pokemon);">PKM</div>
+              <div class="game-name">Pokémon TCG</div>
+              <div class="game-check">✓</div>
+            </div>
+            <div class="game-card">
+              <div class="game-icon" style="background: rgba(96, 165, 250, 0.15); color: var(--game-ygo);">YGO</div>
+              <div class="game-name">Yu-Gi-Oh!</div>
+              <div class="game-check"></div>
+            </div>
+            <div class="game-card">
+              <div class="game-icon" style="background: rgba(52, 211, 153, 0.15); color: var(--game-op);">OP</div>
+              <div class="game-name">One Piece</div>
+              <div class="game-check"></div>
+            </div>
+          </div>
+
+          <button class="btn-primary">Continue</button>
+          <button class="btn-skip">Skip &mdash; show me everything</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: COLLECTION IMPORT — DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 2 &mdash; Collection Import <span class="dim">Desktop 1440px</span></div>
+    <div class="desktop-frame" data-frame-name="Desktop — Step 2 — Collection Import">
+      <div class="onboard-page">
+
+        <div style="position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <span class="annotation--component annotation">&lt;CollectionImport&gt;</span>
+          <span class="annotation--api annotation">POST /api/users/:id/collection/import</span>
+          <span class="annotation--note annotation">Optional step &mdash; "Skip" goes straight to welcome</span>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="onboard-title">Already Have a Collection?</div>
+          <div class="onboard-subtitle">
+            Import your cards and we'll know what you own. Your deck builder will automatically show which cards you need to buy &mdash; and skip what you already have.
+          </div>
+
+          <div class="import-grid">
+            <!-- Moxfield -->
+            <div class="import-option selected">
+              <div class="import-icon" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">Mx</div>
+              <div class="import-info">
+                <div class="import-name">Moxfield</div>
+                <div class="import-desc">Connect your Moxfield account to sync your collection automatically</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+            <!-- Archidekt -->
+            <div class="import-option">
+              <div class="import-icon" style="background: rgba(96, 165, 250, 0.12); color: var(--info);">Ar</div>
+              <div class="import-info">
+                <div class="import-name">Archidekt</div>
+                <div class="import-desc">Import your Archidekt collection via username or export file</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+            <!-- CSV Upload -->
+            <div class="import-option">
+              <div class="import-icon" style="background: rgba(255, 120, 73, 0.12); color: var(--brand-secondary);">CSV</div>
+              <div class="import-info">
+                <div class="import-name">Upload CSV / Text File</div>
+                <div class="import-desc">Paste a card list or upload a CSV export from any collection manager</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- Import in progress state (alternative state annotation) -->
+          <div class="import-progress">
+            <div style="font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-primary);">Importing from Moxfield...</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 65%;"></div>
+            </div>
+            <div class="progress-text">1,247 of 1,892 cards matched</div>
+            <div style="margin-top: 8px;">
+              <span class="annotation--note annotation">WebSocket progress updates via /ws/import/:jobId</span>
+            </div>
+          </div>
+
+          <!-- Error recovery state -->
+          <div class="import-error">
+            <span>⚠</span>
+            <span>Import didn't work. You can <strong style="color: var(--text-primary); cursor: pointer;">try again</strong> or import later from Settings.</span>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 16px;">Import My Collection</button>
+          <button class="btn-skip">Skip &mdash; I'll add cards as I build decks</button>
+
+          <div style="margin-top: 16px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+            <span class="annotation--note annotation">Skip triggers MVP path: "I Own This" toggles in deck builder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: COLLECTION IMPORT — MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 2 &mdash; Collection Import <span class="dim">Mobile 390px</span></div>
+    <div class="mobile-frame" data-frame-name="Mobile — Step 2 — Collection Import">
+      <div class="onboard-page">
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+          <div class="step-line"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="onboard-title">Got a Collection?</div>
+          <div class="onboard-subtitle">
+            Import your cards so the deck builder knows what you already own.
+          </div>
+
+          <div class="import-grid">
+            <div class="import-option">
+              <div class="import-icon" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">Mx</div>
+              <div class="import-info">
+                <div class="import-name">Moxfield</div>
+                <div class="import-desc">Sync your collection</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+            <div class="import-option">
+              <div class="import-icon" style="background: rgba(96, 165, 250, 0.12); color: var(--info);">Ar</div>
+              <div class="import-info">
+                <div class="import-name">Archidekt</div>
+                <div class="import-desc">Import via username</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+            <div class="import-option">
+              <div class="import-icon" style="background: rgba(255, 120, 73, 0.12); color: var(--brand-secondary);">CSV</div>
+              <div class="import-info">
+                <div class="import-name">CSV / Text File</div>
+                <div class="import-desc">Upload a card list</div>
+              </div>
+              <span class="import-arrow">→</span>
+            </div>
+          </div>
+
+          <button class="btn-primary">Import Collection</button>
+          <button class="btn-skip">Skip for now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3A: WELCOME (IMPORTED) — DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 3a &mdash; Welcome (Imported) <span class="dim">Desktop 1440px</span></div>
+    <div class="desktop-frame" data-frame-name="Desktop — Step 3a — Welcome Imported">
+      <div class="onboard-page">
+
+        <div style="position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <span class="annotation--component annotation">&lt;WelcomeScreen&gt;</span>
+          <span class="annotation--note annotation">Variant: collection imported successfully</span>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="welcome-icon">🎴</div>
+          <div class="onboard-title">Welcome to SideDecked!</div>
+          <div class="onboard-subtitle">
+            Your collection is ready. We found your cards and matched them to our catalog.
+          </div>
+
+          <!-- Game tags -->
+          <div class="game-tags">
+            <div class="game-tag" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">
+              <div class="game-tag-dot" style="background: var(--game-mtg);"></div>
+              Magic: The Gathering
+            </div>
+            <div class="game-tag" style="background: rgba(252, 211, 77, 0.12); color: var(--game-pokemon);">
+              <div class="game-tag-dot" style="background: var(--game-pokemon);"></div>
+              Pokémon TCG
+            </div>
+          </div>
+
+          <!-- Import stats -->
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">1,847</div>
+              <div class="welcome-stat-label">Cards imported</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value" style="color: var(--positive);">94%</div>
+              <div class="welcome-stat-label">Match rate</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">$2,340</div>
+              <div class="welcome-stat-label">Collection value</div>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">
+            113 cards couldn't be auto-matched &mdash; <a href="#" style="color: var(--brand-primary); text-decoration: none;">review them in Settings</a>
+          </div>
+
+          <!-- CTAs -->
+          <div class="welcome-cta-grid">
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔨</div>
+              <div class="welcome-cta-label">Build a Deck</div>
+              <div class="welcome-cta-desc">We know what you own</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔍</div>
+              <div class="welcome-cta-label">Browse Cards</div>
+              <div class="welcome-cta-desc">Find your next pickup</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">💰</div>
+              <div class="welcome-cta-label">Sell Cards</div>
+              <div class="welcome-cta-desc">List from your collection</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">📊</div>
+              <div class="welcome-cta-label">Collection Value</div>
+              <div class="welcome-cta-desc">Track prices over time</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 24px;">Let's Go →</button>
+
+          <div style="margin-top: 16px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+            <span class="annotation--note annotation">"Let's Go" navigates to the personalized homepage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3A: WELCOME (IMPORTED) — MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 3a &mdash; Welcome (Imported) <span class="dim">Mobile 390px</span></div>
+    <div class="mobile-frame" data-frame-name="Mobile — Step 3a — Welcome Imported">
+      <div class="onboard-page">
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="welcome-icon">🎴</div>
+          <div class="onboard-title">Welcome!</div>
+          <div class="onboard-subtitle">
+            Your collection is ready.
+          </div>
+
+          <div class="game-tags">
+            <div class="game-tag" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">
+              <div class="game-tag-dot" style="background: var(--game-mtg);"></div>
+              MTG
+            </div>
+            <div class="game-tag" style="background: rgba(252, 211, 77, 0.12); color: var(--game-pokemon);">
+              <div class="game-tag-dot" style="background: var(--game-pokemon);"></div>
+              Pokémon
+            </div>
+          </div>
+
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">1,847</div>
+              <div class="welcome-stat-label">Cards</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value" style="color: var(--positive);">94%</div>
+              <div class="welcome-stat-label">Matched</div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-value">$2,340</div>
+              <div class="welcome-stat-label">Value</div>
+            </div>
+          </div>
+
+          <div class="welcome-cta-grid">
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔨</div>
+              <div class="welcome-cta-label">Build a Deck</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔍</div>
+              <div class="welcome-cta-label">Browse Cards</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">💰</div>
+              <div class="welcome-cta-label">Sell Cards</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">📊</div>
+              <div class="welcome-cta-label">My Collection</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 20px;">Let's Go →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3B: WELCOME (SKIPPED) — DESKTOP ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 3b &mdash; Welcome (Skipped Import) <span class="dim">Desktop 1440px</span></div>
+    <div class="desktop-frame" data-frame-name="Desktop — Step 3b — Welcome Skipped">
+      <div class="onboard-page">
+
+        <div style="position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <span class="annotation--component annotation">&lt;WelcomeScreen&gt;</span>
+          <span class="annotation--note annotation">Variant: collection import skipped</span>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="welcome-icon">👋</div>
+          <div class="onboard-title">Welcome to SideDecked!</div>
+          <div class="onboard-subtitle">
+            You're all set. Start building a deck, browse cards, or list something for sale.
+            <br><br>
+            <span style="color: var(--text-tertiary); font-size: 13px;">
+              Tip: When you build a deck, you can mark cards as "owned" — we'll only offer to buy what you're missing.
+            </span>
+          </div>
+
+          <div class="game-tags">
+            <div class="game-tag" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">
+              <div class="game-tag-dot" style="background: var(--game-mtg);"></div>
+              Magic: The Gathering
+            </div>
+            <div class="game-tag" style="background: rgba(252, 211, 77, 0.12); color: var(--game-pokemon);">
+              <div class="game-tag-dot" style="background: var(--game-pokemon);"></div>
+              Pokémon TCG
+            </div>
+          </div>
+
+          <div class="welcome-cta-grid">
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔨</div>
+              <div class="welcome-cta-label">Build a Deck</div>
+              <div class="welcome-cta-desc">Start your first build</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔍</div>
+              <div class="welcome-cta-label">Browse Cards</div>
+              <div class="welcome-cta-desc">Find what you need</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">💰</div>
+              <div class="welcome-cta-label">Sell Cards</div>
+              <div class="welcome-cta-desc">List your first card</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">📦</div>
+              <div class="welcome-cta-label">Import Later</div>
+              <div class="welcome-cta-desc">Settings → Collection</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 24px;">Let's Go →</button>
+
+          <div style="margin-top: 16px;">
+            <span class="annotation--note annotation">Navigates to personalized homepage (game-filtered)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3B: WELCOME (SKIPPED) — MOBILE ===== -->
+  <div class="frame-wrapper">
+    <div class="frame-label">Step 3b &mdash; Welcome (Skipped Import) <span class="dim">Mobile 390px</span></div>
+    <div class="mobile-frame" data-frame-name="Mobile — Step 3b — Welcome Skipped">
+      <div class="onboard-page">
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"></div>
+        </div>
+
+        <div class="onboard-card">
+          <div class="welcome-icon">👋</div>
+          <div class="onboard-title">Welcome!</div>
+          <div class="onboard-subtitle">
+            Start building, browsing, or selling. Mark cards as "owned" in the deck builder &mdash; we'll only suggest buying what you're missing.
+          </div>
+
+          <div class="game-tags">
+            <div class="game-tag" style="background: rgba(167, 139, 250, 0.12); color: var(--game-mtg);">
+              <div class="game-tag-dot" style="background: var(--game-mtg);"></div>
+              MTG
+            </div>
+            <div class="game-tag" style="background: rgba(252, 211, 77, 0.12); color: var(--game-pokemon);">
+              <div class="game-tag-dot" style="background: var(--game-pokemon);"></div>
+              Pokémon
+            </div>
+          </div>
+
+          <div class="welcome-cta-grid">
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔨</div>
+              <div class="welcome-cta-label">Build a Deck</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">🔍</div>
+              <div class="welcome-cta-label">Browse Cards</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">💰</div>
+              <div class="welcome-cta-label">Sell Cards</div>
+            </div>
+            <div class="welcome-cta">
+              <div class="welcome-cta-icon">📦</div>
+              <div class="welcome-cta-label">Import Later</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 20px;">Let's Go →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!--
+  STORY COVERAGE:
+  | Story   | AC  | Section                    | Coverage |
+  |---------|-----|----------------------------|----------|
+  | Journey4| J4.1| Game selection multi-select | Full     |
+  | Journey4| J4.2| Collection import options   | Full     |
+  | Journey4| J4.3| Welcome w/ imported stats   | Full     |
+  | Journey4| J4.4| Welcome w/ skipped import   | Full     |
+  | Journey4| J4.5| Error recovery on import    | Full     |
+  | Journey4| J4.6| Progress indicator          | Full     |
+  | Journey4| J4.7| Mobile responsive           | Full     |
+-->
+
+</body>
+</html>

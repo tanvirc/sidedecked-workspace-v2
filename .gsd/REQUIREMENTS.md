@@ -149,36 +149,36 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R014 — Seller pages visual alignment
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Seller pages (sell dashboard, list-card, upgrade, payouts, reputation) align to their generated wireframes.
 - Why it matters: Maya the Seller's entire experience. Must feel polished to retain sellers.
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: M001/S01, M001/S06
-- Validation: unmapped
-- Notes: Pages exist with functional code. Need visual alignment.
+- Validation: grep confirms zero bare light-mode Tailwind color classes across all seller components (ConsumerSellerDashboard, CustomerToSellerUpgrade, ReputationDashboard, ReviewManagement, TrustHistoryChart, VerificationStatus, Payout*, BalanceCards, SellerResponseBadge, CardListingForm, ConditionGuide, FeeCalculator, ListingSuccessScreen). All use Voltage tokens via D009 pattern. 794 tests pass. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: ~152 light-mode refs converted across 13 seller components. TIER_COLORS maps restructured from Tailwind class maps to inline style value maps. sell/list-card page wrapper aligned (wizard internals are S08 scope per D027).
 
 ### R015 — User account pages visual alignment
 - Class: continuity
-- Status: active
+- Status: validated
 - Description: User account pages (orders, addresses, settings, wishlist, reviews, messages, returns, price alerts) align to their generated wireframes.
 - Why it matters: Post-purchase experience. Users check orders, manage addresses, track returns.
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: M001/S01, M001/S06
-- Validation: unmapped
-- Notes: 15+ user pages exist.
+- Validation: UserAccountLayout extracted in user/layout.tsx with 240px sidebar (desktop) + horizontal pill nav (mobile). Verify-email renders standalone via STANDALONE_PATHS exclusion. grep confirms zero bare light-mode refs in EnhancedPriceAlerts, ReturnItemsTab, and verify-email page. 794 tests pass. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: 37 light-mode refs converted across user-account components. navigationItems exported from UserNavigation for shared sidebar/pill rendering.
 
 ### R016 — Commerce pages visual alignment
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Commerce pages (cart, checkout, order confirmation) align to their generated wireframes.
 - Why it matters: Revenue funnel. Cart → checkout → confirmation must be seamless.
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: M001/S01, M001/S06
-- Validation: unmapped
-- Notes: Cart and checkout pages exist with functional Medusa integration.
+- Validation: grep confirms zero bare light-mode Tailwind color classes across EnhancedCartItems, Cart.tsx, InventoryValidator, OrderConfirmedSection. Semantic status indicators use rgba-tinted backgrounds with CSS custom property text colors. 794 tests pass. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: ~57 light-mode refs converted across 4 commerce components. Checkout-adjacent sections (CartAddressSection, CartPaymentSection, CartReview, CartShippingMethodsSection) were already clean.
 
 ### R017 — 3-step seller listing wizard
 - Class: primary-user-loop
@@ -421,9 +421,9 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R011 | launchability | active | M001/S05 | none | unmapped |
 | R012 | launchability | active | M001/S05 | none | unmapped |
 | R013 | quality-attribute | validated | M001/S06 | M001/S01 | 33 wireframes, verify-wireframes.sh 5/5 pass |
-| R014 | primary-user-loop | active | M001/S07 | M001/S01, M001/S06 | unmapped |
-| R015 | continuity | active | M001/S07 | M001/S01, M001/S06 | unmapped |
-| R016 | primary-user-loop | active | M001/S07 | M001/S01, M001/S06 | unmapped |
+| R014 | primary-user-loop | validated | M001/S07 | M001/S01, M001/S06 | grep zero light-mode refs across 13 seller components; 794 tests pass; visual UAT pending |
+| R015 | continuity | validated | M001/S07 | M001/S01, M001/S06 | UserAccountLayout extracted, grep zero refs, 794 tests pass; visual UAT pending |
+| R016 | primary-user-loop | validated | M001/S07 | M001/S01, M001/S06 | grep zero light-mode refs across 4 commerce components; 794 tests pass; visual UAT pending |
 | R017 | primary-user-loop | active | M001/S08 | M001/S01, M001/S05 | unmapped |
 | R018 | differentiator | active | M001/S09 | none | unmapped |
 | R019 | differentiator | active | M001/S09 | M001/S01, M001/S03 | unmapped |
@@ -447,7 +447,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 23
-- Mapped to slices: 23
-- Validated: 2 (R013, R023)
+- Active requirements: 20
+- Mapped to slices: 20
+- Validated: 5 (R013, R014, R015, R016, R023)
 - Unmapped active requirements: 0
