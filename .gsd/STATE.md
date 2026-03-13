@@ -1,24 +1,22 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S04 — complete
-**Phase:** idle
+**Active Slice:** S05 — Auth, Profile & OAuth Providers
+**Phase:** executing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
 ## Milestone Registry
-- 🔄 **M001:** MVP Core Loop (S01 ✅ S02 ✅ S03 ✅ S04 ✅ — S05–S10 remaining)
-
-## Completed Slices
-- S01: Voltage Design System Foundation ✅
-- S02: Card Browse, Detail & Search — Pixel Perfect ✅
-- S03: Deck Builder, Browser & Viewer — Pixel Perfect ✅
-- S04: Homepage — Pixel Perfect + Live Data ✅
+- 🔄 **M001:** MVP Core Loop
+- ⬜ **M002:** M002
+- ⬜ **M003:** M003
+- ⬜ **M004:** M004
+- ⬜ **M005:** M005
 
 ## Recent Decisions
-- None new in S04
+- None recorded
 
 ## Blockers
 - None
 
 ## Next Action
-Pick next slice from M001 roadmap (S05–S10).
+Execute T01: Build cinematic split-screen auth pages in (auth) route group in slice S05.
