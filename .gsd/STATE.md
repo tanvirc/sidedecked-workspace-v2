@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S08 — 3-Step Seller Listing Wizard
+**Active Slice:** S09 — Cart Optimizer & Deck-to-Cart Flow
 **Phase:** planning
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Plan slice S08 (3-Step Seller Listing Wizard).
+Plan slice S09 (Cart Optimizer & Deck-to-Cart Flow).

@@ -182,14 +182,14 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R017 — 3-step seller listing wizard
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Individual seller can list a card via 3-step guided flow: Identify (search + set/printing selection) → Condition + Photos (game-specific grading guides, MinIO upload) → Price + Confirm (market pricing pre-fill, competitive indicator, shipping config). Listing goes live on submission.
 - Why it matters: Long-tail supply. Every card Maya lists is inventory the platform needs. Must be < 90 seconds per card.
 - Source: user
 - Primary owning slice: M001/S08
 - Supporting slices: M001/S01, M001/S05
-- Validation: unmapped
-- Notes: sell/list-card page is a 33-line stub. Greenfield feature build.
+- Validation: structural — 60 tests verify full wizard flow (step navigation, card search with debounce, printing selection gating, condition selector, photo upload zones, market price display with fallback, price input with competitive gauge, confirmation summary, publish flow, pre-fill via SKU, Voltage compliance). 854 total tests pass. Zero forbidden Tailwind color classes in wizard sources. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: 13 wizard components in storefront/src/components/seller/wizard/. Replaces old CardListingForm stub. Game code hardcoded to "MTG" for catalog_sku — multi-game support needs card-derived game code.
 
 ### R018 — Cart optimizer algorithm
 - Class: differentiator
@@ -424,7 +424,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R014 | primary-user-loop | validated | M001/S07 | M001/S01, M001/S06 | grep zero light-mode refs across 13 seller components; 794 tests pass; visual UAT pending |
 | R015 | continuity | validated | M001/S07 | M001/S01, M001/S06 | UserAccountLayout extracted, grep zero refs, 794 tests pass; visual UAT pending |
 | R016 | primary-user-loop | validated | M001/S07 | M001/S01, M001/S06 | grep zero light-mode refs across 4 commerce components; 794 tests pass; visual UAT pending |
-| R017 | primary-user-loop | active | M001/S08 | M001/S01, M001/S05 | unmapped |
+| R017 | primary-user-loop | validated | M001/S08 | M001/S01, M001/S05 | structural — 60 wizard tests, 854 total pass, Voltage compliant; visual UAT pending |
 | R018 | differentiator | active | M001/S09 | none | unmapped |
 | R019 | differentiator | active | M001/S09 | M001/S01, M001/S03 | unmapped |
 | R020 | differentiator | active | M001/S09 | M001/S02, M001/S03, M001/S08 | unmapped |
@@ -447,7 +447,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 20
-- Mapped to slices: 20
-- Validated: 5 (R013, R014, R015, R016, R023)
+- Active requirements: 19
+- Mapped to slices: 19
+- Validated: 6 (R013, R014, R015, R016, R017, R023)
 - Unmapped active requirements: 0

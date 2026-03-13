@@ -76,7 +76,7 @@ This milestone is complete only when all are true:
 - [x] **S07: Remaining Pages — Visual Alignment** `risk:medium` `depends:[S01,S06]`
   > After this: Seller pages, user account pages, commerce pages, and all other storefront pages align to their generated wireframes on desktop + mobile. Every page in the storefront renders consistently with Voltage tokens.
 
-- [ ] **S08: 3-Step Seller Listing Wizard** `risk:high` `depends:[S01,S05]`
+- [x] **S08: 3-Step Seller Listing Wizard** `risk:high` `depends:[S01,S05]`
   > After this: An individual seller can list a card via Identify → Condition + Photos → Price + Confirm flow. Market pricing pre-filled, game-specific grading guides shown, photos uploaded to MinIO. Listing appears on card detail page.
 
 - [ ] **S09: Cart Optimizer & Deck-to-Cart Flow** `risk:high` `depends:[S02,S03,S08]`
