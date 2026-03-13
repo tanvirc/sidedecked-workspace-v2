@@ -55,7 +55,7 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [ ] **S01: Voltage Design System Foundation** `risk:medium` `depends:[]`
+- [x] **S01: Voltage Design System Foundation** `risk:medium` `depends:[]`
   > After this: Shared nav, footer, card display, skeleton, and price tag components render with Voltage tokens on any page. Last alert() replaced with sonner toast. Typography and token consistency verified.
 
 - [ ] **S02: Card Browse, Detail & Search — Pixel Perfect** `risk:high` `depends:[S01]`

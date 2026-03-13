@@ -248,14 +248,14 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R023 — Toast migration complete
 - Class: quality-attribute
-- Status: active
+- Status: validated
 - Description: Zero alert()/confirm()/prompt() calls remain in storefront. All replaced with sonner toasts.
 - Why it matters: UX hygiene. alert() dialogs are jarring and block the thread.
 - Source: inferred
 - Primary owning slice: M001/S01
 - Supporting slices: none
-- Validation: unmapped
-- Notes: 1 alert() call remaining. sonner already integrated.
+- Validation: `grep -rn "window\.alert\|window\.confirm\|window\.prompt" storefront/src/` returns zero matches (verified S01)
+- Notes: Confirmed zero calls remaining as of S01 completion.
 
 ### R024 — Voltage dark theme consistency
 - Class: quality-attribute
@@ -430,7 +430,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R020 | differentiator | active | M001/S09 | M001/S02, M001/S03, M001/S08 | unmapped |
 | R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | unmapped |
 | R022 | launchability | active | M001/S04 | M001/S02 | unmapped |
-| R023 | quality-attribute | active | M001/S01 | none | unmapped |
+| R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
 | R024 | quality-attribute | active | M001/S01 | all | unmapped |
 | R025 | operability | active | M001/S06 | none | unmapped |
 | R030 | launchability | deferred | none | none | unmapped |
@@ -447,7 +447,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 25
-- Mapped to slices: 25
-- Validated: 0
+- Active requirements: 24
+- Mapped to slices: 24
+- Validated: 1
 - Unmapped active requirements: 0
