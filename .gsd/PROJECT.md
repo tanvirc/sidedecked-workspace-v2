@@ -14,7 +14,7 @@ The deck-to-cart pipeline: a player builds a deck, marks cards they own, and buy
 
 - **backend/** — MercurJS with 19 custom modules, 25+ workflow domains, 40+ subscribers, auth module (missing Google/Discord providers), Stripe Connect integration, consumer-seller API routes
 - **customer-backend/** — 31 TypeORM entities, 6300+ lines of routes (catalog, decks, sellers, pricing, collections), ETL pipeline (303 lines), services for deck validation, trust scoring, market data, Algolia indexing
-- **storefront/** — 46 page files, 14,691 lines in card components, 5,900 lines in deck builder components, Algolia search integration, BFF endpoint for card detail, 672 passing tests across 67 files. Design system partially implemented (Voltage tokens in CSS, shadcn/ui components initialized, sonner integrated)
+- **storefront/** — 46 page files, 14,691 lines in card components, 5,900 lines in deck builder components, Algolia search integration, BFF endpoint for card detail, 742 passing tests across 73 files. Design system implemented (Voltage tokens, shadcn/ui, sonner). Card browse/detail/search pages aligned to wireframes (S02). Deck browser/viewer/builder pages aligned to wireframes (S03).
 - **vendorpanel/** — React 18 + Vite SPA with 50+ TanStack Query hooks, Medusa UI components, 40+ routes
 
 **What works:** Card detail BFF, Algolia search with autocomplete/facets, deck CRUD, deck builder with DnD/touch, social auth routes (but missing Google/Discord providers), Stripe Connect seller onboarding, consumer-seller listings/orders/payouts, storefront tests passing.

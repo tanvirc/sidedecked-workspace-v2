@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S03 — Deck Builder, Browser & Viewer — Pixel Perfect
+**Active Slice:** S04 — Homepage — Pixel Perfect + Live Data
 **Phase:** planning
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Plan slice S03 (Deck Builder, Browser & Viewer — Pixel Perfect).
+Plan slice S04 (Homepage — Pixel Perfect + Live Data).
