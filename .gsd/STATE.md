@@ -1,8 +1,8 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S01 — Voltage Design System Foundation
-**Phase:** ready
+**Active Slice:** S02 — Card Browse, Detail & Search — Pixel Perfect
+**Phase:** executing
 **Requirements Status:** 25 active · 0 validated · 8 deferred · 3 out of scope
 
 ## Milestone Registry
@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Begin S01 execution.
+Execute T01: Restructure browse page with wireframe layout and shared components in slice S02.

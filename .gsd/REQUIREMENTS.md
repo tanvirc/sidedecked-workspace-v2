@@ -12,8 +12,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S01
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Voltage tokens already exist in colors.css. shadcn/ui initialized. Need to verify nav/footer match wireframe sd-nav.js exactly.
+- Validation: structural — Footer rewritten to wireframe spec (6 tests), PriceTag tabular figures verified, zero hardcoded light-mode colors in S01 shared components, 794 tests pass, dark-mode token parity audited (S01); visual UAT pending human comparison at 1440px and 390px
+- Notes: S01 locked foundation components. Downstream slices consume these primitives. Full storefront consistency validated progressively.
 
 ### R002 — Card browse page pixel-perfect
 - Class: primary-user-loop
@@ -265,8 +265,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S01
 - Supporting slices: all
-- Validation: unmapped
-- Notes: Dark mode tokens exist in colors.css .dark block. Some components may still reference light-mode defaults.
+- Validation: partial — S01 shared components (Footer, CardDisplay, PriceTag, RarityBadge, GameBadge, CardGridSkeleton, ModernHeader, SideDeckedLogo) verified zero hardcoded light-mode colors; full storefront verified progressively across downstream slices
+- Notes: Dark mode tokens exist in colors.css .dark block. S01 components clean. Other pages verified in their respective slices.
 
 ### R025 — Figma export of all wireframes
 - Class: operability
@@ -408,7 +408,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 | ID | Class | Status | Primary owner | Supporting | Proof |
 |---|---|---|---|---|---|
-| R001 | core-capability | active | M001/S01 | none | unmapped |
+| R001 | core-capability | active | M001/S01 | none | structural — Footer 6 tests, PriceTag tabular, zero hardcoded colors, 794 tests pass |
 | R002 | primary-user-loop | active | M001/S02 | M001/S01 | unmapped |
 | R003 | primary-user-loop | active | M001/S02 | M001/S01 | unmapped |
 | R004 | primary-user-loop | active | M001/S02 | M001/S01 | unmapped |
@@ -431,7 +431,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | unmapped |
 | R022 | launchability | active | M001/S04 | M001/S02 | structural — API client + fallback + 11 tests |
 | R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
-| R024 | quality-attribute | active | M001/S01 | all | unmapped |
+| R024 | quality-attribute | active | M001/S01 | all | partial — S01 shared components verified zero hardcoded light-mode colors; full storefront progressive |
 | R025 | operability | active | M001/S06 | none | blocked — Figma MCP auth 405 error |
 | R030 | launchability | deferred | none | none | unmapped |
 | R031 | primary-user-loop | deferred | none | none | unmapped |
@@ -449,5 +449,5 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 - Active requirements: 23
 - Mapped to slices: 23
-- Validated: 2
+- Validated: 2 (R013, R023)
 - Unmapped active requirements: 0
