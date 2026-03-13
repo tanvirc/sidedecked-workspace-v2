@@ -49,7 +49,7 @@ Slice-level hardcoded color check: `grep` for `bg-white|bg-gray-|text-gray-` acr
 
 ## Diagnostics
 
-none
+No runtime diagnostics added — this task was test-only (new test file + audit checks). Test failures surface through Vitest's built-in reporter with file/line context. The `getAttribute('class')` fix for SVG elements is self-documenting via the test code pattern.
 
 ## Deviations
 

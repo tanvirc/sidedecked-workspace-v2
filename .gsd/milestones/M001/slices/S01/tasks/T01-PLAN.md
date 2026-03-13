@@ -43,6 +43,10 @@ The Footer component is completely wrong versus the wireframe — it's a 3-colum
 - `storefront/src/components/tcg/PriceTag.tsx` — current PriceTag missing tabular figures
 - `storefront/src/app/globals.css` — `.price` CSS class with tabular figure styles (line 256–259)
 
+## Observability Impact
+
+None. All changes are presentational — Footer layout, PriceTag CSS class, static link data. No new runtime state, error paths, or async behavior introduced. No logging or monitoring changes needed.
+
 ## Expected Output
 
 - `storefront/src/components/organisms/Footer/Footer.tsx` — rewritten to match wireframe: minimal bar, gradient logo, 5 links, 3 social icons, copyright, Voltage tokens only
