@@ -24,7 +24,7 @@
 
 ## Tasks
 
-- [ ] **T01: Align all homepage components to wireframe pixel values** `est:45m`
+- [x] **T01: Align all homepage components to wireframe pixel values** `est:45m`
 - [ ] **T02: Wire TrendingStrip to live data with curated fallback and integrate into homepage** `est:45m`
 - [ ] **T03: Fix orphaned CardDetailPage v5.1 tests** `est:10m`
 

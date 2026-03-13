@@ -19,4 +19,4 @@
 - None
 
 ## Next Action
-Execute T01: Align all homepage components to wireframe pixel values in slice S04.
+Execute T02: Wire TrendingStrip to live data with curated fallback and integrate into homepage in slice S04.
