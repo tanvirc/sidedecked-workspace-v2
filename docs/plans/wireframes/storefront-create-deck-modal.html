@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideDecked — Create Deck Modal Wireframe (Voltage)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VOLTAGE DESIGN TOKENS (dark mode only)
+       ============================================= */
+    :root {
+      --brand-primary: #8B5CF6;
+      --brand-secondary: #FF7849;
+      --brand-primary-subtle: #1E1A3A;
+
+      --bg-base: #09090F;
+      --bg-surface-1: #18162A;
+      --bg-surface-2: #21203A;
+      --bg-surface-3: #2C2A4A;
+      --bg-surface-4: #38365C;
+
+      --text-primary: #F0EEFF;
+      --text-secondary: #B8B0D8;
+      --text-tertiary: #7B72A8;
+
+      --border-default: #2C2A4A;
+      --border-strong: #4A4680;
+
+      --positive: #10B981;
+      --negative: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --interactive: #8B5CF6;
+
+      --game-mtg: #A78BFA;
+      --game-pokemon: #FCD34D;
+      --game-ygo: #60A5FA;
+      --game-op: #34D399;
+
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+    }
+
+    /* =============================================
+       RESET + BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: #060610;
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    img { display: block; max-width: 100%; }
+
+    /* =============================================
+       WIREFRAME CANVAS
+       ============================================= */
+    .canvas {
+      display: flex;
+      gap: 80px;
+      padding: 60px;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .frame-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      background: var(--bg-surface-2);
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      width: 1440px;
+      background: var(--bg-base);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+      box-shadow: 0 0 80px rgba(139, 92, 246, 0.06);
+    }
+
+    /* Mobile frame */
+    .mobile-frame {
+      width: 390px;
+      background: var(--bg-base);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--bg-surface-3);
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.06);
+      position: relative;
+    }
+    .mobile-frame::before {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 28px;
+      background: var(--bg-base);
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      border: 3px solid var(--bg-surface-3);
+      border-top: none;
+    }
+    .mobile-inner {
+      overflow: hidden;
+      border-radius: 37px;
+    }
+
+    /* =============================================
+       ANNOTATIONS
+       ============================================= */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .annotation--api {
+      color: var(--positive);
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .annotation--note {
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .annotation--breakpoint {
+      color: var(--info);
+      background: rgba(59, 130, 246, 0.08);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    .annotation--component {
+      color: var(--brand-primary);
+    }
+    .annotation-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* =============================================
+       SECTION TITLES (between canvas pairs)
+       ============================================= */
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--text-primary);
+      text-align: center;
+      margin: 60px 0 8px;
+      letter-spacing: 0.02em;
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+    .section-subtitle {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-tertiary);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* =============================================
+       MODAL OVERLAY — DESKTOP
+       ============================================= */
+    .modal-overlay {
+      position: relative;
+      width: 1440px;
+      min-height: 900px;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+    .modal-overlay__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 9, 15, 0.82);
+      z-index: 10;
+    }
+    .modal-overlay__page-hint {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .modal-overlay__page-hint-nav {
+      height: 64px;
+      background: var(--bg-surface-1);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+    }
+    .modal-overlay__page-hint-nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+    .modal-overlay__page-hint-body {
+      padding: 40px;
+    }
+    .modal-overlay__page-hint-card {
+      width: 280px;
+      height: 200px;
+      border-radius: 12px;
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+    }
+
+    /* =============================================
+       CREATE DECK MODAL — DESKTOP
+       ============================================= */
+    .cdm {
+      position: absolute;
+      z-index: 20;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 560px;
+      background: linear-gradient(180deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.08);
+      overflow: hidden;
+    }
+    .cdm__close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-surface-3);
+      border: 1px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 16px;
+      z-index: 2;
+    }
+
+    /* Header */
+    .cdm__header {
+      padding: 28px 32px 0;
+    }
+    .cdm__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(255, 120, 73, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .cdm__heading {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+    .cdm__subtext {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+
+    /* Body */
+    .cdm__body {
+      padding: 20px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .cdm__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Form fields */
+    .cdm__field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cdm__label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cdm__label .required {
+      color: var(--brand-secondary);
+      margin-left: 2px;
+    }
+
+    /* Text input */
+    .cdm__input {
+      background: var(--bg-surface-3);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-primary);
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+    .cdm__input::placeholder {
+      color: var(--text-tertiary);
+    }
+    .cdm__input:focus,
+    .cdm__input.focused {
+      border-color: var(--brand-primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+
+    /* Textarea */
+    .cdm__textarea {
+      background: var(--bg-surface-3);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-primary);
+      resize: none;
+      min-height: 72px;
+      width: 100%;
+    }
+    .cdm__char-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* Select / Dropdown */
+    .cdm__select {
+      background: var(--bg-surface-3);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-tertiary);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237B72A8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      width: 100%;
+      cursor: pointer;
+    }
+    .cdm__select.has-value {
+      color: var(--text-primary);
+    }
+
+    /* Game selector chips */
+    .cdm__game-chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .cdm__game-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 6px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-default);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .cdm__game-chip:hover {
+      border-color: var(--border-strong);
+      background: rgba(44, 42, 74, 0.3);
+    }
+    .cdm__game-chip.active {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.1);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+    }
+    .cdm__game-chip-code {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cdm__game-chip-name {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+    .cdm__game-chip.active .cdm__game-chip-name {
+      color: var(--text-secondary);
+    }
+
+    /* Tags */
+    .cdm__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .cdm__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 999px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--brand-primary);
+    }
+    .cdm__tag-remove {
+      width: 12px;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+    .cdm__tag-input-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .cdm__tag-input {
+      background: var(--bg-surface-3);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .cdm__tag-add-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      color: var(--brand-primary);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .cdm__tag-hint {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Toggle / Privacy */
+    .cdm__toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-surface-3);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-default);
+    }
+    .cdm__toggle-label-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cdm__toggle-label {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .cdm__toggle-hint {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .cdm__toggle {
+      width: 38px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--bg-surface-4);
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .cdm__toggle.on {
+      background: var(--brand-primary);
+    }
+    .cdm__toggle-knob {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.15s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .cdm__toggle.on .cdm__toggle-knob {
+      transform: translateX(16px);
+    }
+
+    /* Divider */
+    .cdm__divider {
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    /* Footer / Actions */
+    .cdm__footer {
+      padding: 0 32px 24px;
+      display: flex;
+      gap: 12px;
+    }
+    .cdm__btn {
+      flex: 1;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .cdm__btn--primary {
+      background: var(--brand-primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+    }
+    .cdm__btn--primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .cdm__btn--primary.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .cdm__btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+    .cdm__btn--ghost:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    /* Error banner */
+    .cdm__error {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      font-size: 12px;
+      color: var(--negative);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* =============================================
+       MOBILE — FULL-SCREEN WIZARD
+       ============================================= */
+    .cdm-mobile {
+      background: var(--bg-base);
+      min-height: 844px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Mobile header */
+    .cdm-mobile__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-default);
+      background: var(--bg-surface-1);
+    }
+    .cdm-mobile__header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cdm-mobile__back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+    .cdm-mobile__title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .cdm-mobile__close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+    }
+
+    /* Progress bar */
+    .cdm-mobile__progress {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .cdm-mobile__progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .cdm-mobile__progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--bg-surface-3);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .cdm-mobile__progress-fill {
+      height: 100%;
+      background: var(--brand-primary);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+
+    /* Mobile body */
+    .cdm-mobile__body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .cdm-mobile__step-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .cdm-mobile__step-desc {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+
+    /* Mobile game cards */
+    .cdm-mobile__game-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cdm-mobile__game-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cdm-mobile__game-card:hover {
+      border-color: var(--border-strong);
+    }
+    .cdm-mobile__game-card.active {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+    }
+    .cdm-mobile__game-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cdm-mobile__game-card-name {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .cdm-mobile__game-card-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .cdm-mobile__game-radio {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cdm-mobile__game-card.active .cdm-mobile__game-radio {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+    .cdm-mobile__game-radio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+      display: none;
+    }
+    .cdm-mobile__game-card.active .cdm-mobile__game-radio-dot {
+      display: block;
+    }
+
+    /* Mobile format list */
+    .cdm-mobile__format-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cdm-mobile__format-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cdm-mobile__format-card.active {
+      border-color: var(--brand-primary);
+      background: rgba(139, 92, 246, 0.08);
+    }
+    .cdm-mobile__format-name {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .cdm-mobile__format-meta {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* Mobile form fields */
+    .cdm-mobile__field {
+      margin-bottom: 20px;
+    }
+    .cdm-mobile__label {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .cdm-mobile__input {
+      width: 100%;
+      background: var(--bg-surface-2);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+    .cdm-mobile__textarea {
+      width: 100%;
+      background: var(--bg-surface-2);
+      border: 1.5px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text-primary);
+      resize: none;
+      min-height: 100px;
+    }
+
+    /* Mobile review card */
+    .cdm-mobile__review {
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    .cdm-mobile__review-row {
+      margin-bottom: 14px;
+    }
+    .cdm-mobile__review-row:last-child {
+      margin-bottom: 0;
+    }
+    .cdm-mobile__review-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 2px;
+    }
+    .cdm-mobile__review-value {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .cdm-mobile__review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* Mobile footer */
+    .cdm-mobile__footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-default);
+      background: var(--bg-surface-1);
+    }
+    .cdm-mobile__btn {
+      width: 100%;
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .cdm-mobile__btn--primary {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .cdm-mobile__btn--primary.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Utility */
+    .mt-4 { margin-top: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+
+    /* Hover states */
+    .cdm__game-chip:hover { filter: brightness(1.05); }
+    .cdm-mobile__game-card:hover { background: rgba(44, 42, 74, 0.2); }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     DESKTOP — Create Deck Modal (single-view form)
+     ================================================================ -->
+<div class="section-title">Create Deck Modal — Desktop</div>
+<div class="section-subtitle">Centered overlay triggered from Deck Browser "Create Deck" CTA. Single-view form with all fields visible.</div>
+
+<div class="canvas">
+  <div class="frame-wrapper">
+    <span class="frame-label">Desktop &mdash; 1440 &times; 900 (overlay)</span>
+    <div class="desktop-frame">
+      <div class="modal-overlay" data-component="CreateDeckModal">
+
+        <!-- Background page hint (deck browser dimmed behind) -->
+        <div class="modal-overlay__page-hint">
+          <div class="modal-overlay__page-hint-nav">
+            <span class="modal-overlay__page-hint-nav-logo">SideDecked</span>
+          </div>
+          <div class="modal-overlay__page-hint-body">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <div class="modal-overlay__page-hint-card" style="width: 220px; height: 160px;"></div>
+              <div class="modal-overlay__page-hint-card" style="width: 220px; height: 160px;"></div>
+              <div class="modal-overlay__page-hint-card" style="width: 220px; height: 160px;"></div>
+              <div class="modal-overlay__page-hint-card" style="width: 220px; height: 160px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backdrop -->
+        <div class="modal-overlay__backdrop"></div>
+
+        <!-- Modal Card -->
+        <div class="cdm">
+          <div class="cdm__close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+
+          <!-- Header -->
+          <div class="cdm__header">
+            <div class="cdm__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/></svg>
+            </div>
+            <div class="annotation-row mb-8">
+              <span class="annotation--component annotation">&lt;CreateDeckModal&gt;</span>
+              <span class="annotation--api annotation">POST /api/decks</span>
+              <span class="annotation--note annotation">Auth-gated: requires authenticated user</span>
+            </div>
+            <div class="cdm__heading">Create New Deck</div>
+            <div class="cdm__subtext">Choose your game, format, and give your deck a name.</div>
+          </div>
+
+          <!-- Body -->
+          <div class="cdm__body">
+
+            <!-- Game Selection (required) -->
+            <div class="cdm__field">
+              <div class="cdm__label">Game <span class="required">*</span></div>
+              <div class="cdm__game-chips">
+                <div class="cdm__game-chip active">
+                  <span class="cdm__game-chip-code" style="color: var(--game-mtg);">MTG</span>
+                  <span class="cdm__game-chip-name">Magic: The Gathering</span>
+                </div>
+                <div class="cdm__game-chip">
+                  <span class="cdm__game-chip-code" style="color: var(--game-pokemon);">PKM</span>
+                  <span class="cdm__game-chip-name">Pokémon</span>
+                </div>
+                <div class="cdm__game-chip">
+                  <span class="cdm__game-chip-code" style="color: var(--game-ygo);">YGO</span>
+                  <span class="cdm__game-chip-name">Yu-Gi-Oh!</span>
+                </div>
+                <div class="cdm__game-chip">
+                  <span class="cdm__game-chip-code" style="color: var(--game-op);">OP</span>
+                  <span class="cdm__game-chip-name">One Piece</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <span class="annotation">Game chips: click to select, fetches formats for game</span>
+                <span class="annotation--api annotation">GET /api/games</span>
+              </div>
+            </div>
+
+            <!-- Format Selection (required) -->
+            <div class="cdm__field">
+              <div class="cdm__label">Format <span class="required">*</span></div>
+              <div class="cdm__select has-value">Modern</div>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <span class="annotation">Dropdown populated from API, resets when game changes</span>
+                <span class="annotation--api annotation">GET /api/games/:gameCode/formats</span>
+              </div>
+            </div>
+
+            <!-- Deck Name (required) -->
+            <div class="cdm__field">
+              <div class="cdm__label">Deck Name <span class="required">*</span></div>
+              <div class="cdm__input focused" style="border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);">Mono Red Burn</div>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <span class="annotation">3–100 chars, validated on blur</span>
+              </div>
+            </div>
+
+            <!-- Description (optional) -->
+            <div class="cdm__field">
+              <div class="cdm__label">Description</div>
+              <div class="cdm__textarea" style="color: var(--text-tertiary);">Describe your deck strategy...</div>
+              <div class="cdm__char-count">0/500</div>
+            </div>
+
+            <!-- Tags (optional) -->
+            <div class="cdm__field">
+              <div class="cdm__label">Tags</div>
+              <div class="cdm__tags">
+                <span class="cdm__tag">
+                  aggro
+                  <span class="cdm__tag-remove">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </span>
+                </span>
+                <span class="cdm__tag">
+                  budget
+                  <span class="cdm__tag-remove">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </span>
+                </span>
+              </div>
+              <div class="cdm__tag-input-wrap mt-8">
+                <input type="text" class="cdm__tag-input" placeholder="Add a tag..." readonly />
+                <div class="cdm__tag-add-btn">+</div>
+              </div>
+              <div class="cdm__tag-hint">Up to 5 tags. Tags help others discover your deck.</div>
+            </div>
+
+            <!-- Privacy Toggle -->
+            <div class="cdm__toggle-row">
+              <div class="cdm__toggle-label-wrap">
+                <div class="cdm__toggle-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  Private
+                </div>
+                <div class="cdm__toggle-hint">Only you can see this deck. You can publish it later.</div>
+              </div>
+              <div class="cdm__toggle">
+                <div class="cdm__toggle-knob"></div>
+              </div>
+            </div>
+            <span class="annotation--note annotation">Default: private. Toggle ON = public (discoverable in browser)</span>
+          </div>
+
+          <!-- Footer -->
+          <div class="cdm__footer">
+            <div class="cdm__btn cdm__btn--ghost">Cancel</div>
+            <div class="cdm__btn cdm__btn--primary">Create Deck</div>
+          </div>
+
+          <div style="padding: 0 32px 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="annotation--note annotation">On success: redirect to /decks/:id/edit (Deck Builder)</span>
+            <span class="annotation--note annotation">On error: inline error banner above form</span>
+            <span class="annotation">Esc key or backdrop click closes modal</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     DESKTOP — Validation Error State
+     ================================================================ -->
+<div class="section-title">Create Deck Modal — Error State</div>
+<div class="section-subtitle">Inline validation error displayed when required fields are missing or invalid</div>
+
+<div class="canvas">
+  <div class="frame-wrapper">
+    <span class="frame-label">Desktop &mdash; 560px modal (error state)</span>
+    <div style="width: 560px; background: linear-gradient(180deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%); border: 1px solid var(--border-strong); border-radius: 20px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.08); overflow: hidden;">
+
+      <!-- Header (compact) -->
+      <div style="padding: 28px 32px 0;">
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--text-primary); letter-spacing: 0.02em; margin-bottom: 4px;">Create New Deck</div>
+      </div>
+
+      <div style="padding: 16px 32px 28px; display: flex; flex-direction: column; gap: 16px;">
+        <!-- Error banner -->
+        <div class="cdm__error">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Deck name must be at least 3 characters
+        </div>
+
+        <!-- Game — no selection (error) -->
+        <div class="cdm__field">
+          <div class="cdm__label">Game <span class="required">*</span></div>
+          <div class="cdm__game-chips">
+            <div class="cdm__game-chip">
+              <span class="cdm__game-chip-code" style="color: var(--game-mtg);">MTG</span>
+              <span class="cdm__game-chip-name">Magic: The Gathering</span>
+            </div>
+            <div class="cdm__game-chip">
+              <span class="cdm__game-chip-code" style="color: var(--game-pokemon);">PKM</span>
+              <span class="cdm__game-chip-name">Pokémon</span>
+            </div>
+            <div class="cdm__game-chip">
+              <span class="cdm__game-chip-code" style="color: var(--game-ygo);">YGO</span>
+              <span class="cdm__game-chip-name">Yu-Gi-Oh!</span>
+            </div>
+            <div class="cdm__game-chip">
+              <span class="cdm__game-chip-code" style="color: var(--game-op);">OP</span>
+              <span class="cdm__game-chip-name">One Piece</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Format — disabled (no game selected) -->
+        <div class="cdm__field">
+          <div class="cdm__label">Format <span class="required">*</span></div>
+          <div class="cdm__select" style="opacity: 0.4; cursor: not-allowed;">Select a game first</div>
+        </div>
+
+        <!-- Name — empty (error) -->
+        <div class="cdm__field">
+          <div class="cdm__label">Deck Name <span class="required">*</span></div>
+          <div class="cdm__input" style="border-color: var(--negative); color: var(--text-tertiary);">Ab</div>
+          <div style="font-size: 11px; color: var(--negative); margin-top: 2px;">Minimum 3 characters</div>
+        </div>
+
+        <span class="annotation--note annotation">Error clears when user corrects the field</span>
+      </div>
+
+      <div style="padding: 0 32px 24px; display: flex; gap: 12px;">
+        <div class="cdm__btn cdm__btn--ghost">Cancel</div>
+        <div class="cdm__btn cdm__btn--primary disabled">Create Deck</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     MOBILE — Step 1: Game Selection
+     ================================================================ -->
+<div class="section-title">Create Deck Modal — Mobile Wizard</div>
+<div class="section-subtitle">Full-screen 4-step wizard. Step through: Game → Format → Details → Review &amp; Create</div>
+
+<div class="canvas">
+
+  <!-- MOBILE STEP 1: Game Selection -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; Step 1: Game</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="cdm-mobile">
+
+          <div class="cdm-mobile__header">
+            <div class="cdm-mobile__header-left">
+              <div class="cdm-mobile__title">Create New Deck</div>
+            </div>
+            <div class="cdm-mobile__close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__progress">
+            <div class="cdm-mobile__progress-meta">
+              <span>Step 1 of 4</span>
+              <span>25%</span>
+            </div>
+            <div class="cdm-mobile__progress-bar">
+              <div class="cdm-mobile__progress-fill" style="width: 25%;"></div>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__body">
+            <div style="margin-bottom: 4px;">
+              <span class="annotation--component annotation">&lt;CreateDeckModal mobile=true&gt;</span>
+            </div>
+            <div class="cdm-mobile__step-title">Choose Your Game</div>
+            <div class="cdm-mobile__step-desc">Select the trading card game you want to build a deck for.</div>
+
+            <div class="cdm-mobile__game-list">
+              <div class="cdm-mobile__game-card active">
+                <div class="cdm-mobile__game-card-info">
+                  <div class="cdm-mobile__game-card-name" style="color: var(--game-mtg);">Magic: The Gathering</div>
+                  <div class="cdm-mobile__game-card-code">MTG</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__game-card">
+                <div class="cdm-mobile__game-card-info">
+                  <div class="cdm-mobile__game-card-name">Pokémon TCG</div>
+                  <div class="cdm-mobile__game-card-code">PKM</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__game-card">
+                <div class="cdm-mobile__game-card-info">
+                  <div class="cdm-mobile__game-card-name">Yu-Gi-Oh!</div>
+                  <div class="cdm-mobile__game-card-code">YGO</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__game-card">
+                <div class="cdm-mobile__game-card-info">
+                  <div class="cdm-mobile__game-card-name">One Piece TCG</div>
+                  <div class="cdm-mobile__game-card-code">OP</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px;">
+              <span class="annotation">Selecting a game auto-advances to Step 2</span>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__footer">
+            <div class="cdm-mobile__btn cdm-mobile__btn--primary">
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE STEP 2: Format Selection -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; Step 2: Format</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="cdm-mobile">
+
+          <div class="cdm-mobile__header">
+            <div class="cdm-mobile__header-left">
+              <div class="cdm-mobile__back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
+              <div class="cdm-mobile__title">Create New Deck</div>
+            </div>
+            <div class="cdm-mobile__close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__progress">
+            <div class="cdm-mobile__progress-meta">
+              <span>Step 2 of 4</span>
+              <span>50%</span>
+            </div>
+            <div class="cdm-mobile__progress-bar">
+              <div class="cdm-mobile__progress-fill" style="width: 50%;"></div>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__body">
+            <div class="cdm-mobile__step-title">Choose Format</div>
+            <div class="cdm-mobile__step-desc">Select the format for your MTG deck.</div>
+
+            <div class="cdm-mobile__format-list">
+              <div class="cdm-mobile__format-card">
+                <div>
+                  <div class="cdm-mobile__format-name">Standard</div>
+                  <div class="cdm-mobile__format-meta">Constructed · Rotating</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__format-card active">
+                <div>
+                  <div class="cdm-mobile__format-name">Modern</div>
+                  <div class="cdm-mobile__format-meta">Constructed</div>
+                </div>
+                <div class="cdm-mobile__game-radio" style="background: var(--brand-primary); border-color: var(--brand-primary);">
+                  <div class="cdm-mobile__game-radio-dot" style="display: block;"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__format-card">
+                <div>
+                  <div class="cdm-mobile__format-name">Commander</div>
+                  <div class="cdm-mobile__format-meta">Constructed · 100-card singleton</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__format-card">
+                <div>
+                  <div class="cdm-mobile__format-name">Pioneer</div>
+                  <div class="cdm-mobile__format-meta">Constructed</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__format-card">
+                <div>
+                  <div class="cdm-mobile__format-name">Legacy</div>
+                  <div class="cdm-mobile__format-meta">Constructed</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+              <div class="cdm-mobile__format-card">
+                <div>
+                  <div class="cdm-mobile__format-name">Pauper</div>
+                  <div class="cdm-mobile__format-meta">Constructed · Commons only</div>
+                </div>
+                <div class="cdm-mobile__game-radio">
+                  <div class="cdm-mobile__game-radio-dot"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px;">
+              <span class="annotation--api annotation">GET /api/games/MTG/formats</span>
+              <span class="annotation--note annotation" style="margin-left: 6px;">Format list varies per game</span>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__footer">
+            <div class="cdm-mobile__btn cdm-mobile__btn--primary">
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE STEP 3: Deck Details -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; Step 3: Details</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="cdm-mobile">
+
+          <div class="cdm-mobile__header">
+            <div class="cdm-mobile__header-left">
+              <div class="cdm-mobile__back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
+              <div class="cdm-mobile__title">Create New Deck</div>
+            </div>
+            <div class="cdm-mobile__close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__progress">
+            <div class="cdm-mobile__progress-meta">
+              <span>Step 3 of 4</span>
+              <span>75%</span>
+            </div>
+            <div class="cdm-mobile__progress-bar">
+              <div class="cdm-mobile__progress-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__body">
+            <div class="cdm-mobile__step-title">Deck Details</div>
+            <div class="cdm-mobile__step-desc">Add some details about your deck.</div>
+
+            <div class="cdm-mobile__field">
+              <div class="cdm-mobile__label">Deck Name *</div>
+              <div class="cdm-mobile__input" style="border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);">Mono Red Burn</div>
+            </div>
+
+            <div class="cdm-mobile__field">
+              <div class="cdm-mobile__label">Description (Optional)</div>
+              <div class="cdm-mobile__textarea" style="color: var(--text-tertiary);">Describe your deck strategy...</div>
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); text-align: right; margin-top: 4px;">0/500</div>
+            </div>
+
+            <div class="cdm-mobile__field">
+              <div class="cdm-mobile__label">Tags (Optional)</div>
+              <div class="cdm__tags mb-8">
+                <span class="cdm__tag">
+                  aggro
+                  <span class="cdm__tag-remove">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </span>
+                </span>
+              </div>
+              <div class="cdm__tag-input-wrap">
+                <input type="text" class="cdm__tag-input" placeholder="Add a tag..." readonly style="padding: 10px 12px; font-size: 14px;" />
+                <div class="cdm__tag-add-btn" style="width: 36px; height: 36px; font-size: 18px;">+</div>
+              </div>
+              <div class="cdm__tag-hint">Up to 5 tags</div>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__footer">
+            <div class="cdm-mobile__btn cdm-mobile__btn--primary">
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE STEP 4: Review & Create -->
+  <div class="frame-wrapper">
+    <span class="frame-label">Mobile &mdash; Step 4: Review</span>
+    <div class="mobile-frame">
+      <div class="mobile-inner">
+        <div class="cdm-mobile">
+
+          <div class="cdm-mobile__header">
+            <div class="cdm-mobile__header-left">
+              <div class="cdm-mobile__back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </div>
+              <div class="cdm-mobile__title">Create New Deck</div>
+            </div>
+            <div class="cdm-mobile__close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__progress">
+            <div class="cdm-mobile__progress-meta">
+              <span>Step 4 of 4</span>
+              <span>100%</span>
+            </div>
+            <div class="cdm-mobile__progress-bar">
+              <div class="cdm-mobile__progress-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__body">
+            <div class="cdm-mobile__step-title">Review &amp; Create</div>
+            <div class="cdm-mobile__step-desc">Review your deck details before creating.</div>
+
+            <div class="cdm-mobile__review">
+              <div class="cdm-mobile__review-row">
+                <div class="cdm-mobile__review-label">Deck Name</div>
+                <div class="cdm-mobile__review-value">Mono Red Burn</div>
+              </div>
+
+              <div class="cdm-mobile__review-grid" style="margin-bottom: 14px;">
+                <div class="cdm-mobile__review-row" style="margin-bottom: 0;">
+                  <div class="cdm-mobile__review-label">Game</div>
+                  <div class="cdm-mobile__review-value" style="color: var(--game-mtg);">Magic: The Gathering</div>
+                </div>
+                <div class="cdm-mobile__review-row" style="margin-bottom: 0;">
+                  <div class="cdm-mobile__review-label">Format</div>
+                  <div class="cdm-mobile__review-value">Modern</div>
+                </div>
+              </div>
+
+              <div class="cdm-mobile__review-row">
+                <div class="cdm-mobile__review-label">Tags</div>
+                <div class="cdm__tags" style="margin-top: 4px;">
+                  <span class="cdm__tag" style="pointer-events: none;">aggro</span>
+                </div>
+              </div>
+
+              <div class="cdm-mobile__review-row">
+                <div class="cdm-mobile__review-label">Privacy</div>
+                <div class="cdm-mobile__review-value" style="display: flex; align-items: center; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  Private
+                </div>
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-top: 2px;">You can publish your deck later</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">
+              <span class="annotation--api annotation">POST /api/decks</span>
+              <span class="annotation--note annotation">On success → /decks/:id/edit</span>
+            </div>
+          </div>
+
+          <div class="cdm-mobile__footer">
+            <div class="cdm-mobile__btn cdm-mobile__btn--primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create Deck
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
