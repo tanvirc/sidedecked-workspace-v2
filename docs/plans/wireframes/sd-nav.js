@@ -28,7 +28,7 @@
   /* ===========================================
      NAV LINKS
      =========================================== */
-  var NAV_LINKS = ['Browse Cards', 'Deck Builder', 'Marketplace', 'Sell', 'Community'];
+  var NAV_LINKS = ['Cards', 'Decks', 'Marketplace', 'Sell', 'Community'];
 
   /* ===========================================
      EMBEDDED CSS
