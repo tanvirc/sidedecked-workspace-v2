@@ -79,7 +79,7 @@ This milestone is complete only when all are true:
 - [x] **S08: 3-Step Seller Listing Wizard** `risk:high` `depends:[S01,S05]`
   > After this: An individual seller can list a card via Identify → Condition + Photos → Price + Confirm flow. Market pricing pre-filled, game-specific grading guides shown, photos uploaded to MinIO. Listing appears on card detail page.
 
-- [ ] **S09: Cart Optimizer & Deck-to-Cart Flow** `risk:high` `depends:[S02,S03,S08]`
+- [x] **S09: Cart Optimizer & Deck-to-Cart Flow** `risk:high` `depends:[S02,S03,S08]`
   > After this: User can mark cards as owned in deck builder, tap "Buy Missing Cards", see optimizer find best seller combinations (cheapest/fewest/best-value with shipping), and add optimized selection to cart. Full flow to multi-vendor checkout works.
 
 - [ ] **S10: Integration & Polish** `risk:low` `depends:[S09]`

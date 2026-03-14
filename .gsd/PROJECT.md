@@ -19,7 +19,7 @@ The deck-to-cart pipeline: a player builds a deck, marks cards they own, and buy
 
 **What works:** Card detail BFF, Algolia search with autocomplete/facets, deck CRUD, deck builder with DnD/touch, social auth routes (but missing Google/Discord providers), Stripe Connect seller onboarding, consumer-seller listings/orders/payouts, storefront tests passing.
 
-**What doesn't exist yet:** Cart optimizer algorithm/UI, live OAuth end-to-end test (providers registered but credentials not configured). All 33 wireframes exist as authoritative alignment targets (S06 complete). All remaining pages visually aligned to Voltage tokens (S07 complete). 3-step listing wizard complete with 60 tests (S08 complete). Figma export blocked on MCP auth.
+**What doesn't exist yet:** Collection auto-update on receipt, live OAuth end-to-end test (providers registered but credentials not configured). All 33 wireframes exist as authoritative alignment targets (S06 complete). All remaining pages visually aligned to Voltage tokens (S07 complete). 3-step listing wizard complete with 60 tests (S08 complete). Cart optimizer with 3 modes + deck-to-cart flow complete with 55 tests (S09 complete). Figma export blocked on MCP auth.
 
 ## Architecture / Key Patterns
 

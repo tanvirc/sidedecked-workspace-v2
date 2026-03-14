@@ -193,36 +193,36 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R018 — Cart optimizer algorithm
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Given a set of missing cards from a deck, find the optimal combination of sellers minimizing total cost (cheapest), package count (fewest sellers), or balanced value (best). Factor in per-seller shipping costs. Execute in < 2s for 15 cards, < 5s for 60 cards.
 - Why it matters: The killer feature. No competitor does this. Deck-to-cart conversion is the primary morning metric.
 - Source: user
 - Primary owning slice: M001/S09
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Greenfield. inventory-optimization.ts exists in storefront but is not the cart optimizer. Algorithm needs to query both backends (cards from customer-backend, listings/pricing from backend).
+- Validation: structural — 22 tests verify all 3 modes (cheapest, fewest-sellers, best-value), shipping amortization, scarcity-first ordering, quantity splitting, deduplication, edge cases (no listings, single seller, all owned, empty input). Performance < 1ms for 15 cards × 10 sellers. BFF endpoint (8 tests) parallelizes listing fetches with ≤5 concurrency and merges trust data. 909 total tests pass.
+- Notes: Greedy heuristic per D004. Best-value picks fewest-sellers if cost increase ≤ 15%, else uses weighted score (0.7 cost + 0.3 sellers). Shipping derived from shippingMethod string when shippingCost is null.
 
 ### R019 — Cart optimizer UI
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Cart optimizer presents results in bottom sheet (mobile) / side panel (desktop) with progressive loading. Shows cards grouped by seller, per-seller subtotal + shipping, total with savings callout. Mode toggle between cheapest/fewest/best-value. Per-card override to swap seller/condition.
 - Why it matters: The optimizer is useless if the UI doesn't make the results actionable and trustworthy.
 - Source: user
 - Primary owning slice: M001/S09
 - Supporting slices: M001/S01, M001/S03
-- Validation: unmapped
-- Notes: Greenfield UI. Uses Sheet (mobile) and side panel pattern from Voltage design system.
+- Validation: structural — 18 tests verify CartOptimizerPanel rendering, OptimizerModeToggle switching, SellerGroupCard display, per-card swap override, add-to-cart with full/partial/no success toasts, staleness indicator with refresh, unavailable cards section, Voltage compliance (zero bare light-mode classes). 909 total tests pass, production build clean. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: Sheet-based panel (right side). Override mutates result in-place per D032. Add-to-cart resolves catalogSku→variant per D033.
 
 ### R020 — Deck-to-cart flow
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: End-to-end flow: user marks cards as owned in deck builder → taps "Buy Missing Cards" → optimizer runs → user selects optimization mode → cards added to cart → multi-vendor checkout completes.
 - Why it matters: This is the complete value proposition in one flow. If this doesn't work, the platform has no differentiator.
 - Source: user
 - Primary owning slice: M001/S09
 - Supporting slices: M001/S02, M001/S03, M001/S08
-- Validation: unmapped
-- Notes: Each piece exists in isolation. This slice wires them together end-to-end.
+- Validation: structural — owned-cards state (7 tests) persists per-deck in localStorage, getMissingCards() computes from all zones with dedup. BFF endpoint (8 tests) batch-fetches listings with trust. Optimizer (22 tests) finds seller combinations. Panel UI (18 tests) presents results with mode toggle, override, add-to-cart. "Buy Missing Cards" wired in both DeckViewerHeader and DeckBuilderLayout. 909 total tests, build clean. Full operational proof with live multi-service environment pending S10.
+- Notes: Each piece (owned state, BFF, algorithm, UI) independently tested. End-to-end wiring verified structurally. Live acceptance test is S10 scope.
 
 ### R021 — Collection auto-update on receipt
 - Class: continuity
@@ -425,9 +425,9 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R015 | continuity | validated | M001/S07 | M001/S01, M001/S06 | UserAccountLayout extracted, grep zero refs, 794 tests pass; visual UAT pending |
 | R016 | primary-user-loop | validated | M001/S07 | M001/S01, M001/S06 | grep zero light-mode refs across 4 commerce components; 794 tests pass; visual UAT pending |
 | R017 | primary-user-loop | validated | M001/S08 | M001/S01, M001/S05 | structural — 60 wizard tests, 854 total pass, Voltage compliant; visual UAT pending |
-| R018 | differentiator | active | M001/S09 | none | unmapped |
-| R019 | differentiator | active | M001/S09 | M001/S01, M001/S03 | unmapped |
-| R020 | differentiator | active | M001/S09 | M001/S02, M001/S03, M001/S08 | unmapped |
+| R018 | differentiator | validated | M001/S09 | none | structural — 22 algorithm tests + 8 BFF tests, < 1ms perf, 909 total pass |
+| R019 | differentiator | validated | M001/S09 | M001/S01, M001/S03 | structural — 18 UI tests, Voltage compliant, 909 total pass; visual UAT pending |
+| R020 | differentiator | validated | M001/S09 | M001/S02, M001/S03, M001/S08 | structural — 55 tests across 4 suites, full pipeline wired; live acceptance S10 |
 | R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | unmapped |
 | R022 | launchability | active | M001/S04 | M001/S02 | structural — API client + fallback + 11 tests |
 | R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
@@ -447,7 +447,7 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 19
-- Mapped to slices: 19
-- Validated: 6 (R013, R014, R015, R016, R017, R023)
+- Active requirements: 16
+- Mapped to slices: 16
+- Validated: 9 (R013, R014, R015, R016, R017, R018, R019, R020, R023)
 - Unmapped active requirements: 0
