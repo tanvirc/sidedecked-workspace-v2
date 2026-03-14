@@ -294,47 +294,47 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ### R031 — CSV bulk import for vendors
 - Class: primary-user-loop
-- Status: deferred
-- Description: Business sellers can upload CSV inventory files with 85/10/5 catalog matching.
+- Status: active
+- Description: Business sellers can upload CSV inventory files (TCGPlayer, Crystal Commerce, manual formats) with auto-format detection and 85/10/5 catalog matching tiers (auto-matched / fuzzy review / unmatched). Fuzzy match review UI lets seller resolve ambiguous matches. Confirmed matches create live listings.
 - Why it matters: Supply-side bootstrap. One vendor = 2,400 cards.
 - Source: user
-- Primary owning slice: none
+- Primary owning slice: M002/S01
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Deferred to M002. Depends on listing wizard (M001/S08) establishing listing patterns.
+- Validation: unmapped — planned for M002/S01
+- Notes: CSV import lives in vendor panel (D037). Uses papaparse (D039) and pg_trgm word_similarity() (D040).
 
 ### R032 — Price anomaly detection
 - Class: compliance/security
-- Status: deferred
-- Description: Listings priced >50% below 30-day market average auto-flagged before going live.
+- Status: active
+- Description: Listings priced >50% below 30-day market average are automatically flagged and held from search/browse until admin review. Seller sees "Under Review" status. Admin can approve, reject, or request price adjustment from a flagged listing queue. Falls back to MarketPrice when PriceHistory has < 3 data points (D042).
 - Why it matters: Marketplace trust. Prevents scams and pricing errors.
 - Source: user
-- Primary owning slice: none
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Deferred to M002. Needs sufficient listing volume to calculate meaningful averages.
+- Primary owning slice: M002/S03
+- Supporting slices: M002/S04 (admin flagged queue integration)
+- Validation: unmapped — planned for M002/S03
+- Notes: Price anomaly hooks into listing creation pipeline. Fallback to MarketPrice per D042.
 
 ### R033 — Dispute resolution with photo evidence
 - Class: compliance/security
-- Status: deferred
-- Description: Buyers can open disputes with photo evidence, admins resolve with side-by-side comparison.
+- Status: active
+- Description: Buyers can open disputes on received orders with photo evidence (< 10MB per file, ≤ 5 files), selecting a reason category and description. Admins resolve with side-by-side listing vs. evidence photo comparison, issuing full/partial refund or dismissal via Stripe. Both parties notified of outcome. Evidence uploaded via separate route after dispute creation (D041).
 - Why it matters: Consumer protection is a marketplace obligation.
 - Source: user
-- Primary owning slice: none
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Deferred to M002. Dispute routes exist in backend.
+- Primary owning slice: M002/S02
+- Supporting slices: M002/S04 (integration proof)
+- Validation: unmapped — planned for M002/S02
+- Notes: Extends existing @mercurjs/dispute module. Evidence route per D041. Refund via existing Stripe Connect integration.
 
-### R034 — Seller trust score calculation
+### R034 — Seller trust score calculation and display
 - Class: continuity
-- Status: deferred
-- Description: Sellers accumulate trust scores from transaction history, disputes, fulfillment.
+- Status: active
+- Description: Sellers accumulate trust scores from 8-factor weighted formula (existing TrustScoreService) with real performance data from backend API (replacing mock data). Trust scores displayed on card detail page seller rows and listing cards. "New Seller" badge for sellers with < 5 transactions. Scores recalculate via background job every 30 minutes (D043) with priority recalculation on dispute resolution. Tier system: Bronze → Diamond.
 - Why it matters: Buyer confidence in choosing sellers.
 - Source: user
-- Primary owning slice: none
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Deferred to M002. TrustScoreService exists in customer-backend (593 lines).
+- Primary owning slice: M002/S03
+- Supporting slices: M002/S04 (enforcement adjusts scores)
+- Validation: unmapped — planned for M002/S03
+- Notes: TrustScoreService exists (593 lines). Mock getPerformanceMetrics() wired to real data in S03. Background job via bull queue per D043.
 
 ### R035 — Price history charts
 - Class: primary-user-loop
@@ -434,10 +434,10 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R024 | quality-attribute | active | M001/S01 | all | structural — all 51 page routes verified across S01–S10, zero bare light-mode classes; visual UAT pending |
 | R025 | operability | active | M001/S06 | none | blocked — Figma MCP auth 405 error |
 | R030 | launchability | deferred | none | none | unmapped |
-| R031 | primary-user-loop | deferred | none | none | unmapped |
-| R032 | compliance/security | deferred | none | none | unmapped |
-| R033 | compliance/security | deferred | none | none | unmapped |
-| R034 | continuity | deferred | none | none | unmapped |
+| R031 | primary-user-loop | active | M002/S01 | none | unmapped — planned |
+| R032 | compliance/security | active | M002/S03 | M002/S04 | unmapped — planned |
+| R033 | compliance/security | active | M002/S02 | M002/S04 | unmapped — planned |
+| R034 | continuity | active | M002/S03 | M002/S04 | unmapped — planned |
 | R035 | primary-user-loop | deferred | none | none | unmapped |
 | R036 | differentiator | deferred | none | none | unmapped |
 | R037 | differentiator | deferred | none | none | unmapped |
@@ -447,7 +447,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 
 ## Coverage Summary
 
-- Active requirements: 16
-- Mapped to slices: 16
+- Active requirements: 20
+- Mapped to slices: 20
 - Validated: 9 (R013, R014, R015, R016, R017, R018, R019, R020, R023)
+- Planned (M002): 4 (R031, R032, R033, R034)
 - Unmapped active requirements: 0
