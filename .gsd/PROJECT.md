@@ -19,7 +19,7 @@ The deck-to-cart pipeline: a player builds a deck, marks cards they own, and buy
 
 **What works:** Card detail BFF, Algolia search with autocomplete/facets, deck CRUD, deck builder with DnD/touch, social auth routes (but missing Google/Discord providers), Stripe Connect seller onboarding, consumer-seller listings/orders/payouts, storefront tests passing.
 
-**What doesn't exist yet:** Collection auto-update on receipt, live OAuth end-to-end test (providers registered but credentials not configured). All 33 wireframes exist as authoritative alignment targets (S06 complete). All remaining pages visually aligned to Voltage tokens (S07 complete). 3-step listing wizard complete with 60 tests (S08 complete). Cart optimizer with 3 modes + deck-to-cart flow complete with 55 tests (S09 complete). Figma export blocked on MCP auth.
+**What doesn't exist yet:** Live OAuth end-to-end test (providers registered but credentials not configured). Figma export blocked on MCP auth. Human visual UAT at 1440px and 390px pending. All 33 wireframes exist as authoritative alignment targets (S06 complete). All remaining pages visually aligned to Voltage tokens (S07 complete). 3-step listing wizard complete with 60 tests (S08 complete). Cart optimizer with 3 modes + deck-to-cart flow complete with 55 tests (S09 complete). Collection auto-update pipeline complete with 24 tests (S10 complete). All M001 slices structurally complete with 918 tests passing.
 
 ## Architecture / Key Patterns
 
@@ -36,7 +36,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- [ ] M001: MVP Core Loop — Pixel-perfect Voltage storefront + cart optimizer + listing wizard + OAuth providers. Prove deck-to-cart conversion drives transactions.
+- [~] M001: MVP Core Loop — All 10 slices complete (918 tests, build clean). Pending: visual UAT + Figma export. Pixel-perfect Voltage storefront + cart optimizer + listing wizard + OAuth providers.
 - [ ] M002: Seller Scale & Trust — CSV bulk import, price anomaly detection, dispute resolution, trust scores, automated enforcement.
 - [ ] M003: Growth & Analytics — Vendor dashboards, price history, collection management, community profiles, saved searches, admin dashboard.
 - [ ] M004: Community & Engagement — Groups, forums, events, messaging, deck comments, community-to-commerce loop.

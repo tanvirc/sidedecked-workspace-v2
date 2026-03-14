@@ -1298,6 +1298,12 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
               </div>
             </div>
+            <!-- Create Deck CTA — auth-gated, opens CreateDeckModal -->
+            <button style="display: flex; align-items: center; gap: 6px; padding: 8px 16px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #fff; background: var(--brand-primary); border-radius: var(--radius-md); border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25); white-space: nowrap;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create Deck
+            </button>
+            <span class="annotation--note annotation" style="margin-left: 4px;">Auth-gated: shows &lt;AuthGateDialog&gt; if unauthenticated</span>
           </div>
         </div>
       </section>

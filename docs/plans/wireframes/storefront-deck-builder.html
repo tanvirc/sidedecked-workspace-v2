@@ -1691,11 +1691,26 @@
               <span class="badge badge-format">Modern</span>
               <span class="deck-count">58/60</span>
               <span class="deck-missing"><span class="dot"></span> 16 missing</span>
-              <div class="visibility-toggle" style="margin-left: auto;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                <span>Public</span>
+              <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+                <!-- Import button -->
+                <button class="btn-ghost" style="display: flex; align-items: center; gap: 5px; padding: 6px 12px; font-size: 12px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Import
+                </button>
+                <!-- Export button -->
+                <button class="btn-ghost" style="display: flex; align-items: center; gap: 5px; padding: 6px 12px; font-size: 12px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export
+                </button>
+                <div style="width: 1px; height: 20px; background: var(--border-default);"></div>
+                <!-- Visibility toggle -->
+                <div class="visibility-toggle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Public</span>
+                </div>
               </div>
             </div>
+            <span class="annotation--note annotation" style="margin-top: 4px;">Import: paste/upload text deck list (MTGO, Arena, CSV). Export: text, image, PDF</span>
           </div>
 
           <!-- Deck Body -->

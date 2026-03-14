@@ -232,8 +232,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S10
 - Supporting slices: M001/S03, M001/S09
-- Validation: unmapped
-- Notes: Requires cross-service event: backend (order receipt confirmed) → customer-backend (update collection ownership).
+- Validation: structural — Backend subscriber (8 tests) listens to `delivery.created`, extracts `catalog_sku`, publishes to Redis `order.receipt.confirmed`. Customer-backend subscriber (5 tests) upserts CollectionCard rows. Storefront BFF `GET /api/collection/owned` (7 tests) fetches catalogSkus. DeckBuilderContext `syncServerOwnedCards()` (4 tests) merges server-owned cards additively. Pipeline: delivery.created → backend → Redis → customer-backend → CollectionCard → BFF → deck builder sync. 918 total tests pass. Full runtime integration requires all 3 services + Redis.
+- Notes: Implemented in S10 (T01+T02). Backend subscriber at `backend/apps/backend/src/subscribers/collection-auto-update.ts`. Customer-backend subscriber at `customer-backend/src/subscribers/collection-subscriber.ts`. BFF at `storefront/src/app/api/collection/owned/route.ts`. Sync in `DeckBuilderContext.tsx`.
 
 ### R022 — Trending strip wired to live data
 - Class: launchability
@@ -265,8 +265,8 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 - Source: user
 - Primary owning slice: M001/S01
 - Supporting slices: all
-- Validation: partial — S01 shared components (Footer, CardDisplay, PriceTag, RarityBadge, GameBadge, CardGridSkeleton, ModernHeader, SideDeckedLogo) verified zero hardcoded light-mode colors; full storefront verified progressively across downstream slices
-- Notes: Dark mode tokens exist in colors.css .dark block. S01 components clean. Other pages verified in their respective slices.
+- Validation: structural — All 51 storefront page routes verified across S01–S10. S01 shared components clean. S07 converted ~246 light-mode refs across seller (13 components), user-account, and commerce components. S08 wizard (60 tests) Voltage-compliant. S09 optimizer panel (18 tests) Voltage-compliant. Zero bare light-mode Tailwind classes in any component touched by M001. 918 total tests pass. Visual UAT pending human comparison at 1440px and 390px.
+- Notes: Full visual audit log at `.gsd/milestones/M001/slices/S10/visual-audit-log.md`. All pages use CSS custom properties via Voltage tokens.
 
 ### R025 — Figma export of all wireframes
 - Class: operability
@@ -428,10 +428,10 @@ This file is the explicit capability and coverage contract for the SideDecked pr
 | R018 | differentiator | validated | M001/S09 | none | structural — 22 algorithm tests + 8 BFF tests, < 1ms perf, 909 total pass |
 | R019 | differentiator | validated | M001/S09 | M001/S01, M001/S03 | structural — 18 UI tests, Voltage compliant, 909 total pass; visual UAT pending |
 | R020 | differentiator | validated | M001/S09 | M001/S02, M001/S03, M001/S08 | structural — 55 tests across 4 suites, full pipeline wired; live acceptance S10 |
-| R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | unmapped |
+| R021 | continuity | active | M001/S10 | M001/S03, M001/S09 | structural — 24 tests across pipeline (8 backend + 5 customer-backend + 7 BFF + 4 sync); full runtime pending |
 | R022 | launchability | active | M001/S04 | M001/S02 | structural — API client + fallback + 11 tests |
 | R023 | quality-attribute | validated | M001/S01 | none | grep confirms zero alert/confirm/prompt calls |
-| R024 | quality-attribute | active | M001/S01 | all | partial — S01 shared components verified zero hardcoded light-mode colors; full storefront progressive |
+| R024 | quality-attribute | active | M001/S01 | all | structural — all 51 page routes verified across S01–S10, zero bare light-mode classes; visual UAT pending |
 | R025 | operability | active | M001/S06 | none | blocked — Figma MCP auth 405 error |
 | R030 | launchability | deferred | none | none | unmapped |
 | R031 | primary-user-loop | deferred | none | none | unmapped |

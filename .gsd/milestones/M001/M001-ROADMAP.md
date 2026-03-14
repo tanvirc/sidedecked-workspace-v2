@@ -82,7 +82,7 @@ This milestone is complete only when all are true:
 - [x] **S09: Cart Optimizer & Deck-to-Cart Flow** `risk:high` `depends:[S02,S03,S08]`
   > After this: User can mark cards as owned in deck builder, tap "Buy Missing Cards", see optimizer find best seller combinations (cheapest/fewest/best-value with shipping), and add optimized selection to cart. Full flow to multi-vendor checkout works.
 
-- [ ] **S10: Integration & Polish** `risk:low` `depends:[S09]`
+- [x] **S10: Integration & Polish** `risk:low` `depends:[S09]`
   > After this: Collection auto-updates on receipt confirmation. All pages re-verified against wireframes. End-to-end flow proven: search → deck → optimize → checkout → receipt → collection update. Milestone acceptance scenarios pass.
 
 ## Boundary Map
