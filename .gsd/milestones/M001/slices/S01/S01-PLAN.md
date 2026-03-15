@@ -90,7 +90,7 @@
   - Verify: `npm test -- --run src/app/api/optimizer/__tests__/listings` — all pass.
   - Done when: BFF tests pass including partial failure scenario; concurrency is capped at 5 (verifiable by counting mock call timing in tests).
 
-- [ ] **T08: Zero alert() audit + commit slice branch** `est:30m`
+- [x] **T08: Zero alert() audit + commit slice branch** `est:30m`
   - Why: Slate-clean for S01. Alert dialogs are a UX regression — everything must use sonner before any new UI is added.
   - Files: any storefront files containing `window.alert`, `window.confirm`, `window.prompt`, `alert(`, `confirm(`
   - Do: `grep -rn "window\.alert\|window\.confirm\|window\.prompt\|\balert(\|\bconfirm(" storefront/src/`. For each match: replace `alert(msg)` with `toast(msg)` (import from `sonner`), replace `confirm(msg)` with an `AlertDialog` from `storefront/src/components/ui/alert-dialog.tsx`. Commit all S01 changes to `gsd/M001/S01` branch inside `storefront/`.
