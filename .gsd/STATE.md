@@ -24,4 +24,4 @@
 - Figma MCP transport mismatch — wireframe HTML → Figma export requires alternate approach (Claude Desktop native MCP or Figma REST API directly)
 
 ## Next Action
-Begin S01: create slice branch `gsd/M001/S01`, write S01-PLAN.md, then start T01 (Voltage foundation components) and T02 (cart optimizer algorithm + BFF) in parallel.
+Execute S01: create branch `gsd/M001/S01` in storefront/, then work through T01–T08 in order.
