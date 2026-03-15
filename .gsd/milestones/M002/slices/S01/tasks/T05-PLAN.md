@@ -1,47 +1,132 @@
 ---
-estimated_steps: 4
-estimated_files: 4
+estimated_steps: 12
+estimated_files: 10
 ---
 
-# T05: Integration wiring and cross-system verification
+# T05: Vendor Panel — CSV Upload Step with Client-Side Parsing
 
 **Slice:** S01 — CSV Inventory Import & Catalog Matching
 **Milestone:** M002
 
-## Description
+## Why
 
-Prove the full CSV import pipeline works as a connected system. Extend existing test files with integration-style tests using realistic card names, verify cross-component behavior, and write the integration verification document that describes how to manually validate the end-to-end flow with running services.
+The upload step is the first UI the seller interacts with and sets up the entire wizard shell. Client-side CSV parsing with papaparse gives instant format detection and row count preview without a server round-trip, then uploads to the backend for server-side validation. This task also creates the TanStack Query hooks and route scaffolding that T06 and T07 depend on.
+
+## What
+
+- Bulk import route with `RouteFocusModal` + `ProgressTabs` wizard shell
+- Upload step with drag-and-drop, client-side format detection, row count preview
+- TanStack Query hooks for all bulk import API calls
+- Extended `customerBackendFetch` with POST support (for future use)
+- Bulk import upload function in client.ts
 
 ## Steps
 
-1. Extend `catalog-fuzzy-match.test.ts` with integration-style test cases: exact match ("Lightning Bolt" → similarity ~1.0, confidence "auto"), typo match ("Lightening Bolt" → similarity ~0.7, confidence "fuzzy"), partial match ("Charizard VMAX" against "Charizard VMAX - 074/073" → boosted by name similarity), no match ("XYZZY Nonexistent Card" → empty results), set-name boosting ("Lightning Bolt" + setName "Alpha" ranks Alpha printing higher than "Foundations" printing). These tests mock `AppDataSource.query()` with realistic return shapes.
-2. Extend `bulk-import-review.spec.tsx` with tests: renders auto tab with correct count badge, fuzzy tab shows candidate dropdown with similarity percentage, selecting a candidate enables confirm checkbox, unmatched tab shows "No matches found" message with search input, switching tabs preserves selections, "Confirm All" button disabled when unresolved fuzzy matches exist, enabled when all fuzzy matches are confirmed or skipped.
-3. Write `S01-VERIFICATION.md` documenting the manual integration test procedure for human verification: (a) Prerequisites — all services running (backend on :9000, customer-backend on :3001, vendorpanel on :5173, PostgreSQL, Redis, MinIO). (b) Prepare test CSV — sample TCGPlayer CSV with ~20 rows including known cards, misspelled names, and nonexistent cards. (c) Upload step — navigate to `/products/bulk-import`, upload CSV, verify format detected as "TCGPlayer", preview shows 10 rows. (d) Match step — click "Upload & Start Matching", wait for matching to complete, verify Auto tab shows ~17 cards (85%), Fuzzy tab shows ~2 cards (10%), Unmatched tab shows ~1 card (5%). (e) Review step — in Fuzzy tab, select correct candidate for each card, in Unmatched tab search for card manually. (f) Confirm step — click "Confirm All & Create Listings", verify progress bar completes, verify listings appear in Products list page. (g) Include a sample 20-row TCGPlayer CSV in the verification doc for reproducibility.
-4. Run full test suites in both repos to verify no regressions: `cd customer-backend && npm test` and `cd vendorpanel && npm test`. Fix any failures. Verify TypeScript compilation in all three repos: `cd customer-backend && npx tsc --noEmit`, `cd vendorpanel && npx tsc --noEmit`, `cd backend && npx tsc --noEmit`.
+1. Read existing wizard patterns for reference:
+   - `vendorpanel/src/routes/products/product-create-listing/product-create-listing.tsx` — ProgressTabs + RouteFocusModal + react-hook-form pattern
+   - `vendorpanel/src/routes/products/product-import/` — existing CSV import UI
+   - `vendorpanel/src/components/common/file-upload/file-upload.tsx` — FileUpload component API
+   - `vendorpanel/src/hooks/api/catalog.tsx` — TanStack Query hook patterns
+   - `vendorpanel/src/lib/client/client.ts` — `importProductsQuery` for upload pattern
+2. Install `papaparse` + `@types/papaparse` in `vendorpanel/package.json`
+3. Add bulk import route to the vendorpanel router:
+   - Route path: `/products/bulk-import`
+   - Add to route config in the products route group (find the router configuration file)
+4. Create constants and types at `vendorpanel/src/routes/products/product-bulk-import/constants.ts`:
+   - `BulkImportFormSchema` (Zod) — wizard-level form state including file, parsed data, match results, confirmed items
+   - `BulkImportFormType` — inferred from schema
+   - `BULK_IMPORT_DEFAULTS` — initial form values
+   - Tab enum: `Upload`, `Review`, `Confirm`
+   - Types: `ParsedCardRow`, `MatchResult`, `ConfirmItem` (matching backend response shapes)
+5. Create the wizard shell at `vendorpanel/src/routes/products/product-bulk-import/product-bulk-import.tsx`:
+   - `RouteFocusModal` wrapping `ProgressTabs` with 3 tabs: Upload → Review → Confirm
+   - `react-hook-form` with `zodResolver` for wizard state
+   - Tab state management (same pattern as product-create-listing)
+   - Forward/back navigation between tabs
+   - `KeyboundForm` for keyboard shortcuts
+6. Build upload step component at `vendorpanel/src/routes/products/product-bulk-import/components/upload-step/upload-step.tsx`:
+   - Reuse existing `FileUpload` component with accept `.csv` only
+   - On file drop/select:
+     - Read file content with `FileReader`
+     - Parse with papaparse client-side (`Papa.parse(content, { header: true, skipEmptyLines: true })`)
+     - Detect format: check headers for `TCGplayer Id` → TCGPlayer, `Category` → Crystal Commerce, else manual
+     - Count rows and validate ≤ 5,000 (show error if exceeded)
+     - Show preview: detected format badge, row count, first 5 rows in a mini-table
+   - "Continue" button: upload file to backend
+   - Error states: invalid file type, empty file, >5,000 rows, parse errors
+7. Create bulk import upload function in `vendorpanel/src/lib/client/client.ts`:
+   ```typescript
+   export const bulkImportUploadQuery = async (file: File) => {
+     const formData = new FormData()
+     formData.append('file', file)
+     
+     const bearer = typeof window !== "undefined" 
+       ? await window.localStorage.getItem("medusa_auth_token") || "" : ""
+     
+     const response = await fetch(`${backendUrl}/vendor/consumer-seller/bulk-import/upload`, {
+       method: 'POST',
+       body: formData,
+       headers: {
+         authorization: `Bearer ${bearer}`,
+         'x-publishable-api-key': publishableApiKey,
+       },
+     })
+     
+     if (!response.ok) throw new Error((await response.json()).message || 'Upload failed')
+     return response.json()
+   }
+   ```
+8. Create TanStack Query hooks at `vendorpanel/src/hooks/api/bulk-import.tsx`:
+   - `useBulkImportUpload()` — mutation wrapping `bulkImportUploadQuery`
+   - `useBulkImportMatch(importId)` — mutation: `POST .../match`
+   - `useBulkImportResults(importId, { page, limit, tier })` — query: `GET .../results`
+   - `useBulkImportStatus(importId)` — query: `GET .../status` (with polling option)
+   - `useBulkImportConfirm(importId)` — mutation: `POST .../confirm`
+   - Follow the pattern from existing hooks (query keys, error handling, invalidation)
+   - Add query keys to `src/lib/query-key-factory.ts` if it exists, or use inline keys
+9. Extend `vendorpanel/src/lib/client/customer-backend.ts` with POST support:
+   ```typescript
+   export async function customerBackendPost<T = unknown>(
+     path: string,
+     body: unknown
+   ): Promise<T> {
+     const url = `${customerBackendUrl}${path}`
+     const response = await fetch(url, {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(body),
+     })
+     if (!response.ok) throw new Error(`Customer backend error: ${response.status}`)
+     return response.json()
+   }
+   ```
+10. Wire the upload step into the wizard: on successful upload, store `importId` in form state, auto-trigger match mutation, advance to Review tab after match completes
+11. Run typecheck and build: `cd vendorpanel && npm run typecheck && npm run build`
+12. Visually verify (if dev server available): navigate to `/products/bulk-import`, see wizard with upload step
 
-## Must-Haves
+## Files
 
-- [ ] Fuzzy-match tests cover realistic card name scenarios (exact, typo, partial, no match, set boost)
-- [ ] Review component tests verify tab behavior, selection state, and confirm button logic
-- [ ] S01-VERIFICATION.md documents step-by-step manual integration test procedure
-- [ ] Sample TCGPlayer CSV included in verification doc
-- [ ] All tests pass in customer-backend and vendorpanel
-- [ ] No TypeScript compilation errors in any repo
+- `vendorpanel/package.json` — add papaparse + @types/papaparse
+- `vendorpanel/src/routes/products/product-bulk-import/product-bulk-import.tsx` — new: wizard shell
+- `vendorpanel/src/routes/products/product-bulk-import/constants.ts` — new: types, schema, defaults
+- `vendorpanel/src/routes/products/product-bulk-import/components/upload-step/upload-step.tsx` — new: upload component
+- `vendorpanel/src/hooks/api/bulk-import.tsx` — new: TanStack Query hooks
+- `vendorpanel/src/lib/client/client.ts` — add `bulkImportUploadQuery`
+- `vendorpanel/src/lib/client/customer-backend.ts` — add POST support
+- Router config file — add `/products/bulk-import` route
 
 ## Verification
 
-- `cd customer-backend && npm test` — all tests pass (existing + new)
-- `cd vendorpanel && npm test` — all tests pass (existing + new)
-- `S01-VERIFICATION.md` exists and is complete
+- `cd vendorpanel && npm run typecheck` — no type errors
+- `cd vendorpanel && npm run build` — builds cleanly
+- Visual: `/products/bulk-import` renders wizard with upload step, file drop zone, format detection preview
 
-## Inputs
+## Done When
 
-- T02's `catalog-fuzzy-match.test.ts` — extend with additional test cases
-- T04's `bulk-import-review.spec.tsx` — extend with additional component tests
-- All artifacts from T01–T04
-
-## Expected Output
-
-- `customer-backend/src/tests/routes/catalog-fuzzy-match.test.ts` — extended with ≥5 integration-style test cases
-- `vendorpanel/src/routes/products/product-bulk-import/__tests__/bulk-import-review.spec.tsx` — extended with ≥6 component tests
-- `.gsd/milestones/M002/slices/S01/S01-VERIFICATION.md` — manual integration test procedure
+- Bulk import wizard renders at `/products/bulk-import` with `ProgressTabs` (Upload/Review/Confirm)
+- Upload step accepts CSV via drag-and-drop, detects format client-side, shows row count and preview
+- 5,000-row limit enforced client-side with error message
+- File uploads to backend via FormData POST
+- All 5 TanStack Query hooks created and typed
+- `customerBackendPost` utility available
+- `npm run typecheck && npm run build` succeeds
