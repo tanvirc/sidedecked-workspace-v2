@@ -1,8 +1,8 @@
 # GSD State
 
 **Active Milestone:** M001 — MVP Core Loop
-**Active Slice:** S02 — Card Browse, Detail, Search + Deck Builder
-**Phase:** slice-planned
+**Active Slice:** S02 — complete
+**Phase:** milestone-in-progress
 **Requirements Status:** 23 active · 1 validated · 4 deferred · 3 out of scope
 
 ## Milestone Registry
@@ -24,4 +24,8 @@
 - Figma MCP transport mismatch — wireframe export requires alternate approach
 
 ## Next Action
-Execute S02: start T01 (CardBrowsingPage audit + tests).
+S02 complete. Reassess M001 roadmap — next slice is S03 (Homepage + Navigation) per the roadmap.
+
+## Discovery Log
+- S01 discovery backfilled 2026-03-16: story normalized, both gates passed (5/5 reviewers), plan frozen, 8 task files generated
+- S02 discovery completed 2026-03-16: story + context created, plan frozen, 8 task files generated — ready to execute

@@ -51,3 +51,13 @@
 | D043 | M002 | arch | Trust score recalculation via bull queue background job, not real-time | Bull queue cron every 30 minutes | Trust scores depend on 8 factors including cross-system data (order performance from backend). Real-time recalculation on every event would hammer the backend API. Batch recalculation every 30 minutes keeps scores fresh within the 1-hour SLA while amortizing API costs. Individual events (dispute.resolved) trigger priority recalculation for the affected seller. | Yes — if 30-minute staleness causes user complaints |
 | D044 | M002/S01 | arch | Bulk import state stored in-memory Map, not database | In-memory `Map<string, ImportState>` | MVP bulk import doesn't need persistence — imports are short-lived sessions (upload → match → confirm in one sitting). Database-backed state adds migration complexity for a feature that may change shape after user feedback. In-memory is sufficient for single-instance deployment. | Yes — when horizontal scaling or import resumption needed |
 | D045 | M002/S01 | arch | CSV parser duplicated between customer-backend and vendor panel | Shared logic, separate implementations | customer-backend parser runs in Node (server-side validation), vendor panel parser runs in browser (instant format preview). papaparse works in both but the integration contexts differ (Express middleware vs React component). Shared types, duplicated implementation. Extract to a shared package if a third consumer appears. | Yes — if a third consumer needs CSV parsing |
+
+## [date: 2026-03-17] S01 — Optimizer BFF split: listings fetch vs optimization
+
+**Decision**: `POST /api/optimizer/listings` returns raw listings by SKU; it does not call `optimizeCart()`. Optimization runs client-side on the fetched data.
+
+**Rationale**: Separating concerns allows the UI to switch optimization modes (cheapest / fewest-sellers / best-value) without re-fetching listings from the backend. The listings data is stable for a given set of SKUs; only the grouping logic changes per mode selection.
+
+**Consequence**: Story AC10 was updated to reflect this contract. The `partialFailures` field in the original spec became `errors`. SKU cap is 100 (not 60) to match Railway connection pool realities. `mode` validation is not present in this BFF route.
+
+**Alternatives considered**: Wiring `optimizeCart()` into the BFF and returning `{ result, partialFailures }` as originally specced — rejected because it forces re-fetch on every mode change in the UI.

@@ -43,56 +43,56 @@
 
 ## Tasks
 
-- [ ] **T01: Audit and test CardBrowsingPage structure** `est:2h`
+- [x] **T01: Audit and test CardBrowsingPage structure** `est:2h`
   - Why: CardBrowsingPage is the primary card discovery surface. Wireframe alignment and component structure must be locked before S03 adds homepage complexity.
   - Files: `storefront/src/components/cards/__tests__/CardBrowsingPage.test.tsx` (extend), `storefront/src/components/cards/CardBrowsingPage.tsx` (read-only audit)
   - Do: Read `docs/plans/wireframes/storefront-cards.html` and compare against `CardBrowsingPage.tsx`. Verify tests cover: GameSelectorStrip renders with game options, CategoryPills renders, PopularSetsCarousel renders, BrowseBreadcrumbs renders "Cards" breadcrumb, ResultsBar renders with hit count, TrendingStrip renders (placeholder or live), SellerCTA renders, pagination renders, Algolia `InstantSearchNext` wraps the page. Check for light-mode class leaks and fix any found. Add missing tests.
   - Verify: `npx vitest run --reporter=verbose src/components/cards/__tests__/CardBrowsingPage.test.tsx` — all pass.
   - Done when: Browse page tests cover all wireframe sections, zero light-mode class leaks.
 
-- [ ] **T02: Audit and test CardDetailPage structure** `est:2h`
+- [x] **T02: Audit and test CardDetailPage structure** `est:2h`
   - Why: CardDetailPage is the gravitational center — every user journey converges here. The BFF degradation banner, 4-tab mobile layout, and print selector must be verified.
   - Files: `storefront/src/components/cards/CardDetailPage.test.tsx` (extend), `storefront/src/components/cards/CardDetailPage.tsx` (audit)
   - Do: Read `docs/plans/wireframes/storefront-card-detail.html`. Confirm tests cover: card image renders with alt text, game attributes section renders, `MarketplaceListingsSection` renders with listings prop, degradation banner shows when `listingsUnavailable: true` (via `MarketplaceListingsSection`), print selector (`CompactPrintSelector`) renders, `RelatedCards` renders, desktop sections visible, mobile 4-tab nav present. Fix any light-mode class leaks in `CardDetailPage.tsx`. If `CardDetailSkeleton` is used in the loading state, verify it exists or create it (see S01 follow-up).
   - Verify: `npx vitest run --reporter=verbose src/components/cards/CardDetailPage.test.tsx` — all pass.
   - Done when: Detail page tests cover image, attributes, listings section, degradation, print selector; zero light-mode leaks.
 
-- [ ] **T03: Audit and test SearchPageLayout** `est:1h`
+- [x] **T03: Audit and test SearchPageLayout** `est:1h`
   - Why: Search page wiring tests exist (SearchPageWiring.test.tsx) but need verification against the current wireframe structure. Confirm breadcrumbs, results header, CardSearchGrid composition are all locked.
   - Files: `storefront/src/components/search/__tests__/SearchPageWiring.test.tsx` (extend if needed), `storefront/src/components/search/SearchPageLayout.tsx` (audit)
   - Do: Read `docs/plans/wireframes/storefront-search.html`. Run existing search tests and confirm all pass. Check `SearchPageLayout.tsx` for any structural gaps vs wireframe: breadcrumbs (Home → Search Results → "query"), results header with live hit count, `CardSearchGrid` with sidebar + grid. Add any missing structural assertions. Verify Voltage token compliance.
   - Verify: `npx vitest run --reporter=verbose src/components/search/__tests__/` — all 145 pass (no regressions).
   - Done when: Search tests pass, wireframe sections confirmed present.
 
-- [ ] **T04: Write DeckBuilderLayout tests** `est:2h`
+- [x] **T04: Write DeckBuilderLayout tests** `est:2h`
   - Why: No `__tests__` directory exists for `deck-builder/`. `DeckBuilderLayout` is the top-level composer — it wires DeckSurface, DeckSearchPanel, DeckStats, MobileDeckBuilder, and CartOptimizerPanel. The "Buy Missing Cards" button opening the optimizer is the critical path that must be tested.
   - Files: `storefront/src/components/deck-builder/__tests__/DeckBuilderLayout.test.tsx` (create)
   - Do: Mock `DeckBuilderContext` to return a deck with known cards and getMissingCards() returning 3 items. Mock `react-dnd` (`vi.mock('react-dnd', ...)`). Mock child components (DeckSurface, DeckSearchPanel, DeckStats, MobileDeckBuilder, CartOptimizerPanel) as simple stubs with data-testid. Write tests: (1) renders deck name in header, (2) renders Save button enabled when `isDirty`, (3) "Buy Missing Cards" button visible when `getMissingCards()` returns non-empty, (4) clicking "Buy Missing Cards" opens CartOptimizerPanel (passes `isOpen=true`), (5) missing cards count badge shows correct number, (6) search panel collapses/expands on toggle, (7) MobileDeckBuilder rendered on mobile breakpoint (check data-testid visible). No light-mode classes.
   - Verify: `npx vitest run --reporter=verbose src/components/deck-builder/__tests__/DeckBuilderLayout.test.tsx` — all pass.
   - Done when: 7+ tests covering layout, "Buy Missing Cards" flow, and panel toggle — all passing.
 
-- [ ] **T05: Write DeckSurface and DeckZone tests** `est:2h`
+- [x] **T05: Write DeckSurface and DeckZone tests** `est:2h`
   - Why: DeckSurface groups cards by type, DeckZone handles collapse/expand, quantity controls, and DnD drop target. No tests exist for either. These are the most interaction-heavy components in S02.
   - Files: `storefront/src/components/deck-builder/__tests__/DeckSurface.test.tsx` (create), `storefront/src/components/deck-builder/__tests__/DeckZone.test.tsx` (create)
   - Do: Mock `react-dnd` — `vi.mock('react-dnd', () => ({ useDrop: () => [{ isOver: false }, vi.fn()], useDrag: () => [{ isDragging: false }, vi.fn(), vi.fn()] }))`. Mock `DeckBuilderContext`. **DeckSurface tests**: renders cards grouped by type (Creature/Instant/Land shown when cards of those types present), tab toggle switches between Zones and List views, total card count renders correctly. **DeckZone tests**: renders zone title and card count badge, clicking collapse header hides/shows card list (test with `userEvent.click`), quantity increment calls `updateCardQuantity(sku, zone, qty+1)`, quantity decrement calls `updateCardQuantity`, remove button calls `removeCard`, zone header turns amber/red based on validation errors prop. No light-mode classes in either component.
   - Verify: `npx vitest run --reporter=verbose src/components/deck-builder/__tests__/` — all pass.
   - Done when: DeckSurface tests cover type grouping + tab switching; DeckZone tests cover collapse, quantity controls, and validation state.
 
-- [ ] **T06: Write MobileDeckBuilder tests** `est:2h`
+- [x] **T06: Write MobileDeckBuilder tests** `est:2h`
   - Why: Mobile deck builder is the primary interaction surface for mobile users. Tap-to-add (not DnD) is the mobile UX. No tests exist. This is the unproven mobile path from the roadmap.
   - Files: `storefront/src/components/deck-builder/__tests__/MobileDeckBuilder.test.tsx` (create)
   - Do: Mock `DeckBuilderContext`, `CardSearchContext`, `CardSearchProvider`, `CardHoverProvider`. Mock child search components. Write tests: (1) renders 3-tab bar (Deck/Search/Stats), (2) Deck tab shows card list grouped by type, (3) tapping Search tab shows search input, (4) tapping a search result calls `addCard(card, 'main', 1)` — this is the tap-to-add path, (5) "Buy Missing" sticky bar renders when `getMissingCards()` returns non-empty, (6) stats tab renders mana curve or stats section, (7) `MobileDeckBuilder` never renders DnD `DndProvider` (mobile uses tap-to-add, not drag).
   - Verify: `npx vitest run --reporter=verbose src/components/deck-builder/__tests__/MobileDeckBuilder.test.tsx` — all pass.
   - Done when: 7 tests covering tab switching, tap-to-add path, buy bar — all passing.
 
-- [ ] **T07: Audit DeckBrowsingPage and DeckViewPage tests** `est:1h`
+- [x] **T07: Audit DeckBrowsingPage and DeckViewPage tests** `est:1h`
   - Why: Both have test files in `decks/__tests__/` but need a pass to confirm wireframe alignment and Voltage compliance hold after S01 pattern locks.
   - Files: `storefront/src/components/decks/__tests__/DeckBrowsingPage.test.tsx` (extend if needed), `storefront/src/components/decks/__tests__/DeckViewPage.test.tsx` (extend if needed)
   - Do: Run existing tests. Read `storefront-deck-browser.html` and `storefront-deck-viewer.html` wireframes. Add any missing assertions: DeckBrowsingPage — hero renders, DeckGameTabs renders, deck grid items render, pagination present; DeckViewPage — hero with card-fan renders, Visual/List/Stats tabs present, ManaCurveChart renders in Stats tab, "Buy Missing Cards" button renders in header. Grep both for light-mode leaks and fix any found.
   - Verify: `npx vitest run --reporter=verbose src/components/decks/__tests__/` — all pass.
   - Done when: Both page tests pass with wireframe sections confirmed, zero light-mode leaks.
 
-- [ ] **T08: Full quality gate + commit** `est:30m`
+- [x] **T08: Full quality gate + commit** `est:30m`
   - Why: Ensure S02 ships clean — all tests pass, typecheck clean, build succeeds, no light-mode class regressions across the full cards/deck-builder/decks surface.
   - Files: no new files
   - Do: Run `npm run typecheck` and fix any type errors introduced during S02. Run `npm run build` and fix any build errors. Run `npm test -- --run` and confirm all tests pass. Run light-mode grep across `src/components/cards/`, `src/components/deck-builder/`, `src/components/decks/` and fix any matches. Commit all changes to `gsd/M001/S01` branch (storefront sub-repo).
