@@ -1,38 +1,80 @@
-# S01: Infrastructure & Design System
+# S01: Database Schemas & Core Entities
 
-## Goal
-Establish the Voltage design system tokens, shared component library, and test/quality infrastructure that every downstream slice depends on. No feature work ships until tokens are locked, shared components pass tests, and quality gates are green in storefront and customer-backend.
+**Goal:** Both databases running with complete schemas and seed data.
+**Demo:** `docker compose up -d` -> both databases healthy -> `npm run typeorm migration:run` exits 0 -> seed script populates games/formats.
+
+## Must-Haves
+
+- Docker Compose starts mercur-db, sidedecked-db, and Redis without manual intervention
+- All MercurJS module migrations applied to mercur-db
+- All 31 TypeORM entities have matching migrations in sidedecked-db
+- Seed data: 4 games, format records for each game
+- `npm run typecheck` passes in customer-backend
+
+## Proof Level
+
+- This slice proves: contract
+- Real runtime required: yes (Docker must run)
+- Human/UAT required: no
+
+## Verification
+
+- `docker compose up -d && sleep 5 && docker compose ps` - all services healthy
+- `cd customer-backend && npm run typeorm migration:run` - exits 0
+- `cd customer-backend && npm run seed` - seeds games and formats
+- `cd backend && npx medusa db:migrate` - exits 0
+- `cd customer-backend && npm run typecheck` - exits 0
+
+## Observability / Diagnostics
+
+- Runtime signals: Docker health checks on both Postgres containers
+- Inspection surfaces: `docker compose logs db-mercur`, `docker compose logs db-sidedecked`
+- Failure visibility: migration errors logged to stderr with table name and constraint
+- Redaction constraints: no PII in seed data
+
+## Integration Closure
+
+- Upstream surfaces consumed: docker-compose.apps.yml base config
+- New wiring introduced: two named Postgres volumes, one Redis volume
+- What remains before milestone is truly usable: auth (S02), card data (S03), UI (S04)
 
 ## Tasks
 
-- [ ] **T01: Voltage token definitions & globals** `est:2h`
-  - Define all CSS custom properties in `storefront/src/app/globals.css`: `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-price`, `--text-muted`; `--bg-primary`, `--bg-surface-1`, `--bg-surface-2`, `--bg-surface-3`, `--bg-overlay`; `--border-subtle`, `--border-default`, `--border-strong`; `--brand-primary` (`#8B5CF6`), `--brand-accent` (`#FF7849`); `--status-success`, `--status-warning`, `--status-error`, `--status-info`
-  - Define `@font-face` for Barlow Condensed (display headings), Inter (body copy), DM Mono (mono-stats / prices)
-  - Add `.price` CSS class: `font-feature-settings: "tnum"`, `font-family: var(--font-mono-stats)`, `color: var(--text-price)`, `font-variant-numeric: tabular-nums`
-  - Force dark mode globally via `html { color-scheme: dark }` — no light mode variant
-  - Acceptance: `grep -r "bg-white\|text-black\|text-gray-[0-9]" storefront/src/` returns zero matches in any new file created during this task
+- [ ] **T01: Docker Compose database stack** `est:1h`
+  - Why: Services must be declaratively reproducible for local dev and CI
+  - Files: `docker-compose.yml`, `docker-compose.apps.yml`
+  - Do: Define mercur-db (postgres:15), sidedecked-db (postgres:15), redis:7 services with named volumes, health checks, and env vars. Ensure ports don't conflict.
+  - Verify: `docker compose up -d && docker compose ps` shows all healthy
+  - Done when: All 3 services start from cold state without manual steps
 
-- [ ] **T02: Shared component library** `est:4h`
-  - `<Nav />` — logo (links to `/`), game selector tabs (MTG / Pokémon / Yu-Gi-Oh! / One Piece), search bar (links to `/search`), auth state (guest: Sign In button; signed-in: avatar + dropdown), cart count badge, mobile hamburger with slide-out drawer
-  - `<Footer />` — 4-column layout (About / Games / Sell / Community columns) + bottom bar with legal links (Privacy Policy, Terms of Service, Cookie Policy) + social icons (Twitter/X, Discord, Instagram)
-  - `<CardGrid />` — responsive CSS grid wrapper (`auto-fill`, `minmax(160px, 1fr)`), accepts `isLoading` prop to render skeletons instead of children
-  - `<CardTile />` — card image with aspect-ratio lock, name, game badge, `<PriceTag />`, condition chips; links to `/cards/[id]`
-  - `<PriceTag />` — renders price with `.price` class applied; variants: `display` (large, full price), `compact` (inline), `muted` (greyed secondary price)
-  - `<SkeletonCard />` — pulse-animated placeholder matching `<CardTile />` dimensions using `--bg-surface-2` / `--bg-surface-3` tokens
-  - `<SkeletonText />` — pulse-animated text line placeholder; accepts `width` and `lines` props
-  - `<PageShell />` — wraps `<Nav />` + `<main>` + `<Footer />` with `min-height: 100dvh` and flex column layout
-  - All components: zero bare Tailwind color classes (`bg-white`, `text-gray-*`, `bg-gray-*`, `border-gray-*`); use Voltage CSS custom properties via `style` prop or CSS modules per D009
-  - Acceptance: 20+ component tests pass (render smoke tests + key prop/state assertions); `grep -r "bg-white\|text-gray-500\|bg-gray-" storefront/src/components/shared/` returns zero matches
+- [ ] **T02: MedusaJS/MercurJS migrations (mercur-db)** `est:2h`
+  - Why: Medusa and MercurJS modules must have their tables before any backend routes work
+  - Files: `backend/src/medusa-config.ts`
+  - Do: Register all required MercurJS modules (@mercurjs/seller, marketplace, reviews, commission, dispute, payout, split-order-payment, algolia, wishlist, brand, attribute, requests, campaigns). Run `npx medusa db:migrate`.
+  - Verify: `cd backend && npx medusa db:migrate` exits 0; table count in mercur-db > 50
+  - Done when: All MercurJS module tables present in mercur-db
 
-- [ ] **T03: storefront test infrastructure** `est:1h`
-  - Configure Vitest with `jsdom` environment in `storefront/vitest.config.ts`; set coverage thresholds: statements 80%, branches 80%, lines 80%, functions 80%
-  - Install and configure `@testing-library/react` + `@testing-library/user-event` + `@testing-library/jest-dom`
-  - Create `storefront/src/test/setup.ts` with `@testing-library/jest-dom` import and any global mocks (e.g. `next/navigation`, `next/image`)
-  - Create `storefront/src/test/render.tsx` — custom render helper wrapping components with `ThemeProvider` (if applicable) + `QueryClientProvider` with a fresh `QueryClient` per test
-  - Acceptance: `cd storefront && npm run test` exits 0; coverage report generates without errors; empty test suite passes
+- [ ] **T03: TypeORM entity definitions (sidedecked-db)** `est:3h`
+  - Why: Customer-backend owns TCG domain data - all entities must be defined before any service can write to them
+  - Files: `customer-backend/src/entities/*.ts` (all 31 entities), `customer-backend/src/migrations/*.ts`
+  - Do: Ensure all 31 entities are defined: Card, CardImage, CardSet, CardTranslation, CatalogSKU, Print, Game, Format, Collection, CollectionCard, UserCollection, Deck, DeckCard, SellerRating, SellerReview, TrustScoreHistory, MarketPrice, PriceHistory, PriceAlert, PricePrediction, UserProfile, UserFollow, Wishlist, WishlistItem, Activity, AuthEvent, Conversation, Message, ForumCategory, ForumPost, ForumTopic, ETLJob. Add indexes on foreign keys and frequently-queried columns.
+  - Verify: `cd customer-backend && npm run typeorm migration:run` exits 0
+  - Done when: `npm run typecheck` passes, all migrations run without error
 
-- [ ] **T04: Quality gate scripts** `est:1h`
-  - Run `npm run lint && npm run typecheck && npm run build && npm test` in `storefront/` — fix any pre-existing type errors or lint violations in files touched by T01–T03
-  - Run `npm run lint && npm run typecheck && npm run build && npm test` in `customer-backend/` — verify baseline passes
-  - Confirm all quality gate commands are present in each repo's `package.json`; add missing scripts if absent (e.g. `"typecheck": "tsc --noEmit"`)
-  - Acceptance: quality gate exits 0 in both `storefront/` and `customer-backend/`; any pre-existing failures that are out of scope are documented in S01-SUMMARY
+- [ ] **T04: Seed games, formats, and reference data** `est:45m`
+  - Why: Games and formats are static reference data that must exist before ETL or deck validation can work
+  - Files: `customer-backend/src/seeds/seed-games.ts`, `customer-backend/src/seeds/seed-formats.ts`
+  - Do: Insert 4 games (MTG, POKEMON, YUGIOH, OPTCG) and their associated competitive formats.
+  - Verify: `cd customer-backend && npm run seed` exits 0; game table has 4 rows
+  - Done when: All games and formats present; seed is idempotent
+
+## Files Likely Touched
+
+- `docker-compose.yml`
+- `docker-compose.apps.yml`
+- `backend/src/medusa-config.ts`
+- `customer-backend/src/entities/*.ts`
+- `customer-backend/src/migrations/*.ts`
+- `customer-backend/src/seeds/seed-games.ts`
+- `customer-backend/src/seeds/seed-formats.ts`
+- `customer-backend/src/data-source.ts`

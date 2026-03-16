@@ -1,16 +1,19 @@
-# State
+# GSD State
 
-## Active
-- Milestone: M001 — MVP Core Loop
-- Slice: S01 — Infrastructure & Design System
-- Status: ready
+**Active Milestone:** M001: Platform Foundation
+**Active Slice:** S01: Database Schemas & Core Entities
+**Active Task:** none
+**Phase:** plan
+**Next Action:** Begin T01 - scaffold Docker Compose databases and run initial migrations
+**Last Updated:** 2026-03-17
+**Requirements Status:** 20 active - 0 validated - 4 deferred - 3 out of scope
 
-## Milestone Index
-- [~] M001 MVP Core Loop (active)
-- [ ] M002 Seller Scale & Trust
-- [ ] M003 Growth & Analytics
-- [ ] M004 Community & Engagement
-- [ ] M005 Intelligence & Scale
+## Recent Decisions
 
-## Last updated
-2026-03-17
+- D001 - Two isolated databases: mercur-db (Medusa/MercurJS) and sidedecked-db (TypeORM). No direct cross-DB foreign keys.
+- D002 - CatalogSKU is the cross-system linking concept; backend stores catalog_sku on Medusa product variants.
+- D003 - Redis pub/sub is the only cross-database event channel.
+
+## Blockers
+
+- (none)
