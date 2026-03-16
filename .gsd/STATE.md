@@ -2,8 +2,8 @@
 
 **Active Milestone:** M001: Platform Foundation
 **Active Slice:** S01: Database Schemas & Core Entities
-**Active Task:** none
-**Phase:** plan
+**Active Task:** T01 - Split Docker Compose into two isolated databases
+**Phase:** execute
 **Next Action:** Begin T01 - scaffold Docker Compose databases and run initial migrations
 **Last Updated:** 2026-03-17
 **Requirements Status:** 20 active - 0 validated - 4 deferred - 3 out of scope
