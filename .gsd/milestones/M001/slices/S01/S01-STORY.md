@@ -1,7 +1,7 @@
 ---
 story_key: s01
 title: Database Schemas & Core Entities
-status: built
+status: ship-ready
 requirement_ids: [R001]
 affected_repos: [backend, customer-backend]
 story_type: infra
@@ -16,8 +16,12 @@ approvals:
   plan_frozen: true
   external_actions: false
 review:
-  spec_pass: failed
-  quality_pass: failed
+  spec_pass: passed
+  quality_pass: passed
+cold_start_validation:
+  mercur_db_tables: 194
+  sidedecked_db_tables: 33
+  seed_idempotent: true
 links:
   context: S01-CONTEXT.md
   research: S01-RESEARCH.md

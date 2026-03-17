@@ -2,9 +2,9 @@
 
 **Active Milestone:** M001: Platform Foundation
 **Active Slice:** S01: Database Schemas & Core Entities
-**Active Task:** T05 - End-to-end cold-start validation (pending Docker environment)
-**Phase:** execute
-**Next Action:** Run T03 (Medusa migrations) and T05 (cold-start validation) once Docker is available
+**Active Task:** —
+**Phase:** complete
+**Next Action:** S01 cold-start validated. Advance to S02.
 **Last Updated:** 2026-03-17
 **Requirements Status:** 20 active - 0 validated - 4 deferred - 3 out of scope
 
